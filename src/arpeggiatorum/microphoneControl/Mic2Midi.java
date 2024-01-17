@@ -83,14 +83,28 @@ public class Mic2Midi extends Circuit implements Transmitter {
         this.trigger.connect(0, multiply.output, 0);
         this.add(multiply);
 
-        SpectralFFT spectralFFT = new SpectralFFT(11);           // number of bins 2^x
-//        int numberBins = (int) Math.pow(2, spectralFFT.getSizeLog2());
-//        double lowestFrequency = ((double) spectralFFT.getFrameRate()) / numberBins;
-//        double lowestFrequency = ((double) SynthesisEngine.DEFAULT_FRAME_RATE) / numberBins;
-//        System.out.println("lowest freq: " + lowestFrequency);
-        spectralFFT.setWindow(new HammingWindow(2048));         // window type and window length (should suffice for 21.53 Hz minimum frequency)
-        spectralFFT.input.connect(0, this.channelIn.output, 0);
-        this.add(spectralFFT);
+//        SpectralFFT spectralFFT = new SpectralFFT(11);           // number of bins 2^x
+////        int numberBins = (int) Math.pow(2, spectralFFT.getSizeLog2());
+////        double lowestFrequency = ((double) spectralFFT.getFrameRate()) / numberBins;
+////        double lowestFrequency = ((double) SynthesisEngine.DEFAULT_FRAME_RATE) / numberBins;
+////        System.out.println("lowest freq: " + lowestFrequency);
+//        spectralFFT.setWindow(new HammingWindow(2048));         // window type and window length (should suffice for 21.53 Hz minimum frequency)
+//        spectralFFT.input.connect(0, this.channelIn.output, 0);
+//        this.add(spectralFFT);
+
+        //Setting up things for a CQT implementation
+        int binSize=11;
+        int numberBins = (int) Math.pow(2, binSize);
+        CQT cqt = new CQT(binSize); // number of bins 2^x
+        // int numberBins = (int) Math.pow(2, spectralFFT.getSizeLog2());
+        // double lowestFrequency = ((double) spectralFFT.getFrameRate()) / numberBins;
+        // double lowestFrequency = ((double) SynthesisEngine.DEFAULT_FRAME_RATE) /
+        // numberBins;
+        // System.out.println("lowest freq: " + lowestFrequency);
+        cqt.setWindow(new HammingWindow(numberBins)); // window type and window length (should suffice for 21.53 Hz minimum
+        // frequency)
+        cqt.input.connect(0, this.channelIn.output, 0);
+        this.add(cqt);
 
         this.setReceiver(receiver);
 
