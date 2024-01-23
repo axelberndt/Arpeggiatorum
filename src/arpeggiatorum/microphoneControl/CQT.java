@@ -191,7 +191,7 @@ public class CQT extends UnitGenerator {
 
     /* Define Unit Ports used by connect() and set(). */
     public CQT() {
-        this(Spectrum.DEFAULT_SIZE_LOG_2, 44100, 86.12, 5601.68, 12, 0.001f, 1.0f);
+        this(Spectrum.DEFAULT_SIZE_LOG_2, 44100, 43.06, 5601.68, 12, 0.001f, 1.0f);
     }
 
     /**
