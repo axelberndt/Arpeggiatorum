@@ -57,6 +57,7 @@ public class Mic2Midi extends Circuit implements Transmitter{
 		this.add(this.channelIn);                               // add channelIn to the synth
 		//        this.channelIn.setChannelIndex(0);                      // set its channel index, this call is redundant
 
+		//This pitch detector returns a value that is one octave lower, compensate by adding +12
 		PitchDetector pitchDetector = new PitchDetector();
 		pitchDetector.input.connect(0, this.channelIn.output, 0);
 		this.add(pitchDetector);
@@ -124,43 +125,55 @@ public class Mic2Midi extends Circuit implements Transmitter{
 		double[] spectrumImg = inputSpectrum.getImaginary();
 
 		int size = spectrumReal.length;
-		double frequency = 8000;
+		double lowCut = 8000;
+		double hiCut = 40;
 		int sampleRate = 44100;
-		int cutoff = (int) (frequency * size / sampleRate);
+		int lowCutoff = (int) (lowCut * size / sampleRate);
+		int hiCutoff = (int) (hiCut * size / sampleRate);
+
 		int nyquist = size / 2;
 		// Brickwall Low-Pass Filter
-//		for (int i = cutoff; i < nyquist; i++){
+//		for (int i = lowCutoff; i < nyquist; i++){
 //			// Bins above nyquist are mirror of ones below.
 //			spectrumReal[i] = spectrumReal[size - i] = 0.0;
 //			spectrumImg[i] = spectrumImg[size - i] = 0.0;
 //		}
-
-		double[] magnitude = new double[spectrumReal.length];
-		for (int i = 0; i < spectrumReal.length; i++){
+		// Brickwall Hi-Pass Filter
+		for (int i = hiCutoff; i > 0; i--){
+			// Bins above nyquist are mirror of ones below.
+			spectrumReal[i] = spectrumReal[size - i] = 0.0;
+			spectrumImg[i] = spectrumImg[size - i] = 0.0;
+		}
+// Extract magnitude
+		double[] magnitude = new double[nyquist];
+		for (int i = 0; i < nyquist; i++){
 			magnitude[i] = Math.sqrt(Math.pow(2, spectrumReal[i]) + Math.pow(2, spectrumImg[i]));
 		}
 
 // HPS
-		double[] spectrumCopy = new double[magnitude.length];
-		System.arraycopy(magnitude, 0, spectrumCopy, 0, magnitude.length);
-		for (int compression = 2; compression < 4; compression++){
-			for (int i = 1; i < magnitude.length; i++){
-				magnitude[i] = magnitude[i] * getCompressedSample(spectrumCopy, 1, compression, i);
-			}
+		double[] hps2 = Downsample(magnitude, 2);
+		double[] hps3 = Downsample(magnitude, 3);
+		double[] hps4 = Downsample(magnitude, 4);
+		double[] hps5 = Downsample(magnitude, 5);
+
+		double[] arrayOutput = new double[hps5.length];
+
+		for (int i = 0; i < arrayOutput.length; i++){
+			arrayOutput[i] = magnitude[i] * hps2[i] * hps3[i] * hps4[i]* hps5[i];
 		}
 
 		//Look for the maximum  value
 		int maxBin = 0;
-		double maxVal = magnitude[0];
-		for (int i=1; i < magnitude.length; i++) {
-			double val = magnitude[i];
-			if (val > maxVal) {
+		double maxVal = arrayOutput[0];
+		for (int i = 0; i < arrayOutput.length; i++){
+			double val = arrayOutput[i];
+			if (val > maxVal){
 				maxVal = val;
 				maxBin = i;
 			}
 		}
-//MLE?
-
+//Other methods
+// MLE?
 //		Cepstrum? FFT(log(mag(FFT)))
 
 		// print buffer content
@@ -173,7 +186,7 @@ public class Mic2Midi extends Circuit implements Transmitter{
 //        }
 
 		// check if at the end of the buffer we have to play or stop a note
-		int newPitch = (int) Math.round(AudioMath.frequencyToPitch(DoubleStream.of(frequencyInputs).average().getAsDouble()));
+		int newPitch = (int) Math.round(AudioMath.frequencyToPitch(DoubleStream.of(frequencyInputs).average().getAsDouble())) + 12;
 		if (this.previousTriggerValue > CONFIDENCE_THRESHOLD){         // we are currently playing a tone
 			if (triggerInputs[limit - 1] <= CONFIDENCE_THRESHOLD){     // if we have to stop the note
 				System.out.println("> " + currentPitch);
@@ -183,23 +196,25 @@ public class Mic2Midi extends Circuit implements Transmitter{
 				if (newPitch != this.currentPitch){
 					this.sendNoteOff(this.currentPitch);
 					this.sendNoteOn(newPitch);
-					System.out.println("FFT to Pitch using HPS: " + getFrequencyForIndex(maxBin,size,sampleRate));
+					System.out.println("FFT to Pitch using HPS: " + getFrequencyForIndex(maxBin, nyquist, sampleRate));
 				}
 			}
 		} else if (triggerInputs[limit - 1] > CONFIDENCE_THRESHOLD){   // we have to start a note
 			System.out.println("< " + currentPitch);
 			this.sendNoteOn(newPitch);
-			System.out.println("FFT to Pitch using HPS: " + getFrequencyForIndex(maxBin,size,sampleRate));
+			System.out.println("FFT to Pitch using HPS: " + getFrequencyForIndex(maxBin, nyquist, sampleRate));
 		}
 		this.previousTriggerValue = triggerInputs[limit - 1];
 	}
 
-	//HPS Helper functions
-	private double getCompressedSample(double[] buffer, int offset, int compression, int loc){
-		if (offset + loc * compression < buffer.length){
-			return buffer[offset + loc * compression];
+	//HPS Helper methods
+
+	public double[] Downsample(double[] data, int n){
+		double[] array = new double[(int) (Math.ceil(data.length * 1.0 / n))];
+		for (int i = 0; i < array.length; i++){
+			array[i] = data[i * n];
 		}
-		return 0;
+		return array;
 	}
 
 	private double getFrequencyForIndex(int index, int size, int sampleRate){
