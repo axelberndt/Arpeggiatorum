@@ -38,7 +38,14 @@ public class Mic2Midi extends Circuit implements Transmitter{
 	private double lowCut = 8000.0f;
 	//Highpass filter cutoff frequency
 	private double hiCut = 40.0f;
+	private int lowCutoff=0;
+	private int hiCutoff=0;
+	private int size=0;
+	private int nyquist=0;
 	private int sampleRate = 44100;
+	//Lower and upper boundaries for Pitch detection
+	private double lowFreq=40.0f;
+	private double hiFreq=2000.0f;
 	//HPS
 	private int decimationSize=3;
 
@@ -133,34 +140,56 @@ public class Mic2Midi extends Circuit implements Transmitter{
 		double[] spectrumReal = inputSpectrum.getReal();
 		double[] spectrumImg = inputSpectrum.getImaginary();
 
-		int size = spectrumReal.length;
+		size = spectrumReal.length;
 
-		int lowCutoff = (int) (lowCut * size / sampleRate);
-		int hiCutoff = (int) (hiCut * size / sampleRate);
+		lowCutoff = (int) (lowCut * size / sampleRate);
+		hiCutoff = (int) (hiCut * size / sampleRate);
 
-		int nyquist = size / 2;
+		nyquist = size / 2;
 		// Brickwall Low-Pass Filter
 //		for (int i = lowCutoff; i < nyquist; i++){
 //			// Bins above nyquist are mirror of ones below.
 //			spectrumReal[i] = spectrumReal[size - i] = 0.0;
 //			spectrumImg[i] = spectrumImg[size - i] = 0.0;
 //		}
-		// Brickwall Hi-Pass Filter
+//		// Brickwall Hi-Pass Filter
 //		for (int i = hiCutoff; i > 0; i--){
 //			// Bins above nyquist are mirror of ones below.
 //			spectrumReal[i] = spectrumReal[size - i] = 0.0;
 //			spectrumImg[i] = spectrumImg[size - i] = 0.0;
 //		}
+		int lowBin=(int)(lowFreq/((double)sampleRate/nyquist));
+		int hiBin=(int)(hiFreq/((double)sampleRate/nyquist));
+
 		//Extract magnitude
 		double[] magnitude = getMagnitude(nyquist, spectrumReal, spectrumImg);
+
 		//HPS
 		double[] arrayOutput = HPS(decimationSize, magnitude);
+
+
 		//Get max value's bin number
-		int maxBin = getMaxBin(arrayOutput);
+		int maxBin = getMaxBin(arrayOutput,lowBin ,hiBin);
 
 		//Other methods
-		//MLE?
-		//Cepstrum? FFT(log(mag(FFT)))
+		//MLE? Requires templates
+
+		//Cepstrum? FFT(log(mag(FFT)^2))
+		double[] logMag= new double[size];
+		for (int i = 0; i < magnitude.length; i++){
+			logMag[i]=Math.log(magnitude[i]);
+		}
+		double[] logMagR=logMag;
+		double[] logMagI=new double[size];
+		com.softsynth.math.FourierMath.fft(logMag.length,logMagR,logMagI);
+		double[] magnitudeFFT = getMagnitude(logMagR.length, logMagR, logMagI);
+		double[] logMagFFT= new double[magnitudeFFT.length];
+
+		for (int i = 0; i < magnitudeFFT.length; i++){
+			logMagFFT[i]=Math.log(magnitudeFFT[i]);
+		}
+		//Get max value's bin number restrincting the output between ...
+		int maxBinCep = getMaxBin(logMagFFT, logMagFFT.length-hiBin, logMagFFT.length-lowBin);
 
 		// print buffer content
 //        System.out.println("confidence " + Arrays.toString(triggerInputs) + "\n" +
@@ -183,21 +212,26 @@ public class Mic2Midi extends Circuit implements Transmitter{
 					this.sendNoteOff(this.currentPitch);
 					this.sendNoteOn(newPitch);
 					System.out.println("FFT to Pitch using HPS: " + getFrequencyForIndex(maxBin, nyquist, sampleRate));
+					System.out.println("FFT to Pitch using Cepstrum: " + ((sampleRate)-(maxBinCep*((double)sampleRate/logMagFFT.length))));
+
+
 				}
 			}
 		} else if (triggerInputs[limit - 1] > CONFIDENCE_THRESHOLD){   // we have to start a note
 			System.out.println("< " + currentPitch);
 			this.sendNoteOn(newPitch);
 			System.out.println("FFT to Pitch using HPS: " + getFrequencyForIndex(maxBin, nyquist, sampleRate));
+			System.out.println("FFT to Pitch using Cepstrum: " + ((sampleRate)-(maxBinCep*((double)sampleRate/logMagFFT.length))));
+
 		}
 		this.previousTriggerValue = triggerInputs[limit - 1];
 	}
 
-	private static int getMaxBin(double[] arrayInput){
+	private static int getMaxBin(double[] arrayInput, int start, int end){
 		//Look for the maximum value's index
-		int maxBin = 0;
-		double maxVal = arrayInput[0];
-		for (int i = 0; i < arrayInput.length; i++){
+		int maxBin = start;
+		double maxVal = arrayInput[start];
+		for (int i = start; i < end; i++){
 			double val = arrayInput[i];
 			if (val > maxVal){
 				maxVal = val;
