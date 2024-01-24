@@ -30,6 +30,18 @@ public class Mic2Midi extends Circuit implements Transmitter{
 	private ChannelIn channelIn = new ChannelIn();              // microphone input
 	private SchmidtTrigger schmidtTrigger = new SchmidtTrigger();
 
+	//FFT to Pitch
+	private int binSize = 11;
+	private int numberBins = (int) Math.pow(2, binSize);
+	private int windowLength = numberBins*2;
+	//LowPass filter cutoff frequency
+	private double lowCut = 8000.0f;
+	//Highpass filter cutoff frequency
+	private double hiCut = 40.0f;
+	private int sampleRate = 44100;
+	//HPS
+	private int decimationSize=3;
+
 	/**
 	 * constructor
 	 * channelIn
@@ -88,9 +100,6 @@ public class Mic2Midi extends Circuit implements Transmitter{
 		this.trigger.connect(0, multiply.output, 0);
 		this.add(multiply);
 
-		int binSize = 11;
-		int numberBins = (int) Math.pow(2, binSize);
-		int windowLength = numberBins;
 
 		SpectralFFT spectralFFT = new SpectralFFT(binSize);           // number of bins 2^x
 //        int numberBins = (int) Math.pow(2, spectralFFT.getSizeLog2());
@@ -125,9 +134,7 @@ public class Mic2Midi extends Circuit implements Transmitter{
 		double[] spectrumImg = inputSpectrum.getImaginary();
 
 		int size = spectrumReal.length;
-		double lowCut = 8000;
-		double hiCut = 40;
-		int sampleRate = 44100;
+
 		int lowCutoff = (int) (lowCut * size / sampleRate);
 		int hiCutoff = (int) (hiCut * size / sampleRate);
 
@@ -139,42 +146,21 @@ public class Mic2Midi extends Circuit implements Transmitter{
 //			spectrumImg[i] = spectrumImg[size - i] = 0.0;
 //		}
 		// Brickwall Hi-Pass Filter
-		for (int i = hiCutoff; i > 0; i--){
-			// Bins above nyquist are mirror of ones below.
-			spectrumReal[i] = spectrumReal[size - i] = 0.0;
-			spectrumImg[i] = spectrumImg[size - i] = 0.0;
-		}
-// Extract magnitude
-		double[] magnitude = new double[nyquist];
-		for (int i = 0; i < nyquist; i++){
-			magnitude[i] = Math.sqrt(Math.pow(2, spectrumReal[i]) + Math.pow(2, spectrumImg[i]));
-		}
+//		for (int i = hiCutoff; i > 0; i--){
+//			// Bins above nyquist are mirror of ones below.
+//			spectrumReal[i] = spectrumReal[size - i] = 0.0;
+//			spectrumImg[i] = spectrumImg[size - i] = 0.0;
+//		}
+		//Extract magnitude
+		double[] magnitude = getMagnitude(nyquist, spectrumReal, spectrumImg);
+		//HPS
+		double[] arrayOutput = HPS(decimationSize, magnitude);
+		//Get max value's bin number
+		int maxBin = getMaxBin(arrayOutput);
 
-// HPS
-		double[] hps2 = Downsample(magnitude, 2);
-		double[] hps3 = Downsample(magnitude, 3);
-		double[] hps4 = Downsample(magnitude, 4);
-		double[] hps5 = Downsample(magnitude, 5);
-
-		double[] arrayOutput = new double[hps5.length];
-
-		for (int i = 0; i < arrayOutput.length; i++){
-			arrayOutput[i] = magnitude[i] * hps2[i] * hps3[i] * hps4[i]* hps5[i];
-		}
-
-		//Look for the maximum  value
-		int maxBin = 0;
-		double maxVal = arrayOutput[0];
-		for (int i = 0; i < arrayOutput.length; i++){
-			double val = arrayOutput[i];
-			if (val > maxVal){
-				maxVal = val;
-				maxBin = i;
-			}
-		}
-//Other methods
-// MLE?
-//		Cepstrum? FFT(log(mag(FFT)))
+		//Other methods
+		//MLE?
+		//Cepstrum? FFT(log(mag(FFT)))
 
 		// print buffer content
 //        System.out.println("confidence " + Arrays.toString(triggerInputs) + "\n" +
@@ -207,7 +193,47 @@ public class Mic2Midi extends Circuit implements Transmitter{
 		this.previousTriggerValue = triggerInputs[limit - 1];
 	}
 
+	private static int getMaxBin(double[] arrayInput){
+		//Look for the maximum value's index
+		int maxBin = 0;
+		double maxVal = arrayInput[0];
+		for (int i = 0; i < arrayInput.length; i++){
+			double val = arrayInput[i];
+			if (val > maxVal){
+				maxVal = val;
+				maxBin = i;
+			}
+		}
+		return maxBin;
+	}
+
+	// Extract magnitude from spectrum
+	private double[] getMagnitude(int nyquist, double[] spectrumReal, double[] spectrumImg){
+		double[] magnitude = new double[nyquist];
+		for (int i = 0; i < nyquist; i++){
+			magnitude[i] = Math.sqrt(Math.pow(2, spectrumReal[i]) + Math.pow(2, spectrumImg[i]));
+		}
+		return magnitude;
+	}
+
 	//HPS Helper methods
+	public double[] HPS(int decimationSize, double[] arrayData){
+		int size=decimationSize-1;
+		double[][] HPSDownsampled = new double[size][arrayData.length];
+		for (int i = 0; i < size; i++){
+			HPSDownsampled[i] = Downsample(arrayData, i+2);
+		}
+
+		double[] arrayOutput = new double[HPSDownsampled[size - 1].length];
+
+		for (int i = 0; i < arrayOutput.length; i++){
+			arrayOutput[i]=arrayData[i];
+			for (int j = 0; j <size-1 ; j++){
+				arrayOutput[i] = arrayOutput[i] * HPSDownsampled[j][i];
+			}
+		}
+		return arrayOutput;
+	}
 
 	public double[] Downsample(double[] data, int n){
 		double[] array = new double[(int) (Math.ceil(data.length * 1.0 / n))];
