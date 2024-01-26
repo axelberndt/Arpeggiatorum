@@ -21,6 +21,8 @@ public class Mic2Midi extends Circuit implements Transmitter{
 	private static final double CONFIDENCE_THRESHOLD = 0.3;
 	private static final double FREQUENCY_RAMP_TIME = 0.01;
 	private static final double PEAK_FOLLOWER_RAMP_TIME = 0.25;
+
+	private static final int TRANSFORM = 2;
 	public Receiver receiver;                                   // the MIDI receiver
 	public UnitInputPort trigger;                               // this port gets a 1.0 to trigger and a 0.0 to do nothing
 	private double previousTriggerValue = 0.0;
@@ -33,21 +35,21 @@ public class Mic2Midi extends Circuit implements Transmitter{
 	//FFT to Pitch
 	private int binSize = 11;
 	private int numberBins = (int) Math.pow(2, binSize);
-	private int windowLength = numberBins*2;
+	private int windowLength = numberBins * 2;
 	//LowPass filter cutoff frequency
 	private double lowCut = 8000.0f;
 	//Highpass filter cutoff frequency
 	private double hiCut = 40.0f;
-	private int lowCutoff=0;
-	private int hiCutoff=0;
-	private int size=0;
-	private int nyquist=0;
+	private int lowCutoff = 0;
+	private int hiCutoff = 0;
+	private int size = 0;
+	private int nyquist = 0;
 	private int sampleRate = 44100;
 	//Lower and upper boundaries for Pitch detection
-	private double lowFreq=40.0f;
-	private double hiFreq=2000.0f;
+	private double lowFreq = 40.0f;
+	private double hiFreq = 2000.0f;
 	//HPS
-	private int decimationSize=3;
+	private int decimationSize = 3;
 
 	/**
 	 * constructor
@@ -107,24 +109,30 @@ public class Mic2Midi extends Circuit implements Transmitter{
 		this.trigger.connect(0, multiply.output, 0);
 		this.add(multiply);
 
-
-		SpectralFFT spectralFFT = new SpectralFFT(binSize);           // number of bins 2^x
+		switch (TRANSFORM){
+			case 1:
+				SpectralFFT spectralFFT = new SpectralFFT(binSize);           // number of bins 2^x
 //        int numberBins = (int) Math.pow(2, spectralFFT.getSizeLog2());
 //        double lowestFrequency = ((double) spectralFFT.getFrameRate()) / numberBins;
 //        double lowestFrequency = ((double) SynthesisEngine.DEFAULT_FRAME_RATE) / numberBins;
 //        System.out.println("lowest freq: " + lowestFrequency);
-		spectralFFT.setWindow(new HammingWindow(windowLength));         // window type and window length (should suffice for 21.53 Hz minimum frequency)
-		spectralFFT.input.connect(0, this.channelIn.output, 0);
-		this.add(spectralFFT);
-		this.spectrum.connect(spectralFFT.output);
+				spectralFFT.setWindow(new HammingWindow(windowLength));         // window type and window length (should suffice for 21.53 Hz minimum frequency)
+				spectralFFT.input.connect(0, this.channelIn.output, 0);
+				this.add(spectralFFT);
+				this.spectrum.connect(spectralFFT.output);
+				break;
 
-//        //Setting up things for a CQT implementation
-//        CQT cqt = new CQT(binSize); // number of bins 2^x
-//        cqt.setWindow(new HammingWindow(windowLength)); // window type and window length (should suffice for 21.53 Hz minimum
-//        // frequency)
-//        cqt.input.connect(0, this.channelIn.output, 0);
-//        this.add(cqt);
-//		this.spectrum.connect(cqt.output);
+			case 2:
+				//Setting up things for a CQT implementation
+				CQT cqt = new CQT(binSize); // number of bins 2^x
+				cqt.setWindow(new HammingWindow(windowLength)); // window type and window length (should suffice for 21.53 Hz minimum
+				// frequency)
+				cqt.input.connect(0, this.channelIn.output, 0);
+				this.add(cqt);
+				this.spectrum.connect(cqt.output);
+				break;
+		}
+
 
 		this.setReceiver(receiver);
 		// it is not necessary to start any of the unit generators individually, as the Circuit should be started by its creator
@@ -152,44 +160,41 @@ public class Mic2Midi extends Circuit implements Transmitter{
 //			spectrumReal[i] = spectrumReal[size - i] = 0.0;
 //			spectrumImg[i] = spectrumImg[size - i] = 0.0;
 //		}
-//		// Brickwall Hi-Pass Filter
+		// Brickwall Hi-Pass Filter
 //		for (int i = hiCutoff; i > 0; i--){
 //			// Bins above nyquist are mirror of ones below.
 //			spectrumReal[i] = spectrumReal[size - i] = 0.0;
 //			spectrumImg[i] = spectrumImg[size - i] = 0.0;
 //		}
-		int lowBin=(int)(lowFreq/((double)sampleRate/nyquist));
-		int hiBin=(int)(hiFreq/((double)sampleRate/nyquist));
+		int lowBin = (int) (lowFreq / ((double) sampleRate / nyquist));
+		int hiBin = (int) (hiFreq / ((double) sampleRate / nyquist));
 
 		//Extract magnitude
 		double[] magnitude = getMagnitude(nyquist, spectrumReal, spectrumImg);
 
 		//HPS
 		double[] arrayOutput = HPS(decimationSize, magnitude);
-
-
-		//Get max value's bin number
-		int maxBin = getMaxBin(arrayOutput,lowBin ,hiBin);
+		//Get max value's bin number restricting the output between ...
+		int maxBin = getMaxBin(arrayOutput, lowBin, hiBin);
 
 		//Other methods
 		//MLE? Requires templates
 
 		//Cepstrum? FFT(log(mag(FFT)^2))
-		double[] logMag= new double[size];
+		double[] logMag = new double[size];
 		for (int i = 0; i < magnitude.length; i++){
-			logMag[i]=Math.log(magnitude[i]);
+			logMag[i] = Math.log(magnitude[i]);
 		}
-		double[] logMagR=logMag;
-		double[] logMagI=new double[size];
-		com.softsynth.math.FourierMath.fft(logMag.length,logMagR,logMagI);
+		double[] logMagR = logMag;
+		double[] logMagI = new double[size];
+		com.softsynth.math.FourierMath.fft(logMag.length, logMagR, logMagI);
 		double[] magnitudeFFT = getMagnitude(logMagR.length, logMagR, logMagI);
-		double[] logMagFFT= new double[magnitudeFFT.length];
+		double[] logMagFFT = new double[magnitudeFFT.length];
 
 		for (int i = 0; i < magnitudeFFT.length; i++){
-			logMagFFT[i]=Math.log(magnitudeFFT[i]);
+			logMagFFT[i] = Math.log(magnitudeFFT[i]);
 		}
-		//Get max value's bin number restrincting the output between ...
-		int maxBinCep = getMaxBin(logMagFFT, logMagFFT.length-hiBin, logMagFFT.length-lowBin);
+		int maxBinCep = getMaxBin(logMagFFT, logMagFFT.length - hiBin, logMagFFT.length - lowBin);
 
 		// print buffer content
 //        System.out.println("confidence " + Arrays.toString(triggerInputs) + "\n" +
@@ -204,24 +209,24 @@ public class Mic2Midi extends Circuit implements Transmitter{
 		int newPitch = (int) Math.round(AudioMath.frequencyToPitch(DoubleStream.of(frequencyInputs).average().getAsDouble())) + 12;
 		if (this.previousTriggerValue > CONFIDENCE_THRESHOLD){         // we are currently playing a tone
 			if (triggerInputs[limit - 1] <= CONFIDENCE_THRESHOLD){     // if we have to stop the note
-				System.out.println("> " + currentPitch);
+				//System.out.println("> " + currentPitch);
 				this.sendNoteOff(this.currentPitch);
 			} else{                                                    // we may have to update the pitch
-				System.out.println("- " + currentPitch);
+				//System.out.println("- " + currentPitch);
 				if (newPitch != this.currentPitch){
 					this.sendNoteOff(this.currentPitch);
 					this.sendNoteOn(newPitch);
-					System.out.println("FFT to Pitch using HPS: " + getFrequencyForIndex(maxBin, nyquist, sampleRate));
-					System.out.println("FFT to Pitch using Cepstrum: " + ((sampleRate)-(maxBinCep*((double)sampleRate/logMagFFT.length))));
+					//System.out.println("FFT to Pitch using HPS: " + getFrequencyForIndex(maxBin, nyquist, sampleRate));
+					//System.out.println("FFT to Pitch using Cepstrum: " + ((sampleRate)-(maxBinCep*((double)sampleRate/logMagFFT.length))));
 
 
 				}
 			}
 		} else if (triggerInputs[limit - 1] > CONFIDENCE_THRESHOLD){   // we have to start a note
-			System.out.println("< " + currentPitch);
+			//System.out.println("< " + currentPitch);
 			this.sendNoteOn(newPitch);
 			System.out.println("FFT to Pitch using HPS: " + getFrequencyForIndex(maxBin, nyquist, sampleRate));
-			System.out.println("FFT to Pitch using Cepstrum: " + ((sampleRate)-(maxBinCep*((double)sampleRate/logMagFFT.length))));
+			System.out.println("FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * ((double) sampleRate / logMagFFT.length))));
 
 		}
 		this.previousTriggerValue = triggerInputs[limit - 1];
@@ -252,17 +257,17 @@ public class Mic2Midi extends Circuit implements Transmitter{
 
 	//HPS Helper methods
 	public double[] HPS(int decimationSize, double[] arrayData){
-		int size=decimationSize-1;
+		int size = decimationSize - 1;
 		double[][] HPSDownsampled = new double[size][arrayData.length];
 		for (int i = 0; i < size; i++){
-			HPSDownsampled[i] = Downsample(arrayData, i+2);
+			HPSDownsampled[i] = Downsample(arrayData, i + 2);
 		}
 
 		double[] arrayOutput = new double[HPSDownsampled[size - 1].length];
 
 		for (int i = 0; i < arrayOutput.length; i++){
-			arrayOutput[i]=arrayData[i];
-			for (int j = 0; j <size-1 ; j++){
+			arrayOutput[i] = arrayData[i];
+			for (int j = 0; j < size - 1; j++){
 				arrayOutput[i] = arrayOutput[i] * HPSDownsampled[j][i];
 			}
 		}

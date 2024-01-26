@@ -228,7 +228,7 @@ public class CQT extends UnitGenerator {
         double calc_fftlen = (double) Math.ceil(q * sampleRate / minimumFrequency);
 
         // No need to use power of 2 FFT length.
-        fftLength = (int) calc_fftlen;
+       // fftLength = (int) calc_fftlen;
 
         // System.out.println(fftLength);
         // The FFT length needs to be a power of two for performance reasons:
@@ -254,9 +254,9 @@ public class CQT extends UnitGenerator {
 
             for (int j = 0; j < len; j++) {
 
-                double cqtwindow = -.5 * Math.cos(2. * Math.PI * (double) j / (double) len) + .5;
+               //double cqtwindow = -.5 * Math.cos(2. * Math.PI * (double) j / (double) len) + .5;
                 ; // Hanning Window
-                  // double window = -.46*Math.cos(2.*Math.PI*(double)j/(double)len)+.54; //
+                   double cqtwindow = -.46*Math.cos(2.*Math.PI*(double)j/(double)len)+.54; //
                   // Hamming Window
 
                   cqtwindow /= len;
@@ -389,8 +389,10 @@ public class CQT extends UnitGenerator {
             double t_i = 0;
             for (int j = 0, l = 0; j < kernel.length; j += 2, l++) {
                 int jj = indexes[l];
-                double b_r = inputBuffer[jj];
-                double b_i = inputBuffer[jj + 1];
+//                double b_r = inputBuffer[jj];
+//                double b_i = inputBuffer[jj + 1];
+                double b_r = spectrum.getReal()[jj];
+                double b_i = spectrum.getImaginary()[jj];
                 double k_r = kernel[j];
                 double k_i = kernel[j + 1];
                 // COMPLEX: T += B * K
