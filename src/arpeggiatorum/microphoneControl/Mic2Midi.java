@@ -51,6 +51,8 @@ public class Mic2Midi extends Circuit implements Transmitter{
 	//HPS
 	private int decimationSize = 3;
 
+	private CQT cqt;
+
 	/**
 	 * constructor
 	 * channelIn
@@ -124,13 +126,14 @@ public class Mic2Midi extends Circuit implements Transmitter{
 
 			case 2:
 				//Setting up things for a CQT implementation
-				CQT cqt = new CQT(binSize); // number of bins 2^x
+				cqt = new CQT(binSize); // number of bins 2^x
 				cqt.setWindow(new HammingWindow(windowLength)); // window type and window length (should suffice for 21.53 Hz minimum
 				// frequency)
 				cqt.input.connect(0, this.channelIn.output, 0);
 				this.add(cqt);
 				this.spectrum.connect(cqt.output);
 				break;
+			//CQT bin to Frequency=f_min * 2 ** (index / bins_per_octave)
 		}
 
 
@@ -166,35 +169,49 @@ public class Mic2Midi extends Circuit implements Transmitter{
 //			spectrumReal[i] = spectrumReal[size - i] = 0.0;
 //			spectrumImg[i] = spectrumImg[size - i] = 0.0;
 //		}
-		int lowBin = (int) (lowFreq / ((double) sampleRate / nyquist));
-		int hiBin = (int) (hiFreq / ((double) sampleRate / nyquist));
+		int maxBin = 0;
+		int maxBinCep = 0;
+		int outputLength = 0;
+		int maxBinCQT = 0;
+		switch (TRANSFORM){
 
-		//Extract magnitude
-		double[] magnitude = getMagnitude(nyquist, spectrumReal, spectrumImg);
+			case 1:
+				int lowBin = (int) (lowFreq / ((double) sampleRate / nyquist));
+				int hiBin = (int) (hiFreq / ((double) sampleRate / nyquist));
 
-		//HPS
-		double[] arrayOutput = HPS(decimationSize, magnitude);
-		//Get max value's bin number restricting the output between ...
-		int maxBin = getMaxBin(arrayOutput, lowBin, hiBin);
+				//Extract magnitude
+				double[] magnitude = getMagnitude(nyquist, spectrumReal, spectrumImg);
 
-		//Other methods
-		//MLE? Requires templates
+				//HPS
+				double[] arrayOutput = HPS(decimationSize, magnitude);
+				//Get max value's bin number restricting the output between ...
+				maxBin = getMaxBin(arrayOutput, lowBin, hiBin);
 
-		//Cepstrum? FFT(log(mag(FFT)^2))
-		double[] logMag = new double[size];
-		for (int i = 0; i < magnitude.length; i++){
-			logMag[i] = Math.log(magnitude[i]);
+				//Other methods
+				//MLE? Requires templates
+
+				//Cepstrum? FFT(log(mag(FFT)^2))
+				double[] logMag = new double[size];
+				for (int i = 0; i < magnitude.length; i++){
+					logMag[i] = Math.log(magnitude[i]);
+				}
+				double[] logMagR = logMag;
+				double[] logMagI = new double[size];
+				com.softsynth.math.FourierMath.fft(logMag.length, logMagR, logMagI);
+				double[] magnitudeFFT = getMagnitude(logMagR.length, logMagR, logMagI);
+				double[] logMagFFT = new double[magnitudeFFT.length];
+				outputLength = logMagFFT.length;
+				for (int i = 0; i < magnitudeFFT.length; i++){
+					logMagFFT[i] = Math.log(magnitudeFFT[i]);
+				}
+				maxBinCep = getMaxBin(logMagFFT, logMagFFT.length - hiBin, logMagFFT.length - lowBin);
+
+				break;
+			case 2:
+				//maxBinCQT=getMaxBin(spectrumReal,0,spectrumReal.length);
+				maxBinCQT = getMaxBin(spectrumReal, 0, cqt.numberOfBins);
+				break;
 		}
-		double[] logMagR = logMag;
-		double[] logMagI = new double[size];
-		com.softsynth.math.FourierMath.fft(logMag.length, logMagR, logMagI);
-		double[] magnitudeFFT = getMagnitude(logMagR.length, logMagR, logMagI);
-		double[] logMagFFT = new double[magnitudeFFT.length];
-
-		for (int i = 0; i < magnitudeFFT.length; i++){
-			logMagFFT[i] = Math.log(magnitudeFFT[i]);
-		}
-		int maxBinCep = getMaxBin(logMagFFT, logMagFFT.length - hiBin, logMagFFT.length - lowBin);
 
 		// print buffer content
 //        System.out.println("confidence " + Arrays.toString(triggerInputs) + "\n" +
@@ -225,8 +242,17 @@ public class Mic2Midi extends Circuit implements Transmitter{
 		} else if (triggerInputs[limit - 1] > CONFIDENCE_THRESHOLD){   // we have to start a note
 			//System.out.println("< " + currentPitch);
 			this.sendNoteOn(newPitch);
-			System.out.println("FFT to Pitch using HPS: " + getFrequencyForIndex(maxBin, nyquist, sampleRate));
-			System.out.println("FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * ((double) sampleRate / logMagFFT.length))));
+			switch (TRANSFORM){
+				case 1:
+					System.out.println("FFT to Pitch using HPS: " + getFrequencyForIndex(maxBin, nyquist, sampleRate));
+					System.out.println("FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * ((double) sampleRate / outputLength))));
+					break;
+
+				case 2:
+//					System.out.println("FFT to Pitch using CQT: " + (((double)sampleRate/Math.pow(2,binSize)) * Math.pow(2,(maxBinCQT / 12.0))));
+					System.out.println("FFT to Pitch using CQT: " + cqt.frequencies[maxBinCQT]);
+					break;
+			}
 
 		}
 		this.previousTriggerValue = triggerInputs[limit - 1];
