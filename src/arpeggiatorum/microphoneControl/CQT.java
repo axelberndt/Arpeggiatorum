@@ -83,6 +83,8 @@ import com.jsyn.ports.UnitSpectralOutputPort;
 import com.softsynth.math.FourierMath;
 
 import com.jsyn.unitgen.*;
+//			//CQT bin to Frequency=f_min * 2 ** (index / bins_per_octave)
+//					System.out.println("FFT to Pitch using CQT: " + cqt.frequencies[maxBinCQT]);
 
 //Copy of the SpectralFFT to generate a stub.
 
@@ -187,7 +189,8 @@ public class CQT extends UnitGenerator{
 	 */
 	private SpectralFFT fft;
 
-    public final int numberOfBins;
+	public final int numberOfBins;
+
 	/* Define Unit Ports used by connect() and set(). */
 	public CQT(){
 		this(Spectrum.DEFAULT_SIZE_LOG_2, 44100, 43.06, 5601.68, 12, 0.001f, 1.0f);
@@ -232,7 +235,7 @@ public class CQT extends UnitGenerator{
 		// System.out.println(fftLength);
 		// The FFT length needs to be a power of two for performance reasons:
 		fftLength = (int) Math.pow(2, Math.ceil(Math.log(calc_fftlen) / Math.log(2)));
-        setSizeLog2(sizeLog2);
+		setSizeLog2(sizeLog2);
 
 		// Create FFT object
 		fft = new SpectralFFT(fftLength);
@@ -277,6 +280,8 @@ public class CQT extends UnitGenerator{
 			Arrays.fill(spectrum.getImaginary(), 0.0);
 			System.arraycopy(sKernel, 0, spectrum.getReal(), 0, sKernel.length);
 			FourierMath.fft(sKernel.length, spectrum.getReal(), spectrum.getImaginary());
+			System.arraycopy(spectrum.getReal(), 0, sKernel, 0, sKernel.length / 2);
+			System.arraycopy(spectrum.getImaginary(), 0, sKernel, sKernel.length / 2, sKernel.length/2);
 
 			// Remove all zeros from kernel to improve performance
 			double[] cKernel = ctemp;
@@ -324,7 +329,7 @@ public class CQT extends UnitGenerator{
 	 */
 	public void setSizeLog2(int sizeLog2){
 		//this.sizeLog2 = sizeLog2;
-        this.sizeLog2=  (int)(Math.log(fftLength) / Math.log(2));
+		this.sizeLog2 = (int) (Math.log(fftLength) / Math.log(2));
 		output.setSize(1 << sizeLog2);
 		buffer = output.getSpectrum().getReal();
 		cursor = 0;
@@ -357,7 +362,7 @@ public class CQT extends UnitGenerator{
 					Arrays.fill(spectrum.getImaginary(), 0.0);
 					calculateMagnitudes(buffer);
 					//System.arraycopy(buffer, 0, spectrum.getReal(), 0, buffer.length / 2);
-                    System.arraycopy(magnitudes, 0, spectrum.getReal(), 0, magnitudes.length);
+					System.arraycopy(magnitudes, 0, spectrum.getReal(), 0, magnitudes.length);
 					output.advance();
 					cursor = 0;
 
