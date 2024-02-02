@@ -27,10 +27,11 @@ public class TarsosPitchDetector extends UnitGenerator{ // implements PitchDetec
 	int bufferSize;
 	private PitchDetector detector;
 
-	public TarsosPitchDetector(){this(44100, 2048, be.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm.FFT_PITCH);
+	public TarsosPitchDetector(){
+		this(44100, 2048, PitchProcessor.PitchEstimationAlgorithm.FFT_PITCH);
 	}
 
-	public TarsosPitchDetector(float sampleRate, int bufferSize,PitchProcessor.PitchEstimationAlgorithm algo){
+	public TarsosPitchDetector(float sampleRate, int bufferSize, PitchProcessor.PitchEstimationAlgorithm algo){
 		this.addPort(this.input = new UnitInputPort("Input"));
 		this.addPort(this.frequency = new UnitOutputPort("Frequency"));
 		this.addPort(this.confidence = new UnitOutputPort("Confidence"));
@@ -39,15 +40,15 @@ public class TarsosPitchDetector extends UnitGenerator{ // implements PitchDetec
 		this.bufferSize = bufferSize;
 		buffer = new double[bufferSize];
 
-		if (algo == PitchProcessor.PitchEstimationAlgorithm.MPM ) {
+		if (algo == PitchProcessor.PitchEstimationAlgorithm.MPM){
 			detector = new McLeodPitchMethod(sampleRate, bufferSize);
-		} else if(algo == PitchProcessor.PitchEstimationAlgorithm.DYNAMIC_WAVELET ) {
-			detector = new DynamicWavelet(sampleRate,bufferSize);
-		} else if(algo == PitchProcessor.PitchEstimationAlgorithm.FFT_YIN){
+		} else if (algo == PitchProcessor.PitchEstimationAlgorithm.DYNAMIC_WAVELET){
+			detector = new DynamicWavelet(sampleRate, bufferSize);
+		} else if (algo == PitchProcessor.PitchEstimationAlgorithm.FFT_YIN){
 			detector = new FastYin(sampleRate, bufferSize);
-		} else if(algo==PitchProcessor.PitchEstimationAlgorithm.AMDF){
+		} else if (algo == PitchProcessor.PitchEstimationAlgorithm.AMDF){
 			detector = new AMDF(sampleRate, bufferSize);
-		}  else {
+		} else{
 			detector = new Yin(sampleRate, bufferSize);
 		}
 	}
@@ -79,10 +80,16 @@ public class TarsosPitchDetector extends UnitGenerator{ // implements PitchDetec
 				++cursor;
 				// When it is full, do something.
 				if (cursor == buffer.length){
-					float[] fBuffer = toFloatArray(buffer);
+					float[] fBuffer = Mic2Midi.toFloatArray(buffer);
 					PitchDetectionResult pitchDetectionResult = detector.getPitch(fBuffer);
-					frequencyOutput[0]=pitchDetectionResult.getPitch();
-					confidenceOutput[0]=pitchDetectionResult.getProbability();
+					if (pitchDetectionResult.getPitch() != -1){
+						frequencyOutput[0] = pitchDetectionResult.getPitch();
+						confidenceOutput[0] = pitchDetectionResult.getProbability();
+					} else{
+						frequencyOutput[0] = 0;
+						confidenceOutput[0] = 0;
+
+					}
 					//Display the detected pitch
 //					if (pitchDetectionResult.getPitch() != -1){
 //						float pitch = pitchDetectionResult.getPitch();
@@ -94,14 +101,5 @@ public class TarsosPitchDetector extends UnitGenerator{ // implements PitchDetec
 				}
 			}
 		}
-	}
-	public static float[] toFloatArray(double[] arr){
-		if (arr == null) return null;
-		int n = arr.length;
-		float[] ret = new float[n];
-		for (int i = 0; i < n; i++){
-			ret[i] = (float) arr[i];
-		}
-		return ret;
 	}
 }
