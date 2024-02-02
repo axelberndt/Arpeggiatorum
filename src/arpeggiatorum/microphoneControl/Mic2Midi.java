@@ -8,11 +8,12 @@ import com.jsyn.unitgen.*;
 import com.softsynth.math.AudioMath;
 import meico.midi.EventMaker;
 
-
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Transmitter;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.stream.DoubleStream;
 
 /**
@@ -24,6 +25,8 @@ public class Mic2Midi extends Circuit implements Transmitter{
 	private static final double CONFIDENCE_THRESHOLD = 0.3;
 	private static final double FREQUENCY_RAMP_TIME = 0.01;
 	private static final double PEAK_FOLLOWER_RAMP_TIME = 0.25;
+	public static final double SET_LEVEL = 0.5;
+	public static final double RESET_LEVEL = 0.45;
 
 	public Receiver receiver;                                   // the MIDI receiver
 	public UnitInputPort trigger;                               // this port gets a 1.0 to trigger and a 0.0 to do nothing
@@ -74,17 +77,24 @@ public class Mic2Midi extends Circuit implements Transmitter{
 	 * frequencyInputPort            triggerInputPort
 	 */
 	public Mic2Midi(Receiver receiver){
-		// instantiate ports
+		// Instantiate ports
 		addPort(this.trigger = new UnitInputPort("Trigger"));
 		addPort(this.frequency = new UnitInputPort("Frequency"));
 
-		//Extra ports for FFT/CQT Spectrum
+		//Extra ports for FFT and CQT
 		addPort(this.spectrum = new UnitSpectralInputPort("Spectrum"));
 		addPort(this.CQTBins = new UnitInputPort("CQTBins"));
 
-		// built dsp patch
+		// Build DSP patch
 		this.add(this.channelIn);                               // add channelIn to the synth
 		//        this.channelIn.setChannelIndex(0);                      // set its channel index, this call is redundant
+
+		//FFT
+		SpectralFFT spectralFFT = new SpectralFFT(binSize);           // number of bins 2^x
+		spectralFFT.setWindow(new HammingWindow(windowLength));         // window type and window length (should suffice for 21.53 Hz minimum frequency)
+		spectralFFT.input.connect(0, this.channelIn.output, 0);
+		this.add(spectralFFT);
+		this.spectrum.connect(spectralFFT.output);
 
 		//CQT Pitch Detector
 		cqtPitchDetector = new CQTPitchDetector();
@@ -93,7 +103,7 @@ public class Mic2Midi extends Circuit implements Transmitter{
 		this.add(cqtPitchDetector);
 
 		// Tarsos Pitch Detector
-		TarsosPitchDetector tarsosPitchDetector = new TarsosPitchDetector(sampleRate, windowLength, PitchProcessor.PitchEstimationAlgorithm.DYNAMIC_WAVELET);
+		TarsosPitchDetector tarsosPitchDetector = new TarsosPitchDetector(sampleRate, windowLength, be.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm.FFT_YIN);
 		tarsosPitchDetector.input.connect(0, this.channelIn.output, 0);
 		this.add(tarsosPitchDetector);
 
@@ -104,9 +114,9 @@ public class Mic2Midi extends Circuit implements Transmitter{
 
 		LinearRamp frequencyRamp = new LinearRamp();
 		frequencyRamp.time.set(FREQUENCY_RAMP_TIME);
-		frequencyRamp.input.connect(0, pitchDetector.frequency, 0);
+		//frequencyRamp.input.connect(0, pitchDetector.frequency, 0);
 		//Use Tarsos instead of built in pitch detector
-		//frequencyRamp.input.connect(0, tarsosPitchDetector.frequency, 0);
+		frequencyRamp.input.connect(0, tarsosPitchDetector.frequency, 0);
 		this.add(frequencyRamp);
 		this.frequency.connect(0, frequencyRamp.output, 0);
 
@@ -120,22 +130,17 @@ public class Mic2Midi extends Circuit implements Transmitter{
 		this.add(peakFollowerRamp);
 
 		this.schmidtTrigger.input.connect(0, peakFollowerRamp.output, 0);
-		this.schmidtTrigger.setLevel.set(0.5);
-		this.schmidtTrigger.resetLevel.set(0.45);
+		this.schmidtTrigger.setLevel.set(SET_LEVEL);
+		this.schmidtTrigger.resetLevel.set(RESET_LEVEL);
 		this.add(this.schmidtTrigger);
 
 		Multiply multiply = new Multiply();
 		multiply.inputA.connect(0, this.schmidtTrigger.output, 0);
-		multiply.inputB.connect(0, pitchDetector.confidence, 0);
+		//multiply.inputB.connect(0, pitchDetector.confidence, 0);
+		//Using Tarsos
+		multiply.inputB.connect(0, tarsosPitchDetector.confidence, 0);
 		this.trigger.connect(0, multiply.output, 0);
 		this.add(multiply);
-
-
-		SpectralFFT spectralFFT = new SpectralFFT(binSize);           // number of bins 2^x
-		spectralFFT.setWindow(new HammingWindow(windowLength));         // window type and window length (should suffice for 21.53 Hz minimum frequency)
-		spectralFFT.input.connect(0, this.channelIn.output, 0);
-		this.add(spectralFFT);
-		this.spectrum.connect(spectralFFT.output);
 
 		this.setReceiver(receiver);
 		// it is not necessary to start any of the unit generators individually, as the Circuit should be started by its creator
@@ -147,17 +152,18 @@ public class Mic2Midi extends Circuit implements Transmitter{
 
 		double[] triggerInputs = this.trigger.getValues();
 		double[] frequencyInputs = this.frequency.getValues();
+
 		Spectrum inputSpectrum = this.spectrum.getSpectrum();
-		double[] CQTBins = this.CQTBins.getValues();
 		double[] spectrumReal = inputSpectrum.getReal();
 		double[] spectrumImg = inputSpectrum.getImaginary();
 
+		double[] CQTBins = this.CQTBins.getValues();
+
 		size = spectrumReal.length;
+		nyquist = size / 2;
 
 		lowCutoff = (int) (lowCut * size / sampleRate);
 		hiCutoff = (int) (hiCut * size / sampleRate);
-
-		nyquist = size / 2;
 		// Brickwall Low-Pass Filter
 //		for (int i = lowCutoff; i < nyquist; i++){
 //			// Bins above nyquist are mirror of ones below.
@@ -209,39 +215,59 @@ public class Mic2Midi extends Circuit implements Transmitter{
 //		}
 
 		// check if at the end of the buffer we have to play or stop a note
-		int newPitch = (int) Math.round(AudioMath.frequencyToPitch(DoubleStream.of(frequencyInputs).average().getAsDouble())) + 12;
+		//int newPitch = (int) Math.round(AudioMath.frequencyToPitch(DoubleStream.of(frequencyInputs).average().getAsDouble())) + 12;
+		int newPitch = (int) Math.round(AudioMath.frequencyToPitch(frequencyInputs[0])) + 12;
+		if (newPitch<0){
+			return;
+		}
 		if (this.previousTriggerValue > CONFIDENCE_THRESHOLD){         // we are currently playing a tone
-			if (triggerInputs[limit - 1] <= CONFIDENCE_THRESHOLD){     // if we have to stop the note
+			if (triggerInputs[limit - limit] <= CONFIDENCE_THRESHOLD){     // [limit -1] if we have to stop the note
 				System.out.println("> " + this.currentPitch);
 				System.out.println("> Autocorrelation Pitch: " + DoubleStream.of(frequencyInputs).average().getAsDouble());
+				System.out.println("> Tarsos Pitch: " + frequencyInputs[0]);
 				System.out.println("> FFT to Pitch using HPS: " + getFrequencyForIndex(maxBin, nyquist, sampleRate));
 				System.out.println("> FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * ((double) sampleRate / outputLength))));
-				System.out.println("> FFT to Pitch using CQT: " + cqtPitchDetector.frequencies[(int) CQTBins[0]]);
-
+//				System.out.println("> Pitch using CQT: " + cqtPitchDetector.frequencies[(int) CQTBins[0]]);
+				System.out.print("> Pitches using CQT: ");
+				for (int i = 0; i < limit; i++){
+					System.out.print("["+i+"] "+cqtPitchDetector.frequencies[(int) CQTBins[i]]+" ");
+				}
+				System.out.print("\r\n");
 				this.sendNoteOff(this.currentPitch);
 			} else{                                                    // we may have to update the pitch
 //				System.out.println("- " + currentPitch);
 				if (newPitch != this.currentPitch){
 					System.out.println("- " + this.currentPitch + " ->" + newPitch);
 					System.out.println("- Autocorrelation Pitch: " + DoubleStream.of(frequencyInputs).average().getAsDouble());
+					System.out.println("- Tarsos Pitch: " + frequencyInputs[0]);
 					System.out.println("- FFT to Pitch using HPS: " + getFrequencyForIndex(maxBin, nyquist, sampleRate));
 					System.out.println("- FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * ((double) sampleRate / outputLength))));
-					System.out.println("- FFT to Pitch using CQT: " + cqtPitchDetector.frequencies[(int) CQTBins[0]]);
+					//				System.out.println("- Pitch using CQT: " + cqtPitchDetector.frequencies[(int) CQTBins[0]]);
+					System.out.print("- Pitches using CQT: ");
+					for (int i = 0; i < limit; i++){
+						System.out.print("["+i+"] "+cqtPitchDetector.frequencies[(int) CQTBins[i]]+" ");
+					}
+					System.out.print("\r\n");
 
 					this.sendNoteOff(this.currentPitch);
 					this.sendNoteOn(newPitch);
 				}
 			}
-		} else if (triggerInputs[limit - 1] > CONFIDENCE_THRESHOLD){   // we have to start a note
+		} else if (triggerInputs[limit - limit] > CONFIDENCE_THRESHOLD){   //[limit -1] we have to start a note
 			System.out.println("< " + this.currentPitch);
 			System.out.println("< Autocorrelation Pitch: " + DoubleStream.of(frequencyInputs).average().getAsDouble());
+			System.out.println("< Tarsos Pitch: " + frequencyInputs[0]);
 			System.out.println("< FFT to Pitch using HPS: " + getFrequencyForIndex(maxBin, nyquist, sampleRate));
 			System.out.println("< FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * ((double) sampleRate / outputLength))));
-			System.out.println("< FFT to Pitch using CQT: " + cqtPitchDetector.frequencies[(int) CQTBins[0]]);
-
+			//System.out.println("< Pitch using CQT: " + cqtPitchDetector.frequencies[(int) CQTBins[0]]);
+			System.out.print("< Pitches using CQT: ");
+			for (int i = 0; i < 8; i++){
+				System.out.print("["+i+"] "+cqtPitchDetector.frequencies[(int) CQTBins[i]]+" ");
+			}
+			System.out.print("\r\n");
 			this.sendNoteOn(newPitch);
 		}
-		this.previousTriggerValue = triggerInputs[limit - 1];
+		this.previousTriggerValue = triggerInputs[limit - limit]; //[limit - 1]
 	}
 
 	public static int getMaxBin(double[] arrayInput, int start, int end){

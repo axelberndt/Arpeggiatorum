@@ -5,6 +5,9 @@ import com.jsyn.ports.UnitInputPort;
 import com.jsyn.ports.UnitOutputPort;
 import com.jsyn.unitgen.UnitGenerator;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 public class CQTPitchDetector extends UnitGenerator{
 	public UnitInputPort input;
 	public UnitOutputPort output;
@@ -59,13 +62,43 @@ public class CQTPitchDetector extends UnitGenerator{
 				++cursor;
 				// When it is full, do something.
 				if (cursor == buffer.length){
+					//CQT
 					CQT.calculateMagintudes(Mic2Midi.toFloatArray(buffer));
 					float[] CQTBins = CQT.getMagnitudes();
-					//CQT
-					outputValues[0]= Mic2Midi.getMaxBin(CQTBins, 0, CQTBins.length);
+					//outputValues[0]= Mic2Midi.getMaxBin(CQTBins, 0, CQTBins.length);
+					double[] values = java.util.Arrays.stream(getMaxBins(CQTBins, limit)).asDoubleStream().toArray();
+					for (int j = 0; j < limit; j++){
+						outputValues[j] = values[j];
+					}
 					cursor = 0;
 				}
 			}
 		}
+	}
+
+	/**
+	 * Return the indexes correspond to the top-k largest in an array.
+	 */
+	public static int[] getMaxBins(float[] array, int top_k){
+		double[] max = new double[top_k];
+		int[] maxIndex = new int[top_k];
+		Arrays.fill(max, Double.NEGATIVE_INFINITY);
+		Arrays.fill(maxIndex, -1);
+
+		top:
+		for (int i = 0; i < array.length; i++){
+			for (int j = 0; j < top_k; j++){
+				if (array[i] > max[j]){
+					for (int x = top_k - 1; x > j; x--){
+						maxIndex[x] = maxIndex[x - 1];
+						max[x] = max[x - 1];
+					}
+					maxIndex[j] = i;
+					max[j] = array[i];
+					continue top;
+				}
+			}
+		}
+		return maxIndex;
 	}
 }
