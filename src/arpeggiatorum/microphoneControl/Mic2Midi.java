@@ -1,19 +1,21 @@
 package arpeggiatorum.microphoneControl;
 
-import be.tarsos.dsp.pitch.PitchProcessor;
+
+import be.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
 
 import com.jsyn.data.*;
 import com.jsyn.ports.*;
+//import com.jsyn.scope.AudioScope;
 import com.jsyn.unitgen.*;
+
 import com.softsynth.math.AudioMath;
+
 import meico.midi.EventMaker;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Transmitter;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.stream.DoubleStream;
 
 /**
@@ -37,6 +39,8 @@ public class Mic2Midi extends Circuit implements Transmitter{
 	private final ChannelIn channelIn = new ChannelIn();              // microphone input
 	private final SchmidtTrigger schmidtTrigger = new SchmidtTrigger();
 
+	private final double sampleRate = 44100.00;
+
 	//FFT to Pitch
 	private final int binSize = 11;
 	private final int numberBins = (int) Math.pow(2, binSize);
@@ -49,16 +53,23 @@ public class Mic2Midi extends Circuit implements Transmitter{
 	private int hiCutoff = 0;
 	private int size = 0;
 	private int nyquist = 0;
-	private final int sampleRate = 44100;
-	//Lower and upper boundaries for Pitch detection
-	private final double lowFreq = 40.0f;
-	private final double hiFreq = 2000.0f;
+
+
 	//HPS
 	private final int decimationSize = 3;
 
+	//Lower and upper boundaries for Pitch detection
+	//E1-G6 gives us 64 bins (power of 2)
+	private final double lowFreq = 41.20; //E1
+	private final double hiFreq = 1567.98; //G6
+
 	//CQT
 	private final CQTPitchDetector cqtPitchDetector;
+	private final int binsPerOctave = 12;
 	public UnitInputPort CQTBins;
+
+//	private AudioScope scope;
+//	Boolean flag=false;
 
 	/**
 	 * constructor
@@ -89,6 +100,10 @@ public class Mic2Midi extends Circuit implements Transmitter{
 		this.add(this.channelIn);                               // add channelIn to the synth
 		//        this.channelIn.setChannelIndex(0);                      // set its channel index, this call is redundant
 
+//		scope = new AudioScope(arpeggiatorum.gui.Gui.synth);
+//		scope.addProbe(this.channelIn.output);
+//		scope.setTriggerMode(AudioScope.TriggerMode.NORMAL);
+
 		//FFT
 		SpectralFFT spectralFFT = new SpectralFFT(binSize);           // number of bins 2^x
 		spectralFFT.setWindow(new HammingWindow(windowLength));         // window type and window length (should suffice for 21.53 Hz minimum frequency)
@@ -97,13 +112,13 @@ public class Mic2Midi extends Circuit implements Transmitter{
 		this.spectrum.connect(spectralFFT.output);
 
 		//CQT Pitch Detector
-		cqtPitchDetector = new CQTPitchDetector();
+		cqtPitchDetector = new CQTPitchDetector((float) sampleRate, (float) lowFreq, (float) hiFreq, binsPerOctave);
 		cqtPitchDetector.input.connect(0, this.channelIn.output, 0);
 		this.CQTBins.connect(cqtPitchDetector.output);
 		this.add(cqtPitchDetector);
 
 		// Tarsos Pitch Detector
-		TarsosPitchDetector tarsosPitchDetector = new TarsosPitchDetector(sampleRate, windowLength, be.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm.FFT_YIN);
+		TarsosPitchDetector tarsosPitchDetector = new TarsosPitchDetector((float) sampleRate, windowLength, PitchEstimationAlgorithm.FFT_YIN);
 		tarsosPitchDetector.input.connect(0, this.channelIn.output, 0);
 		this.add(tarsosPitchDetector);
 
@@ -149,7 +164,10 @@ public class Mic2Midi extends Circuit implements Transmitter{
 	@Override
 	public void generate(int start, int limit){
 		super.generate(start, limit);
-
+//if (!flag){
+//	scope.start();
+//	flag = true;
+//}
 		double[] triggerInputs = this.trigger.getValues();
 		double[] frequencyInputs = this.frequency.getValues();
 
@@ -217,7 +235,7 @@ public class Mic2Midi extends Circuit implements Transmitter{
 		// check if at the end of the buffer we have to play or stop a note
 		//int newPitch = (int) Math.round(AudioMath.frequencyToPitch(DoubleStream.of(frequencyInputs).average().getAsDouble())) + 12;
 		int newPitch = (int) Math.round(AudioMath.frequencyToPitch(frequencyInputs[0])) + 12;
-		if (newPitch<0){
+		if (newPitch < 0){
 			return;
 		}
 		if (this.previousTriggerValue > CONFIDENCE_THRESHOLD){         // we are currently playing a tone
@@ -230,7 +248,7 @@ public class Mic2Midi extends Circuit implements Transmitter{
 //				System.out.println("> Pitch using CQT: " + cqtPitchDetector.frequencies[(int) CQTBins[0]]);
 				System.out.print("> Pitches using CQT: ");
 				for (int i = 0; i < limit; i++){
-					System.out.print("["+i+"] "+cqtPitchDetector.frequencies[(int) CQTBins[i]]+" ");
+					System.out.print("[" + i + "] " + cqtPitchDetector.frequencies[(int) CQTBins[i]] + " ");
 				}
 				System.out.print("\r\n");
 				this.sendNoteOff(this.currentPitch);
@@ -245,7 +263,7 @@ public class Mic2Midi extends Circuit implements Transmitter{
 					//				System.out.println("- Pitch using CQT: " + cqtPitchDetector.frequencies[(int) CQTBins[0]]);
 					System.out.print("- Pitches using CQT: ");
 					for (int i = 0; i < limit; i++){
-						System.out.print("["+i+"] "+cqtPitchDetector.frequencies[(int) CQTBins[i]]+" ");
+						System.out.print("[" + i + "] " + cqtPitchDetector.frequencies[(int) CQTBins[i]] + " ");
 					}
 					System.out.print("\r\n");
 
@@ -262,7 +280,7 @@ public class Mic2Midi extends Circuit implements Transmitter{
 			//System.out.println("< Pitch using CQT: " + cqtPitchDetector.frequencies[(int) CQTBins[0]]);
 			System.out.print("< Pitches using CQT: ");
 			for (int i = 0; i < 8; i++){
-				System.out.print("["+i+"] "+cqtPitchDetector.frequencies[(int) CQTBins[i]]+" ");
+				System.out.print("[" + i + "] " + cqtPitchDetector.frequencies[(int) CQTBins[i]] + " ");
 			}
 			System.out.print("\r\n");
 			this.sendNoteOn(newPitch);
@@ -334,8 +352,8 @@ public class Mic2Midi extends Circuit implements Transmitter{
 		return array;
 	}
 
-	private double getFrequencyForIndex(int index, int size, int sampleRate){
-		return (double) index * (double) sampleRate / (double) size;
+	private double getFrequencyForIndex(int index, int size, double sampleRate){
+		return (double) index * sampleRate / (double) size;
 	}
 
 	private void sendNoteOn(int pitch){

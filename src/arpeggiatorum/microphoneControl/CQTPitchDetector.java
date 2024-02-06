@@ -11,7 +11,9 @@ import java.util.Arrays;
 
 public class CQTPitchDetector extends UnitGenerator{
 	public UnitInputPort input;
-	public UnitOutputPort output;
+//	public UnitOutputPort output;
+	public UnitVariableOutputPort output;
+
 	private boolean running;
 	private int offset = 0;
 	private double[] buffer;
@@ -32,11 +34,12 @@ public class CQTPitchDetector extends UnitGenerator{
 
 	public CQTPitchDetector(float sampleRate, float minFreq, float maxFreq, int binsPerOctave){
 		this.addPort(this.input = new UnitInputPort("Input"));
-		this.addPort(this.output = new UnitOutputPort("CQT Bins"));
-
+//		this.addPort(this.output = new UnitOutputPort("CQT Bins"));
 		this.sampleRate = sampleRate;
 		CQT = new ConstantQ(sampleRate, minFreq, maxFreq, binsPerOctave);
 		frequencies = Mic2Midi.toDoubleArray(CQT.getFreqencies());
+		this.addPort(this.output = new UnitVariableOutputPort("CQT Bins",frequencies.length));
+
 		buffer = new double[CQT.getFFTlength()];
 		double[] initializer={0.0};
 		cqtHist=new CQTHistogram(initializer, frequencies);
@@ -56,7 +59,7 @@ public class CQTPitchDetector extends UnitGenerator{
 	 */
 	@Override
 	public void generate(int start, int limit){
-		double[] outputValues = this.output.getValues();
+		double[] outputValues = this.output.getData();
 
 		if (!running){
 			int mask = (CQT.getFFTlength()) - 1;
@@ -77,16 +80,17 @@ public class CQTPitchDetector extends UnitGenerator{
 					//CQT
 					CQT.calculateMagintudes(Mic2Midi.toFloatArray(buffer));
 					float[] CQTBins = CQT.getMagnitudes();
-					//Visualize CQT Bins
-					cqtHist.updateBins(Mic2Midi.toDoubleArray(CQTBins));
-					//cqtBinsFrame.add(cqtHist);
-					cqtBinsFrame.revalidate();
-					cqtBinsFrame.repaint();
-					//outputValues[0]= Mic2Midi.getMaxBin(CQTBins, 0, CQTBins.length);
-					double[] values = Arrays.stream(getMaxBins(CQTBins, limit)).asDoubleStream().toArray();
-					for (int j = 0; j < limit; j++){
-						outputValues[j] = values[j];
-					}
+//					//Visualize CQT Bins
+//					cqtHist.updateBins(Mic2Midi.toDoubleArray(CQTBins));
+//					cqtBinsFrame.revalidate();
+//					cqtBinsFrame.repaint();
+//					//outputValues[0]= Mic2Midi.getMaxBin(CQTBins, 0, CQTBins.length);
+//					double[] values = Arrays.stream(getMaxBins(CQTBins, limit)).asDoubleStream().toArray();
+//					for (int j = 0; j < limit; j++){
+//						outputValues[j] = values[j];
+//					}
+					outputValues=Mic2Midi.toDoubleArray(CQTBins);
+					output.advance();
 					cursor = 0;
 				}
 			}
