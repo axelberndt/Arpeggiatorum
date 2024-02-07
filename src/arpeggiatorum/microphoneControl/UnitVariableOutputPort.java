@@ -5,49 +5,47 @@ import com.jsyn.ports.ConnectableOutput;
 import com.jsyn.ports.UnitPort;
 
 public class UnitVariableOutputPort extends UnitPort implements ConnectableOutput{
-
 	private double[] data;
 	private boolean available;
 
-	public boolean isAvailable() {
-		return available;
-	}
-	public void advance() {
-		available = true;
-	}
-	public UnitVariableOutputPort() {
+	public UnitVariableOutputPort(){
 		this("Output");
 	}
 
-	public UnitVariableOutputPort(int size) {
+	public UnitVariableOutputPort(int size){
 		this("Output", size);
 	}
+
 	public UnitVariableOutputPort(String name){
 		super(name);
-		data= new double[8];
+		data = new double[8];
 	}
-	public UnitVariableOutputPort(String name, int size) {
+
+	public UnitVariableOutputPort(String name, int size){
 		super(name);
-		data= new double[size];
+		data = new double[size];
 	}
-	public double[] getData() {
+
+	public double[] getData(){
 		return data;
 	}
 
-	/**
-	 * @param connectableInput
-	 */
-	@Override
-	public void connect(ConnectableInput connectableInput){
-		connectableInput.connect(this);
+	public void advance(){
+		available = true;
 	}
 
-	/**
-	 * @param connectableInput
-	 */
 	@Override
-	public void disconnect(ConnectableInput connectableInput){
-		connectableInput.disconnect(this);
-
+	public void connect(ConnectableInput other){
+		other.connect(this);
 	}
+
+	@Override
+	public void disconnect(ConnectableInput other){
+		other.disconnect(this);
+	}
+
+	public boolean isAvailable(){
+		return available;
+	}
+
 }

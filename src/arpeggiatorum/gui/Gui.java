@@ -252,7 +252,6 @@ public class Gui extends JFrame implements Receiver{
 				int deviceInputChannels = this.synth.getAudioDeviceManager().getMaxInputChannels(deviceID);
 				this.synth.start(44100,
 						deviceID,
-						// this.synth.getAudioDeviceManager().getMaxInputChannels(audioInputDeviceID),
 						deviceInputChannels,
 						AudioDeviceManager.USE_DEFAULT_DEVICE,
 						0);

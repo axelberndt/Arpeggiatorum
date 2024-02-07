@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 public class CQTPitchDetector extends UnitGenerator{
 	public UnitInputPort input;
-//	public UnitOutputPort output;
+	//public UnitOutputPort output;
 	public UnitVariableOutputPort output;
 
 	private boolean running;
@@ -23,32 +23,32 @@ public class CQTPitchDetector extends UnitGenerator{
 	public double[] frequencies;
 	float sampleRate;
 
-	//Histogram
-	JFrame cqtBinsFrame= new JFrame("CQT Bins");
-	CQTHistogram cqtHist;
-	private final int WIDTH=1000;
-	private final int HEIGHT=500;
+//	//Histogram
+//	JFrame cqtBinsFrame = new JFrame("CQT Bins");
+//	CQTHistogram cqtHist;
 	public CQTPitchDetector(){
 		this(44100.0f, 40.0f, 2000.0f, 12);
 	}
 
 	public CQTPitchDetector(float sampleRate, float minFreq, float maxFreq, int binsPerOctave){
-		this.addPort(this.input = new UnitInputPort("Input"));
+//		this.addPort(this.input = new UnitInputPort("Input"));
 //		this.addPort(this.output = new UnitOutputPort("CQT Bins"));
+		this.addPort(this.input = new UnitInputPort("Input"));
+		//this.addPort(this.output = new UnitVariableOutputPort("CQT Bins"));
 		this.sampleRate = sampleRate;
 		CQT = new ConstantQ(sampleRate, minFreq, maxFreq, binsPerOctave);
 		frequencies = Mic2Midi.toDoubleArray(CQT.getFreqencies());
 		this.addPort(this.output = new UnitVariableOutputPort("CQT Bins",frequencies.length));
 
 		buffer = new double[CQT.getFFTlength()];
-		double[] initializer={0.0};
-		cqtHist=new CQTHistogram(initializer, frequencies);
+//		double[] initializer = {0.0};
+//		cqtHist = new CQTHistogram(initializer, frequencies);
+//
+//		cqtBinsFrame.add(cqtHist);
+//		cqtBinsFrame.pack();
+//		cqtBinsFrame.setLocationRelativeTo(null);
+//		cqtBinsFrame.setVisible(true);
 
-		cqtBinsFrame.add(cqtHist);
-		cqtBinsFrame.pack();
-		cqtBinsFrame.setLocationRelativeTo(null);
-		cqtBinsFrame.setVisible(true);
-		cqtBinsFrame.show();
 	}
 
 	/**
@@ -59,7 +59,9 @@ public class CQTPitchDetector extends UnitGenerator{
 	 */
 	@Override
 	public void generate(int start, int limit){
+//		double[] outputValues = this.output.getValues();
 		double[] outputValues = this.output.getData();
+
 
 		if (!running){
 			int mask = (CQT.getFFTlength()) - 1;
@@ -71,6 +73,7 @@ public class CQTPitchDetector extends UnitGenerator{
 		// Don't use "else" because "running" may have changed in above block.
 		if (running){
 			double[] inputs = input.getValues();
+
 
 			for (int i = start; i < limit; i++){
 				buffer[cursor] = inputs[i];
@@ -89,7 +92,7 @@ public class CQTPitchDetector extends UnitGenerator{
 //					for (int j = 0; j < limit; j++){
 //						outputValues[j] = values[j];
 //					}
-					outputValues=Mic2Midi.toDoubleArray(CQTBins);
+					outputValues = Mic2Midi.toDoubleArray(CQTBins);
 					output.advance();
 					cursor = 0;
 				}
