@@ -86,7 +86,7 @@ public class TarsosPitchDetector extends UnitGenerator{ // implements PitchDetec
 						frequencyOutput[0] = pitchDetectionResult.getPitch();
 						confidenceOutput[0] = pitchDetectionResult.getProbability();
 					} else{
-						frequencyOutput[0] = 0;
+						frequencyOutput[0] = -1;
 						confidenceOutput[0] = 0;
 
 					}
