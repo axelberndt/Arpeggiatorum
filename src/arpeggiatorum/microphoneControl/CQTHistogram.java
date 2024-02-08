@@ -17,19 +17,28 @@ public class CQTHistogram extends JPanel{
 	private final int WIDTH = 800;
 	private final int HEIGHT = 800;
 	private final int BORDER = 20;
-	private MovingAverage mva = new MovingAverage(.98f);
+	private MovingAverage mva = new MovingAverage(.99f);
 
 	public CQTHistogram(double[] binCounts, double[] frequencies){
 		this.binCounts = binCounts;
 		this.frequencies = frequencies;
-		max=mva.average(Arrays.stream(binCounts).max().getAsDouble());
+		//max=mva.average(Arrays.stream(binCounts).max().getAsDouble());
+		max=1.0f;
 		//
 		// System.out.println(max);
 	}
 
 	public void updateBins(double[] binCounts){
 		this.binCounts = binCounts;
-		max=mva.average(Arrays.stream(binCounts).max().getAsDouble());
+		//max=mva.average(Arrays.stream(binCounts).max().getAsDouble());
+	}
+
+	public void updateBins(double[] binCounts, int lowIndex){
+		//this.binCounts = binCounts;
+		for (int i = 0; i <binCounts.length ; i++){
+			this.binCounts[lowIndex+i]=binCounts[i];
+		}
+		//max=mva.average(Arrays.stream(binCounts).max().getAsDouble());
 	}
 
 	@Override
@@ -42,6 +51,7 @@ public class CQTHistogram extends JPanel{
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g.create();
 		int barWidth = WIDTH / binCounts.length;
+		//max=mva.average(Arrays.stream(binCounts).max().getAsDouble());
 		for (int i = 0; i < binCounts.length; i++){
 			int barHeight = (int) ((binCounts[i] / max) * (getHeight() - BORDER));
 			Rectangle rect = new Rectangle(i * barWidth, getHeight() - barHeight, barWidth, barHeight);

@@ -17,6 +17,7 @@ import javax.sound.midi.Receiver;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Transmitter;
 import javax.swing.JFrame;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.DoubleStream;
 
@@ -41,16 +42,16 @@ public class Mic2Midi extends Circuit implements Transmitter{
 	private final ChannelIn channelIn = new ChannelIn();              // microphone input
 	private final SchmidtTrigger schmidtTrigger = new SchmidtTrigger();
 
-	private final double sampleRate = 44100.00;
+	private static final double sampleRate = 44100.00;
 
 	//FFT to Pitch
-	private final int binSize = 11;
-	private final int numberBins = (int) Math.pow(2, binSize);
-	private final int windowLength = numberBins * 2;
+	private static final int binSize = 11;
+	private static final int numberBins = (int) Math.pow(2, binSize);
+	private static final int windowLength = numberBins * 2;
 	//LowPass filter cutoff frequency
-	private final double lowCut = 8000.0f;
+	private static final double lowCut = 8000.0f;
 	//Highpass filter cutoff frequency
-	private final double hiCut = 40.0f;
+	private static final double hiCut = 40.0f;
 	private int lowCutoff = 0;
 	private int hiCutoff = 0;
 	private int size = 0;
@@ -58,21 +59,24 @@ public class Mic2Midi extends Circuit implements Transmitter{
 
 
 	//HPS
-	private final int decimationSize = 3;
+	private static final int decimationSize = 3;
 
 	//Lower and upper boundaries for Pitch detection
 	//E1-G6 gives us 64 bins (power of 2)
-	private final double lowFreq = 41.20; //E1
-	private final double hiFreq = 1567.98; //G6
+	public static final double minFreq = 41.20; //E1
+	public static final double maxFreq = 1567.98; //G6
 
 	//CQT
-	private final CQTPitchDetector cqtPitchDetector;
-	private final int binsPerOctave = 12;
+	public static final int binsPerOctave = 12;
+	private CQTPitchDetector[] cqtPitchDetectors;
+
 	//	public UnitInputPort CQTBins;
-	public UnitVariableInputPort CQTBins;
+	public UnitVariableInputPort[] CQTPorts;
+	double[] CQTBins;
+	double[] CQTFrequencies;
 	//Histogram
-	JFrame cqtBinsFrame = new JFrame("CQT Bins");
-	CQTHistogram cqtHist;
+	public static final JFrame cqtBinsFrame = new JFrame("CQT Bins");
+	public static CQTHistogram cqtHist;
 
 
 //	private AudioScope scope;
@@ -102,7 +106,7 @@ public class Mic2Midi extends Circuit implements Transmitter{
 		//Extra ports for FFT and CQT
 		addPort(this.spectrum = new UnitSpectralInputPort("Spectrum"));
 		//addPort(this.CQTBins = new UnitInputPort("CQTBins"));
-		addPort(this.CQTBins = new UnitVariableInputPort("CQTBins"));
+		//addPort(this.CQTBins = new UnitVariableInputPort("CQTBins"));
 
 		// Build DSP patch
 		this.add(this.channelIn);                               // add channelIn to the synth
@@ -119,20 +123,50 @@ public class Mic2Midi extends Circuit implements Transmitter{
 		this.add(spectralFFT);
 		this.spectrum.connect(spectralFFT.output);
 
-		//CQT Pitch Detector
-		cqtPitchDetector = new CQTPitchDetector((float) sampleRate, (float) lowFreq, (float) hiFreq, binsPerOctave);
-		cqtPitchDetector.input.connect(0, this.channelIn.output, 0);
-		this.add(cqtPitchDetector);
-		this.CQTBins.connect(cqtPitchDetector.output);
+		//Build a CQT-Factory of 1-Octave band CQTs
+		double bandSplitter = minFreq;
+		ArrayList<Double> bands = new ArrayList<>();
+		while (bandSplitter < maxFreq){
+			bands.add(bandSplitter);
+			bandSplitter *= 2.0f;
 
-//		//CQT Histogram
-//		double[] initializer = {0.0};
-//		cqtHist = new CQTHistogram(initializer, cqtPitchDetector.frequencies);
-//
-//		cqtBinsFrame.add(cqtHist);
-//		cqtBinsFrame.pack();
-//		cqtBinsFrame.setLocationRelativeTo(null);
-//		cqtBinsFrame.setVisible(true);
+		}
+		int bandNum = bands.size();
+		bands.add(maxFreq);
+		cqtPitchDetectors = new CQTPitchDetector[bandNum];
+		CQTPorts = new UnitVariableInputPort[bandNum];
+		for (int i = 0; i < bandNum; i++){
+			cqtPitchDetectors[i] = new CQTPitchDetector((float) sampleRate, bands.get(i).floatValue(), bands.get(i + 1).floatValue(), binsPerOctave);
+			cqtPitchDetectors[i].input.connect(0, this.channelIn.output, 0);
+			this.add(cqtPitchDetectors[i]);
+			addPort(this.CQTPorts[i] = new UnitVariableInputPort("CQTBins"));
+			this.CQTPorts[i].connect(cqtPitchDetectors[i].output);
+		}
+		int sumBins = 0;
+		for (CQTPitchDetector bins : cqtPitchDetectors){
+			sumBins += bins.frequencies.length;
+		}
+		CQTBins = new double[sumBins];
+		CQTFrequencies = new double[sumBins];
+		for (int i = 0; i < sumBins; i++){
+			CQTFrequencies[i] = (float) (minFreq * Math.pow(2, i / (float) binsPerOctave));
+
+		}
+
+//		//CQT Pitch Detector
+//		cqtPitchDetector = new CQTPitchDetector((float) sampleRate, (float) lowFreq, (float) hiFreq, binsPerOctave);
+//		cqtPitchDetector.input.connect(0, this.channelIn.output, 0);
+//		this.add(cqtPitchDetector);
+//		this.CQTBins.connect(cqtPitchDetector.output);
+
+		//CQT Histogram
+		double[] initializer = new double[CQTFrequencies.length];
+		cqtHist = new CQTHistogram(initializer, CQTFrequencies);
+
+		cqtBinsFrame.add(cqtHist);
+		cqtBinsFrame.pack();
+		cqtBinsFrame.setLocationRelativeTo(null);
+		cqtBinsFrame.setVisible(true);
 
 		// Tarsos Pitch Detector
 		TarsosPitchDetector tarsosPitchDetector = new TarsosPitchDetector((float) sampleRate, windowLength, PitchEstimationAlgorithm.FFT_YIN);
@@ -192,8 +226,21 @@ public class Mic2Midi extends Circuit implements Transmitter{
 		double[] spectrumReal = inputSpectrum.getReal();
 		double[] spectrumImg = inputSpectrum.getImaginary();
 
-		double[] CQTBins = this.CQTBins.getData();
-		int[] CQTBinsSortedIndexes = getMaxBins(CQTBins, CQTBins.length);
+		for (int i = 0; i < CQTPorts.length; i++){
+			if (CQTPorts[i].isAvailable()){
+				double[] tempData = CQTPorts[i].getData();
+				for (int j = 0; j < tempData.length; j++){
+					CQTBins[j + (i * binsPerOctave)] = tempData[j];
+				}
+			} else{
+				for (int j = 0; j < CQTPorts[i].getData().length; j++){
+					CQTBins[j + (i * binsPerOctave)] = 0.0;
+				}
+			}
+
+		}
+		//double[] CQTBins = this.CQTBins.getData();
+		//	int[] CQTBinsSortedIndexes = getMaxBins(CQTBins, CQTBins.length);
 
 //		//Visualize CQT Bins
 //		cqtHist.updateBins(CQTBins);
@@ -222,8 +269,8 @@ public class Mic2Midi extends Circuit implements Transmitter{
 		int maxBinCep;
 		int outputLength;
 
-		int lowBin = (int) (lowFreq / ((double) sampleRate / nyquist));
-		int hiBin = (int) (hiFreq / ((double) sampleRate / nyquist));
+		int lowBin = (int) (minFreq / ((double) sampleRate / nyquist));
+		int hiBin = (int) (maxFreq / ((double) sampleRate / nyquist));
 
 		//Extract magnitude
 		double[] magnitude = getMagnitude(nyquist, spectrumReal, spectrumImg);
@@ -258,6 +305,7 @@ public class Mic2Midi extends Circuit implements Transmitter{
 
 		// check if at the end of the buffer we have to play or stop a note
 		//int newPitch = (int) Math.round(AudioMath.frequencyToPitch(DoubleStream.of(frequencyInputs).average().getAsDouble())) + 12;
+		//System.out.printf("CQT Bin Mag: %.2f \r\n",CQTBins[29]);
 		int newPitch = (int) Math.round(AudioMath.frequencyToPitch(frequencyInputs[0])) + 12;
 		if (newPitch < 0){
 			return;
@@ -269,11 +317,11 @@ public class Mic2Midi extends Circuit implements Transmitter{
 				System.out.println("> Tarsos Pitch: " + frequencyInputs[0]);
 				System.out.println("> FFT to Pitch using HPS: " + getFrequencyForIndex(maxBin, nyquist, sampleRate));
 				System.out.println("> FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * ((double) sampleRate / outputLength))));
-				System.out.print("> Pitches using CQT: ");
-				for (int i = 0; i < CQTBinsSortedIndexes.length; i++){
-					System.out.print(String.format("[%d] %.0fHz", i, cqtPitchDetector.frequencies[CQTBinsSortedIndexes[i]]));
-				}
-				System.out.print("\r\n");
+//				System.out.print("> Pitches using CQT: ");
+//				for (int i = 0; i < CQTBinsSortedIndexes.length; i++){
+//					System.out.print(String.format("[%d] %.0fHz", i, cqtPitchDetector.frequencies[CQTBinsSortedIndexes[i]]));
+//				}
+//				System.out.print("\r\n");
 				this.sendNoteOff(this.currentPitch);
 			} else{                                                    // we may have to update the pitch
 //				System.out.println("- " + currentPitch);
@@ -283,11 +331,11 @@ public class Mic2Midi extends Circuit implements Transmitter{
 					System.out.println("- Tarsos Pitch: " + frequencyInputs[0]);
 					System.out.println("- FFT to Pitch using HPS: " + getFrequencyForIndex(maxBin, nyquist, sampleRate));
 					System.out.println("- FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * ((double) sampleRate / outputLength))));
-					System.out.print("- Pitches using CQT: ");
-					for (int i = 0; i < CQTBins.length; i++){
-						System.out.print(String.format("[%d] %.0fHz", i, cqtPitchDetector.frequencies[CQTBinsSortedIndexes[i]]));
-					}
-					System.out.print("\r\n");
+//					System.out.print("- Pitches using CQT: ");
+//					for (int i = 0; i < CQTBins.length; i++){
+//						System.out.print(String.format("[%d] %.0fHz", i, cqtPitchDetector.frequencies[CQTBinsSortedIndexes[i]]));
+//					}
+//					System.out.print("\r\n");
 
 					this.sendNoteOff(this.currentPitch);
 					this.sendNoteOn(newPitch);
@@ -300,10 +348,10 @@ public class Mic2Midi extends Circuit implements Transmitter{
 			System.out.println("< FFT to Pitch using HPS: " + getFrequencyForIndex(maxBin, nyquist, sampleRate));
 			System.out.println("< FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * ((double) sampleRate / outputLength))));
 			System.out.print("< Pitches using CQT: ");
-			for (int i = 0; i < CQTBins.length; i++){
-				System.out.print(String.format("[%d] %.0fHz", i, cqtPitchDetector.frequencies[CQTBinsSortedIndexes[i]]));
-			}
-			System.out.print("\r\n");
+//			for (int i = 0; i < CQTBins.length; i++){
+//				System.out.print(String.format("[%d] %.0fHz", i, cqtPitchDetector.frequencies[CQTBinsSortedIndexes[i]]));
+//			}
+//			System.out.print("\r\n");
 			this.sendNoteOn(newPitch);
 		}
 		this.previousTriggerValue = triggerInputs[limit - limit]; //[limit - 1]
@@ -336,6 +384,7 @@ public class Mic2Midi extends Circuit implements Transmitter{
 		}
 		return maxBin;
 	}
+
 	/**
 	 * Return the indexes correspond to the top-k largest in an array.
 	 */
