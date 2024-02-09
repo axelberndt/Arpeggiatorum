@@ -1,13 +1,12 @@
 package arpeggiatorum.microphoneControl;
 
+
 import be.tarsos.dsp.ConstantQ;
 
 import com.jsyn.ports.UnitInputPort;
 import com.jsyn.unitgen.UnitGenerator;
 
-import javax.swing.JFrame;
-import java.util.Arrays;
-
+import arpeggiatorum.supplementary.UnitVariableOutputPort;
 import static arpeggiatorum.microphoneControl.Mic2Midi.cqtHist;
 
 public class CQTPitchDetector extends UnitGenerator{
@@ -22,17 +21,12 @@ public class CQTPitchDetector extends UnitGenerator{
 	private int offset = 0;
 	private boolean running;
 
-
 	private ConstantQ CQT;
 	public double[] frequencies;
 	float sampleRate;
 	double[] pushData;
 	int lowIndex;
-
-//	//Histogram
-//	JFrame cqtBinsFrame = new JFrame("CQT Bins");
-//	CQTHistogram cqtHist;
-
+	
 	public CQTPitchDetector(){
 		this(44100.0f, 40.0f, 2000.0f, 12);
 	}
@@ -45,15 +39,7 @@ public class CQTPitchDetector extends UnitGenerator{
 		this.addPort(this.output = new UnitVariableOutputPort("CQT Bins", frequencies.length));
 		buffer = new double[CQT.getFFTlength()];
 		pushData = output.getData();
-		lowIndex=((int)(Math.log((minFreq/ Mic2Midi.minFreq)) / Math.log(2)))*(binsPerOctave);
-//		//CQT Histogram
-//		double[] initializer = {0.0};
-//		cqtHist = new CQTHistogram(initializer, frequencies);
-//
-//		cqtBinsFrame.add(cqtHist);
-//		cqtBinsFrame.pack();
-//		cqtBinsFrame.setLocationRelativeTo(null);
-//		cqtBinsFrame.setVisible(true);
+		lowIndex = ((int) (Math.log((minFreq / Mic2Midi.minFreq)) / Math.log(2))) * (binsPerOctave);
 	}
 
 	/**
@@ -83,7 +69,7 @@ public class CQTPitchDetector extends UnitGenerator{
 					//CQT
 					CQT.calculateMagintudes(Mic2Midi.toFloatArray(buffer));
 					float[] CQTBins = CQT.getMagnitudes();
-//					//Visualize CQT Bins
+					//Visualize CQT Bins
 					cqtHist.updateBins(Mic2Midi.toDoubleArray(CQTBins), lowIndex);
 					Mic2Midi.cqtBinsFrame.revalidate();
 					Mic2Midi.cqtBinsFrame.repaint();
@@ -96,6 +82,4 @@ public class CQTPitchDetector extends UnitGenerator{
 			}
 		}
 	}
-
-
 }

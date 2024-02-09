@@ -1,4 +1,4 @@
-package arpeggiatorum.microphoneControl;
+package arpeggiatorum.supplementary;
 
 import com.jsyn.ports.ConnectableInput;
 import com.jsyn.ports.ConnectableOutput;

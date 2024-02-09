@@ -235,8 +235,11 @@ public class Gui extends JFrame implements Receiver{
 			activateAudioInput.addActionListener(actionEvent -> {
 				if (activateAudioInput.isSelected())
 					this.mic2Midi.start();
-				else
+				else{
 					this.mic2Midi.stop();
+					//Try to avoid calling panic
+					this.arpeggiator.panic();
+				}
 			});
 			addComponentToGridBagLayout(mainPanel, layout, activateAudioInput, 2, 4, 1, 1, 1.0, 1.0, this.padding,
 					this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);

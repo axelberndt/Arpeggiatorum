@@ -1,6 +1,6 @@
-package arpeggiatorum.microphoneControl;
+package arpeggiatorum.supplementary;
 
-class MovingAverage {
+public class MovingAverage {
 	private double alpha;
 	private Double oldValue;
 	public MovingAverage(double alpha) {

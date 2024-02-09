@@ -13,6 +13,8 @@ import be.tarsos.dsp.pitch.Yin;
 import com.jsyn.unitgen.*;
 import com.jsyn.ports.*;
 
+import java.util.Arrays;
+
 public class TarsosPitchDetector extends UnitGenerator{ // implements PitchDetectionHandler{
 	public UnitInputPort input;
 	public UnitOutputPort frequency;
@@ -82,12 +84,16 @@ public class TarsosPitchDetector extends UnitGenerator{ // implements PitchDetec
 				if (cursor == buffer.length){
 					float[] fBuffer = Mic2Midi.toFloatArray(buffer);
 					PitchDetectionResult pitchDetectionResult = detector.getPitch(fBuffer);
+					Arrays.fill(frequencyOutput,pitchDetectionResult.getPitch());
+					Arrays.fill(confidenceOutput,pitchDetectionResult.getProbability());
 					if (pitchDetectionResult.getPitch() != -1){
-						frequencyOutput[0] = pitchDetectionResult.getPitch();
-						confidenceOutput[0] = pitchDetectionResult.getProbability();
+						//frequencyOutput[0] = pitchDetectionResult.getPitch();
+						//confidenceOutput[0] = pitchDetectionResult.getProbability();
+					Arrays.fill(frequencyOutput,pitchDetectionResult.getPitch());
+					Arrays.fill(confidenceOutput,pitchDetectionResult.getProbability());
 					} else{
-						frequencyOutput[0] = -1;
-						confidenceOutput[0] = 0;
+						Arrays.fill(frequencyOutput,0.0);
+						Arrays.fill(confidenceOutput,0.0);
 
 					}
 					//Display the detected pitch
