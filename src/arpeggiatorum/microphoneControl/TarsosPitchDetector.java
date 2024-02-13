@@ -86,16 +86,16 @@ public class TarsosPitchDetector extends UnitGenerator{ // implements PitchDetec
 					PitchDetectionResult pitchDetectionResult = detector.getPitch(fBuffer);
 					Arrays.fill(frequencyOutput,pitchDetectionResult.getPitch());
 					Arrays.fill(confidenceOutput,pitchDetectionResult.getProbability());
-					if (pitchDetectionResult.getPitch() != -1){
+//					if (pitchDetectionResult.getPitch() != -1){
 						//frequencyOutput[0] = pitchDetectionResult.getPitch();
 						//confidenceOutput[0] = pitchDetectionResult.getProbability();
-					Arrays.fill(frequencyOutput,pitchDetectionResult.getPitch());
-					Arrays.fill(confidenceOutput,pitchDetectionResult.getProbability());
-					} else{
-						Arrays.fill(frequencyOutput,0.0);
-						Arrays.fill(confidenceOutput,0.0);
-
-					}
+//					Arrays.fill(frequencyOutput,pitchDetectionResult.getPitch());
+//					Arrays.fill(confidenceOutput,pitchDetectionResult.getProbability());
+//					} else{
+//						Arrays.fill(frequencyOutput,0.0);
+//						Arrays.fill(confidenceOutput,0.0);
+//
+//					}
 					//Display the detected pitch
 //					if (pitchDetectionResult.getPitch() != -1){
 //						float pitch = pitchDetectionResult.getPitch();
