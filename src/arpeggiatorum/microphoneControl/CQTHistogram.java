@@ -48,6 +48,8 @@ public class CQTHistogram extends JPanel{
 		Graphics2D g2d = (Graphics2D) g.create();
 		int barWidth = WIDTH / binCounts.length;
 		//max=mva.average(Arrays.stream(binCounts).max().getAsDouble());
+		g2d.setColor(Color.RED);
+		g2d.drawLine(0,(int)(getHeight()+BORDER)/2,WIDTH, (int)(getHeight()+BORDER)/2);
 		for (int i = 0; i < binCounts.length; i++){
 //			if (binCounts[i]>max) {
 //				max = binCounts[i];
@@ -61,8 +63,7 @@ public class CQTHistogram extends JPanel{
 			g2d.draw(rect);
 			g2d.setColor(Color.BLUE);
 			g2d.drawString(String.format("%.0fHz", frequencies[i]), i * barWidth, getHeight() - barHeight);
-			g2d.setColor(Color.RED);
-			g2d.drawLine(0,(int)(getHeight()-max * (getHeight()+BORDER)),WIDTH, (int)(getHeight()-max * (getHeight()+BORDER)));
+
 		}
 		g2d.dispose();
 	}
