@@ -20,6 +20,9 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
     public static final double SET_LEVEL = 0.5;
     public static final double DIFFERENCE_LEVEL = 0.05;
     public static final double RESET_LEVEL = SET_LEVEL - DIFFERENCE_LEVEL;
+    public static final double CONFIDENCE_THRESHOLD = 0.3;
+    public static final double FREQUENCY_RAMP_TIME = 0.01;
+    public static final double PEAK_FOLLOWER_RAMP_TIME = 0.25;
     /**
      * set the receiver of outgoing MIDI messages
      *

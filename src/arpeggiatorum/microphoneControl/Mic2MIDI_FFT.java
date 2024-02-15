@@ -4,6 +4,7 @@ import com.jsyn.data.*;
 import com.jsyn.ports.*;
 import com.jsyn.unitgen.*;
 
+import com.softsynth.math.AudioMath;
 import meico.midi.EventMaker;
 
 import javax.sound.midi.InvalidMidiDataException;
@@ -63,6 +64,22 @@ public class Mic2MIDI_FFT extends Mic2MIDI {
         this.add(spectralFFT);
         this.spectrum.connect(spectralFFT.output);
 
+        //Takes the input --> Peak Follower --> Linear Ramp --> Schmidt Trigger --> Multiply by confidence of pitch detection
+        PeakFollower peakFollower = new PeakFollower();
+        peakFollower.input.connect(0, this.channelIn.output, 0);
+        this.add(peakFollower);
+
+        LinearRamp peakFollowerRamp = new LinearRamp();
+        peakFollowerRamp.time.set(PEAK_FOLLOWER_RAMP_TIME);       // ramp time, smaller=more sensitive
+        peakFollowerRamp.input.connect(0, peakFollower.output, 0);
+        this.add(peakFollowerRamp);
+
+        this.schmidtTrigger.input.connect(0, peakFollowerRamp.output, 0);
+        this.schmidtTrigger.setLevel.set(SET_LEVEL);
+        this.schmidtTrigger.resetLevel.set(RESET_LEVEL);
+        this.add(this.schmidtTrigger);
+        this.trigger.connect(0,this.schmidtTrigger.output, 0);
+
         System.out.printf("FFT Pitch Detection: Minimum Frequency (%.2fHz) Delay (%.03fs) \r\n",sampleRate/numberBins, numberBins/sampleRate);
 
         this.setReceiver(receiver);
@@ -71,6 +88,8 @@ public class Mic2MIDI_FFT extends Mic2MIDI {
     @Override
     public void generate(int start, int limit) {
         super.generate(start, limit);
+
+        double[] triggerInputs = this.trigger.getValues();
 
         //FFT
         Spectrum inputSpectrum = this.spectrum.getSpectrum();
@@ -128,41 +147,41 @@ public class Mic2MIDI_FFT extends Mic2MIDI {
         System.out.println("- FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))));
 
         // Check if at the end of the buffer we have to play or stop a note
-//		int newPitch = (int) Math.round(AudioMath.frequencyToPitch(frequencyInputs[0])) + 12;
-//		if (newPitch<= 0|| currentPitch<-1 ||newPitch>= 128|| currentPitch>=128){
-//			//this.previousTriggerValue = triggerInputs[0]; //[limit - 1]
-//			//((Arpeggiator)receiver).panic();
-//			return;
-//		}
-//
-//		if (this.previousTriggerValue > CONFIDENCE_THRESHOLD){         // we are currently playing a tone
-//			if (triggerInputs[0] <= CONFIDENCE_THRESHOLD){     // [limit -1] if we have to stop the note
-//				System.out.println("> " + this.currentPitch);
-//				System.out.println("> FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist));
-//				System.out.println("> FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))));
-//
-//				System.out.print("\r\n");
-//				this.sendNoteOff(this.currentPitch);
-//			} else{                                                    // we may have to update the pitch
-//				System.out.println("- " + currentPitch);
-//				if (newPitch != this.currentPitch){
-//					System.out.println("- " + this.currentPitch + " ->" + newPitch);
-//					System.out.println("- FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist));
-//					System.out.println("- FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))));
-//					System.out.print("\r\n");
-//					this.sendNoteOff(this.currentPitch);
-//					this.sendNoteOn(newPitch);
-//				}
-//			}
-//		} else if (triggerInputs[0] > CONFIDENCE_THRESHOLD){   //[limit -1] we have to start a note
-//			System.out.println("< " + this.currentPitch);
-//			System.out.println("< FFT to Pitch using HPS: " + getFrequencyForIndex(maxBin, nyquist));
-//			System.out.println("< FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))));
-//			System.out.print("\r\n");
-//			this.sendNoteOn(newPitch);
-//		}
-//
-//		this.previousTriggerValue = triggerInputs[0]; //[limit - 1]
+		int newPitch = (int) Math.round(AudioMath.frequencyToPitch(getFrequencyForIndex(maxBinHPS, nyquist)));
+		if (newPitch<= 0|| currentPitch<-1 ||newPitch>= 128|| currentPitch>=128){
+			//this.previousTriggerValue = triggerInputs[0]; //[limit - 1]
+			//((Arpeggiator)receiver).panic();
+			return;
+		}
+
+		if (this.previousTriggerValue > CONFIDENCE_THRESHOLD){         // we are currently playing a tone
+			if (triggerInputs[0] <= CONFIDENCE_THRESHOLD){     // [limit -1] if we have to stop the note
+				System.out.println("> " + this.currentPitch);
+				System.out.println("> FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist));
+				System.out.println("> FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))));
+
+				System.out.print("\r\n");
+				this.sendNoteOff(this.currentPitch);
+			} else{                                                    // we may have to update the pitch
+				System.out.println("- " + currentPitch);
+				if (newPitch != this.currentPitch){
+					System.out.println("- " + this.currentPitch + " ->" + newPitch);
+					System.out.println("- FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist));
+					System.out.println("- FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))));
+					System.out.print("\r\n");
+					this.sendNoteOff(this.currentPitch);
+					this.sendNoteOn(newPitch);
+				}
+			}
+		} else if (triggerInputs[0] > CONFIDENCE_THRESHOLD){   //[limit -1] we have to start a note
+			System.out.println("< " + this.currentPitch);
+			System.out.println("< FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist));
+			System.out.println("< FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))));
+			System.out.print("\r\n");
+			this.sendNoteOn(newPitch);
+		}
+
+		this.previousTriggerValue = triggerInputs[0]; //[limit - 1]
     }
 
     public static int getMaxBin(double[] arrayInput, int start, int end) {

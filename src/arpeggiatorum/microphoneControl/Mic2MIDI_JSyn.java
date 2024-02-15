@@ -20,10 +20,6 @@ import java.util.stream.DoubleStream;
  * @author Axel Berndt
  */
 public class Mic2MIDI_JSyn extends Mic2MIDI {
-    public static final double CONFIDENCE_THRESHOLD = 0.3;
-    public static final double FREQUENCY_RAMP_TIME = 0.01;
-    private static final double PEAK_FOLLOWER_RAMP_TIME = 0.25;
-
     public UnitInputPort trigger;// this port gets a 1.0 to trigger and a 0.0 to do nothing
     private double previousTriggerValue = 0.0;
     public UnitInputPort frequency;
@@ -112,7 +108,7 @@ public class Mic2MIDI_JSyn extends Mic2MIDI {
                 System.out.println("> Auto-correlation Pitch: " + DoubleStream.of(frequencyInputs).average().getAsDouble());
                 this.sendNoteOff(this.currentPitch);
             } else {                                                    // we may have to update the pitch
-                System.out.println("- " + currentPitch);
+               // System.out.println("- " + currentPitch);
                 if (newPitch != this.currentPitch) {
                     System.out.println("- " + this.currentPitch + " ->" + newPitch);
                     System.out.println("- Auto-correlation Pitch: " + DoubleStream.of(frequencyInputs).average().getAsDouble());

@@ -2,8 +2,10 @@ package arpeggiatorum.microphoneControl;
 
 import arpeggiatorum.supplementary.UnitVariableInputPort;
 
+import be.tarsos.dsp.AudioEvent;
 import com.jsyn.unitgen.*;
 
+import com.softsynth.math.AudioMath;
 import meico.midi.EventMaker;
 
 import javax.naming.Name;
@@ -27,8 +29,10 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
     public static final double minFreq = 41.20; //E1
     public static final double maxFreq = 1567.98; //G6
 
+
     //CQT
     public static final int binsPerOctave = 12;
+    public static final int binsToCompute = 16;
     private final CQTPitchDetector[] cqtPitchDetectors;
     public final UnitVariableInputPort[] CQTPorts;
     double[] CQTBins;
@@ -37,10 +41,12 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
     //Histogram
     public static final JFrame cqtBinsFrame = new JFrame("CQT Bins");
     public static CQTHistogram cqtHist;
+    private double PITCH_THRESHOLD;
 
     public Mic2MIDI_CQT(Receiver receiver) {
         NAME = "CQT-Based Pitch Detector";
         // Instantiate ports
+
         // Build DSP patch
         this.add(this.channelIn);// add channelIn to the synth
 
@@ -102,13 +108,36 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                 }
             }
         }
-        CQTBinsSortedIndexes = getMaxBins(CQTBins, CQTBins.length);
 
-        System.out.print("- Pitches using CQT: ");
-        for (int i = 0; i < CQTBins.length; i++) {
-            System.out.printf("[%d] %.0fHz", i, CQTFrequencies[CQTBinsSortedIndexes[i]]);
+        CQTBinsSortedIndexes = getMaxBins(CQTBins, binsToCompute);
+        if (CQTBins[CQTBinsSortedIndexes[0]] >= (PITCH_THRESHOLD)) {
+            int newPitch = (int) Math.round(AudioMath.frequencyToPitch(CQTFrequencies[CQTBinsSortedIndexes[0]]));
+            if (newPitch != currentPitch) {
+                if (currentPitch != -1) {
+                    this.sendNoteOff(this.currentPitch);
+                }
+                this.sendNoteOn(newPitch);
+                currentPitch = newPitch;
+                String message = String.format("[%d] %.0fHz", newPitch, CQTFrequencies[CQTBinsSortedIndexes[0]]);
+                System.out.println(message);
+            }
+        } else {
+            if (currentPitch != -1) {
+                this.sendNoteOff(currentPitch);
+                currentPitch = -1;
+            }
         }
-        System.out.print("\r\n");
+//        System.out.print("- Pitches using CQT: ");
+//        for (int i = 0; i < CQTBins.length; i++) {
+//            System.out.printf("[%d] %.0fHz", i, CQTFrequencies[CQTBinsSortedIndexes[i]]);
+//        }
+//        System.out.print("\r\n");
+    }
+
+    @Override
+    public void setSignalToNoiseThreshold(double value) {
+        PITCH_THRESHOLD=value/2;
+        cqtHist.max=value;
     }
 
     /**

@@ -15,7 +15,7 @@ public class CQTHistogram extends JPanel{
 
 	private double[] binCounts;
 	private double[] frequencies;
-	private double max;
+	public double max;
 	private final int WIDTH = 800;
 	private final int HEIGHT = 800;
 	private final int BORDER = 20;
@@ -24,7 +24,7 @@ public class CQTHistogram extends JPanel{
 	public CQTHistogram(double[] binCounts, double[] frequencies){
 		this.binCounts = binCounts;
 		this.frequencies = frequencies;
-		max = 1.0f;
+		max = 0.25f;
 	}
 
 	public void updateBins(double[] binCounts){
@@ -49,14 +49,20 @@ public class CQTHistogram extends JPanel{
 		int barWidth = WIDTH / binCounts.length;
 		//max=mva.average(Arrays.stream(binCounts).max().getAsDouble());
 		for (int i = 0; i < binCounts.length; i++){
+//			if (binCounts[i]>max) {
+//				max = binCounts[i];
+//				System.out.println("New max: "+ max);
+//			}
 			int barHeight = (int) ((binCounts[i] / max) * (getHeight() - BORDER));
 			Rectangle rect = new Rectangle(i * barWidth, getHeight() - barHeight, barWidth, barHeight);
 			g2d.setColor(Color.GREEN);
 			g2d.fill(rect);
 			g2d.setColor(Color.BLACK);
 			g2d.draw(rect);
-			g2d.setColor(Color.RED);
+			g2d.setColor(Color.BLUE);
 			g2d.drawString(String.format("%.0fHz", frequencies[i]), i * barWidth, getHeight() - barHeight);
+			g2d.setColor(Color.RED);
+			g2d.drawLine(0,(int)(getHeight()-max * (getHeight()+BORDER)),WIDTH, (int)(getHeight()-max * (getHeight()+BORDER)));
 		}
 		g2d.dispose();
 	}

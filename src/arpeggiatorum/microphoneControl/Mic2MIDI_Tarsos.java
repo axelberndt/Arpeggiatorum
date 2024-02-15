@@ -54,7 +54,7 @@ public class Mic2MIDI_Tarsos extends Mic2MIDI {
     public void generate(int start, int limit) {
         super.generate(start, limit);
 
-//Tarsos
+    //Tarsos
         double[] confidenceInputs = this.confidence.getData();
         double[] pitchInputs = this.pitch.getData();
         if (pitchInputs[0] > 0) {
