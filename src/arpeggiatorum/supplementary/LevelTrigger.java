@@ -1,4 +1,4 @@
-package arpeggiatorum.microphoneControl;
+package arpeggiatorum.supplementary;
 
 import arpeggiatorum.supplementary.SortedList;
 import com.jsyn.ports.UnitInputPort;

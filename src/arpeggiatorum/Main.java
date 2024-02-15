@@ -1,6 +1,6 @@
 package arpeggiatorum;
 
-import arpeggiatorum.gui.Gui;
+import arpeggiatorum.gui.GUI;
 
 public class Main {
     /**
@@ -8,7 +8,7 @@ public class Main {
      * @param args
      */
     public static void main(String[] args) {
-        new Gui();
+        new GUI();
 //        Synth.run();
     }
 
