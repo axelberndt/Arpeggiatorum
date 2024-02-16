@@ -1,10 +1,6 @@
 package arpeggiatorum.microphoneControl;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
+import java.awt.*;
 import javax.swing.JPanel;
 
 public class CQTHistogram extends JPanel {
@@ -12,14 +8,15 @@ public class CQTHistogram extends JPanel {
     private double[] binCounts;
     private double[] frequencies;
     public double max;
-    private final int WIDTH = 1000;
+    private final int WIDTH = 1080;
     private final int HEIGHT = 500;
-    private final int BORDER = 20;
+    private final int BORDER = 10;
 
     public CQTHistogram(double[] binCounts, double[] frequencies) {
         this.binCounts = binCounts;
         this.frequencies = frequencies;
         max = 1.0f;
+
     }
 
     public void updateBins(double[] binCounts) {
@@ -39,8 +36,12 @@ public class CQTHistogram extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
+        Font currentFont = g.getFont();
+        Font newFont = currentFont.deriveFont(currentFont.getSize() * 0.75F);
+
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g.create();
+        g2d.setFont(newFont);
         g2d.clearRect(0, 0, getWidth(), getHeight());
         int barWidth = getWidth() / binCounts.length;
         g2d.setColor(Color.RED);
@@ -56,7 +57,7 @@ public class CQTHistogram extends JPanel {
             g2d.setColor(Color.BLACK);
             g2d.draw(rect);
             g2d.setColor(Color.BLUE);
-            g2d.drawString(String.format("%.0fHz", frequencies[i]), i * barWidth, getHeight() - barHeight);
+            g2d.drawString(String.format("%.0f", frequencies[i]), i * barWidth, getHeight() - barHeight);
         }
         g2d.dispose();
     }

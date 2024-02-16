@@ -33,7 +33,7 @@ import java.util.*;
 public class GUI extends JFrame implements Receiver {
     private final Synthesizer synth = JSyn.createSynthesizer(); // this Synthesizer instance is used for scheduling
     // and audio processing
-    private final int padding = 20;
+    private final int padding = 10;
     private JComboBox<Integer> inputChannelChooser;
     private JComboBox<Integer> arpeggioChannelChooser;
     private JComboBox<Integer> heldNotesChannelChooser;
@@ -85,7 +85,7 @@ public class GUI extends JFrame implements Receiver {
 
         GUI.exitOnEsc(this); // close window on ESC
         // this.setResizable(false); // don't allow resizing
-        this.setLocationRelativeTo(null); // set window position
+        //this.setLocationRelativeTo(null); // set window position
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // what happens when the X is clicked
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdownHook)); // do what has to be done on shutdown
 
@@ -293,14 +293,17 @@ public class GUI extends JFrame implements Receiver {
             addComponentToGridBagLayout(mainPanel, layout, mic2MIDIChooser, 2, 4, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
 
-
-            JSlider signal2noiseThreshold = new JSlider(0, 1000);
+            JLabel tresholdValue = new JLabel("   0.5");
+            tresholdValue.setHorizontalAlignment(JLabel.LEFT);
+            addComponentToGridBagLayout(mainPanel, layout, tresholdValue, 3, 5, 1, 1, 1.0, 1.0, this.padding, this.padding,
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
+            JSlider signal2noiseThreshold = new JSlider(1, 1000);
             signal2noiseThreshold.setValue(500);
             signal2noiseThreshold.setOrientation(JSlider.HORIZONTAL);
             signal2noiseThreshold.setMajorTickSpacing(500);
             signal2noiseThreshold.setMinorTickSpacing(100);
             signal2noiseThreshold.setPaintTicks(true);
-            signal2noiseThreshold.setToolTipText("Signal to Noise Threashold");
+            signal2noiseThreshold.setToolTipText("Signal to Noise Threshold");
             Hashtable<Integer, JLabel> signal2noiseThresholdLabel = new Hashtable<>();
             signal2noiseThresholdLabel.put(0, new JLabel("0.0"));
             signal2noiseThresholdLabel.put(500, new JLabel("Noise Threshold"));
@@ -309,11 +312,12 @@ public class GUI extends JFrame implements Receiver {
             signal2noiseThreshold.setPaintLabels(true);
             signal2noiseThreshold.addChangeListener(changeEvent -> {
                 double value = ((double) signal2noiseThreshold.getValue()) / signal2noiseThreshold.getMaximum();
+                tresholdValue.setText("   " + value);
                 for (Mic2MIDI processor : mic2Midi) {
                     processor.setSignalToNoiseThreshold(value);
                 }
             });
-            addComponentToGridBagLayout(mainPanel, layout, signal2noiseThreshold, 4, 4, 1, 1, 1.0, 1.0, this.padding, 0,
+            addComponentToGridBagLayout(mainPanel, layout, signal2noiseThreshold, 1, 5, 2, 1, 1.0, 1.0, this.padding, 0,
                     GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
 
             activateAudioInput.addActionListener(actionEvent -> {
@@ -333,7 +337,7 @@ public class GUI extends JFrame implements Receiver {
 
             JLabel patternLabel = new JLabel("Arpeggiation Pattern   ");
             patternLabel.setHorizontalAlignment(JLabel.RIGHT);
-            addComponentToGridBagLayout(mainPanel, layout, patternLabel, 0, 5, 1, 1, 1.0, 1.0, this.padding,
+            addComponentToGridBagLayout(mainPanel, layout, patternLabel, 3, 9, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
             this.patternChooser = new JComboBox<>();
@@ -346,7 +350,7 @@ public class GUI extends JFrame implements Receiver {
             this.patternChooser.addActionListener(actionEvent -> {
                 this.arpeggiator.setPattern((NotePool.Pattern) this.patternChooser.getSelectedItem());
             });
-            addComponentToGridBagLayout(mainPanel, layout, this.patternChooser, 1, 5, 1, 1, 1.0, 1.0, this.padding,
+            addComponentToGridBagLayout(mainPanel, layout, this.patternChooser, 2, 9, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
             ////////////////////
@@ -626,11 +630,11 @@ public class GUI extends JFrame implements Receiver {
 
             ////////////////////
 
-            JButton panic = new JButton("Panic");
+            JButton panic = new JButton("PANIC!");
             panic.addActionListener(actionEvent -> {
                 this.arpeggiator.panic();
             });
-            addComponentToGridBagLayout(mainPanel, layout, panic, 0, 12, 4, 1, 1.0, 1.0, this.padding, this.padding,
+            addComponentToGridBagLayout(mainPanel, layout, panic, 1, 2, 1, 2, 1.0, 1.0, this.padding, this.padding,
                     GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
             ////////////////////
