@@ -12,6 +12,7 @@ import javax.sound.midi.Transmitter;
 
 public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI {
     public String NAME="Abstract";
+    public boolean POLY=false;
     public Receiver receiver;// the MIDI receiver
     public final ChannelIn channelIn = new ChannelIn();// microphone input
     public static final double sampleRate = 44100.00;
@@ -63,7 +64,7 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
      */
     @Override
     public Boolean isPoly() {
-        return false;
+        return POLY;
     }
 
 

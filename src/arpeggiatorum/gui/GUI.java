@@ -77,7 +77,8 @@ public class GUI extends JFrame implements Receiver {
         this.mic2Midi.add(new Mic2MIDI_JSyn(this.arpeggiator));
         this.mic2Midi.add(new Mic2MIDI_FFT(this.arpeggiator));
         this.mic2Midi.add(new Mic2MIDI_Tarsos(this.arpeggiator));
-        this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator));
+        this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, false));
+        // this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, true));
         for (Mic2MIDI processor : mic2Midi) {
             this.synth.add(processor);
         }
@@ -292,17 +293,6 @@ public class GUI extends JFrame implements Receiver {
             addComponentToGridBagLayout(mainPanel, layout, mic2MIDIChooser, 2, 4, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
 
-            activateAudioInput.addActionListener(actionEvent -> {
-                if (activateAudioInput.isSelected()) {
-                    ((Mic2MIDI) mic2MIDIChooser.getSelectedItem()).start();
-                } else {
-                    for (Mic2MIDI processor : mic2Midi) {
-                        processor.stop();
-                    }
-                    //Try to avoid calling panic
-                    this.arpeggiator.panic();
-                }
-            });
 
             JSlider signal2noiseThreshold = new JSlider(0, 1000);
             signal2noiseThreshold.setValue(500);
@@ -325,6 +315,19 @@ public class GUI extends JFrame implements Receiver {
             });
             addComponentToGridBagLayout(mainPanel, layout, signal2noiseThreshold, 4, 4, 1, 1, 1.0, 1.0, this.padding, 0,
                     GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
+
+            activateAudioInput.addActionListener(actionEvent -> {
+                if (activateAudioInput.isSelected()) {
+                    ((Mic2MIDI) mic2MIDIChooser.getSelectedItem()).start();
+                    ((Mic2MIDI) mic2MIDIChooser.getSelectedItem()).setSignalToNoiseThreshold(((double) signal2noiseThreshold.getValue()) / signal2noiseThreshold.getMaximum());
+                } else {
+                    for (Mic2MIDI processor : mic2Midi) {
+                        processor.stop();
+                    }
+                    //Try to avoid calling panic
+                    this.arpeggiator.panic();
+                }
+            });
 
             ////////////////////
 

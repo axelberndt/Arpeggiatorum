@@ -28,7 +28,7 @@ public class CQTPitchDetector extends UnitGenerator{
 	int lowIndex;
 
 	public CQTPitchDetector(){
-		this(44100.0f, 40.0f, 2000.0f, 12);
+		this(44100.0f, 41.20f, 2000.0f, 12);
 	}
 
 	public CQTPitchDetector(float sampleRate, float minFreq, float maxFreq, int binsPerOctave){
@@ -40,7 +40,7 @@ public class CQTPitchDetector extends UnitGenerator{
 		buffer = new double[CQT.getFFTlength()];
 		pushData = output.getData();
 		lowIndex = ((int) (Math.log((minFreq / Mic2MIDI_CQT.minFreq)) / Math.log(2))) * (binsPerOctave);
-		System.out.printf("CQT Pitch Detection: Min Frequency (%.2fHz) Max Frequency (%.2fHz)  Delay (%.03fs)  \r\n",minFreq, maxFreq, buffer.length/this.sampleRate);
+		System.out.printf("CQT Pitch Detection: Min Frequency (%.2fHz) Max Frequency (%.2fHz)  Delay (%.03fs) FFT: %d samples  \r\n",minFreq, maxFreq, buffer.length/this.sampleRate, buffer.length);
 
 	}
 
