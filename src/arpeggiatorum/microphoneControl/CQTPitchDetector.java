@@ -34,7 +34,7 @@ public class CQTPitchDetector extends UnitGenerator{
 	public CQTPitchDetector(float sampleRate, float minFreq, float maxFreq, int binsPerOctave){
 		this.addPort(this.input = new UnitInputPort("Input"));
 		this.sampleRate = sampleRate;
-		CQT = new ConstantQ(sampleRate, minFreq, maxFreq, binsPerOctave);
+		CQT = new ConstantQ(sampleRate, minFreq, maxFreq, binsPerOctave,0.01f,0.55f);
 		frequencies = Mic2MIDI_Tarsos.toDoubleArray(CQT.getFreqencies());
 		this.addPort(this.output = new UnitVariableOutputPort("CQT Bins", frequencies.length));
 		buffer = new double[CQT.getFFTlength()];
