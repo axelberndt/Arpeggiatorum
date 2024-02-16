@@ -77,8 +77,8 @@ public class GUI extends JFrame implements Receiver {
         this.mic2Midi.add(new Mic2MIDI_JSyn(this.arpeggiator));
         this.mic2Midi.add(new Mic2MIDI_FFT(this.arpeggiator));
         this.mic2Midi.add(new Mic2MIDI_Tarsos(this.arpeggiator));
-        this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, false));
-        // this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, true));
+        //this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, false));
+        this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, true));
         for (Mic2MIDI processor : mic2Midi) {
             this.synth.add(processor);
         }

@@ -48,7 +48,10 @@ public class CQTHistogram extends JPanel {
         for (int i = 0; i < binCounts.length; i++) {
             int barHeight = (int) ((binCounts[i] / max) * (getHeight() - BORDER));
             Rectangle rect = new Rectangle(i * barWidth, getHeight() - barHeight, barWidth, barHeight);
-            g2d.setColor(Color.GREEN);
+            if (barHeight >(getHeight() - BORDER) /2)
+                g2d.setColor(Color.YELLOW);
+            else
+                g2d.setColor(Color.GREEN);
             g2d.fill(rect);
             g2d.setColor(Color.BLACK);
             g2d.draw(rect);

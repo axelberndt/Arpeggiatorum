@@ -1,18 +1,11 @@
 package arpeggiatorum.microphoneControl;
 
+import arpeggiatorum.supplementary.SortedList;
 import arpeggiatorum.supplementary.UnitVariableInputPort;
 
-import be.tarsos.dsp.AudioEvent;
-import com.jsyn.unitgen.*;
-
 import com.softsynth.math.AudioMath;
-import meico.midi.EventMaker;
 
-import javax.naming.Name;
-import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.Receiver;
-import javax.sound.midi.ShortMessage;
-import javax.sound.midi.Transmitter;
 import javax.swing.JFrame;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,6 +35,9 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
     public static final JFrame cqtBinsFrame = new JFrame("CQT Bins");
     public static CQTHistogram cqtHist;
     private double PITCH_THRESHOLD;
+
+    private SortedList<Integer> currentPitches = new SortedList<>();
+    private Integer newPitch;
 
     public Mic2MIDI_CQT(Receiver receiver, boolean isPoly) {
         NAME = "CQT-Based Pitch Detector";
@@ -110,8 +106,8 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
             }
         }
 
-        CQTBinsSortedIndexes = getMaxBins(CQTBins, binsToCompute);
         if (!isPoly()) {
+            CQTBinsSortedIndexes = getMaxBins(CQTBins, binsToCompute);
             if (CQTBins[CQTBinsSortedIndexes[0]] >= (PITCH_THRESHOLD)) {
                 int newPitch = (int) Math.round(AudioMath.frequencyToPitch(CQTFrequencies[CQTBinsSortedIndexes[0]]));
                 if (newPitch != currentPitch) {
@@ -130,11 +126,23 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                 }
             }
         } else {
-            System.out.print("- Pitches using CQT: ");
-            for (int i = 0; i < CQTBinsSortedIndexes.length; i++) {
-                System.out.printf("[%d] %.0fHz", i, CQTFrequencies[CQTBinsSortedIndexes[i]]);
+            //Polyphonic version
+            for (int i = 0; i < CQTBins.length; i++) {
+                newPitch = (int) Math.round(AudioMath.frequencyToPitch(CQTFrequencies[i]));
+                if (CQTBins[i] >= PITCH_THRESHOLD) {
+                    if (currentPitches.add(newPitch)) {
+                        //We have to play a new note
+                        System.out.printf("[%d] %.0fHz \r\n", newPitch, CQTFrequencies[i]);
+                        this.sendNoteOn(newPitch);
+                    }
+                } else {
+                    Integer removed = currentPitches.remove(newPitch);
+                    if (removed != null)
+                        this.sendNoteOff(removed);
+                }
+
             }
-            System.out.print("\r\n");
+
         }
 
 
@@ -142,7 +150,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
 
     @Override
     public void setSignalToNoiseThreshold(double value) {
-        double modValue=value/20.0f;
+        double modValue = value / 5.0f;
         PITCH_THRESHOLD = modValue / 2;
         cqtHist.max = modValue;
     }
