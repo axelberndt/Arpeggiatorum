@@ -45,7 +45,6 @@ public class GUI extends JFrame implements Receiver {
     private static JSlider tonalEnrichmentSlider;
     private static JComboBox<NotePool.Pattern> patternChooser;
     private static JComboBox<TonalEnrichmentChooserItem> tonalEnrichmentPresetChooser;
-
     private static JSlider signal2noiseThreshold;
 
     private final Arpeggiator arpeggiator;
@@ -110,9 +109,20 @@ public class GUI extends JFrame implements Receiver {
         // this.setResizable(false); // don't allow resizing
         //this.setLocationRelativeTo(null); // set window position
 
-        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // what happens when the X is clicked
+        this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); // what happens when the X is clicked
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdownHook)); // do what has to be done on shutdown
 
+        this.addWindowListener(new WindowAdapter() {
+            /**
+             * Invoked when a window has been closed.
+             *
+             * @param e
+             */
+            @Override
+            public void windowClosing(WindowEvent e) {
+     SaveNClose();
+            }
+        });
         // execute the GUI building in the EDT (Event Dispatch Thread)
         SwingUtilities.invokeLater(() -> {
             // set look and feel
@@ -733,22 +743,13 @@ public class GUI extends JFrame implements Receiver {
             GridBagLayout logLayout = new GridBagLayout();
             JPanel logPanel = new JPanel(logLayout);
             JScrollPane scrollPanel = new JScrollPane(logMessages, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-
-
-            // set flow layout for the frame
             logFrame.add(logPanel);
-            //logFrame.add(scrollPanel);
-            //logMessages.append("Arpeggiatorum Log:");
-
-            // Sets the specified boolean to indicate whether or not
-            // this textfield should be editable.
             logMessages.setEditable(false);
             logMessages.setAutoscrolls(true);
             logMessages.setBackground(Color.white);
             DefaultCaret caret = (DefaultCaret) logMessages.getCaret();
             caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
             logMessages.setCaretPosition(logMessages.getDocument().getLength());
-            // add textfield to frame
             addComponentToGridBagLayout(logPanel, logLayout, scrollPanel, 0, 0, 1, 1, 1.0, 1.0, this.padding, this.padding,
                     GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
             logFrame.pack();
@@ -774,8 +775,6 @@ public class GUI extends JFrame implements Receiver {
                     //load a properties file from class path, inside static method
                     configProp.load(inputConfig);
                     //Get the values
-//                GUI.logMessages.append(configProp.getProperty("Name") + "\r\n");
-//                GUI.logMessages.append(configProp.getProperty("Version") + "\r\n");
                     inputChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Channel", "0")));
                     arpeggioChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Arpeggio", "1")));
                     bassChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Bass", "0")));
@@ -787,6 +786,30 @@ public class GUI extends JFrame implements Receiver {
                 GUI.logMessages.append(ex.getMessage());
             }
         });
+    }
+
+    private static void SaveNClose() {
+        try (OutputStream output = new FileOutputStream("config.properties")) {
+
+            Properties prop = new Properties();
+            // set the properties values
+            prop.setProperty("Name", "Arpeggiatorum");
+            prop.setProperty("Version", "1.0");
+            prop.setProperty("Channel", inputChannelChooser.getSelectedItem().toString());
+            prop.setProperty("Arpeggio", arpeggioChannelChooser.getSelectedItem().toString());
+            prop.setProperty("Bass", bassChannelChooser.getSelectedItem().toString());
+            prop.setProperty("Held", heldNotesChannelChooser.getSelectedItem().toString());
+            prop.setProperty("Threshold", String.valueOf(signal2noiseThreshold.getValue()));
+
+            // save properties to project root folder
+            prop.store(output, null);
+
+        } catch (IOException io) {
+            GUI.logMessages.append(io.getMessage());
+        } finally {
+
+            System.exit(0); // the program may still run, enforce exit
+        }
     }
 
     /**
@@ -801,27 +824,7 @@ public class GUI extends JFrame implements Receiver {
         frame.getRootPane().getActionMap().put("Exit", new AbstractAction() { // define the "Exit" action
             @Override
             public void actionPerformed(ActionEvent e) {
-                try (OutputStream output = new FileOutputStream("config.properties")) {
-
-                    Properties prop = new Properties();
-                    // set the properties values
-                    prop.setProperty("Name", "Arpeggiatorum");
-                    prop.setProperty("Version", "1.0");
-                    prop.setProperty("Channel", inputChannelChooser.getSelectedItem().toString());
-                    prop.setProperty("Arpeggio", arpeggioChannelChooser.getSelectedItem().toString());
-                    prop.setProperty("Bass", bassChannelChooser.getSelectedItem().toString());
-                    prop.setProperty("Held", heldNotesChannelChooser.getSelectedItem().toString());
-                    prop.setProperty("Threshold", String.valueOf(signal2noiseThreshold.getValue()));
-
-                    // save properties to project root folder
-                    prop.store(output, null);
-
-                } catch (IOException io) {
-                    GUI.logMessages.append(io.getMessage());
-                } finally {
-                    frame.dispose(); // close the window (if this is the only window, this will terminate the JVM)
-                    System.exit(0); // the program may still run, enforce exit
-                }
+                SaveNClose();
 
             }
         });
