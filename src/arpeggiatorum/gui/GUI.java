@@ -24,6 +24,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.text.NumberFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -53,12 +55,25 @@ public class GUI extends JFrame implements Receiver {
     // create JTextField
     public static final JTextArea logMessages = new JTextArea();
 
+
+    //Tap Tempo
+    int tapCount = 0;
+    int tapNext = 0;
+    int maxCount = 8;
+    final double timeOut = 5000.0f;
+    Instant timeLast;
+    Instant timeNow;
+    Instant[] times = new Instant[maxCount];
+    long timeChange;
+    int bpmNow;
+    int bpmAvg;
+
     /**
      * constructor
      */
     public GUI() {
         super("Arpeggiatorum");
-
+        timeLast = Instant.now();
         // Tools.printAudioDevices(); // print a list of all available audio devices
         // int audioInputDeviceID = Tools.getDeviceID("Primärer Soundaufnahmetreiber");
         // //Problem with system language
@@ -308,7 +323,7 @@ public class GUI extends JFrame implements Receiver {
 
             JLabel tresholdValue = new JLabel("   0.5");
             tresholdValue.setHorizontalAlignment(JLabel.LEFT);
-            addComponentToGridBagLayout(mainPanel, layout, tresholdValue, 3, 5, 1, 1, 1.0, 1.0, this.padding, this.padding,
+            addComponentToGridBagLayout(mainPanel, layout, tresholdValue, 0, 5, 1, 1, 1.0, 1.0, this.padding, this.padding,
                     GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
             JSlider signal2noiseThreshold = new JSlider(1, 1000);
             signal2noiseThreshold.setValue(500);
@@ -374,14 +389,14 @@ public class GUI extends JFrame implements Receiver {
 
             ////////////////////
 
-            JLabel tempoLabel = new JLabel("Tempo in keystrokes/min   ");
-            tempoLabel.setHorizontalAlignment(JLabel.RIGHT);
-            addComponentToGridBagLayout(mainPanel, layout, tempoLabel, 0, 6, 1, 1, 1.0, 1.0, this.padding, this.padding,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
+//            JLabel tempoLabel = new JLabel("Tempo in keystrokes/min   ");
+//            tempoLabel.setHorizontalAlignment(JLabel.RIGHT);
+//            addComponentToGridBagLayout(mainPanel, layout, tempoLabel, 0, 6, 1, 1, 1.0, 1.0, this.padding, this.padding,
+//                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
             JLabel tempoValue = new JLabel("   500");
             tempoValue.setHorizontalAlignment(JLabel.LEFT);
-            addComponentToGridBagLayout(mainPanel, layout, tempoValue, 3, 6, 1, 1, 1.0, 1.0, this.padding, this.padding,
+            addComponentToGridBagLayout(mainPanel, layout, tempoValue, 0, 6, 1, 1, 1.0, 1.0, this.padding, this.padding,
                     GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
             this.tempoSlider = new JSlider(100, 1000);
@@ -392,17 +407,55 @@ public class GUI extends JFrame implements Receiver {
             this.tempoSlider.setPaintTicks(true);
             Hashtable<Integer, JLabel> tempoSliderLabel = new Hashtable<>();
             tempoSliderLabel.put(100, new JLabel("100"));
+            tempoSliderLabel.put(500, new JLabel("Tempo in keystrokes/min"));
             tempoSliderLabel.put(1000, new JLabel("1000"));
             this.tempoSlider.setLabelTable(tempoSliderLabel);
             this.tempoSlider.setPaintLabels(true);
             this.tempoSlider.addChangeListener(changeEvent -> {
                 int tempo = this.tempoSlider.getValue();
+                if (tempo < 100)
+                    tempoSlider.setValue(100);
+                if (tempo > 1000)
+                    tempoSlider.setValue(1000);
                 this.arpeggiator.setTempo(tempo);
                 tempoValue.setText("   " + tempo);
             });
             addComponentToGridBagLayout(mainPanel, layout, this.tempoSlider, 1, 6, 2, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
+            JButton tapTempo = new JButton("Tap Tempo");
+            tapTempo.addActionListener(actionEvent -> {
+                timeNow = Instant.now();
+                timeChange = Duration.between(timeLast, timeNow).toMillis();
+                if (timeChange > timeOut) {
+                    tapCount = 0;
+                    tapNext = 0;
+                }
+                tapCount++;
+// enough beats to make a measurement (2 or more)?
+                if (tapCount > 1) {
+                    // enough to make an average measurement
+                    if (tapCount > maxCount) // average over maxCount
+                    {
+                        bpmAvg = (int) ((2*60.0 * maxCount / Duration.between(times[tapNext], timeNow).toMillis()) * 1000);
+                        tempoSlider.setValue(bpmAvg);
+                        GUI.logMessages.append(bpmAvg + "\r\n");
+                    } else {
+                        bpmNow = (int) ((2*60.0 / timeChange) * 1000); // instantaneous measurement
+                        tempoSlider.setValue(bpmNow);
+                        GUI.logMessages.append(bpmNow + "\r\n");
+                    }
+                }
+
+                timeLast = timeNow; // for instantaneous measurement and for timeout
+                times[tapNext] = timeNow;
+                tapNext++;
+                if (tapNext >= maxCount) {
+                    tapNext = 0;
+                }
+            });
+            addComponentToGridBagLayout(mainPanel, layout, tapTempo, 3, 6, 1, 1, 1.0, 1.0, this.padding,
+                    this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
             ////////////////////
 
             JLabel articulationLabel = new JLabel("Articulation   ");
@@ -511,39 +564,39 @@ public class GUI extends JFrame implements Receiver {
             GridBagLayout tonalEnrichmentLayout = new GridBagLayout();
             JPanel tonalEnrichmentPanel = new JPanel(tonalEnrichmentLayout);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e1, 0, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END, 0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e2, 1, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END, 0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e3, 2, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END, 0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e4, 3, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END, 0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e5, 4, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END, 0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e6, 5, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END, 0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e7, 6, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END, 0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e8, 7, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END, 0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e9, 8, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END, 0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e10, 9, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END, 0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e11, 10, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END, 0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e12, 11, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END, 0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e13, 12, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END, 0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e14, 13, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END, 0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e15, 14, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END, 0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e16, 15, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END, 0);
             addComponentToGridBagLayout(mainPanel, layout, tonalEnrichmentPanel, 1, 10, 2, 1, 100.0, 1.0, this.padding,
-                    this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
+                    this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END, 0);
 
             tonalEnrichmentButton.addActionListener(actionEvent -> {
                 int[] intervals = new int[]{
@@ -736,25 +789,26 @@ public class GUI extends JFrame implements Receiver {
     public static void addComponentToGridBagLayout(Container container, GridBagLayout gridBagLayout,
                                                    Component component, int x, int y, int width, int height, double weightx, double weighty, int ipadx,
                                                    int ipady, int fill, int anchor) {
-        addComponentToGridBagLayout(container,gridBagLayout,component,x,y,width,height,weightx,weighty,ipadx,ipady,fill,anchor,5);
+        addComponentToGridBagLayout(container, gridBagLayout, component, x, y, width, height, weightx, weighty, ipadx, ipady, fill, anchor, 5);
     }
-        /**
-         * a helper method to add components to a gridbag layouted container
-         *
-         * @param container
-         * @param gridBagLayout
-         * @param component
-         * @param x
-         * @param y
-         * @param width
-         * @param height
-         * @param weightx
-         * @param weighty
-         * @param ipadx
-         * @param ipady
-         * @param fill
-         * @param insetSize
-         */
+
+    /**
+     * a helper method to add components to a gridbag layouted container
+     *
+     * @param container
+     * @param gridBagLayout
+     * @param component
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     * @param weightx
+     * @param weighty
+     * @param ipadx
+     * @param ipady
+     * @param fill
+     * @param insetSize
+     */
     public static void addComponentToGridBagLayout(Container container, GridBagLayout gridBagLayout,
                                                    Component component, int x, int y, int width, int height, double weightx, double weighty, int ipadx,
                                                    int ipady, int fill, int anchor, int insetSize) {
@@ -766,7 +820,7 @@ public class GUI extends JFrame implements Receiver {
         gbc.gridheight = height;
         gbc.weightx = weightx;
         gbc.weighty = weighty;
-        gbc.insets=new Insets(insetSize,insetSize,insetSize,insetSize);
+        gbc.insets = new Insets(insetSize, insetSize, insetSize, insetSize);
         gbc.ipadx = ipadx;
         gbc.ipady = ipady;
         gbc.anchor = anchor;
