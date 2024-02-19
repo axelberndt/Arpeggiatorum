@@ -1,6 +1,7 @@
 package arpeggiatorum.gui;
 
 import arpeggiatorum.Arpeggiator;
+import arpeggiatorum.Main;
 import arpeggiatorum.notePool.NotePool;
 import arpeggiatorum.supplementary.NumberTextField;
 import arpeggiatorum.supplementary.Tools;
@@ -19,10 +20,8 @@ import javax.sound.midi.*;
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
+import java.io.*;
 import java.text.NumberFormat;
 import java.time.Duration;
 import java.time.Instant;
@@ -37,15 +36,17 @@ public class GUI extends JFrame implements Receiver {
     private final Synthesizer synth = JSyn.createSynthesizer(); // this Synthesizer instance is used for scheduling
     // and audio processing
     private final int padding = 10;
-    private JComboBox<Integer> inputChannelChooser;
-    private JComboBox<Integer> arpeggioChannelChooser;
-    private JComboBox<Integer> heldNotesChannelChooser;
-    private JComboBox<Integer> bassChannelChooser;
-    private JSlider tempoSlider;
-    private JSlider articulationSlider;
-    private JSlider tonalEnrichmentSlider;
-    private JComboBox<NotePool.Pattern> patternChooser;
-    private JComboBox<TonalEnrichmentChooserItem> tonalEnrichmentPresetChooser;
+    private static JComboBox<Integer> inputChannelChooser;
+    private static JComboBox<Integer> arpeggioChannelChooser;
+    private static JComboBox<Integer> heldNotesChannelChooser;
+    private static JComboBox<Integer> bassChannelChooser;
+    private static JSlider tempoSlider;
+    private static JSlider articulationSlider;
+    private static JSlider tonalEnrichmentSlider;
+    private static JComboBox<NotePool.Pattern> patternChooser;
+    private static JComboBox<TonalEnrichmentChooserItem> tonalEnrichmentPresetChooser;
+
+    private static JSlider signal2noiseThreshold;
 
     private final Arpeggiator arpeggiator;
     private final ArrayList<Mic2MIDI> mic2Midi;
@@ -68,12 +69,14 @@ public class GUI extends JFrame implements Receiver {
     int bpmNow;
     int bpmAvg;
 
+
     /**
      * constructor
      */
     public GUI() {
         super("Arpeggiatorum");
         timeLast = Instant.now();
+
         // Tools.printAudioDevices(); // print a list of all available audio devices
         // int audioInputDeviceID = Tools.getDeviceID("Primärer Soundaufnahmetreiber");
         // //Problem with system language
@@ -98,7 +101,6 @@ public class GUI extends JFrame implements Receiver {
         this.mic2Midi.add(new Mic2MIDI_JSyn(this.arpeggiator));
         this.mic2Midi.add(new Mic2MIDI_FFT(this.arpeggiator));
         this.mic2Midi.add(new Mic2MIDI_Tarsos(this.arpeggiator));
-        //this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, false));
         this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, true));
         for (Mic2MIDI processor : mic2Midi) {
             this.synth.add(processor);
@@ -325,7 +327,7 @@ public class GUI extends JFrame implements Receiver {
             tresholdValue.setHorizontalAlignment(JLabel.LEFT);
             addComponentToGridBagLayout(mainPanel, layout, tresholdValue, 0, 5, 1, 1, 1.0, 1.0, this.padding, this.padding,
                     GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
-            JSlider signal2noiseThreshold = new JSlider(1, 1000);
+            signal2noiseThreshold = new JSlider(1, 1000);
             signal2noiseThreshold.setValue(500);
             signal2noiseThreshold.setOrientation(JSlider.HORIZONTAL);
             signal2noiseThreshold.setMajorTickSpacing(500);
@@ -424,6 +426,10 @@ public class GUI extends JFrame implements Receiver {
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
             JButton tapTempo = new JButton("Tap Tempo");
+//              Modified from:
+//              <!-- Original:  Derek Chilcote-Batto (dac-b@usa.net) -->
+//              <!-- Web Site:  http://www.mixed.net -->
+//              <!-- Rewritten by: Rich Reel all8.com -->
             tapTempo.addActionListener(actionEvent -> {
                 timeNow = Instant.now();
                 timeChange = Duration.between(timeLast, timeNow).toMillis();
@@ -437,13 +443,13 @@ public class GUI extends JFrame implements Receiver {
                     // enough to make an average measurement
                     if (tapCount > maxCount) // average over maxCount
                     {
-                        bpmAvg = (int) ((2*60.0 * maxCount / Duration.between(times[tapNext], timeNow).toMillis()) * 1000);
+                        bpmAvg = (int) ((2 * 60.0 * maxCount / Duration.between(times[tapNext], timeNow).toMillis()) * 1000);
                         tempoSlider.setValue(bpmAvg);
-                        GUI.logMessages.append(bpmAvg + "\r\n");
+                        //GUI.logMessages.append(bpmAvg + "\r\n");
                     } else {
-                        bpmNow = (int) ((2*60.0 / timeChange) * 1000); // instantaneous measurement
+                        bpmNow = (int) ((2 * 60.0 / timeChange) * 1000); // instantaneous measurement
                         tempoSlider.setValue(bpmNow);
-                        GUI.logMessages.append(bpmNow + "\r\n");
+                        //GUI.logMessages.append(bpmNow + "\r\n");
                     }
                 }
 
@@ -758,6 +764,28 @@ public class GUI extends JFrame implements Receiver {
             menu.add(menuHistogram);
             menuBar.add(menu);
             this.setJMenuBar(menuBar);
+
+            try (FileInputStream inputConfig = new FileInputStream("config.properties")) {
+                Properties configProp = new Properties();
+                if (inputConfig == null) {
+                    GUI.logMessages.append("Sorry, unable to find config.properties\r\n");
+                    //return;
+                } else {
+                    //load a properties file from class path, inside static method
+                    configProp.load(inputConfig);
+                    //Get the values
+//                GUI.logMessages.append(configProp.getProperty("Name") + "\r\n");
+//                GUI.logMessages.append(configProp.getProperty("Version") + "\r\n");
+                    inputChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Channel", "0")));
+                    arpeggioChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Arpeggio", "1")));
+                    bassChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Bass", "0")));
+                    heldNotesChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Held", "2")));
+                    signal2noiseThreshold.setValue(Integer.parseInt(configProp.getProperty("Threshold", "500")));
+
+                }
+            } catch (IOException ex) {
+                GUI.logMessages.append(ex.getMessage());
+            }
         });
     }
 
@@ -773,8 +801,28 @@ public class GUI extends JFrame implements Receiver {
         frame.getRootPane().getActionMap().put("Exit", new AbstractAction() { // define the "Exit" action
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.dispose(); // close the window (if this is the only window, this will terminate the JVM)
-                System.exit(0); // the program may still run, enforce exit
+                try (OutputStream output = new FileOutputStream("config.properties")) {
+
+                    Properties prop = new Properties();
+                    // set the properties values
+                    prop.setProperty("Name", "Arpeggiatorum");
+                    prop.setProperty("Version", "1.0");
+                    prop.setProperty("Channel", inputChannelChooser.getSelectedItem().toString());
+                    prop.setProperty("Arpeggio", arpeggioChannelChooser.getSelectedItem().toString());
+                    prop.setProperty("Bass", bassChannelChooser.getSelectedItem().toString());
+                    prop.setProperty("Held", heldNotesChannelChooser.getSelectedItem().toString());
+                    prop.setProperty("Threshold", String.valueOf(signal2noiseThreshold.getValue()));
+
+                    // save properties to project root folder
+                    prop.store(output, null);
+
+                } catch (IOException io) {
+                    GUI.logMessages.append(io.getMessage());
+                } finally {
+                    frame.dispose(); // close the window (if this is the only window, this will terminate the JVM)
+                    System.exit(0); // the program may still run, enforce exit
+                }
+
             }
         });
     }
@@ -784,6 +832,7 @@ public class GUI extends JFrame implements Receiver {
      */
     private void shutdownHook() {
         // AllNotesOff? Anything?
+        // exitOnEsc(this);
     }
 
     public static void addComponentToGridBagLayout(Container container, GridBagLayout gridBagLayout,
