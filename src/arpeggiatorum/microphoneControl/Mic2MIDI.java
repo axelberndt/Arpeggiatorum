@@ -1,5 +1,6 @@
 package arpeggiatorum.microphoneControl;
 
+import arpeggiatorum.gui.GUI;
 import com.jsyn.unitgen.ChannelIn;
 import com.jsyn.unitgen.Circuit;
 import com.jsyn.unitgen.SchmidtTrigger;
@@ -11,8 +12,8 @@ import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Transmitter;
 
 public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI {
-    public String NAME="Abstract";
-    public boolean POLY=false;
+    public String NAME = "Abstract";
+    public boolean POLY = false;
     public Receiver receiver;// the MIDI receiver
     public final ChannelIn channelIn = new ChannelIn();// microphone input
     public static final double sampleRate = 44100.00;
@@ -24,6 +25,7 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
     public static final double CONFIDENCE_THRESHOLD = 0.3;
     public static final double FREQUENCY_RAMP_TIME = 0.01;
     public static final double PEAK_FOLLOWER_RAMP_TIME = 0.25;
+
     /**
      * set the receiver of outgoing MIDI messages
      *
@@ -70,7 +72,7 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
 
     @Override
     public String toString() {
-        return String.format(this.getName()+ (isPoly()?" (Polyphonic)":" (Monophonic)"));
+        return String.format(this.getName() + (isPoly() ? " (Polyphonic)" : " (Monophonic)"));
     }
 
     /**
@@ -88,7 +90,8 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
         try {
             noteOn = new ShortMessage(EventMaker.NOTE_ON, pitch, 100);
         } catch (InvalidMidiDataException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            GUI.logMessages.append(e.getMessage());
             return;
         }
         this.getReceiver().send(noteOn, -1);
@@ -100,7 +103,8 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
         try {
             noteOff = new ShortMessage(EventMaker.NOTE_OFF, pitch, 0);
         } catch (InvalidMidiDataException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            GUI.logMessages.append(e.getMessage());
             return;
         }
         this.getReceiver().send(noteOff, -1);

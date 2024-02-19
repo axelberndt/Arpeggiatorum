@@ -1,5 +1,6 @@
 package arpeggiatorum.microphoneControl;
 
+import arpeggiatorum.gui.GUI;
 import arpeggiatorum.supplementary.UnitVariableInputPort;
 import be.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
 
@@ -67,7 +68,8 @@ public class Mic2MIDI_Tarsos extends Mic2MIDI {
                     this.sendNoteOn(newPitch);
                     currentPitch = newPitch;
                     String message = String.format("Pitch detected : %.2fHz MIDI %d ( %.2f probability)\n", pitchInputs[0], newPitch, confidenceInputs[0]);
-                    System.out.println(message);
+                    //System.out.println(message);
+                    GUI.logMessages.append(message);
                 }
             }
         } else {

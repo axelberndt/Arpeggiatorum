@@ -1,5 +1,6 @@
 package arpeggiatorum.microphoneControl;
 
+import arpeggiatorum.gui.GUI;
 import com.jsyn.ports.*;
 import com.jsyn.unitgen.*;
 
@@ -23,7 +24,6 @@ public class Mic2MIDI_JSyn extends Mic2MIDI {
     public UnitInputPort trigger;// this port gets a 1.0 to trigger and a 0.0 to do nothing
     private double previousTriggerValue = 0.0;
     public UnitInputPort frequency;
-
 
 
     /**
@@ -86,7 +86,8 @@ public class Mic2MIDI_JSyn extends Mic2MIDI {
         this.trigger.connect(0, multiply.output, 0);
         this.add(multiply);
 
-        System.out.printf("Jsyn Pitch Detection: Variable delay \r\n");
+        //System.out.printf("Jsyn Pitch Detection: Variable delay \r\n");
+        GUI.logMessages.append("Jsyn Pitch Detection: Variable delay \r\n");
 
         this.setReceiver(receiver);
         // it is not necessary to start any of the unit generators individually, as the Circuit should be started by its creator
@@ -104,22 +105,30 @@ public class Mic2MIDI_JSyn extends Mic2MIDI {
         //   Check if at the end of the buffer we have to play or stop a note
         if (this.previousTriggerValue > CONFIDENCE_THRESHOLD) {         // we are currently playing a tone
             if (triggerInputs[0] <= CONFIDENCE_THRESHOLD) {     // [limit -1] if we have to stop the note
-                System.out.println("> " + this.currentPitch);
-                System.out.println("> Auto-correlation Pitch: " + DoubleStream.of(frequencyInputs).average().getAsDouble());
+//                System.out.println("> " + this.currentPitch);
+//                System.out.println("> Auto-correlation Pitch: " + DoubleStream.of(frequencyInputs).average().getAsDouble());
+                GUI.logMessages.append("> " + this.currentPitch + "\r\n");
+                GUI.logMessages.append("> Auto-correlation Pitch: " + DoubleStream.of(frequencyInputs).average().getAsDouble() + "\r\n");
+                GUI.logMessages.append("\r\n");
                 this.sendNoteOff(this.currentPitch);
             } else {                                                    // we may have to update the pitch
-               // System.out.println("- " + currentPitch);
+                // System.out.println("- " + currentPitch);
                 if (newPitch != this.currentPitch) {
-                    System.out.println("- " + this.currentPitch + " ->" + newPitch);
-                    System.out.println("- Auto-correlation Pitch: " + DoubleStream.of(frequencyInputs).average().getAsDouble());
+//                    System.out.println("- " + this.currentPitch + " ->" + newPitch);
+//                    System.out.println("- Auto-correlation Pitch: " + DoubleStream.of(frequencyInputs).average().getAsDouble());
+                    GUI.logMessages.append("- " + this.currentPitch + " ->" + newPitch+ "\r\n");
+                    GUI.logMessages.append("- Auto-correlation Pitch: " + DoubleStream.of(frequencyInputs).average().getAsDouble()+ "\r\n");
                     this.sendNoteOff(this.currentPitch);
                     this.sendNoteOn(newPitch);
                 }
             }
         } else if (triggerInputs[0] > CONFIDENCE_THRESHOLD) {   //[limit -1] we have to start a note
-            System.out.println("< " + this.currentPitch);
-            System.out.println("< Auto-correlation Pitch: " + DoubleStream.of(frequencyInputs).average().getAsDouble());
-            System.out.print("\r\n");
+//            System.out.println("< " + this.currentPitch);
+//            System.out.println("< Auto-correlation Pitch: " + DoubleStream.of(frequencyInputs).average().getAsDouble());
+//            System.out.print("\r\n");
+            GUI.logMessages.append("< " + this.currentPitch + "\r\n");
+            GUI.logMessages.append("< Auto-correlation Pitch: " + DoubleStream.of(frequencyInputs).average().getAsDouble() + "\r\n");
+            GUI.logMessages.append("\r\n");
             this.sendNoteOn(newPitch);
         }
 

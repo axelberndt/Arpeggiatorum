@@ -1,5 +1,6 @@
 package arpeggiatorum.microphoneControl;
 
+import arpeggiatorum.gui.GUI;
 import com.jsyn.data.*;
 import com.jsyn.ports.*;
 import com.jsyn.unitgen.*;
@@ -80,7 +81,9 @@ public class Mic2MIDI_FFT extends Mic2MIDI {
         this.add(this.schmidtTrigger);
         this.trigger.connect(0,this.schmidtTrigger.output, 0);
 
-        System.out.printf("FFT Pitch Detection: Minimum Frequency (%.2fHz) Delay (%.03fs) \r\n",sampleRate/numberBins, numberBins/sampleRate);
+        String message= String.format("FFT Pitch Detection: Minimum Frequency (%.2fHz) Delay (%.03fs) \r\n",sampleRate/numberBins, numberBins/sampleRate);
+       // System.out.printf(message);
+        GUI.logMessages.append(message);
 
         this.setReceiver(receiver);
     }
@@ -143,8 +146,8 @@ public class Mic2MIDI_FFT extends Mic2MIDI {
         }
         maxBinCep = getMaxBin(logMagFFT, outputLength - hiBin, outputLength - lowBin);
 
-        System.out.println("- FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist));
-        System.out.println("- FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))));
+        //System.out.println("- FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist));
+        //System.out.println("- FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))));
 
         // Check if at the end of the buffer we have to play or stop a note
 		int newPitch = (int) Math.round(AudioMath.frequencyToPitch(getFrequencyForIndex(maxBinHPS, nyquist)));
@@ -156,28 +159,43 @@ public class Mic2MIDI_FFT extends Mic2MIDI {
 
 		if (this.previousTriggerValue > CONFIDENCE_THRESHOLD){         // we are currently playing a tone
 			if (triggerInputs[0] <= CONFIDENCE_THRESHOLD){     // [limit -1] if we have to stop the note
-				System.out.println("> " + this.currentPitch);
-				System.out.println("> FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist));
-				System.out.println("> FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))));
+//				System.out.println("> " + this.currentPitch);
+//				System.out.println("> FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist));
+//				System.out.println("> FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))));
+//
+//				System.out.print("\r\n");
+                GUI.logMessages.append("> " + this.currentPitch+"\r\n");
+                GUI.logMessages.append("> FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist)+"\r\n");
+                GUI.logMessages.append("> FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength)))+"\r\n");
 
-				System.out.print("\r\n");
+                GUI.logMessages.append("\r\n");
 				this.sendNoteOff(this.currentPitch);
 			} else{                                                    // we may have to update the pitch
-				System.out.println("- " + currentPitch);
+//				System.out.println("- " + currentPitch);
+                GUI.logMessages.append("- " + currentPitch);
 				if (newPitch != this.currentPitch){
-					System.out.println("- " + this.currentPitch + " ->" + newPitch);
-					System.out.println("- FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist));
-					System.out.println("- FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))));
-					System.out.print("\r\n");
+//					System.out.println("- " + this.currentPitch + " ->" + newPitch);
+//					System.out.println("- FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist));
+//					System.out.println("- FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))));
+//					System.out.print("\r\n");
+                    GUI.logMessages.append("- " + this.currentPitch + " ->" + newPitch+"\r\n");
+                    GUI.logMessages.append("- FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist)+"\r\n");
+                    GUI.logMessages.append("- FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength)))+"\r\n");
+                    GUI.logMessages.append("\r\n");
 					this.sendNoteOff(this.currentPitch);
 					this.sendNoteOn(newPitch);
 				}
 			}
 		} else if (triggerInputs[0] > CONFIDENCE_THRESHOLD){   //[limit -1] we have to start a note
-			System.out.println("< " + this.currentPitch);
-			System.out.println("< FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist));
-			System.out.println("< FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))));
-			System.out.print("\r\n");
+//			System.out.println("< " + this.currentPitch);
+//			System.out.println("< FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist));
+//			System.out.println("< FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))));
+//			System.out.print("\r\n");
+            GUI.logMessages.append("< " + this.currentPitch+"\r\n");
+            GUI.logMessages.append("< FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist)+"\r\n");
+            GUI.logMessages.append("< FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength)))+"\r\n");
+
+            GUI.logMessages.append("\r\n");
 			this.sendNoteOn(newPitch);
 		}
 

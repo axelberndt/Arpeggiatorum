@@ -1,5 +1,6 @@
 package arpeggiatorum;
 
+import arpeggiatorum.gui.GUI;
 import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
 import com.jsyn.instruments.DualOscillatorSynthVoice;
@@ -30,11 +31,14 @@ public class Synth {
         try {
             app.test();
         } catch (MidiUnavailableException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+GUI.logMessages.append(e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+GUI.logMessages.append(e.getMessage());
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+GUI.logMessages.append(e.getMessage());
         }
     }
 
@@ -49,10 +53,12 @@ public class Synth {
             MidiDevice device = MidiSystem.getMidiDevice(info);
             if (device.getMaxReceivers() != 0)
                 continue;
-            System.out.println(deviceMap.size() + " " + info.getName());
+           // System.out.println(deviceMap.size() + " " + info.getName());
+            GUI.logMessages.append(deviceMap.size() + " " + info.getName()+"\r\n");
             deviceMap.add(device);
         }
-        System.out.println("\nChoose your input device: ");
+//        System.out.println("\nChoose your input device: ");
+        GUI.logMessages.append("\nChoose your input device: \r\n");
         Scanner in = new Scanner(System.in);
         MidiDevice keyboard = deviceMap.get(in.nextInt());
 
@@ -65,10 +71,12 @@ public class Synth {
             // Put the receiver in the transmitter.
             // This gives fairly low latency playing.
             keyboard.getTransmitter().setReceiver(receiver);
-            System.out.println("Play MIDI keyboard: " + keyboard.getDeviceInfo().getName());
+//            System.out.println("Play MIDI keyboard: " + keyboard.getDeviceInfo().getName());
+            GUI.logMessages.append("Play MIDI keyboard: " + keyboard.getDeviceInfo().getName()+"\r\n");
             result = 0;
         } else {
-            System.out.println("Could not find a keyboard.");
+//            System.out.println("Could not find a keyboard.");
+            GUI.logMessages.append("Could not find a keyboard.\r\n");
         }
         return result;
     }
@@ -99,7 +107,8 @@ public class Synth {
     class CustomReceiver implements Receiver {
         @Override
         public void close() {
-            System.out.print("Closed.");
+//            System.out.print("Closed.");
+            GUI.logMessages.append("Closed.");
         }
 
         @Override

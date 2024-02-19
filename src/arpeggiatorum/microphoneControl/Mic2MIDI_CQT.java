@@ -1,5 +1,6 @@
 package arpeggiatorum.microphoneControl;
 
+import arpeggiatorum.gui.GUI;
 import arpeggiatorum.supplementary.SortedList;
 import arpeggiatorum.supplementary.UnitVariableInputPort;
 
@@ -32,7 +33,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
     double[] CQTFrequencies;
     int[] CQTBinsSortedIndexes;
     //Histogram
-    public static final JFrame cqtBinsFrame = new JFrame("CQT Bins");
+//    public static final JFrame cqtBinsFrame = new JFrame("CQT Histogram");
     public static CQTHistogram cqtHist;
     private double PITCH_THRESHOLD;
 
@@ -81,10 +82,10 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
         double[] initializer = new double[CQTFrequencies.length];
         cqtHist = new CQTHistogram(initializer, CQTFrequencies);
 
-        cqtBinsFrame.add(cqtHist);
-        cqtBinsFrame.pack();
-        cqtBinsFrame.setLocationRelativeTo(null);
-        cqtBinsFrame.setVisible(true);
+        GUI.cqtBinsFrame.add(cqtHist);
+        GUI.cqtBinsFrame.pack();
+        GUI.cqtBinsFrame.setLocationRelativeTo(null);
+        //GUI.cqtBinsFrame.setVisible(true);
 
         this.setReceiver(receiver);
     }
@@ -117,7 +118,8 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                     this.sendNoteOn(newPitch);
                     currentPitch = newPitch;
                     String message = String.format("[%d] %.0fHz", newPitch, CQTFrequencies[CQTBinsSortedIndexes[0]]);
-                    System.out.println(message);
+                   // System.out.println(message);
+                    GUI.logMessages.append(message);
                 }
             } else {
                 if (currentPitch != -1) {
@@ -132,7 +134,9 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                 if (CQTBins[i] >= PITCH_THRESHOLD) {
                     if (currentPitches.add(newPitch)) {
                         //We have to play a new note
-                        System.out.printf("[%d] %.0fHz \r\n", newPitch, CQTFrequencies[i]);
+                        String message= String.format("[%d] %.0fHz \r\n", newPitch, CQTFrequencies[i]);
+                        //System.out.printf(message);
+                        GUI.logMessages.append(message);
                         this.sendNoteOn(newPitch);
                     }
                 } else {

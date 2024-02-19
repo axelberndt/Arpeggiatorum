@@ -1,5 +1,7 @@
 package arpeggiatorum.notePool;
 
+import arpeggiatorum.gui.GUI;
+
 /**
  * @author Axel Berndt
  */
@@ -20,16 +22,18 @@ public class TonalEnrichmentThread extends Thread {
     @Override
     public void run() {
         while (!this.notePool.isEmpty()) {
-            System.out.print(".");
-
+            //System.out.print(".");
+            GUI.logMessages.append(".");
             synchronized (this.lock) {
                 try {
                     this.lock.wait(50);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                   // //e.printStackTrace();
+                    GUI.logMessages.append(e.getMessage());
                 }
             }
         }
-        System.out.println("|");
+        //System.out.println("|");
+        GUI.logMessages.append("|");
     }
 }

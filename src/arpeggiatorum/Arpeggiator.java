@@ -1,5 +1,6 @@
 package arpeggiatorum;
 
+import arpeggiatorum.gui.GUI;
 import arpeggiatorum.notePool.NotePool;
 import arpeggiatorum.notePool.NoteItem;
 import com.jsyn.Synthesizer;
@@ -90,7 +91,8 @@ public class Arpeggiator implements Receiver, Transmitter {
             try {
                 this.outReceiver.send(new ShortMessage(EventMaker.CONTROL_CHANGE, this.arpeggioChannel, EventMaker.CC_All_Notes_Off, 0), -1);
             } catch (InvalidMidiDataException e) {
-                e.printStackTrace();
+                GUI.logMessages.append(e.getMessage());
+
             }
         }
         this.arpeggioChannel = channel;
@@ -230,7 +232,8 @@ public class Arpeggiator implements Receiver, Transmitter {
             try {
                 this.outReceiver.send(new ShortMessage(EventMaker.CONTROL_CHANGE, chan, EventMaker.CC_All_Notes_Off, 0), -1);
             } catch (InvalidMidiDataException e) {
-                e.printStackTrace();
+                GUI.logMessages.append(e.getMessage());
+
             }
         }
     }
@@ -287,7 +290,8 @@ public class Arpeggiator implements Receiver, Transmitter {
                     try {
                         this.send(new ShortMessage(EventMaker.NOTE_OFF, sMsg.getData1(), sMsg.getData2()), -1); // make real noteOff of it and process it accordingly
                     } catch (InvalidMidiDataException e) {
-                        e.printStackTrace();
+                        GUI.logMessages.append(e.getMessage());
+
                     }
                     return;
                 }
@@ -385,7 +389,8 @@ public class Arpeggiator implements Receiver, Transmitter {
         try {
             this.monitorReceiver.send(message, timeStamp);
         } catch (IllegalStateException e) {     // if the receiver is closed
-            e.printStackTrace();
+            //e.printStackTrace();
+GUI.logMessages.append(e.getMessage());
             this.monitorReceiver = null;
             return false;
         }
@@ -425,7 +430,8 @@ public class Arpeggiator implements Receiver, Transmitter {
                     try {
                         this.sendMessage(new ShortMessage(EventMaker.CONTROL_CHANGE, chan, EventMaker.CC_All_Notes_Off, 0), timeStamp);
                     } catch (InvalidMidiDataException e) {
-                        e.printStackTrace();
+                        //e.printStackTrace();
+GUI.logMessages.append(e.getMessage());
                     }
                 }
                 return;

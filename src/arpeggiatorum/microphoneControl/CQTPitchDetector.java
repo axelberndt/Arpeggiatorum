@@ -1,6 +1,7 @@
 package arpeggiatorum.microphoneControl;
 
 
+import arpeggiatorum.gui.GUI;
 import be.tarsos.dsp.ConstantQ;
 
 import com.jsyn.ports.UnitInputPort;
@@ -40,8 +41,9 @@ public class CQTPitchDetector extends UnitGenerator{
 		buffer = new double[CQT.getFFTlength()];
 		pushData = output.getData();
 		lowIndex = ((int) (Math.log((minFreq / Mic2MIDI_CQT.minFreq)) / Math.log(2))) * (binsPerOctave);
-		System.out.printf("CQT Pitch Detection: Min Frequency (%.2fHz) Max Frequency (%.2fHz)  Delay (%.03fs) FFT: %d samples  \r\n",minFreq, maxFreq, buffer.length/this.sampleRate, buffer.length);
-
+		String message=String.format("CQT Pitch Detection: Min Frequency (%.2fHz) Max Frequency (%.2fHz)  Delay (%.03fs) FFT: %d samples  \r\n",minFreq, maxFreq, buffer.length/this.sampleRate, buffer.length);
+		//System.out.printf(message);
+		GUI.logMessages.append(message);
 	}
 
 	/**
@@ -72,8 +74,8 @@ public class CQTPitchDetector extends UnitGenerator{
 					float[] CQTBins = CQT.getMagnitudes();
 					//Visualize CQT Bins
 					cqtHist.updateBins(Mic2MIDI_Tarsos.toDoubleArray(CQTBins), lowIndex);
-					Mic2MIDI_CQT.cqtBinsFrame.revalidate();
-					Mic2MIDI_CQT.cqtBinsFrame.repaint();
+					GUI.cqtBinsFrame.revalidate();
+					GUI.cqtBinsFrame.repaint();
 					for (int j = 0; j < pushData.length; j++){
 						pushData[j] = CQTBins[j];
 					}

@@ -17,6 +17,7 @@ import meico.midi.EventMaker;
 
 import javax.sound.midi.*;
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
@@ -46,6 +47,11 @@ public class GUI extends JFrame implements Receiver {
 
     private final Arpeggiator arpeggiator;
     private final ArrayList<Mic2MIDI> mic2Midi;
+    //Helper Windows
+    public static final JFrame cqtBinsFrame = new JFrame("CQT Histogram");
+    public static final JFrame logFrame = new JFrame("Arpeggiatorum Log");
+    // create JTextField
+    public static final JTextArea logMessages = new JTextArea();
 
     /**
      * constructor
@@ -86,6 +92,7 @@ public class GUI extends JFrame implements Receiver {
         GUI.exitOnEsc(this); // close window on ESC
         // this.setResizable(false); // don't allow resizing
         //this.setLocationRelativeTo(null); // set window position
+
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // what happens when the X is clicked
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdownHook)); // do what has to be done on shutdown
 
@@ -98,7 +105,8 @@ public class GUI extends JFrame implements Receiver {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
                      | UnsupportedLookAndFeelException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
+                GUI.logMessages.append(e.getMessage());
             }
 
             // the container panel
@@ -120,7 +128,8 @@ public class GUI extends JFrame implements Receiver {
                     try {
                         this.arpeggiator.setMidiIn(item.getValue());
                     } catch (MidiUnavailableException e) {
-                        e.printStackTrace();
+                        //e.printStackTrace();
+                        GUI.logMessages.append(e.getMessage());
                     }
                 }
             }
@@ -135,7 +144,8 @@ public class GUI extends JFrame implements Receiver {
                 try {
                     this.arpeggiator.setMidiIn(item.getValue());
                 } catch (MidiUnavailableException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
+                    GUI.logMessages.append(e.getMessage());
                 }
             });
             addComponentToGridBagLayout(mainPanel, layout, midiInChooser, 1, 0, 1, 1, 1.0, 1.0, this.padding,
@@ -170,7 +180,8 @@ public class GUI extends JFrame implements Receiver {
                     try {
                         this.arpeggiator.setMidiOut(item.getValue());
                     } catch (MidiUnavailableException e) {
-                        e.printStackTrace();
+                        //e.printStackTrace();
+                        GUI.logMessages.append(e.getMessage());
                     }
                 }
             }
@@ -185,7 +196,8 @@ public class GUI extends JFrame implements Receiver {
                 try {
                     this.arpeggiator.setMidiOut(item.getValue());
                 } catch (MidiUnavailableException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
+                    GUI.logMessages.append(e.getMessage());
                 }
             });
             addComponentToGridBagLayout(mainPanel, layout, midiOutChooser, 1, 1, 1, 1, 1.0, 1.0, this.padding,
@@ -244,6 +256,7 @@ public class GUI extends JFrame implements Receiver {
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
             JToggleButton activateAudioInput = new JToggleButton("Activate", false);
+            activateAudioInput.setOpaque(true);
 
             addComponentToGridBagLayout(mainPanel, layout, activateAudioInput, 3, 4, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
@@ -322,9 +335,15 @@ public class GUI extends JFrame implements Receiver {
 
             activateAudioInput.addActionListener(actionEvent -> {
                 if (activateAudioInput.isSelected()) {
+                    activateAudioInput.setForeground(Color.green);
+                    activateAudioInput.setBackground(Color.green);
+                    activateAudioInput.setText("Active");
                     ((Mic2MIDI) mic2MIDIChooser.getSelectedItem()).start();
                     ((Mic2MIDI) mic2MIDIChooser.getSelectedItem()).setSignalToNoiseThreshold(((double) signal2noiseThreshold.getValue()) / signal2noiseThreshold.getMaximum());
                 } else {
+                    activateAudioInput.setForeground(Color.DARK_GRAY);
+                    activateAudioInput.setBackground(Color.DARK_GRAY);
+                    activateAudioInput.setText("Inactive");
                     for (Mic2MIDI processor : mic2Midi) {
                         processor.stop();
                     }
@@ -492,39 +511,39 @@ public class GUI extends JFrame implements Receiver {
             GridBagLayout tonalEnrichmentLayout = new GridBagLayout();
             JPanel tonalEnrichmentPanel = new JPanel(tonalEnrichmentLayout);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e1, 0, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e2, 1, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e3, 2, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e4, 3, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e5, 4, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e6, 5, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e7, 6, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e8, 7, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e9, 8, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e10, 9, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e11, 10, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e12, 11, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e13, 12, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e14, 13, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e15, 14, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
             addComponentToGridBagLayout(tonalEnrichmentPanel, tonalEnrichmentLayout, e16, 15, 0, 1, 1, 1.0, 1.0, 15, 0,
-                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
             addComponentToGridBagLayout(mainPanel, layout, tonalEnrichmentPanel, 1, 10, 2, 1, 100.0, 1.0, this.padding,
-                    this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
+                    this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END,0);
 
             tonalEnrichmentButton.addActionListener(actionEvent -> {
                 int[] intervals = new int[]{
@@ -631,10 +650,12 @@ public class GUI extends JFrame implements Receiver {
             ////////////////////
 
             JButton panic = new JButton("PANIC!");
+            panic.setBackground(Color.red);
+            panic.setForeground(Color.red);
             panic.addActionListener(actionEvent -> {
                 this.arpeggiator.panic();
             });
-            addComponentToGridBagLayout(mainPanel, layout, panic, 1, 2, 1, 2, 1.0, 1.0, this.padding, this.padding,
+            addComponentToGridBagLayout(mainPanel, layout, panic, 1, 12, 2, 1, 1.0, 1.0, this.padding, this.padding,
                     GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
             ////////////////////
@@ -642,6 +663,48 @@ public class GUI extends JFrame implements Receiver {
             // pack it all together and show it
             this.pack();
             this.setVisible(true);
+            //Start fullscreen
+            GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            this.setMaximizedBounds(env.getMaximumWindowBounds());
+            this.setExtendedState(this.getExtendedState() | this.MAXIMIZED_BOTH);
+            //Menu Bar for Log and Histogram
+            JMenuBar menuBar = new JMenuBar();
+            JMenu menu = new JMenu("Utilities");
+            JMenuItem menuLog = new JMenuItem("Log");
+            GridBagLayout logLayout = new GridBagLayout();
+            JPanel logPanel = new JPanel(logLayout);
+            JScrollPane scrollPanel = new JScrollPane(logMessages, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+
+
+            // set flow layout for the frame
+            logFrame.add(logPanel);
+            //logFrame.add(scrollPanel);
+            //logMessages.append("Arpeggiatorum Log:");
+
+            // Sets the specified boolean to indicate whether or not
+            // this textfield should be editable.
+            logMessages.setEditable(false);
+            logMessages.setAutoscrolls(true);
+            logMessages.setBackground(Color.white);
+            DefaultCaret caret = (DefaultCaret) logMessages.getCaret();
+            caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+            logMessages.setCaretPosition(logMessages.getDocument().getLength());
+            // add textfield to frame
+            addComponentToGridBagLayout(logPanel, logLayout, scrollPanel, 0, 0, 1, 1, 1.0, 1.0, this.padding, this.padding,
+                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
+            logFrame.pack();
+            logFrame.setLocationRelativeTo(null);
+            menuLog.addActionListener(actionEvent -> {
+                logFrame.setVisible(true);
+            });
+            JMenuItem menuHistogram = new JMenuItem("CQT Histogram");
+            menuHistogram.addActionListener(actionEvent -> {
+                cqtBinsFrame.setVisible(true);
+            });
+            menu.add(menuLog);
+            menu.add(menuHistogram);
+            menuBar.add(menu);
+            this.setJMenuBar(menuBar);
         });
     }
 
@@ -670,25 +733,31 @@ public class GUI extends JFrame implements Receiver {
         // AllNotesOff? Anything?
     }
 
-    /**
-     * a helper method to add components to a gridbag layouted container
-     *
-     * @param container
-     * @param gridBagLayout
-     * @param component
-     * @param x
-     * @param y
-     * @param width
-     * @param height
-     * @param weightx
-     * @param weighty
-     * @param ipadx
-     * @param ipady
-     * @param fill
-     */
     public static void addComponentToGridBagLayout(Container container, GridBagLayout gridBagLayout,
                                                    Component component, int x, int y, int width, int height, double weightx, double weighty, int ipadx,
                                                    int ipady, int fill, int anchor) {
+        addComponentToGridBagLayout(container,gridBagLayout,component,x,y,width,height,weightx,weighty,ipadx,ipady,fill,anchor,5);
+    }
+        /**
+         * a helper method to add components to a gridbag layouted container
+         *
+         * @param container
+         * @param gridBagLayout
+         * @param component
+         * @param x
+         * @param y
+         * @param width
+         * @param height
+         * @param weightx
+         * @param weighty
+         * @param ipadx
+         * @param ipady
+         * @param fill
+         * @param insetSize
+         */
+    public static void addComponentToGridBagLayout(Container container, GridBagLayout gridBagLayout,
+                                                   Component component, int x, int y, int width, int height, double weightx, double weighty, int ipadx,
+                                                   int ipady, int fill, int anchor, int insetSize) {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = fill;
         gbc.gridx = x;
@@ -697,6 +766,7 @@ public class GUI extends JFrame implements Receiver {
         gbc.gridheight = height;
         gbc.weightx = weightx;
         gbc.weighty = weighty;
+        gbc.insets=new Insets(insetSize,insetSize,insetSize,insetSize);
         gbc.ipadx = ipadx;
         gbc.ipady = ipady;
         gbc.anchor = anchor;
@@ -726,7 +796,8 @@ public class GUI extends JFrame implements Receiver {
                 try {
                     midiPortChooser.addItem(new MidiDeviceChooserItem(info));
                 } catch (MidiUnavailableException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
+                    GUI.logMessages.append(e.getMessage());
                 }
             }
         }
@@ -756,7 +827,8 @@ public class GUI extends JFrame implements Receiver {
                 try {
                     midiPortChooser.addItem(new MidiDeviceChooserItem(info));
                 } catch (MidiUnavailableException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
+                    GUI.logMessages.append(e.getMessage());
                 }
             }
         }

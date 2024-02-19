@@ -1,5 +1,6 @@
 package arpeggiatorum.notePool;
 
+import arpeggiatorum.gui.GUI;
 import meico.midi.EventMaker;
 import meico.supplementary.KeyValue;
 
@@ -8,12 +9,15 @@ import javax.sound.midi.ShortMessage;
 
 /**
  * This class represents a note item in a SortedList.
+ *
  * @author Axel Berndt
  */
 public class NoteItem extends KeyValue<Integer, Integer> implements Comparable<NoteItem> {
     private int noteOnCounter = 1;  // if the same note is triggered several times it can be represented by this counter
+
     /**
      * constructor
+     *
      * @param pitch
      * @param velocity
      */
@@ -23,6 +27,7 @@ public class NoteItem extends KeyValue<Integer, Integer> implements Comparable<N
 
     /**
      * constructor
+     *
      * @param shortMessage
      */
     public NoteItem(ShortMessage shortMessage) {
@@ -31,6 +36,7 @@ public class NoteItem extends KeyValue<Integer, Integer> implements Comparable<N
 
     /**
      * get the pitch value
+     *
      * @return
      */
     public int getPitch() {
@@ -39,6 +45,7 @@ public class NoteItem extends KeyValue<Integer, Integer> implements Comparable<N
 
     /**
      * get the velocity value
+     *
      * @return
      */
     public int getVelocity() {
@@ -47,6 +54,7 @@ public class NoteItem extends KeyValue<Integer, Integer> implements Comparable<N
 
     /**
      * increase the noteOn counter
+     *
      * @return counter value after increase
      */
     public int increaseNoteOnCounter() {
@@ -55,6 +63,7 @@ public class NoteItem extends KeyValue<Integer, Integer> implements Comparable<N
 
     /**
      * decrease the noteOn counter
+     *
      * @return counter value after decrease
      */
     public int decreaseNoteOnCounter() {
@@ -63,14 +72,16 @@ public class NoteItem extends KeyValue<Integer, Integer> implements Comparable<N
 
     /**
      * get the value of the noteOn counter
+     *
      * @return
      */
-    public int getNoteOnCounter(){
+    public int getNoteOnCounter() {
         return this.noteOnCounter;
     }
 
     /**
      * make the items comparable
+     *
      * @param noteItem the object to be compared.
      * @return
      */
@@ -81,6 +92,7 @@ public class NoteItem extends KeyValue<Integer, Integer> implements Comparable<N
 
     /**
      * compare this object with the provided one for equality
+     *
      * @param noteItem object to be compared for equality with this map entry
      * @return
      */
@@ -93,6 +105,7 @@ public class NoteItem extends KeyValue<Integer, Integer> implements Comparable<N
 
     /**
      * get clone of this object
+     *
      * @return
      */
     @Override
@@ -102,7 +115,8 @@ public class NoteItem extends KeyValue<Integer, Integer> implements Comparable<N
 
     /**
      * convert the note item to a MIDI ShortMessage
-     * @param channel the MIDI channel in [0, 15]
+     *
+     * @param channel   the MIDI channel in [0, 15]
      * @param noteOnOff true=noteOn, false=noteOff
      * @return the ShortMessage or null if failed
      */
@@ -112,7 +126,8 @@ public class NoteItem extends KeyValue<Integer, Integer> implements Comparable<N
                 return new ShortMessage(EventMaker.NOTE_ON, channel, this.getPitch(), this.getVelocity());
             return new ShortMessage(EventMaker.NOTE_OFF, channel, this.getPitch(), 0);
         } catch (InvalidMidiDataException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            GUI.logMessages.append(e.getMessage());
         }
         return null;
     }
