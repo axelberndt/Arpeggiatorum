@@ -355,8 +355,9 @@ public class GUI extends JFrame implements Receiver {
             addComponentToGridBagLayout(mainPanel, layout, signal2noiseThreshold, 1, 5, 2, 1, 1.0, 1.0, this.padding, 0,
                     GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
 
-            activateAudioInput.addActionListener(actionEvent -> {
-                if (activateAudioInput.isSelected()) {
+            activateAudioInput.addItemListener(new ItemListener() {
+                public void itemStateChanged(ItemEvent ev) {
+                if (ev.getStateChange()==ItemEvent.SELECTED) {
                     activateAudioInput.setForeground(Color.green);
                     activateAudioInput.setBackground(Color.green);
                     activateAudioInput.setText("Active");
@@ -370,7 +371,8 @@ public class GUI extends JFrame implements Receiver {
                         processor.stop();
                     }
                     //Try to avoid calling panic
-                    this.arpeggiator.panic();
+                   arpeggiator.panic();
+                }
                 }
             });
 
@@ -693,8 +695,8 @@ public class GUI extends JFrame implements Receiver {
                     GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
             ////////////////////
-            cqtBinsPanel=Mic2MIDI_CQT.cqtHist;
-            addComponentToGridBagLayout(mainPanel, layout, cqtBinsPanel, 0, 13, 4, 5, 1.0, 25.0, this.padding,
+            cqtBinsPanel = Mic2MIDI_CQT.cqtHist;
+            addComponentToGridBagLayout(mainPanel, layout, cqtBinsPanel, 0, 13, 4, 1, 1, 1000, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
 
             // pack it all together and show it

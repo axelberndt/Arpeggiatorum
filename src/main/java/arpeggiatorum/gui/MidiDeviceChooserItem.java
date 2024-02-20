@@ -11,7 +11,7 @@ import javax.sound.midi.MidiUnavailableException;
  * This class is used to create items in a ComboBox.
  * @author Axel Berndt
  */
-class MidiDeviceChooserItem extends KeyValue<String, MidiDevice> {
+public class MidiDeviceChooserItem extends KeyValue<String, MidiDevice> {
     /**
      * constructor
      * @param info
