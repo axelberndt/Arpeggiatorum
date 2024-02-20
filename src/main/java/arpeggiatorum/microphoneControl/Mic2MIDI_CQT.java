@@ -80,12 +80,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
         //CQT Histogram
         double[] initializer = new double[CQTFrequencies.length];
         cqtHist = new CQTHistogram(initializer, CQTFrequencies);
-
-        GUI.cqtBinsFrame.add(cqtHist);
-        GUI.cqtBinsFrame.pack();
-        GUI.cqtBinsFrame.setLocationRelativeTo(null);
-        //GUI.cqtBinsFrame.setVisible(true);
-
+        //GUI.cqtBinsPanel.add(cqtHist);
         this.setReceiver(receiver);
     }
 

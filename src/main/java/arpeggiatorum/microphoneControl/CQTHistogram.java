@@ -51,11 +51,11 @@ public class CQTHistogram extends JPanel {
             int barHeight = (int) ((binCounts[i] / max) * (getHeight() - BORDER));
             Rectangle rect = new Rectangle(i * barWidth, getHeight() - barHeight, barWidth, barHeight);
             if (barHeight >(getHeight() - BORDER) /2)
-                g2d.setColor(Color.YELLOW);
-            else
                 g2d.setColor(Color.GREEN);
+            else
+                g2d.setColor(Color.lightGray);
             g2d.fill(rect);
-            g2d.setColor(Color.BLACK);
+            g2d.setColor(Color.white);
             g2d.draw(rect);
             g2d.setColor(Color.BLUE);
             g2d.drawString(String.format("%.0f", frequencies[i]), i * barWidth, getHeight() - barHeight);

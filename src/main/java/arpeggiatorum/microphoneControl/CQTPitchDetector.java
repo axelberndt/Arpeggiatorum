@@ -74,8 +74,8 @@ public class CQTPitchDetector extends UnitGenerator{
 					float[] CQTBins = CQT.getMagnitudes();
 					//Visualize CQT Bins
 					cqtHist.updateBins(Mic2MIDI_Tarsos.toDoubleArray(CQTBins), lowIndex);
-					GUI.cqtBinsFrame.revalidate();
-					GUI.cqtBinsFrame.repaint();
+					GUI.cqtBinsPanel.revalidate();
+					GUI.cqtBinsPanel.repaint();
 					for (int j = 0; j < pushData.length; j++){
 						pushData[j] = CQTBins[j];
 					}

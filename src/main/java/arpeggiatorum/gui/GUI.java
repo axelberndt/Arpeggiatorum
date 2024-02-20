@@ -50,7 +50,7 @@ public class GUI extends JFrame implements Receiver {
     private final Arpeggiator arpeggiator;
     private final ArrayList<Mic2MIDI> mic2Midi;
     //Helper Windows
-    public static final JFrame cqtBinsFrame = new JFrame("CQT Histogram");
+    public static JPanel cqtBinsPanel;
     public static final JFrame logFrame = new JFrame("Arpeggiatorum Log");
     // create JTextField
     public static final JTextArea logMessages = new JTextArea();
@@ -127,12 +127,10 @@ public class GUI extends JFrame implements Receiver {
         SwingUtilities.invokeLater(() -> {
             // set look and feel
             try {
-                //UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");\
                 //Should set the correct system look and feel
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
                      | UnsupportedLookAndFeelException e) {
-                //e.printStackTrace();
                 GUI.updateLogGUI(e.getMessage());
             }
 
@@ -695,6 +693,9 @@ public class GUI extends JFrame implements Receiver {
                     GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
             ////////////////////
+            cqtBinsPanel=Mic2MIDI_CQT.cqtHist;
+            addComponentToGridBagLayout(mainPanel, layout, cqtBinsPanel, 0, 13, 4, 5, 1.0, 25.0, this.padding,
+                    this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
 
             // pack it all together and show it
             this.pack();
@@ -722,10 +723,7 @@ public class GUI extends JFrame implements Receiver {
             logFrame.pack();
             logFrame.setLocationRelativeTo(null);
             menuLog.addActionListener(actionEvent -> logFrame.setVisible(true));
-            JMenuItem menuHistogram = new JMenuItem("CQT Histogram");
-            menuHistogram.addActionListener(actionEvent -> cqtBinsFrame.setVisible(true));
             menu.add(menuLog);
-            menu.add(menuHistogram);
             menuBar.add(menu);
             this.setJMenuBar(menuBar);
 
@@ -768,18 +766,16 @@ public class GUI extends JFrame implements Receiver {
                 tapNext = 0;
             }
             tapCount++;
-// enough beats to make a measurement (2 or more)?
+            // Enough beats to make a measurement (2 or more)?
             if (tapCount > 1) {
-                // enough to make an average measurement
+                // Rnough to make an average measurement?
                 if (tapCount > maxCount) // average over maxCount
                 {
                     bpmAvg = (int) ((2 * 60.0 * maxCount / Duration.between(times[tapNext], timeNow).toMillis()) * 1000);
                     tempoSlider.setValue(bpmAvg);
-                    //GUI.updateLogGUI(bpmAvg + "\r\n");
                 } else {
                     bpmNow = (int) ((2 * 60.0 / timeChange) * 1000); // instantaneous measurement
                     tempoSlider.setValue(bpmNow);
-                    //GUI.updateLogGUI(bpmNow + "\r\n");
                 }
             }
 
@@ -852,7 +848,7 @@ public class GUI extends JFrame implements Receiver {
     public static void addComponentToGridBagLayout(Container container, GridBagLayout gridBagLayout,
                                                    Component component, int x, int y, int width, int height, double weightx, double weighty, int ipadx,
                                                    int ipady, int fill, int anchor) {
-        addComponentToGridBagLayout(container, gridBagLayout, component, x, y, width, height, weightx, weighty, ipadx, ipady, fill, anchor, 5);
+        addComponentToGridBagLayout(container, gridBagLayout, component, x, y, width, height, weightx, weighty, ipadx, ipady, fill, anchor, 2);
     }
 
     /**
