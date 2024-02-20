@@ -275,13 +275,12 @@ public class Arpeggiator implements Receiver, Transmitter {
      */
     @Override
     public void send(MidiMessage message, long timeStamp) {
-        if (!(message instanceof ShortMessage))
+        if (!(message instanceof ShortMessage sMsg))
             return;
 
         if (((ShortMessage) message).getChannel() != this.inputChannel)
             return;
 
-        ShortMessage sMsg = (ShortMessage) message;
         switch (message.getStatus() & 0xF0) {
             case EventMaker.NOTE_OFF: {                             // remove the note from the pool
                 NoteItem bassNote = this.notePool.getBassNote();

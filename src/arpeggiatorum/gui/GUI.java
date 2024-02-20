@@ -440,23 +440,23 @@ public class GUI extends JFrame implements Receiver {
             addComponentToGridBagLayout(mainPanel, layout, articulationLabel, 0, 7, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
-            this.articulationSlider = new JSlider(50, 150);
-            this.articulationSlider.setValue(100);
-            this.articulationSlider.setOrientation(JSlider.HORIZONTAL);
-            this.articulationSlider.setMajorTickSpacing(50);
-            this.articulationSlider.setMinorTickSpacing(10);
-            this.articulationSlider.setPaintTicks(true);
+            articulationSlider = new JSlider(50, 150);
+            articulationSlider.setValue(100);
+            articulationSlider.setOrientation(JSlider.HORIZONTAL);
+            articulationSlider.setMajorTickSpacing(50);
+            articulationSlider.setMinorTickSpacing(10);
+            articulationSlider.setPaintTicks(true);
             Hashtable<Integer, JLabel> articulationSliderLabel = new Hashtable<>();
             articulationSliderLabel.put(50, new JLabel("staccato"));
             articulationSliderLabel.put(100, new JLabel("tenuto"));
             articulationSliderLabel.put(150, new JLabel("legato"));
-            this.articulationSlider.setLabelTable(articulationSliderLabel);
-            this.articulationSlider.setPaintLabels(true);
-            this.articulationSlider.addChangeListener(changeEvent -> {
-                double articulation = ((double) (this.articulationSlider.getValue() - 100)) / 100.0;
+            articulationSlider.setLabelTable(articulationSliderLabel);
+            articulationSlider.setPaintLabels(true);
+            articulationSlider.addChangeListener(changeEvent -> {
+                double articulation = ((double) (articulationSlider.getValue() - 100)) / 100.0;
                 this.arpeggiator.setArticulation(articulation);
             });
-            addComponentToGridBagLayout(mainPanel, layout, this.articulationSlider, 1, 7, 2, 1, 1.0, 1.0, this.padding,
+            addComponentToGridBagLayout(mainPanel, layout, articulationSlider, 1, 7, 2, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
             ////////////////////
@@ -613,29 +613,29 @@ public class GUI extends JFrame implements Receiver {
             addComponentToGridBagLayout(mainPanel, layout, tonalEnrichmentButton, 3, 10, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
-            this.tonalEnrichmentPresetChooser = new JComboBox<>();
-            this.tonalEnrichmentPresetChooser.addItem(new TonalEnrichmentChooserItem("Empty",
+            tonalEnrichmentPresetChooser = new JComboBox<>();
+            tonalEnrichmentPresetChooser.addItem(new TonalEnrichmentChooserItem("Empty",
                     new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
-            this.tonalEnrichmentPresetChooser.addItem(new TonalEnrichmentChooserItem("Octaves",
+            tonalEnrichmentPresetChooser.addItem(new TonalEnrichmentChooserItem("Octaves",
                     new int[]{0, 12, 24, 36, 48, 60, 72, 84, 96, 108, 120, 0, 0, 0, 0, 0}));
-            this.tonalEnrichmentPresetChooser.addItem(new TonalEnrichmentChooserItem("Octaves and Fifths",
+            tonalEnrichmentPresetChooser.addItem(new TonalEnrichmentChooserItem("Octaves and Fifths",
                     new int[]{0, 7, 12, 19, 24, 31, 36, 43, 48, 55, 60, 67, 72, 79, 84, 91}));
-            this.tonalEnrichmentPresetChooser.addItem(new TonalEnrichmentChooserItem("Major Triad",
+            tonalEnrichmentPresetChooser.addItem(new TonalEnrichmentChooserItem("Major Triad",
                     new int[]{0, 4, 7, 12, 16, 19, 24, 28, 31, 36, 40, 43, 48, 52, 55, 60}));
-            this.tonalEnrichmentPresetChooser.addItem(new TonalEnrichmentChooserItem("Minor Triad",
+            tonalEnrichmentPresetChooser.addItem(new TonalEnrichmentChooserItem("Minor Triad",
                     new int[]{0, 3, 7, 12, 15, 19, 24, 27, 31, 36, 39, 43, 48, 51, 55, 60}));
-            this.tonalEnrichmentPresetChooser.addItem(new TonalEnrichmentChooserItem("Major Thirds",
+            tonalEnrichmentPresetChooser.addItem(new TonalEnrichmentChooserItem("Major Thirds",
                     new int[]{0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60}));
-            this.tonalEnrichmentPresetChooser.addItem(new TonalEnrichmentChooserItem("Forths",
+            tonalEnrichmentPresetChooser.addItem(new TonalEnrichmentChooserItem("Forths",
                     new int[]{0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75}));
-            this.tonalEnrichmentPresetChooser.addItem(new TonalEnrichmentChooserItem("Series of Overtones",
+            tonalEnrichmentPresetChooser.addItem(new TonalEnrichmentChooserItem("Series of Overtones",
                     new int[]{0, 12, 19, 24, 28, 31, 34, 36, 38, 40, 42, 43, 44, 46, 47, 48}));
-            this.tonalEnrichmentPresetChooser.addItem(new TonalEnrichmentChooserItem("Overtones Transposed Down",
+            tonalEnrichmentPresetChooser.addItem(new TonalEnrichmentChooserItem("Overtones Transposed Down",
                     new int[]{0, 12, 24, 7, 19, 4, 16, 10, 22, 2, 14, 6, 18, 8, 20, 11}));
-            this.tonalEnrichmentPresetChooser.addActionListener(actionEvent -> {
-                if (this.tonalEnrichmentPresetChooser.getSelectedItem() == null)
+            tonalEnrichmentPresetChooser.addActionListener(actionEvent -> {
+                if (tonalEnrichmentPresetChooser.getSelectedItem() == null)
                     return;
-                int[] intervals = ((TonalEnrichmentChooserItem) this.tonalEnrichmentPresetChooser.getSelectedItem())
+                int[] intervals = ((TonalEnrichmentChooserItem) tonalEnrichmentPresetChooser.getSelectedItem())
                         .getValue();
                 e1.setValue((intervals.length >= 1) ? intervals[0] : 0);
                 e2.setValue((intervals.length >= 2) ? intervals[1] : 0);
@@ -655,7 +655,7 @@ public class GUI extends JFrame implements Receiver {
                 e16.setValue((intervals.length >= 16) ? intervals[15] : 0);
                 this.arpeggiator.setTonalEnrichment(intervals);
             });
-            addComponentToGridBagLayout(mainPanel, layout, this.tonalEnrichmentPresetChooser, 1, 9, 1, 1, 1.0, 1.0,
+            addComponentToGridBagLayout(mainPanel, layout, tonalEnrichmentPresetChooser, 1, 9, 1, 1, 1.0, 1.0,
                     this.padding, this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
             JLabel tonalEnrichmentDensityLabel = new JLabel("");
@@ -663,26 +663,26 @@ public class GUI extends JFrame implements Receiver {
             addComponentToGridBagLayout(mainPanel, layout, tonalEnrichmentDensityLabel, 0, 11, 1, 1, 1.0, 1.0,
                     this.padding, this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
-            this.tonalEnrichmentSlider = new JSlider(0, 100);
-            this.tonalEnrichmentSlider.setValue(0);
-            this.tonalEnrichmentSlider.setOrientation(JSlider.HORIZONTAL);
-            this.tonalEnrichmentSlider.setMajorTickSpacing(50);
-            this.tonalEnrichmentSlider.setMinorTickSpacing(10);
-            this.tonalEnrichmentSlider.setPaintTicks(true);
+            tonalEnrichmentSlider = new JSlider(0, 100);
+            tonalEnrichmentSlider.setValue(0);
+            tonalEnrichmentSlider.setOrientation(JSlider.HORIZONTAL);
+            tonalEnrichmentSlider.setMajorTickSpacing(50);
+            tonalEnrichmentSlider.setMinorTickSpacing(10);
+            tonalEnrichmentSlider.setPaintTicks(true);
             Hashtable<Integer, JLabel> tonalEnrichmentSliderLabel = new Hashtable<>();
             tonalEnrichmentSliderLabel.put(0, new JLabel("0%"));
             tonalEnrichmentSliderLabel.put(50, new JLabel("50%"));
             tonalEnrichmentSliderLabel.put(100, new JLabel("100%"));
-            this.tonalEnrichmentSlider.setLabelTable(tonalEnrichmentSliderLabel);
-            this.tonalEnrichmentSlider.setPaintLabels(true);
-            this.tonalEnrichmentSlider.addChangeListener(changeEvent -> {
-                float tonalEnrichmentAmount = (float) (this.tonalEnrichmentSlider.getValue()) / 100.0f;
-                tonalEnrichmentDensityLabel.setText(this.tonalEnrichmentSlider.getValue() + "%");
+            tonalEnrichmentSlider.setLabelTable(tonalEnrichmentSliderLabel);
+            tonalEnrichmentSlider.setPaintLabels(true);
+            tonalEnrichmentSlider.addChangeListener(changeEvent -> {
+                float tonalEnrichmentAmount = (float) (tonalEnrichmentSlider.getValue()) / 100.0f;
+                tonalEnrichmentDensityLabel.setText(tonalEnrichmentSlider.getValue() + "%");
                 this.arpeggiator.setTonalEnrichmentAmount(tonalEnrichmentAmount);
             });
 
 
-            addComponentToGridBagLayout(mainPanel, layout, this.tonalEnrichmentSlider, 1, 11, 2, 1, 1.0, 1.0,
+            addComponentToGridBagLayout(mainPanel, layout, tonalEnrichmentSlider, 1, 11, 2, 1, 1.0, 1.0,
                     this.padding, this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
             ////////////////////
@@ -690,9 +690,7 @@ public class GUI extends JFrame implements Receiver {
             JButton panic = new JButton("PANIC!");
             panic.setBackground(Color.red);
             panic.setForeground(Color.red);
-            panic.addActionListener(actionEvent -> {
-                this.arpeggiator.panic();
-            });
+            panic.addActionListener(actionEvent -> this.arpeggiator.panic());
             addComponentToGridBagLayout(mainPanel, layout, panic, 1, 12, 2, 1, 1.0, 1.0, this.padding, this.padding,
                     GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
@@ -704,7 +702,7 @@ public class GUI extends JFrame implements Receiver {
             //Start fullscreen
             GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
             this.setMaximizedBounds(env.getMaximumWindowBounds());
-            this.setExtendedState(this.getExtendedState() | this.MAXIMIZED_BOTH);
+            this.setExtendedState(this.getExtendedState() | MAXIMIZED_BOTH);
             //Menu Bar for Log and Histogram
             JMenuBar menuBar = new JMenuBar();
             JMenu menu = new JMenu("Utilities");
@@ -723,13 +721,9 @@ public class GUI extends JFrame implements Receiver {
                     GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
             logFrame.pack();
             logFrame.setLocationRelativeTo(null);
-            menuLog.addActionListener(actionEvent -> {
-                logFrame.setVisible(true);
-            });
+            menuLog.addActionListener(actionEvent -> logFrame.setVisible(true));
             JMenuItem menuHistogram = new JMenuItem("CQT Histogram");
-            menuHistogram.addActionListener(actionEvent -> {
-                cqtBinsFrame.setVisible(true);
-            });
+            menuHistogram.addActionListener(actionEvent -> cqtBinsFrame.setVisible(true));
             menu.add(menuLog);
             menu.add(menuHistogram);
             menuBar.add(menu);
@@ -737,28 +731,23 @@ public class GUI extends JFrame implements Receiver {
 
             try (FileInputStream inputConfig = new FileInputStream("config.properties")) {
                 Properties configProp = new Properties();
-                if (inputConfig == null) {
-                    GUI.updateLogGUI("Sorry, unable to find config.properties\r\n");
-                    //return;
-                } else {
-                    //load a properties file from class path, inside static method
-                    configProp.load(inputConfig);
-                    //Get the values
-                    inputChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Channel", "0")));
-                    arpeggioChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Arpeggio", "1")));
-                    bassChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Bass", "0")));
-                    heldNotesChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Held", "2")));
-                    signal2noiseThreshold.setValue(Integer.parseInt(configProp.getProperty("Threshold", "500")));
-                    tempoSlider.setValue(Integer.parseInt(configProp.getProperty("Tempo", "500")));
-                    articulationSlider.setValue(Integer.parseInt(configProp.getProperty("Articulation", "100")));
-                    rangeSlider.setValue(Integer.parseInt(configProp.getProperty("RangeMin", "0")));
-                    rangeSlider.setUpperValue(Integer.parseInt(configProp.getProperty("RangeMax", "127")));
-                    tonalEnrichmentSlider.setValue(Integer.parseInt(configProp.getProperty("Density", "0")));
-                    tonalEnrichmentPresetChooser.setSelectedIndex(Integer.parseInt(configProp.getProperty("Enrichment Preset", "0")));
-                    patternChooser.setSelectedIndex(Integer.parseInt(configProp.getProperty("Enrichment Pattern", "0")));
+                //load a properties file from class path, inside static method
+                configProp.load(inputConfig);
+                //Get the values
+                inputChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Channel", "0")));
+                arpeggioChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Arpeggio", "1")));
+                bassChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Bass", "0")));
+                heldNotesChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Held", "2")));
+                signal2noiseThreshold.setValue(Integer.parseInt(configProp.getProperty("Threshold", "500")));
+                tempoSlider.setValue(Integer.parseInt(configProp.getProperty("Tempo", "500")));
+                articulationSlider.setValue(Integer.parseInt(configProp.getProperty("Articulation", "100")));
+                rangeSlider.setValue(Integer.parseInt(configProp.getProperty("RangeMin", "0")));
+                rangeSlider.setUpperValue(Integer.parseInt(configProp.getProperty("RangeMax", "127")));
+                tonalEnrichmentSlider.setValue(Integer.parseInt(configProp.getProperty("Density", "0")));
+                tonalEnrichmentPresetChooser.setSelectedIndex(Integer.parseInt(configProp.getProperty("Enrichment Preset", "0")));
+                patternChooser.setSelectedIndex(Integer.parseInt(configProp.getProperty("Enrichment Pattern", "0")));
 
 
-                }
             } catch (IOException ex) {
                 GUI.updateLogGUI(ex.getMessage());
             }
@@ -993,14 +982,13 @@ public class GUI extends JFrame implements Receiver {
      */
     @Override
     public void send(MidiMessage message, long timeStamp) {
-        if (!(message instanceof ShortMessage))
+        if (!(message instanceof ShortMessage sMsg))
             return;
 
         if ((inputChannelChooser.getSelectedItem() == null)
                 || (((ShortMessage) message).getChannel() != (int) inputChannelChooser.getSelectedItem()))
             return;
 
-        ShortMessage sMsg = (ShortMessage) message;
         switch (message.getStatus() & 0xF0) {
             case EventMaker.CONTROL_CHANGE:
                 switch (sMsg.getData1()) {
