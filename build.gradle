@@ -1,0 +1,40 @@
+plugins {
+    id 'application'
+}
+
+application {
+    mainClass = 'arpeggiatorum.Main'
+}
+
+group = 'com.github.axelberndt'
+version = '2.0'
+
+repositories {
+    mavenCentral()
+    maven { url  "https://jitpack.io" }
+    maven {
+        name = "TarsosDSP repository"
+        url = "https://mvn.0110.be/releases"
+    }
+    flatDir {
+        dirs("externals")
+    }
+    // Look for artifacts here if not found at the above location
+    //artifactUrls "https://github.com/cemfi/meico/releases/latest"
+
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation "com.github.philburk:jsyn:17.1.0"
+    //implementation "com.github.cemfi:meico:latest.release"
+    implementation(":meico:0.9.0")
+    implementation 'be.tarsos.dsp:core:2.5'
+    implementation 'be.tarsos.dsp:jvm:2.5'
+
+}
+
+test {
+    useJUnitPlatform()
+}
