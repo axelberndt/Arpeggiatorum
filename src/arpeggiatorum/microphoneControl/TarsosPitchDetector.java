@@ -49,7 +49,7 @@ public class TarsosPitchDetector extends UnitGenerator {
         String message = String.format("Tarsos Pitch Detection: Minimum Frequency (%.2fHz) Delay (%.03fs) \r\n", (sampleRate / bufferSize) * 2, (bufferSize / sampleRate) / 2);
 
         //System.out.printf(message);
-        GUI.logMessages.append(message);
+        GUI.updateLogGUI(message);
         if (algo == PitchProcessor.PitchEstimationAlgorithm.MPM) {
             detector = new McLeodPitchMethod(sampleRate, this.bufferSize);
         } else if (algo == PitchProcessor.PitchEstimationAlgorithm.DYNAMIC_WAVELET) {

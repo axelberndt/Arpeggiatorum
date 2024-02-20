@@ -91,7 +91,7 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
             noteOn = new ShortMessage(EventMaker.NOTE_ON, pitch, 100);
         } catch (InvalidMidiDataException e) {
             //e.printStackTrace();
-            GUI.logMessages.append(e.getMessage());
+            GUI.updateLogGUI(e.getMessage());
             return;
         }
         this.getReceiver().send(noteOn, -1);
@@ -104,7 +104,7 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
             noteOff = new ShortMessage(EventMaker.NOTE_OFF, pitch, 0);
         } catch (InvalidMidiDataException e) {
             //e.printStackTrace();
-            GUI.logMessages.append(e.getMessage());
+            GUI.updateLogGUI(e.getMessage());
             return;
         }
         this.getReceiver().send(noteOff, -1);

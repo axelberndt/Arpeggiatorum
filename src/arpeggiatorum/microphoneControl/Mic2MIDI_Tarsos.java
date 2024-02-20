@@ -69,7 +69,7 @@ public class Mic2MIDI_Tarsos extends Mic2MIDI {
                     currentPitch = newPitch;
                     String message = String.format("Pitch detected : %.2fHz MIDI %d ( %.2f probability)\n", pitchInputs[0], newPitch, confidenceInputs[0]);
                     //System.out.println(message);
-                    GUI.logMessages.append(message);
+                    GUI.updateLogGUI(message);
                 }
             }
         } else {

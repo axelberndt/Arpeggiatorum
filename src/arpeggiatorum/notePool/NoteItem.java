@@ -127,7 +127,7 @@ public class NoteItem extends KeyValue<Integer, Integer> implements Comparable<N
             return new ShortMessage(EventMaker.NOTE_OFF, channel, this.getPitch(), 0);
         } catch (InvalidMidiDataException e) {
             //e.printStackTrace();
-            GUI.logMessages.append(e.getMessage());
+            GUI.updateLogGUI(e.getMessage());
         }
         return null;
     }

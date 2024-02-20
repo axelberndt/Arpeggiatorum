@@ -23,17 +23,17 @@ public class TonalEnrichmentThread extends Thread {
     public void run() {
         while (!this.notePool.isEmpty()) {
             //System.out.print(".");
-            GUI.logMessages.append(".");
+            GUI.updateLogGUI(".");
             synchronized (this.lock) {
                 try {
                     this.lock.wait(50);
                 } catch (InterruptedException e) {
                    // //e.printStackTrace();
-                    GUI.logMessages.append(e.getMessage());
+                    GUI.updateLogGUI(e.getMessage());
                 }
             }
         }
         //System.out.println("|");
-        GUI.logMessages.append("|");
+        GUI.updateLogGUI("|");
     }
 }

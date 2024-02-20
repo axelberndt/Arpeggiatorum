@@ -134,7 +134,7 @@ public class GUI extends JFrame implements Receiver {
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
                      | UnsupportedLookAndFeelException e) {
                 //e.printStackTrace();
-                GUI.logMessages.append(e.getMessage());
+                GUI.updateLogGUI(e.getMessage());
             }
 
             // the container panel
@@ -157,7 +157,7 @@ public class GUI extends JFrame implements Receiver {
                         this.arpeggiator.setMidiIn(item.getValue());
                     } catch (MidiUnavailableException e) {
                         //e.printStackTrace();
-                        GUI.logMessages.append(e.getMessage());
+                        GUI.updateLogGUI(e.getMessage());
                     }
                 }
             }
@@ -173,7 +173,7 @@ public class GUI extends JFrame implements Receiver {
                     this.arpeggiator.setMidiIn(item.getValue());
                 } catch (MidiUnavailableException e) {
                     //e.printStackTrace();
-                    GUI.logMessages.append(e.getMessage());
+                    GUI.updateLogGUI(e.getMessage());
                 }
             });
             addComponentToGridBagLayout(mainPanel, layout, midiInChooser, 1, 0, 1, 1, 1.0, 1.0, this.padding,
@@ -209,7 +209,7 @@ public class GUI extends JFrame implements Receiver {
                         this.arpeggiator.setMidiOut(item.getValue());
                     } catch (MidiUnavailableException e) {
                         //e.printStackTrace();
-                        GUI.logMessages.append(e.getMessage());
+                        GUI.updateLogGUI(e.getMessage());
                     }
                 }
             }
@@ -225,7 +225,7 @@ public class GUI extends JFrame implements Receiver {
                     this.arpeggiator.setMidiOut(item.getValue());
                 } catch (MidiUnavailableException e) {
                     //e.printStackTrace();
-                    GUI.logMessages.append(e.getMessage());
+                    GUI.updateLogGUI(e.getMessage());
                 }
             });
             addComponentToGridBagLayout(mainPanel, layout, midiOutChooser, 1, 1, 1, 1, 1.0, 1.0, this.padding,
@@ -456,11 +456,11 @@ public class GUI extends JFrame implements Receiver {
                     {
                         bpmAvg = (int) ((2 * 60.0 * maxCount / Duration.between(times[tapNext], timeNow).toMillis()) * 1000);
                         tempoSlider.setValue(bpmAvg);
-                        //GUI.logMessages.append(bpmAvg + "\r\n");
+                        //GUI.updateLogGUI(bpmAvg + "\r\n");
                     } else {
                         bpmNow = (int) ((2 * 60.0 / timeChange) * 1000); // instantaneous measurement
                         tempoSlider.setValue(bpmNow);
-                        //GUI.logMessages.append(bpmNow + "\r\n");
+                        //GUI.updateLogGUI(bpmNow + "\r\n");
                     }
                 }
 
@@ -778,7 +778,7 @@ public class GUI extends JFrame implements Receiver {
             try (FileInputStream inputConfig = new FileInputStream("config.properties")) {
                 Properties configProp = new Properties();
                 if (inputConfig == null) {
-                    GUI.logMessages.append("Sorry, unable to find config.properties\r\n");
+                    GUI.updateLogGUI("Sorry, unable to find config.properties\r\n");
                     //return;
                 } else {
                     //load a properties file from class path, inside static method
@@ -801,7 +801,7 @@ public class GUI extends JFrame implements Receiver {
 
                 }
             } catch (IOException ex) {
-                GUI.logMessages.append(ex.getMessage());
+                GUI.updateLogGUI(ex.getMessage());
             }
         });
     }
@@ -830,7 +830,7 @@ public class GUI extends JFrame implements Receiver {
             prop.store(output, null);
 
         } catch (IOException io) {
-            GUI.logMessages.append(io.getMessage());
+            GUI.updateLogGUI(io.getMessage());
         } finally {
 
             System.exit(0); // the program may still run, enforce exit
@@ -928,7 +928,7 @@ public class GUI extends JFrame implements Receiver {
                     midiPortChooser.addItem(new MidiDeviceChooserItem(info));
                 } catch (MidiUnavailableException e) {
                     //e.printStackTrace();
-                    GUI.logMessages.append(e.getMessage());
+                    GUI.updateLogGUI(e.getMessage());
                 }
             }
         }
@@ -959,7 +959,7 @@ public class GUI extends JFrame implements Receiver {
                     midiPortChooser.addItem(new MidiDeviceChooserItem(info));
                 } catch (MidiUnavailableException e) {
                     //e.printStackTrace();
-                    GUI.logMessages.append(e.getMessage());
+                    GUI.updateLogGUI(e.getMessage());
                 }
             }
         }
@@ -1074,5 +1074,18 @@ public class GUI extends JFrame implements Receiver {
     @Override
     public void close() {
         this.synth.stop();
+    }
+    public static void updateLogGUI(final String message) {
+        if (!SwingUtilities.isEventDispatchThread()) {
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    updateLogGUI(message);
+                }
+            });
+            return;
+        }
+        //Now edit your GUI objects
+        GUI.logMessages.append(message);
     }
 }

@@ -119,7 +119,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                     currentPitch = newPitch;
                     String message = String.format("[%d] %.0fHz", newPitch, CQTFrequencies[CQTBinsSortedIndexes[0]]);
                    // System.out.println(message);
-                    GUI.logMessages.append(message);
+                    GUI.updateLogGUI(message);
                 }
             } else {
                 if (currentPitch != -1) {
@@ -136,7 +136,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                         //We have to play a new note
                         String message= String.format("[%d] %.0fHz \r\n", newPitch, CQTFrequencies[i]);
                         //System.out.printf(message);
-                        GUI.logMessages.append(message);
+                        GUI.updateLogGUI(message);
                         this.sendNoteOn(newPitch);
                     }
                 } else {

@@ -43,7 +43,7 @@ public class CQTPitchDetector extends UnitGenerator{
 		lowIndex = ((int) (Math.log((minFreq / Mic2MIDI_CQT.minFreq)) / Math.log(2))) * (binsPerOctave);
 		String message=String.format("CQT Pitch Detection: Min Frequency (%.2fHz) Max Frequency (%.2fHz)  Delay (%.03fs) FFT: %d samples  \r\n",minFreq, maxFreq, buffer.length/this.sampleRate, buffer.length);
 		//System.out.printf(message);
-		GUI.logMessages.append(message);
+		GUI.updateLogGUI(message);
 	}
 
 	/**

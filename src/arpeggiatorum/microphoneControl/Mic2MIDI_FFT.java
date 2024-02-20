@@ -83,7 +83,7 @@ public class Mic2MIDI_FFT extends Mic2MIDI {
 
         String message= String.format("FFT Pitch Detection: Minimum Frequency (%.2fHz) Delay (%.03fs) \r\n",sampleRate/numberBins, numberBins/sampleRate);
        // System.out.printf(message);
-        GUI.logMessages.append(message);
+        GUI.updateLogGUI(message);
 
         this.setReceiver(receiver);
     }
@@ -164,24 +164,24 @@ public class Mic2MIDI_FFT extends Mic2MIDI {
 //				System.out.println("> FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))));
 //
 //				System.out.print("\r\n");
-                GUI.logMessages.append("> " + this.currentPitch+"\r\n");
-                GUI.logMessages.append("> FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist)+"\r\n");
-                GUI.logMessages.append("> FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength)))+"\r\n");
+                GUI.updateLogGUI("> " + this.currentPitch+"\r\n");
+                GUI.updateLogGUI("> FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist)+"\r\n");
+                GUI.updateLogGUI("> FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength)))+"\r\n");
 
-                GUI.logMessages.append("\r\n");
+                GUI.updateLogGUI("\r\n");
 				this.sendNoteOff(this.currentPitch);
 			} else{                                                    // we may have to update the pitch
 //				System.out.println("- " + currentPitch);
-                GUI.logMessages.append("- " + currentPitch);
+                GUI.updateLogGUI("- " + currentPitch);
 				if (newPitch != this.currentPitch){
 //					System.out.println("- " + this.currentPitch + " ->" + newPitch);
 //					System.out.println("- FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist));
 //					System.out.println("- FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))));
 //					System.out.print("\r\n");
-                    GUI.logMessages.append("- " + this.currentPitch + " ->" + newPitch+"\r\n");
-                    GUI.logMessages.append("- FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist)+"\r\n");
-                    GUI.logMessages.append("- FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength)))+"\r\n");
-                    GUI.logMessages.append("\r\n");
+                    GUI.updateLogGUI("- " + this.currentPitch + " ->" + newPitch+"\r\n");
+                    GUI.updateLogGUI("- FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist)+"\r\n");
+                    GUI.updateLogGUI("- FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength)))+"\r\n");
+                    GUI.updateLogGUI("\r\n");
 					this.sendNoteOff(this.currentPitch);
 					this.sendNoteOn(newPitch);
 				}
@@ -191,11 +191,11 @@ public class Mic2MIDI_FFT extends Mic2MIDI {
 //			System.out.println("< FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist));
 //			System.out.println("< FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))));
 //			System.out.print("\r\n");
-            GUI.logMessages.append("< " + this.currentPitch+"\r\n");
-            GUI.logMessages.append("< FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist)+"\r\n");
-            GUI.logMessages.append("< FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength)))+"\r\n");
+            GUI.updateLogGUI("< " + this.currentPitch+"\r\n");
+            GUI.updateLogGUI("< FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist)+"\r\n");
+            GUI.updateLogGUI("< FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength)))+"\r\n");
 
-            GUI.logMessages.append("\r\n");
+            GUI.updateLogGUI("\r\n");
 			this.sendNoteOn(newPitch);
 		}
 
