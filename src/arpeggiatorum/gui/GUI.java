@@ -46,6 +46,7 @@ public class GUI extends JFrame implements Receiver {
     private static JComboBox<NotePool.Pattern> patternChooser;
     private static JComboBox<TonalEnrichmentChooserItem> tonalEnrichmentPresetChooser;
     private static JSlider signal2noiseThreshold;
+    private static RangeSlider rangeSlider;
 
     private final Arpeggiator arpeggiator;
     private final ArrayList<Mic2MIDI> mic2Midi;
@@ -120,7 +121,7 @@ public class GUI extends JFrame implements Receiver {
              */
             @Override
             public void windowClosing(WindowEvent e) {
-     SaveNClose();
+                SaveNClose();
             }
         });
         // execute the GUI building in the EDT (Event Dispatch Thread)
@@ -334,7 +335,7 @@ public class GUI extends JFrame implements Receiver {
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
 
             JLabel tresholdValue = new JLabel("   0.5");
-            tresholdValue.setHorizontalAlignment(JLabel.LEFT);
+            tresholdValue.setHorizontalAlignment(JLabel.CENTER);
             addComponentToGridBagLayout(mainPanel, layout, tresholdValue, 0, 5, 1, 1, 1.0, 1.0, this.padding, this.padding,
                     GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
             signal2noiseThreshold = new JSlider(1, 1000);
@@ -407,7 +408,7 @@ public class GUI extends JFrame implements Receiver {
 //                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
             JLabel tempoValue = new JLabel("   500");
-            tempoValue.setHorizontalAlignment(JLabel.LEFT);
+            tempoValue.setHorizontalAlignment(JLabel.CENTER);
             addComponentToGridBagLayout(mainPanel, layout, tempoValue, 0, 6, 1, 1, 1.0, 1.0, this.padding, this.padding,
                     GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
@@ -510,7 +511,7 @@ public class GUI extends JFrame implements Receiver {
             addComponentToGridBagLayout(mainPanel, layout, pitchRangeNumbers, 3, 8, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
-            RangeSlider rangeSlider = new RangeSlider(0, 127); // the pitch range slider
+            rangeSlider = new RangeSlider(0, 127); // the pitch range slider
             rangeSlider.setValue(0);
             rangeSlider.setUpperValue(127);
             rangeSlider.setOrientation(JSlider.HORIZONTAL);
@@ -697,6 +698,11 @@ public class GUI extends JFrame implements Receiver {
             addComponentToGridBagLayout(mainPanel, layout, this.tonalEnrichmentPresetChooser, 1, 9, 1, 1, 1.0, 1.0,
                     this.padding, this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
+            JLabel tonalEnrichmentDensityLabel= new JLabel("");
+            tonalEnrichmentDensityLabel.setHorizontalAlignment(JLabel.RIGHT);
+            addComponentToGridBagLayout(mainPanel, layout, tonalEnrichmentDensityLabel, 0, 11, 1, 1, 1.0, 1.0,
+                    this.padding, this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
+
             this.tonalEnrichmentSlider = new JSlider(0, 100);
             this.tonalEnrichmentSlider.setValue(0);
             this.tonalEnrichmentSlider.setOrientation(JSlider.HORIZONTAL);
@@ -711,8 +717,11 @@ public class GUI extends JFrame implements Receiver {
             this.tonalEnrichmentSlider.setPaintLabels(true);
             this.tonalEnrichmentSlider.addChangeListener(changeEvent -> {
                 float tonalEnrichmentAmount = (float) (this.tonalEnrichmentSlider.getValue()) / 100.0f;
+                tonalEnrichmentDensityLabel.setText(this.tonalEnrichmentSlider.getValue()+"%");
                 this.arpeggiator.setTonalEnrichmentAmount(tonalEnrichmentAmount);
             });
+
+
             addComponentToGridBagLayout(mainPanel, layout, this.tonalEnrichmentSlider, 1, 11, 2, 1, 1.0, 1.0,
                     this.padding, this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
@@ -780,6 +789,15 @@ public class GUI extends JFrame implements Receiver {
                     bassChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Bass", "0")));
                     heldNotesChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Held", "2")));
                     signal2noiseThreshold.setValue(Integer.parseInt(configProp.getProperty("Threshold", "500")));
+                    tempoSlider.setValue(Integer.parseInt(configProp.getProperty("Tempo", "500")));
+                    articulationSlider.setValue(Integer.parseInt(configProp.getProperty("Articulation", "100")));
+                    rangeSlider.setValue(Integer.parseInt(configProp.getProperty("RangeMin", "0")));
+                    rangeSlider.setUpperValue(Integer.parseInt(configProp.getProperty("RangeMax", "127")));
+                    tonalEnrichmentSlider.setValue(Integer.parseInt(configProp.getProperty("Density", "0")));
+                    tonalEnrichmentPresetChooser.setSelectedIndex(Integer.parseInt(configProp.getProperty("Enrichment Preset", "0")));
+                    patternChooser.setSelectedIndex(Integer.parseInt(configProp.getProperty("Enrichment Pattern", "0")));
+
+
 
                 }
             } catch (IOException ex) {
@@ -800,6 +818,13 @@ public class GUI extends JFrame implements Receiver {
             prop.setProperty("Bass", bassChannelChooser.getSelectedItem().toString());
             prop.setProperty("Held", heldNotesChannelChooser.getSelectedItem().toString());
             prop.setProperty("Threshold", String.valueOf(signal2noiseThreshold.getValue()));
+            prop.setProperty("Tempo", String.valueOf(tempoSlider.getValue()));
+            prop.setProperty("Articulation", String.valueOf(articulationSlider.getValue()));
+            prop.setProperty("RangeMin", String.valueOf(rangeSlider.getValue()));
+            prop.setProperty("RangeMax", String.valueOf(rangeSlider.getUpperValue()));
+            prop.setProperty("Density", String.valueOf(tonalEnrichmentSlider.getValue()));
+            prop.setProperty("Enrichment Preset", String.valueOf(tonalEnrichmentPresetChooser.getSelectedIndex()));
+            prop.setProperty("Enrichment Pattern", String.valueOf(patternChooser.getSelectedIndex()));
 
             // save properties to project root folder
             prop.store(output, null);
