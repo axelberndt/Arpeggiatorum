@@ -6,7 +6,7 @@ import javax.swing.JPanel;
 public class CQTHistogram extends JPanel {
 
     private double[] binCounts;
-    private double[] frequencies;
+    private final double[] frequencies;
     public double max;
     private final int WIDTH = 1080;
     private final int HEIGHT = 500;
@@ -24,9 +24,10 @@ public class CQTHistogram extends JPanel {
     }
 
     public void updateBins(double[] binCounts, int lowIndex) {
-        for (int i = 0; i < binCounts.length; i++) {
-            this.binCounts[lowIndex + i] = binCounts[i];
-        }
+//        for (int i = 0; i < binCounts.length; i++) {
+//            this.binCounts[lowIndex + i] = binCounts[i];
+//        }
+        System.arraycopy(binCounts, 0, this.binCounts, lowIndex, binCounts.length);
     }
 
     @Override
@@ -45,7 +46,7 @@ public class CQTHistogram extends JPanel {
         g2d.clearRect(0, 0, getWidth(), getHeight());
         int barWidth = getWidth() / binCounts.length;
         g2d.setColor(Color.RED);
-        g2d.drawLine(0, (int) (getHeight() + BORDER) / 2, getWidth(), (int) (getHeight() + BORDER) / 2);
+        g2d.drawLine(0, (getHeight() + BORDER) / 2, getWidth(), (getHeight() + BORDER) / 2);
         for (int i = 0; i < binCounts.length; i++) {
             int barHeight = (int) ((binCounts[i] / max) * (getHeight() - BORDER));
             Rectangle rect = new Rectangle(i * barWidth, getHeight() - barHeight, barWidth, barHeight);

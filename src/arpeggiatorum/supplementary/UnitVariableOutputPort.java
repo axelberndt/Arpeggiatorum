@@ -5,7 +5,7 @@ import com.jsyn.ports.ConnectableOutput;
 import com.jsyn.ports.UnitPort;
 
 public class UnitVariableOutputPort extends UnitPort implements ConnectableOutput{
-	private double[] data;
+	private final double[] data;
 	private boolean available;
 
 	public UnitVariableOutputPort(){

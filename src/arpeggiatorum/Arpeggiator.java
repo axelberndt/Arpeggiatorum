@@ -12,6 +12,7 @@ import javax.sound.midi.*;
 
 /**
  * This is the actual arpeggiator.
+ *
  * @author Axel Berndt
  */
 public class Arpeggiator implements Receiver, Transmitter {
@@ -37,7 +38,8 @@ public class Arpeggiator implements Receiver, Transmitter {
 
     /**
      * default constructor
-     * @param synth synthesizer used for scheduling
+     *
+     * @param synth   synthesizer used for scheduling
      * @param monitor a receiver where incoming events can be forwarded for monitoring
      */
     public Arpeggiator(Synthesizer synth, Receiver monitor) {
@@ -48,6 +50,7 @@ public class Arpeggiator implements Receiver, Transmitter {
 
     /**
      * switch MIDI input device
+     *
      * @param inDevice
      * @throws MidiUnavailableException
      */
@@ -62,6 +65,7 @@ public class Arpeggiator implements Receiver, Transmitter {
 
     /**
      * switch MIDI output device
+     *
      * @param outDevice
      * @throws MidiUnavailableException
      */
@@ -76,6 +80,7 @@ public class Arpeggiator implements Receiver, Transmitter {
 
     /**
      * set the input MIDI channel
+     *
      * @param channel
      */
     public void setInputChannel(int channel) {
@@ -84,6 +89,7 @@ public class Arpeggiator implements Receiver, Transmitter {
 
     /**
      * set the output MIDI channel for arpeggios; stop all notes on the previous channel before switching to the new one
+     *
      * @param channel
      */
     public void setArpeggioChannel(int channel) {
@@ -100,6 +106,7 @@ public class Arpeggiator implements Receiver, Transmitter {
 
     /**
      * get the channel number where arpeggios are played
+     *
      * @return
      */
     public int getArpeggioChannel() {
@@ -108,6 +115,7 @@ public class Arpeggiator implements Receiver, Transmitter {
 
     /**
      * set the output MIDI channel for held notes; stop all notes on the previous channel before switching to the new one
+     *
      * @param channel
      */
     public void setHeldNotesChannel(int channel) {
@@ -127,6 +135,7 @@ public class Arpeggiator implements Receiver, Transmitter {
 
     /**
      * get the channel number for playing held notes
+     *
      * @return
      */
     public int getHeldNotesChannel() {
@@ -135,6 +144,7 @@ public class Arpeggiator implements Receiver, Transmitter {
 
     /**
      * set the output MIDI channel for bass notes; stop all notes on the previous channel before switching to the new one
+     *
      * @param channel
      */
     public void setBassChannel(int channel) {
@@ -155,6 +165,7 @@ public class Arpeggiator implements Receiver, Transmitter {
 
     /**
      * get the bass channel number
+     *
      * @return
      */
     public int getBassChannel() {
@@ -163,6 +174,7 @@ public class Arpeggiator implements Receiver, Transmitter {
 
     /**
      * set arpeggiation tempo
+     *
      * @param tempo
      */
     public void setTempo(double tempo) {
@@ -172,6 +184,7 @@ public class Arpeggiator implements Receiver, Transmitter {
 
     /**
      * set the articulation of the notes
+     *
      * @param articulation value in [-0.5, 0.5]
      */
     public void setArticulation(double articulation) {
@@ -180,6 +193,7 @@ public class Arpeggiator implements Receiver, Transmitter {
 
     /**
      * switch the note provider pattern
+     *
      * @param pattern
      */
     public void setPattern(NotePool.Pattern pattern) {
@@ -188,6 +202,7 @@ public class Arpeggiator implements Receiver, Transmitter {
 
     /**
      * get the current pattern
+     *
      * @return
      */
     public NotePool.Pattern getPattern() {
@@ -196,6 +211,7 @@ public class Arpeggiator implements Receiver, Transmitter {
 
     /**
      * specify the additional intervals that the arpeggiator plays to each struck note
+     *
      * @param intervals
      */
     public void setTonalEnrichment(int[] intervals) {
@@ -205,6 +221,7 @@ public class Arpeggiator implements Receiver, Transmitter {
     /**
      * Specify the percentage how many enrichment intervals are actually added to the note pool.
      * This updates the note pool accordingly
+     *
      * @param amount in [0.0f, 1.0f]
      */
     public void setTonalEnrichmentAmount(float amount) {
@@ -213,6 +230,7 @@ public class Arpeggiator implements Receiver, Transmitter {
 
     /**
      * specify the pitch range of notes output by this note pool
+     *
      * @param lowest
      * @param highest
      */
@@ -240,19 +258,19 @@ public class Arpeggiator implements Receiver, Transmitter {
 
     /**
      * schedule a message to be sent at a specific time
+     *
      * @param message
      * @param at
      */
     private synchronized void sendMessage(MidiMessage message, TimeStamp at) {
-        ScheduledCommand sendCommand = () -> {
-            this.outReceiver.send(message, -1);
-        };
+        ScheduledCommand sendCommand = () -> this.outReceiver.send(message, -1);
         this.synth.scheduleCommand(at, sendCommand);
     }
 
     /**
      * process incoming message
-     * @param message the MIDI message to send
+     *
+     * @param message   the MIDI message to send
      * @param timeStamp the time-stamp for the message, in microseconds.
      */
     @Override
@@ -354,12 +372,13 @@ public class Arpeggiator implements Receiver, Transmitter {
                 }
                 break;
             default:
-                return; // not of our business
+                // not of our business
         }
     }
 
     /**
      * set the receiver of outgoing MIDI messages
+     *
      * @param receiver the desired receiver.
      */
     @Override
@@ -369,6 +388,7 @@ public class Arpeggiator implements Receiver, Transmitter {
 
     /**
      * a getter for the receiver
+     *
      * @return
      */
     @Override
@@ -378,6 +398,7 @@ public class Arpeggiator implements Receiver, Transmitter {
 
     /**
      * send a specified message and timestamp to the monitorReceiver
+     *
      * @param message
      * @param timeStamp
      * @return success
@@ -390,7 +411,7 @@ public class Arpeggiator implements Receiver, Transmitter {
             this.monitorReceiver.send(message, timeStamp);
         } catch (IllegalStateException e) {     // if the receiver is closed
             //e.printStackTrace();
-GUI.updateLogGUI(e.getMessage());
+            GUI.updateLogGUI(e.getMessage());
             this.monitorReceiver = null;
             return false;
         }
@@ -412,17 +433,17 @@ GUI.updateLogGUI(e.getMessage());
 
     /**
      * this method does the arpeggiation
+     *
      * @param timeStamp the date when this method should be called
-     * @param note the note to be played on the next call
+     * @param note      the note to be played on the next call
      */
     private synchronized void run(TimeStamp timeStamp, NoteItem note) {
-        // as long as a note is held, intensity grows, otherwise it decreases until it is vanished and the arpeggiator stopps
+        // as long as a note is held, intensity grows, otherwise it decreases until it is vanished and the arpeggiator stops
         if (this.notePool.isEmpty()) {                          // no more notes to play
             if (this.notePool.isTriggered()) {                  // we are not finished as long as there are triggered notes which later might come back into pitch range; so we do a busy waiting here
                 TimeStamp nextCallTime = timeStamp.makeRelative(this.beatLengthInSeconds);
                 this.scheduledCommand = () -> this.run(nextCallTime, null);
                 this.synth.scheduleCommand(nextCallTime, this.scheduledCommand);
-                return;
             } else {                                            // done, stop the arpeggiator
                 this.scheduledCommand = null;
                 // stop all sounding notes
@@ -431,11 +452,11 @@ GUI.updateLogGUI(e.getMessage());
                         this.sendMessage(new ShortMessage(EventMaker.CONTROL_CHANGE, chan, EventMaker.CC_All_Notes_Off, 0), timeStamp);
                     } catch (InvalidMidiDataException e) {
                         //e.printStackTrace();
-GUI.updateLogGUI(e.getMessage());
+                        GUI.updateLogGUI(e.getMessage());
                     }
                 }
-                return;
             }
+            return;
         }
 
         // compute the time of the next call
@@ -460,9 +481,7 @@ GUI.updateLogGUI(e.getMessage());
         NoteItem nextNote = this.notePool.getNext();
 
         // schedule the next call of generate()
-        this.scheduledCommand = () -> {
-            this.run(nextCallTime, nextNote);
-        };
+        this.scheduledCommand = () -> this.run(nextCallTime, nextNote);
         this.synth.scheduleCommand(nextCallTime, this.scheduledCommand);
     }
 }

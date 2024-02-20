@@ -20,16 +20,16 @@ public class TarsosPitchDetector extends UnitGenerator {
     public UnitVariableOutputPort confidence;
 
     private boolean running;
-    private int offset = 0;
-    private double[] buffer;
+    private final int offset = 0;
+    private final double[] buffer;
     private int cursor;
 
     float sampleRate;
     int bufferSize;
-    private PitchDetector detector;
+    private final PitchDetector detector;
 
-    private double[] pushPitch;
-    private double[] pushConf;
+    private final double[] pushPitch;
+    private final double[] pushConf;
 
     public TarsosPitchDetector() {
         this(44100, 2048, PitchProcessor.PitchEstimationAlgorithm.FFT_PITCH);

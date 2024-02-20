@@ -317,7 +317,7 @@ public class NotePool {
     }
 
     /**
-     * Is the pool emty?
+     * Is the pool empty?
      * @return
      */
     public boolean isEmpty() {

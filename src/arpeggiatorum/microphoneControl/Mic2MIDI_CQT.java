@@ -7,7 +7,6 @@ import arpeggiatorum.supplementary.UnitVariableInputPort;
 import com.softsynth.math.AudioMath;
 
 import javax.sound.midi.Receiver;
-import javax.swing.JFrame;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -37,7 +36,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
     public static CQTHistogram cqtHist;
     private double PITCH_THRESHOLD;
 
-    private SortedList<Integer> currentPitches = new SortedList<>();
+    private final SortedList<Integer> currentPitches = new SortedList<>();
     private Integer newPitch;
 
     public Mic2MIDI_CQT(Receiver receiver, boolean isPoly) {

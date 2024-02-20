@@ -1,7 +1,6 @@
 package arpeggiatorum.gui;
 
 import arpeggiatorum.Arpeggiator;
-import arpeggiatorum.Main;
 import arpeggiatorum.notePool.NotePool;
 import arpeggiatorum.supplementary.NumberTextField;
 import arpeggiatorum.supplementary.Tools;
@@ -97,7 +96,7 @@ public class GUI extends JFrame implements Receiver {
         // receiver of outgoing MIDI messages (to monitor
         // controller movements as slider movements in the GUI)
 
-        this.mic2Midi = new ArrayList<Mic2MIDI>();
+        this.mic2Midi = new ArrayList<>();
         this.mic2Midi.add(new Mic2MIDI_JSyn(this.arpeggiator));
         this.mic2Midi.add(new Mic2MIDI_FFT(this.arpeggiator));
         this.mic2Midi.add(new Mic2MIDI_Tarsos(this.arpeggiator));
@@ -179,14 +178,13 @@ public class GUI extends JFrame implements Receiver {
             addComponentToGridBagLayout(mainPanel, layout, midiInChooser, 1, 0, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
 
-            this.inputChannelChooser = new JComboBox<>(
+            inputChannelChooser = new JComboBox<>(
                     new Integer[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15});
-            ;
-            this.inputChannelChooser.addActionListener(actionEvent -> {
-                if (this.inputChannelChooser.getSelectedItem() != null)
-                    this.arpeggiator.setInputChannel((int) this.inputChannelChooser.getSelectedItem());
+            inputChannelChooser.addActionListener(actionEvent -> {
+                if (inputChannelChooser.getSelectedItem() != null)
+                    this.arpeggiator.setInputChannel((int) inputChannelChooser.getSelectedItem());
             });
-            addComponentToGridBagLayout(mainPanel, layout, this.inputChannelChooser, 2, 0, 1, 1, 1.0, 1.0, this.padding,
+            addComponentToGridBagLayout(mainPanel, layout, inputChannelChooser, 2, 0, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
 
             JLabel inputChannelLabel = new JLabel("   Channel");
@@ -231,14 +229,14 @@ public class GUI extends JFrame implements Receiver {
             addComponentToGridBagLayout(mainPanel, layout, midiOutChooser, 1, 1, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
 
-            this.arpeggioChannelChooser = new JComboBox<>(
+            arpeggioChannelChooser = new JComboBox<>(
                     new Integer[]{-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15});
-            this.arpeggioChannelChooser.setSelectedItem(this.arpeggiator.getArpeggioChannel());
-            this.arpeggioChannelChooser.addActionListener(actionEvent -> {
-                if (this.arpeggioChannelChooser.getSelectedItem() != null)
-                    this.arpeggiator.setArpeggioChannel((int) this.arpeggioChannelChooser.getSelectedItem());
+            arpeggioChannelChooser.setSelectedItem(this.arpeggiator.getArpeggioChannel());
+            arpeggioChannelChooser.addActionListener(actionEvent -> {
+                if (arpeggioChannelChooser.getSelectedItem() != null)
+                    this.arpeggiator.setArpeggioChannel((int) arpeggioChannelChooser.getSelectedItem());
             });
-            addComponentToGridBagLayout(mainPanel, layout, this.arpeggioChannelChooser, 2, 1, 1, 1, 1.0, 1.0,
+            addComponentToGridBagLayout(mainPanel, layout, arpeggioChannelChooser, 2, 1, 1, 1, 1.0, 1.0,
                     this.padding, this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
 
             JLabel arpeggioChannelLabel = new JLabel("   Arpeggio Channel");
@@ -246,14 +244,14 @@ public class GUI extends JFrame implements Receiver {
             addComponentToGridBagLayout(mainPanel, layout, arpeggioChannelLabel, 3, 1, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
 
-            this.heldNotesChannelChooser = new JComboBox<>(
+            heldNotesChannelChooser = new JComboBox<>(
                     new Integer[]{-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15});
-            this.heldNotesChannelChooser.setSelectedItem(this.arpeggiator.getHeldNotesChannel());
-            this.heldNotesChannelChooser.addActionListener(actionEvent -> {
-                if (this.heldNotesChannelChooser.getSelectedItem() != null)
-                    this.arpeggiator.setHeldNotesChannel((int) this.heldNotesChannelChooser.getSelectedItem());
+            heldNotesChannelChooser.setSelectedItem(this.arpeggiator.getHeldNotesChannel());
+            heldNotesChannelChooser.addActionListener(actionEvent -> {
+                if (heldNotesChannelChooser.getSelectedItem() != null)
+                    this.arpeggiator.setHeldNotesChannel((int) heldNotesChannelChooser.getSelectedItem());
             });
-            addComponentToGridBagLayout(mainPanel, layout, this.heldNotesChannelChooser, 2, 2, 1, 1, 1.0, 1.0,
+            addComponentToGridBagLayout(mainPanel, layout, heldNotesChannelChooser, 2, 2, 1, 1, 1.0, 1.0,
                     this.padding, this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
 
             JLabel heldNotesChannelLabel = new JLabel("   Held Notes Channel");
@@ -261,14 +259,14 @@ public class GUI extends JFrame implements Receiver {
             addComponentToGridBagLayout(mainPanel, layout, heldNotesChannelLabel, 3, 2, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
 
-            this.bassChannelChooser = new JComboBox<>(
+            bassChannelChooser = new JComboBox<>(
                     new Integer[]{-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15});
-            this.bassChannelChooser.setSelectedItem(this.arpeggiator.getBassChannel());
-            this.bassChannelChooser.addActionListener(actionEvent -> {
-                if (this.bassChannelChooser.getSelectedItem() != null)
-                    this.arpeggiator.setBassChannel((int) this.bassChannelChooser.getSelectedItem());
+            bassChannelChooser.setSelectedItem(this.arpeggiator.getBassChannel());
+            bassChannelChooser.addActionListener(actionEvent -> {
+                if (bassChannelChooser.getSelectedItem() != null)
+                    this.arpeggiator.setBassChannel((int) bassChannelChooser.getSelectedItem());
             });
-            addComponentToGridBagLayout(mainPanel, layout, this.bassChannelChooser, 2, 3, 1, 1, 1.0, 1.0, this.padding,
+            addComponentToGridBagLayout(mainPanel, layout, bassChannelChooser, 2, 3, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
 
             JLabel bassChannelLabel = new JLabel("   Bass Channel");
@@ -313,19 +311,17 @@ public class GUI extends JFrame implements Receiver {
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
 
             // Select the pitch processor
-            JComboBox<Mic2MIDI> mic2MIDIChooser = new JComboBox<Mic2MIDI>();
+            JComboBox<Mic2MIDI> mic2MIDIChooser = new JComboBox<>();
             for (Mic2MIDI processor : mic2Midi) {
                 mic2MIDIChooser.addItem(processor);
             }
-            mic2MIDIChooser.addItemListener(new ItemListener() {
-                public void itemStateChanged(ItemEvent event) {
-                    if (activateAudioInput.isSelected()) {
-                        if (event.getStateChange() == ItemEvent.SELECTED) {
-                            ((Mic2MIDI) event.getItem()).start();
-                        }
-                        if (event.getStateChange() == ItemEvent.DESELECTED) {
-                            ((Mic2MIDI) event.getItem()).stop();
-                        }
+            mic2MIDIChooser.addItemListener(event -> {
+                if (activateAudioInput.isSelected()) {
+                    if (event.getStateChange() == ItemEvent.SELECTED) {
+                        ((Mic2MIDI) event.getItem()).start();
+                    }
+                    if (event.getStateChange() == ItemEvent.DESELECTED) {
+                        ((Mic2MIDI) event.getItem()).stop();
                     }
                 }
             });
@@ -334,9 +330,9 @@ public class GUI extends JFrame implements Receiver {
             addComponentToGridBagLayout(mainPanel, layout, mic2MIDIChooser, 2, 4, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
 
-            JLabel tresholdValue = new JLabel("   0.5");
-            tresholdValue.setHorizontalAlignment(JLabel.CENTER);
-            addComponentToGridBagLayout(mainPanel, layout, tresholdValue, 0, 5, 1, 1, 1.0, 1.0, this.padding, this.padding,
+            JLabel thresholdValue = new JLabel("   0.5");
+            thresholdValue.setHorizontalAlignment(JLabel.CENTER);
+            addComponentToGridBagLayout(mainPanel, layout, thresholdValue, 0, 5, 1, 1, 1.0, 1.0, this.padding, this.padding,
                     GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
             signal2noiseThreshold = new JSlider(1, 1000);
             signal2noiseThreshold.setValue(500);
@@ -353,7 +349,7 @@ public class GUI extends JFrame implements Receiver {
             signal2noiseThreshold.setPaintLabels(true);
             signal2noiseThreshold.addChangeListener(changeEvent -> {
                 double value = ((double) signal2noiseThreshold.getValue()) / signal2noiseThreshold.getMaximum();
-                tresholdValue.setText("   " + value);
+                thresholdValue.setText("   " + value);
                 for (Mic2MIDI processor : mic2Midi) {
                     processor.setSignalToNoiseThreshold(value);
                 }
@@ -387,17 +383,15 @@ public class GUI extends JFrame implements Receiver {
             addComponentToGridBagLayout(mainPanel, layout, patternLabel, 3, 9, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
-            this.patternChooser = new JComboBox<>();
-            this.patternChooser.addItem(NotePool.Pattern.up);
-            this.patternChooser.addItem(NotePool.Pattern.down);
-            this.patternChooser.addItem(NotePool.Pattern.up_down);
-            this.patternChooser.addItem(NotePool.Pattern.random_no_repetitions);
-            this.patternChooser.addItem(NotePool.Pattern.random_with_repetitions);
-            this.patternChooser.setSelectedItem(this.arpeggiator.getPattern());
-            this.patternChooser.addActionListener(actionEvent -> {
-                this.arpeggiator.setPattern((NotePool.Pattern) this.patternChooser.getSelectedItem());
-            });
-            addComponentToGridBagLayout(mainPanel, layout, this.patternChooser, 2, 9, 1, 1, 1.0, 1.0, this.padding,
+            patternChooser = new JComboBox<>();
+            patternChooser.addItem(NotePool.Pattern.up);
+            patternChooser.addItem(NotePool.Pattern.down);
+            patternChooser.addItem(NotePool.Pattern.up_down);
+            patternChooser.addItem(NotePool.Pattern.random_no_repetitions);
+            patternChooser.addItem(NotePool.Pattern.random_with_repetitions);
+            patternChooser.setSelectedItem(this.arpeggiator.getPattern());
+            patternChooser.addActionListener(actionEvent -> this.arpeggiator.setPattern((NotePool.Pattern) patternChooser.getSelectedItem()));
+            addComponentToGridBagLayout(mainPanel, layout, patternChooser, 2, 9, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
             ////////////////////
@@ -412,20 +406,20 @@ public class GUI extends JFrame implements Receiver {
             addComponentToGridBagLayout(mainPanel, layout, tempoValue, 0, 6, 1, 1, 1.0, 1.0, this.padding, this.padding,
                     GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
-            this.tempoSlider = new JSlider(100, 1000);
-            this.tempoSlider.setValue(500);
-            this.tempoSlider.setOrientation(JSlider.HORIZONTAL);
-            this.tempoSlider.setMajorTickSpacing(200);
-            this.tempoSlider.setMinorTickSpacing(100);
-            this.tempoSlider.setPaintTicks(true);
+            tempoSlider = new JSlider(100, 1000);
+            tempoSlider.setValue(500);
+            tempoSlider.setOrientation(JSlider.HORIZONTAL);
+            tempoSlider.setMajorTickSpacing(200);
+            tempoSlider.setMinorTickSpacing(100);
+            tempoSlider.setPaintTicks(true);
             Hashtable<Integer, JLabel> tempoSliderLabel = new Hashtable<>();
             tempoSliderLabel.put(100, new JLabel("100"));
             tempoSliderLabel.put(500, new JLabel("Tempo in keystrokes/min"));
             tempoSliderLabel.put(1000, new JLabel("1000"));
-            this.tempoSlider.setLabelTable(tempoSliderLabel);
-            this.tempoSlider.setPaintLabels(true);
-            this.tempoSlider.addChangeListener(changeEvent -> {
-                int tempo = this.tempoSlider.getValue();
+            tempoSlider.setLabelTable(tempoSliderLabel);
+            tempoSlider.setPaintLabels(true);
+            tempoSlider.addChangeListener(changeEvent -> {
+                int tempo = tempoSlider.getValue();
                 if (tempo < 100)
                     tempoSlider.setValue(100);
                 if (tempo > 1000)
@@ -433,44 +427,10 @@ public class GUI extends JFrame implements Receiver {
                 this.arpeggiator.setTempo(tempo);
                 tempoValue.setText("   " + tempo);
             });
-            addComponentToGridBagLayout(mainPanel, layout, this.tempoSlider, 1, 6, 2, 1, 1.0, 1.0, this.padding,
+            addComponentToGridBagLayout(mainPanel, layout, tempoSlider, 1, 6, 2, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
-            JButton tapTempo = new JButton("Tap Tempo");
-//              Modified from:
-//              <!-- Original:  Derek Chilcote-Batto (dac-b@usa.net) -->
-//              <!-- Web Site:  http://www.mixed.net -->
-//              <!-- Rewritten by: Rich Reel all8.com -->
-            tapTempo.addActionListener(actionEvent -> {
-                timeNow = Instant.now();
-                timeChange = Duration.between(timeLast, timeNow).toMillis();
-                if (timeChange > timeOut) {
-                    tapCount = 0;
-                    tapNext = 0;
-                }
-                tapCount++;
-// enough beats to make a measurement (2 or more)?
-                if (tapCount > 1) {
-                    // enough to make an average measurement
-                    if (tapCount > maxCount) // average over maxCount
-                    {
-                        bpmAvg = (int) ((2 * 60.0 * maxCount / Duration.between(times[tapNext], timeNow).toMillis()) * 1000);
-                        tempoSlider.setValue(bpmAvg);
-                        //GUI.updateLogGUI(bpmAvg + "\r\n");
-                    } else {
-                        bpmNow = (int) ((2 * 60.0 / timeChange) * 1000); // instantaneous measurement
-                        tempoSlider.setValue(bpmNow);
-                        //GUI.updateLogGUI(bpmNow + "\r\n");
-                    }
-                }
-
-                timeLast = timeNow; // for instantaneous measurement and for timeout
-                times[tapNext] = timeNow;
-                tapNext++;
-                if (tapNext >= maxCount) {
-                    tapNext = 0;
-                }
-            });
+            JButton tapTempo = getTempo();
             addComponentToGridBagLayout(mainPanel, layout, tapTempo, 3, 6, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
             ////////////////////
@@ -698,7 +658,7 @@ public class GUI extends JFrame implements Receiver {
             addComponentToGridBagLayout(mainPanel, layout, this.tonalEnrichmentPresetChooser, 1, 9, 1, 1, 1.0, 1.0,
                     this.padding, this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
-            JLabel tonalEnrichmentDensityLabel= new JLabel("");
+            JLabel tonalEnrichmentDensityLabel = new JLabel("");
             tonalEnrichmentDensityLabel.setHorizontalAlignment(JLabel.RIGHT);
             addComponentToGridBagLayout(mainPanel, layout, tonalEnrichmentDensityLabel, 0, 11, 1, 1, 1.0, 1.0,
                     this.padding, this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
@@ -717,7 +677,7 @@ public class GUI extends JFrame implements Receiver {
             this.tonalEnrichmentSlider.setPaintLabels(true);
             this.tonalEnrichmentSlider.addChangeListener(changeEvent -> {
                 float tonalEnrichmentAmount = (float) (this.tonalEnrichmentSlider.getValue()) / 100.0f;
-                tonalEnrichmentDensityLabel.setText(this.tonalEnrichmentSlider.getValue()+"%");
+                tonalEnrichmentDensityLabel.setText(this.tonalEnrichmentSlider.getValue() + "%");
                 this.arpeggiator.setTonalEnrichmentAmount(tonalEnrichmentAmount);
             });
 
@@ -798,12 +758,50 @@ public class GUI extends JFrame implements Receiver {
                     patternChooser.setSelectedIndex(Integer.parseInt(configProp.getProperty("Enrichment Pattern", "0")));
 
 
-
                 }
             } catch (IOException ex) {
                 GUI.updateLogGUI(ex.getMessage());
             }
         });
+    }
+
+    private JButton getTempo() {
+        JButton tapTempo = new JButton("Tap Tempo");
+//              Modified from:
+//              <!-- Original:  Derek Chilcote-Batto (dac-b@usa.net) -->
+//              <!-- Web Site:  http://www.mixed.net -->
+//              <!-- Rewritten by: Rich Reel all8.com -->
+        tapTempo.addActionListener(actionEvent -> {
+            timeNow = Instant.now();
+            timeChange = Duration.between(timeLast, timeNow).toMillis();
+            if (timeChange > timeOut) {
+                tapCount = 0;
+                tapNext = 0;
+            }
+            tapCount++;
+// enough beats to make a measurement (2 or more)?
+            if (tapCount > 1) {
+                // enough to make an average measurement
+                if (tapCount > maxCount) // average over maxCount
+                {
+                    bpmAvg = (int) ((2 * 60.0 * maxCount / Duration.between(times[tapNext], timeNow).toMillis()) * 1000);
+                    tempoSlider.setValue(bpmAvg);
+                    //GUI.updateLogGUI(bpmAvg + "\r\n");
+                } else {
+                    bpmNow = (int) ((2 * 60.0 / timeChange) * 1000); // instantaneous measurement
+                    tempoSlider.setValue(bpmNow);
+                    //GUI.updateLogGUI(bpmNow + "\r\n");
+                }
+            }
+
+            timeLast = timeNow; // for instantaneous measurement and for timeout
+            times[tapNext] = timeNow;
+            tapNext++;
+            if (tapNext >= maxCount) {
+                tapNext = 0;
+            }
+        });
+        return tapTempo;
     }
 
     private static void SaveNClose() {
@@ -832,7 +830,6 @@ public class GUI extends JFrame implements Receiver {
         } catch (IOException io) {
             GUI.updateLogGUI(io.getMessage());
         } finally {
-
             System.exit(0); // the program may still run, enforce exit
         }
     }
@@ -999,8 +996,8 @@ public class GUI extends JFrame implements Receiver {
         if (!(message instanceof ShortMessage))
             return;
 
-        if ((this.inputChannelChooser.getSelectedItem() == null)
-                || (((ShortMessage) message).getChannel() != (int) this.inputChannelChooser.getSelectedItem()))
+        if ((inputChannelChooser.getSelectedItem() == null)
+                || (((ShortMessage) message).getChannel() != (int) inputChannelChooser.getSelectedItem()))
             return;
 
         ShortMessage sMsg = (ShortMessage) message;
@@ -1010,53 +1007,53 @@ public class GUI extends JFrame implements Receiver {
                     case EventMaker.CC_General_Purpose_Ctrl_1: // tonal enrichment slider
                         SwingUtilities.invokeLater(() -> {
                             float tonalEnrichmentAmount = ((float) sMsg.getData2()) / 127f;
-                            this.tonalEnrichmentSlider.setValue((int) (tonalEnrichmentAmount * 100));
+                            tonalEnrichmentSlider.setValue((int) (tonalEnrichmentAmount * 100));
                         });
                         break;
                     case EventMaker.CC_General_Purpose_Ctrl_2: // tempo slider
                         SwingUtilities.invokeLater(() -> {
                             double tempo = ((900.0 * sMsg.getData2()) / 127.0) + 100.0;
-                            this.tempoSlider.setValue((int) tempo);
+                            tempoSlider.setValue((int) tempo);
                         });
                         break;
                     case EventMaker.CC_General_Purpose_Ctrl_3: // articulation slider
                         SwingUtilities.invokeLater(() -> {
                             double articulation = ((double) sMsg.getData2() / 127.0) - 0.5;
-                            this.articulationSlider.setValue((int) ((articulation * 100.0) + 100));
+                            articulationSlider.setValue((int) ((articulation * 100.0) + 100));
                         });
                         break;
                     case EventMaker.CC_Undefined_Ctrl_8: // switch tonal enrichment set/tonality
                         SwingUtilities.invokeLater(() -> {
-                            int numberOfOptions = this.tonalEnrichmentPresetChooser.getItemCount();
+                            int numberOfOptions = tonalEnrichmentPresetChooser.getItemCount();
                             int sliderValue = sMsg.getData2();
                             int choice = (sliderValue * (--numberOfOptions)) / 127;
-                            this.tonalEnrichmentPresetChooser.setSelectedIndex(choice);
+                            tonalEnrichmentPresetChooser.setSelectedIndex(choice);
                         });
                         break;
                     case EventMaker.CC_Undefined_Ctrl_7: // arpeggio pattern
                         SwingUtilities.invokeLater(() -> {
-                            int numberOfOptions = this.patternChooser.getItemCount();
+                            int numberOfOptions = patternChooser.getItemCount();
                             int sliderValue = sMsg.getData2();
                             int choice = (sliderValue * (--numberOfOptions) / 127);
-                            this.patternChooser.setSelectedIndex(choice);
+                            patternChooser.setSelectedIndex(choice);
                         });
                         break;
                     case EventMaker.CC_Effect_Ctrl_2_14b: // trigger arpeggio channel
                         SwingUtilities.invokeLater(() -> {
                             int choice = (sMsg.getData2() >= 64) ? Arpeggiator.ARPEGGIO_CHANNEL_PRESET : -1;
-                            this.arpeggioChannelChooser.setSelectedItem(choice);
+                            arpeggioChannelChooser.setSelectedItem(choice);
                         });
                         break;
                     case EventMaker.CC_Undefined_Ctrl_3_14b: // trigger held notes channel
                         SwingUtilities.invokeLater(() -> {
                             int choice = (sMsg.getData2() >= 64) ? Arpeggiator.HELD_NOTES_CHANNEL_PRESET : -1;
-                            this.heldNotesChannelChooser.setSelectedItem(choice);
+                            heldNotesChannelChooser.setSelectedItem(choice);
                         });
                         break;
                     case EventMaker.CC_Undefined_Ctrl_4_14b: // trigger bass channel
                         SwingUtilities.invokeLater(() -> {
                             int choice = (sMsg.getData2() >= 64) ? Arpeggiator.BASS_CHANNEL_PRESET : -1;
-                            this.bassChannelChooser.setSelectedItem(choice);
+                            bassChannelChooser.setSelectedItem(choice);
                         });
                         break;
                     default:
@@ -1075,14 +1072,10 @@ public class GUI extends JFrame implements Receiver {
     public void close() {
         this.synth.stop();
     }
+
     public static void updateLogGUI(final String message) {
         if (!SwingUtilities.isEventDispatchThread()) {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    updateLogGUI(message);
-                }
-            });
+            SwingUtilities.invokeLater(() -> updateLogGUI(message));
             return;
         }
         //Now edit your GUI objects

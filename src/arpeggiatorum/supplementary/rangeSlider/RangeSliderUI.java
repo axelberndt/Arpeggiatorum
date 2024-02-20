@@ -11,7 +11,7 @@ import java.awt.geom.Ellipse2D;
 /**
  * UI delegate for the RangeSlider component.  RangeSliderUI paints two thumbs,
  * one for the lower value and one for the upper value.
- * source: https://github.com/ernieyu/Swing-range-slider
+ * source: <a href="https://github.com/ernieyu/Swing-range-slider">https://github.com/ernieyu/Swing-range-slider</a>
  */
 class RangeSliderUI extends BasicSliderUI {
 
@@ -304,8 +304,7 @@ class RangeSliderUI extends BasicSliderUI {
      */
     private Shape createThumbShape(int width, int height) {
         // Use circular shape.
-        Ellipse2D shape = new Ellipse2D.Double(0, 0, width, height);
-        return shape;
+        return new Ellipse2D.Double(0, 0, width, height);
     }
 
     /**
@@ -352,7 +351,7 @@ class RangeSliderUI extends BasicSliderUI {
      */
     public void scrollByUnit(int direction) {
         synchronized (slider) {
-            int delta = 1 * ((direction > 0) ? POSITIVE_SCROLL : NEGATIVE_SCROLL);
+            int delta = ((direction > 0) ? POSITIVE_SCROLL : NEGATIVE_SCROLL);
 
             if (upperThumbSelected) {
                 int oldValue = ((RangeSlider) slider).getUpperValue();
@@ -535,7 +534,6 @@ class RangeSliderUI extends BasicSliderUI {
                     break;
 
                 default:
-                    return;
             }
         }
 
@@ -594,7 +592,6 @@ class RangeSliderUI extends BasicSliderUI {
                     break;
 
                 default:
-                    return;
             }
         }
     }

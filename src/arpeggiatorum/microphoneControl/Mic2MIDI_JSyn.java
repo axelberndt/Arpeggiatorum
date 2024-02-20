@@ -6,12 +6,8 @@ import com.jsyn.unitgen.*;
 
 import com.softsynth.math.AudioMath;
 
-import meico.midi.EventMaker;
-
-import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.Receiver;
-import javax.sound.midi.ShortMessage;
-import javax.sound.midi.Transmitter;
+
 
 import java.util.stream.DoubleStream;
 
@@ -86,8 +82,8 @@ public class Mic2MIDI_JSyn extends Mic2MIDI {
         this.trigger.connect(0, multiply.output, 0);
         this.add(multiply);
 
-        //System.out.printf("Jsyn Pitch Detection: Variable delay \r\n");
-        GUI.updateLogGUI("Jsyn Pitch Detection: Variable delay \r\n");
+        //System.out.printf("JSyn Pitch Detection: Variable delay \r\n");
+        GUI.updateLogGUI("JSyn Pitch Detection: Variable delay \r\n");
 
         this.setReceiver(receiver);
         // it is not necessary to start any of the unit generators individually, as the Circuit should be started by its creator

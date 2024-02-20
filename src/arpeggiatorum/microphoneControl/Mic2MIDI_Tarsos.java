@@ -4,16 +4,10 @@ import arpeggiatorum.gui.GUI;
 import arpeggiatorum.supplementary.UnitVariableInputPort;
 import be.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
 
-import com.jsyn.unitgen.*;
-
 import com.softsynth.math.AudioMath;
 
-import meico.midi.EventMaker;
 
-import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.Receiver;
-import javax.sound.midi.ShortMessage;
-import javax.sound.midi.Transmitter;
 
 /**
  * This class reads the microphone signal, performs a basic pitch detection and outputs corresponding MIDI messages to the specified Receiver.

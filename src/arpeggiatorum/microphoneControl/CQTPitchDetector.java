@@ -17,12 +17,12 @@ public class CQTPitchDetector extends UnitGenerator{
 	 */
 	public UnitVariableOutputPort output;
 
-	private double[] buffer;
+	private final double[] buffer;
 	private int cursor;
-	private int offset = 0;
+	private final int offset = 0;
 	private boolean running;
 
-	private ConstantQ CQT;
+	private final ConstantQ CQT;
 	public double[] frequencies;
 	float sampleRate;
 	double[] pushData;
