@@ -53,7 +53,7 @@ public class GUI extends JFrame implements Receiver {
     private static final JFrame logFrame = new JFrame("Arpeggiatorum Log");
     private static final JTextArea logMessages = new JTextArea();
 
-
+    Properties configProp;
     //Tap Tempo
     private static int tapCount = 0;
     private static int tapNext = 0;
@@ -65,9 +65,15 @@ public class GUI extends JFrame implements Receiver {
     private static long timeChange;
     private static int bpmNow;
     private static int bpmAvg;
-    private static int sampleRate = 44100;
-
-
+    private static int sampleRate;
+    private static double cqtMin;
+    private static double cqtMax;
+    private static float cqtThreshold;
+    private static float cqtSpread;
+    private static int tarsosBuffer;
+    private static double tarsosConfidence;
+    private static int fftBinSize;
+    private static double fftMaxFreq;
     /**
      * constructor
      */
@@ -85,12 +91,34 @@ public class GUI extends JFrame implements Receiver {
         // receiver of outgoing MIDI messages (to monitor
         // controller movements as slider movements in the GUI)
 
+        try (FileInputStream inputConfig = new FileInputStream("config.properties")) {
+            configProp = new Properties();
+            //load a properties file from class path, inside static method
+            configProp.load(inputConfig);
+        } catch (IOException ex) {
+            GUI.updateLogGUI(ex.getMessage());
+        }
+//Get the properties for internal values
+
+        timeOut = Double.parseDouble(configProp.getProperty("Tap Timeout", "5000"));
+        maxCount = Integer.parseInt(configProp.getProperty("Tap Count", "8"));
+        times = new Instant[maxCount];
+        sampleRate = Integer.parseInt(configProp.getProperty("Sample Rate", "44100"));
+        cqtMin=Double.parseDouble(configProp.getProperty("CQT Min Freq", "41.205"));
+        cqtMax=Double.parseDouble(configProp.getProperty("CQT Max Freq", "2637.02"));
+        cqtThreshold=Float.parseFloat(configProp.getProperty("CQT Threshold", "0.01"));
+        cqtSpread=Float.parseFloat(configProp.getProperty("CQT Spread", "0.55"));
+        tarsosBuffer=Integer.parseInt(configProp.getProperty("Tarsos Buffer", "1024"));
+        tarsosConfidence=Double.parseDouble(configProp.getProperty("Tarsos Confidence", "0.98"));
+        fftBinSize=Integer.parseInt(configProp.getProperty("FFT Bin Size", "9"));
+        fftMaxFreq=Double.parseDouble(configProp.getProperty("FFT Max Freq", "1567.98"));
+
         //Pitch processors
         this.mic2Midi = new ArrayList<>();
         this.mic2Midi.add(new Mic2MIDI_JSyn(this.arpeggiator, sampleRate));
-        this.mic2Midi.add(new Mic2MIDI_FFT(this.arpeggiator, sampleRate, 9, 1567.98));
-        this.mic2Midi.add(new Mic2MIDI_Tarsos(this.arpeggiator, sampleRate, 1024, 0.98));
-        this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, sampleRate, 41.205, 2637.02, 0.01f, 0.55f, true));
+        this.mic2Midi.add(new Mic2MIDI_FFT(this.arpeggiator, sampleRate, fftBinSize, fftMaxFreq));
+        this.mic2Midi.add(new Mic2MIDI_Tarsos(this.arpeggiator, sampleRate, tarsosBuffer, tarsosConfidence));
+        this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, sampleRate, cqtMin, cqtMax, cqtThreshold,cqtSpread, true));
         for (Mic2MIDI processor : mic2Midi) {
             this.synth.add(processor);
         }
@@ -711,32 +739,21 @@ public class GUI extends JFrame implements Receiver {
             menuBar.add(menu);
             this.setJMenuBar(menuBar);
 
-            try (FileInputStream inputConfig = new FileInputStream("config.properties")) {
-                Properties configProp = new Properties();
-                //load a properties file from class path, inside static method
-                configProp.load(inputConfig);
-                //Get the values
-                inputChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Channel", "0")));
-                arpeggioChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Arpeggio", "1")));
-                bassChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Bass", "0")));
-                heldNotesChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Held", "2")));
-                signal2noiseThreshold.setValue(Integer.parseInt(configProp.getProperty("Threshold", "500")));
-                tempoSlider.setValue(Integer.parseInt(configProp.getProperty("Tempo", "500")));
-                articulationSlider.setValue(Integer.parseInt(configProp.getProperty("Articulation", "100")));
-                rangeSlider.setValue(Integer.parseInt(configProp.getProperty("RangeMin", "0")));
-                rangeSlider.setUpperValue(Integer.parseInt(configProp.getProperty("RangeMax", "127")));
-                tonalEnrichmentSlider.setValue(Integer.parseInt(configProp.getProperty("Density", "0")));
-                tonalEnrichmentPresetChooser.setSelectedIndex(Integer.parseInt(configProp.getProperty("Enrichment Preset", "0")));
-                patternChooser.setSelectedIndex(Integer.parseInt(configProp.getProperty("Enrichment Pattern", "0")));
 
-                timeOut = Double.parseDouble(configProp.getProperty("Tap Timeout", "5000"));
-                maxCount = Integer.parseInt(configProp.getProperty("Tap Count", "8"));
-                times = new Instant[maxCount];
-                sampleRate = Integer.parseInt(configProp.getProperty("Sample Rate", "44100"));
+            //Get the properties values for GUI
+            inputChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Channel", "0")));
+            arpeggioChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Arpeggio", "1")));
+            bassChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Bass", "0")));
+            heldNotesChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Held", "2")));
+            signal2noiseThreshold.setValue(Integer.parseInt(configProp.getProperty("Threshold", "500")));
+            tempoSlider.setValue(Integer.parseInt(configProp.getProperty("Tempo", "500")));
+            articulationSlider.setValue(Integer.parseInt(configProp.getProperty("Articulation", "100")));
+            rangeSlider.setValue(Integer.parseInt(configProp.getProperty("RangeMin", "0")));
+            rangeSlider.setUpperValue(Integer.parseInt(configProp.getProperty("RangeMax", "127")));
+            tonalEnrichmentSlider.setValue(Integer.parseInt(configProp.getProperty("Density", "0")));
+            tonalEnrichmentPresetChooser.setSelectedIndex(Integer.parseInt(configProp.getProperty("Enrichment Preset", "0")));
+            patternChooser.setSelectedIndex(Integer.parseInt(configProp.getProperty("Enrichment Pattern", "0")));
 
-            } catch (IOException ex) {
-                GUI.updateLogGUI(ex.getMessage());
-            }
         });
     }
 
@@ -799,14 +816,14 @@ public class GUI extends JFrame implements Receiver {
             prop.setProperty("Tap Timeout", String.valueOf(timeOut));
             prop.setProperty("Tap Count", String.valueOf(maxCount));
             prop.setProperty("Sample Rate", String.valueOf(sampleRate));
-            prop.setProperty("CQT Min Freq", String.valueOf(41.205));
-            prop.setProperty("CQT Max Freq", String.valueOf(2637.02));
-            prop.setProperty("CQT Threshold ", String.valueOf(0.01));
-            prop.setProperty("CQT Spread", String.valueOf(0.55));
-            prop.setProperty("Tarsos Buffer Size ", String.valueOf(1024));
-            prop.setProperty("Tarsos Confidence Threshold", String.valueOf(0.98));
-            prop.setProperty("FFT Bin size ", String.valueOf(9));
-            prop.setProperty("FFT Max Freq", String.valueOf(1567.98));
+            prop.setProperty("CQT Min Freq", String.valueOf(cqtMin));
+            prop.setProperty("CQT Max Freq", String.valueOf(cqtMax));
+            prop.setProperty("CQT Threshold", String.valueOf(cqtThreshold));
+            prop.setProperty("CQT Spread", String.valueOf(cqtSpread));
+            prop.setProperty("Tarsos Buffer Size", String.valueOf(tarsosBuffer));
+            prop.setProperty("Tarsos Confidence Threshold", String.valueOf(tarsosConfidence));
+            prop.setProperty("FFT Bin Size", String.valueOf(fftBinSize));
+            prop.setProperty("FFT Max Freq", String.valueOf(fftMaxFreq));
 
             // Save properties to project root folder
             prop.store(output, null);
