@@ -4,13 +4,13 @@ import java.awt.*;
 import javax.swing.JPanel;
 
 public class CQTHistogram extends JPanel {
-
     private double[] binCounts;
     private final double[] frequencies;
     public double max;
     private final int WIDTH = 1080;
     private final int HEIGHT = 500;
     private final int BORDER = 10;
+    private final float fontScale=0.75f;
 
     public CQTHistogram(double[] binCounts, double[] frequencies) {
         this.binCounts = binCounts;
@@ -24,9 +24,6 @@ public class CQTHistogram extends JPanel {
     }
 
     public void updateBins(double[] binCounts, int lowIndex) {
-//        for (int i = 0; i < binCounts.length; i++) {
-//            this.binCounts[lowIndex + i] = binCounts[i];
-//        }
         System.arraycopy(binCounts, 0, this.binCounts, lowIndex, binCounts.length);
     }
 
@@ -38,7 +35,7 @@ public class CQTHistogram extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         Font currentFont = g.getFont();
-        Font newFont = currentFont.deriveFont(currentFont.getSize() * 0.75F);
+        Font newFont = currentFont.deriveFont(currentFont.getSize() * fontScale);
 
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g.create();

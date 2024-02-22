@@ -23,10 +23,8 @@ public class TarsosPitchDetector extends UnitGenerator {
     private final int offset = 0;
     private final double[] buffer;
     private int cursor;
-
-    float sampleRate;
-    int bufferSize;
     private final PitchDetector detector;
+    private final int bufferSize;
 
     private final double[] pushPitch;
     private final double[] pushConf;
@@ -41,25 +39,22 @@ public class TarsosPitchDetector extends UnitGenerator {
         this.addPort(this.confidence = new UnitVariableOutputPort("Confidence", 1));
         pushPitch = frequency.getData();
         pushConf = confidence.getData();
-
-        this.sampleRate = sampleRate;
-        this.bufferSize = bufferSize;
-        buffer = new double[this.bufferSize];
+        this.bufferSize=bufferSize;
+        buffer = new double[bufferSize];
 
         String message = String.format("Tarsos Pitch Detection: Minimum Frequency (%.2fHz) Delay (%.03fs) \r\n", (sampleRate / bufferSize) * 2, (bufferSize / sampleRate) / 2);
-
-        //System.out.printf(message);
         GUI.updateLogGUI(message);
+
         if (algo == PitchProcessor.PitchEstimationAlgorithm.MPM) {
-            detector = new McLeodPitchMethod(sampleRate, this.bufferSize);
+            detector = new McLeodPitchMethod(sampleRate, bufferSize);
         } else if (algo == PitchProcessor.PitchEstimationAlgorithm.DYNAMIC_WAVELET) {
-            detector = new DynamicWavelet(sampleRate, this.bufferSize);
+            detector = new DynamicWavelet(sampleRate, bufferSize);
         } else if (algo == PitchProcessor.PitchEstimationAlgorithm.FFT_YIN) {
-            detector = new FastYin(sampleRate, this.bufferSize);
+            detector = new FastYin(sampleRate, bufferSize);
         } else if (algo == PitchProcessor.PitchEstimationAlgorithm.AMDF) {
-            detector = new AMDF(sampleRate, this.bufferSize);
+            detector = new AMDF(sampleRate, bufferSize);
         } else {
-            detector = new Yin(sampleRate, this.bufferSize);
+            detector = new Yin(sampleRate, bufferSize);
         }
     }
 

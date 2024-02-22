@@ -16,34 +16,24 @@ import java.util.Arrays;
  * @author Davide Mauro
  */
 public class Mic2MIDI_CQT extends Mic2MIDI {
-
-    //Lower and upper boundaries for Pitch detection
-    //E1-G6 gives us 64 CQT-bins (power of 2)
-    public static final double minFreq = 41.205; //E1
-    public static final double maxFreq = 2637.02; //E7
-
-
     //CQT
-    public static final int binsPerOctave = 12;
-    public static final int binsToCompute = 16;
+    private  final int binsPerOctave = 12;
+    private  final int binsToCompute = 16;
     private final CQTPitchDetector[] cqtPitchDetectors;
+    private Integer newPitch;
     public final UnitVariableInputPort[] CQTPorts;
-    double[] CQTBins;
-    double[] CQTFrequencies;
-    int[] CQTBinsSortedIndexes;
+    private double[] CQTBins;
+    private double[] CQTFrequencies;
+    private int[] CQTBinsSortedIndexes;
     //Histogram
-//    public static final JFrame cqtBinsFrame = new JFrame("CQT Histogram");
     public static CQTHistogram cqtHist;
     private double PITCH_THRESHOLD;
-
     private final SortedList<Integer> currentPitches = new SortedList<>();
-    private Integer newPitch;
 
-    public Mic2MIDI_CQT(Receiver receiver, boolean isPoly) {
+    public Mic2MIDI_CQT(Receiver receiver, double sampleRate, double minFreq, double maxFreq, float threshold, float spread, boolean isPoly) {
+        super(sampleRate);
         NAME = "CQT-Based Pitch Detector";
         POLY = isPoly;
-        // Instantiate ports
-
         // Build DSP patch
         this.add(this.channelIn);// add channelIn to the synth
 
@@ -60,7 +50,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
         cqtPitchDetectors = new CQTPitchDetector[bandNum];
         CQTPorts = new UnitVariableInputPort[bandNum];
         for (int i = 0; i < bandNum; i++) {
-            cqtPitchDetectors[i] = new CQTPitchDetector((float) sampleRate, bands.get(i).floatValue(), bands.get(i + 1).floatValue(), binsPerOctave);
+            cqtPitchDetectors[i] = new CQTPitchDetector((float) sampleRate, bands.get(i).floatValue(), bands.get(i + 1).floatValue(), binsPerOctave, threshold, spread);
             cqtPitchDetectors[i].input.connect(0, this.channelIn.output, 0);
             this.add(cqtPitchDetectors[i]);
             addPort(this.CQTPorts[i] = new UnitVariableInputPort("CQTBins"));
@@ -76,18 +66,15 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
             CQTFrequencies[i] = (float) (minFreq * Math.pow(2, i / (float) binsPerOctave));
 
         }
-
         //CQT Histogram
         double[] initializer = new double[CQTFrequencies.length];
         cqtHist = new CQTHistogram(initializer, CQTFrequencies);
-        //GUI.cqtBinsPanel.add(cqtHist);
         this.setReceiver(receiver);
     }
 
     @Override
     public void generate(int start, int limit) {
         super.generate(start, limit);
-
 
         //Pull CQT Data from individual Bands
         for (int i = 0; i < CQTPorts.length; i++) {
@@ -112,7 +99,6 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                     this.sendNoteOn(newPitch);
                     currentPitch = newPitch;
                     String message = String.format("[%d] %.0fHz", newPitch, CQTFrequencies[CQTBinsSortedIndexes[0]]);
-                   // System.out.println(message);
                     GUI.updateLogGUI(message);
                 }
             } else {
@@ -128,8 +114,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                 if (CQTBins[i] >= PITCH_THRESHOLD) {
                     if (currentPitches.add(newPitch)) {
                         //We have to play a new note
-                        String message= String.format("[%d] %.0fHz \r\n", newPitch, CQTFrequencies[i]);
-                        //System.out.printf(message);
+                        String message = String.format("[%d] %.0fHz \r\n", newPitch, CQTFrequencies[i]);
                         GUI.updateLogGUI(message);
                         this.sendNoteOn(newPitch);
                     }
@@ -178,5 +163,4 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
         }
         return maxIndex;
     }
-
 }

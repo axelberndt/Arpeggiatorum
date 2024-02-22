@@ -15,35 +15,34 @@ import javax.sound.midi.Receiver;
  * @author Axel Berndt
  */
 public class Mic2MIDI_FFT extends Mic2MIDI {
-
     public UnitInputPort trigger;// this port gets a 1.0 to trigger and a 0.0 to do nothing
     private double previousTriggerValue = 0.0;
     public UnitInputPort frequency;
     public UnitSpectralInputPort spectrum;
 
-
     //FFT to Pitch
-    private static final int binSize = 9;
-    private static final int numberBins = (int) Math.pow(2, binSize);
-    private static final int windowLength = numberBins * 2;
+    private final int numberBins;
+    private final int windowLength;
     //LowPass filter cutoff frequency
-    private static final double lowCut = 8000.0f;
+    private final double lowCut = 8000.0f;
     //Highpass filter cutoff frequency
-    private static final double hiCut = 40.0f;
+    private final double hiCut = 40.0f;
     private int lowCutoff = 0;
     private int hiCutoff = 0;
     private int size = 0;
     private int nyquist = 0;
     //HPS
     private static final int decimationSize = 3;
+    private  final double minFreq;
+    private final double maxFreq;
 
-    //Lower and upper boundaries for Pitch detection
-    //E1-G6 gives us 64 CQT bins (power of 2)
-    public static final double minFreq = sampleRate/numberBins;
-    public static final double maxFreq = 1567.98; //G6
-
-    public Mic2MIDI_FFT(Receiver receiver) {
+    public Mic2MIDI_FFT(Receiver receiver, double sampleRate, int binSize, double maxFreq) {
+        super(sampleRate);
         NAME = "FFT-Based Pitch Detectors";
+        numberBins = (int) Math.pow(2, binSize);
+        windowLength = numberBins * 2;
+        minFreq = sampleRate / numberBins;
+        this.maxFreq = maxFreq;
         // Instantiate ports
         addPort(this.trigger = new UnitInputPort("Trigger"));
         addPort(this.frequency = new UnitInputPort("Frequency"));
@@ -75,10 +74,10 @@ public class Mic2MIDI_FFT extends Mic2MIDI {
         this.schmidtTrigger.setLevel.set(SET_LEVEL);
         this.schmidtTrigger.resetLevel.set(RESET_LEVEL);
         this.add(this.schmidtTrigger);
-        this.trigger.connect(0,this.schmidtTrigger.output, 0);
+        this.trigger.connect(0, this.schmidtTrigger.output, 0);
 
-        String message= String.format("FFT Pitch Detection: Minimum Frequency (%.2fHz) Delay (%.03fs) \r\n",sampleRate/numberBins, numberBins/sampleRate);
-       // System.out.printf(message);
+        String message = String.format("FFT Pitch Detection: Minimum Frequency (%.2fHz) Delay (%.03fs) \r\n", sampleRate / numberBins, numberBins / sampleRate);
+        // System.out.printf(message);
         GUI.updateLogGUI(message);
 
         this.setReceiver(receiver);
@@ -142,60 +141,41 @@ public class Mic2MIDI_FFT extends Mic2MIDI {
         }
         maxBinCep = getMaxBin(logMagFFT, outputLength - hiBin, outputLength - lowBin);
 
-        //System.out.println("- FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist));
-        //System.out.println("- FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))));
-
         // Check if at the end of the buffer we have to play or stop a note
-		int newPitch = (int) Math.round(AudioMath.frequencyToPitch(getFrequencyForIndex(maxBinHPS, nyquist)));
-		if (newPitch<= 0|| currentPitch<-1 ||newPitch>= 128|| currentPitch>=128){
-			//this.previousTriggerValue = triggerInputs[0]; //[limit - 1]
-			//((Arpeggiator)receiver).panic();
-			return;
-		}
+        int newPitch = (int) Math.round(AudioMath.frequencyToPitch(getFrequencyForIndex(maxBinHPS, nyquist)));
+        if (newPitch <= 0 || currentPitch < -1 || newPitch >= 128 || currentPitch >= 128) {
+            //this.previousTriggerValue = triggerInputs[0]; //[limit - 1]
+            //((Arpeggiator)receiver).panic();
+            return;
+        }
 
-		if (this.previousTriggerValue > CONFIDENCE_THRESHOLD){         // we are currently playing a tone
-			if (triggerInputs[0] <= CONFIDENCE_THRESHOLD){     // [limit -1] if we have to stop the note
-//				System.out.println("> " + this.currentPitch);
-//				System.out.println("> FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist));
-//				System.out.println("> FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))));
-//
-//				System.out.print("\r\n");
-                GUI.updateLogGUI("> " + this.currentPitch+"\r\n");
-                GUI.updateLogGUI("> FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist)+"\r\n");
-                GUI.updateLogGUI("> FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength)))+"\r\n");
-
+        if (this.previousTriggerValue > CONFIDENCE_THRESHOLD) { // we are currently playing a tone
+            if (triggerInputs[0] <= CONFIDENCE_THRESHOLD) { // if we have to stop the note
+                GUI.updateLogGUI("> " + this.currentPitch + "\r\n");
+                GUI.updateLogGUI("> FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist) + "\r\n");
+                GUI.updateLogGUI("> FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))) + "\r\n");
                 GUI.updateLogGUI("\r\n");
-				this.sendNoteOff(this.currentPitch);
-			} else{                                                    // we may have to update the pitch
-//				System.out.println("- " + currentPitch);
-                GUI.updateLogGUI("- " + currentPitch);
-				if (newPitch != this.currentPitch){
-//					System.out.println("- " + this.currentPitch + " ->" + newPitch);
-//					System.out.println("- FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist));
-//					System.out.println("- FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))));
-//					System.out.print("\r\n");
-                    GUI.updateLogGUI("- " + this.currentPitch + " ->" + newPitch+"\r\n");
-                    GUI.updateLogGUI("- FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist)+"\r\n");
-                    GUI.updateLogGUI("- FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength)))+"\r\n");
+                this.sendNoteOff(this.currentPitch);
+            } else {// we may have to update the pitch
+                //GUI.updateLogGUI("- " + currentPitch);
+                if (newPitch != this.currentPitch) {
+                    GUI.updateLogGUI("- " + this.currentPitch + " ->" + newPitch + "\r\n");
+                    GUI.updateLogGUI("- FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist) + "\r\n");
+                    GUI.updateLogGUI("- FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))) + "\r\n");
                     GUI.updateLogGUI("\r\n");
-					this.sendNoteOff(this.currentPitch);
-					this.sendNoteOn(newPitch);
-				}
-			}
-		} else if (triggerInputs[0] > CONFIDENCE_THRESHOLD){   //[limit -1] we have to start a note
-//			System.out.println("< " + this.currentPitch);
-//			System.out.println("< FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist));
-//			System.out.println("< FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))));
-//			System.out.print("\r\n");
-            GUI.updateLogGUI("< " + this.currentPitch+"\r\n");
-            GUI.updateLogGUI("< FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist)+"\r\n");
-            GUI.updateLogGUI("< FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength)))+"\r\n");
-
+                    this.sendNoteOff(this.currentPitch);
+                    this.sendNoteOn(newPitch);
+                }
+            }
+        } else if (triggerInputs[0] > CONFIDENCE_THRESHOLD) {   //we have to start a note
+            GUI.updateLogGUI("< " + this.currentPitch + "\r\n");
+            GUI.updateLogGUI("< FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist) + "\r\n");
+            GUI.updateLogGUI("< FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))) + "\r\n");
             GUI.updateLogGUI("\r\n");
-			this.sendNoteOn(newPitch);
-		}
+            this.sendNoteOn(newPitch);
+        }
 
-		this.previousTriggerValue = triggerInputs[0]; //[limit - 1]
+        this.previousTriggerValue = triggerInputs[0];
     }
 
     public static int getMaxBin(double[] arrayInput, int start, int end) {
@@ -248,7 +228,7 @@ public class Mic2MIDI_FFT extends Mic2MIDI {
     }
 
     private double getFrequencyForIndex(int index, int size) {
-        return (double) index * Mic2MIDI_FFT.sampleRate / (double) size;
+        return (double) index * sampleRate / (double) size;
     }
 
 }

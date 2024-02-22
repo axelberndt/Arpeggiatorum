@@ -38,7 +38,8 @@ public class Mic2MIDI_JSyn extends Mic2MIDI {
      * |                            |
      * frequencyInputPort            triggerInputPort
      */
-    public Mic2MIDI_JSyn(Receiver receiver) {
+    public Mic2MIDI_JSyn(Receiver receiver, double sampleRate) {
+        super(sampleRate);
         NAME = "JSyn AutoCorrelation";
 
         // Instantiate ports
@@ -82,11 +83,9 @@ public class Mic2MIDI_JSyn extends Mic2MIDI {
         this.trigger.connect(0, multiply.output, 0);
         this.add(multiply);
 
-        //System.out.printf("JSyn Pitch Detection: Variable delay \r\n");
         GUI.updateLogGUI("JSyn Pitch Detection: Variable delay \r\n");
 
-        this.setReceiver(receiver);
-        // it is not necessary to start any of the unit generators individually, as the Circuit should be started by its creator
+        this.setReceiver(receiver);// it is not necessary to start any of the unit generators individually, as the Circuit should be started by its creator
     }
 
     @Override
@@ -99,35 +98,27 @@ public class Mic2MIDI_JSyn extends Mic2MIDI {
         int newPitch = (int) Math.round(AudioMath.frequencyToPitch(DoubleStream.of(frequencyInputs).average().getAsDouble())) + 12;
 
         //   Check if at the end of the buffer we have to play or stop a note
-        if (this.previousTriggerValue > CONFIDENCE_THRESHOLD) {         // we are currently playing a tone
-            if (triggerInputs[0] <= CONFIDENCE_THRESHOLD) {     // [limit -1] if we have to stop the note
-//                System.out.println("> " + this.currentPitch);
-//                System.out.println("> Auto-correlation Pitch: " + DoubleStream.of(frequencyInputs).average().getAsDouble());
+        if (this.previousTriggerValue > CONFIDENCE_THRESHOLD) {// we are currently playing a tone
+            if (triggerInputs[0] <= CONFIDENCE_THRESHOLD) {//if we have to stop the note
                 GUI.updateLogGUI("> " + this.currentPitch + "\r\n");
                 GUI.updateLogGUI("> Auto-correlation Pitch: " + DoubleStream.of(frequencyInputs).average().getAsDouble() + "\r\n");
                 GUI.updateLogGUI("\r\n");
                 this.sendNoteOff(this.currentPitch);
-            } else {                                                    // we may have to update the pitch
-                // System.out.println("- " + currentPitch);
+            } else {// we may have to update the pitch
                 if (newPitch != this.currentPitch) {
-//                    System.out.println("- " + this.currentPitch + " ->" + newPitch);
-//                    System.out.println("- Auto-correlation Pitch: " + DoubleStream.of(frequencyInputs).average().getAsDouble());
-                    GUI.updateLogGUI("- " + this.currentPitch + " ->" + newPitch+ "\r\n");
-                    GUI.updateLogGUI("- Auto-correlation Pitch: " + DoubleStream.of(frequencyInputs).average().getAsDouble()+ "\r\n");
+                    GUI.updateLogGUI("- " + this.currentPitch + " ->" + newPitch + "\r\n");
+                    GUI.updateLogGUI("- Auto-correlation Pitch: " + DoubleStream.of(frequencyInputs).average().getAsDouble() + "\r\n");
                     this.sendNoteOff(this.currentPitch);
                     this.sendNoteOn(newPitch);
                 }
             }
-        } else if (triggerInputs[0] > CONFIDENCE_THRESHOLD) {   //[limit -1] we have to start a note
-//            System.out.println("< " + this.currentPitch);
-//            System.out.println("< Auto-correlation Pitch: " + DoubleStream.of(frequencyInputs).average().getAsDouble());
-//            System.out.print("\r\n");
+        } else if (triggerInputs[0] > CONFIDENCE_THRESHOLD) {// we have to start a note
             GUI.updateLogGUI("< " + this.currentPitch + "\r\n");
             GUI.updateLogGUI("< Auto-correlation Pitch: " + DoubleStream.of(frequencyInputs).average().getAsDouble() + "\r\n");
             GUI.updateLogGUI("\r\n");
             this.sendNoteOn(newPitch);
         }
 
-        this.previousTriggerValue = triggerInputs[0]; //[limit - 1]
+        this.previousTriggerValue = triggerInputs[0];
     }
 }

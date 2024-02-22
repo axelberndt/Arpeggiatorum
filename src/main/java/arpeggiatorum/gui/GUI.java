@@ -32,8 +32,7 @@ import java.util.*;
  * @author Axel Berndt
  */
 public class GUI extends JFrame implements Receiver {
-    private final Synthesizer synth = JSyn.createSynthesizer(); // this Synthesizer instance is used for scheduling
-    // and audio processing
+    private final Synthesizer synth = JSyn.createSynthesizer(); // this Synthesizer instance is used for scheduling and audio processing
     private final int padding = 10;
     private static JComboBox<Integer> inputChannelChooser;
     private static JComboBox<Integer> arpeggioChannelChooser;
@@ -51,22 +50,22 @@ public class GUI extends JFrame implements Receiver {
     private final ArrayList<Mic2MIDI> mic2Midi;
     //Helper Windows
     public static JPanel cqtBinsPanel;
-    public static final JFrame logFrame = new JFrame("Arpeggiatorum Log");
-    // create JTextField
-    public static final JTextArea logMessages = new JTextArea();
+    private static final JFrame logFrame = new JFrame("Arpeggiatorum Log");
+    private static final JTextArea logMessages = new JTextArea();
 
 
     //Tap Tempo
-    int tapCount = 0;
-    int tapNext = 0;
-    int maxCount = 8;
-    final double timeOut = 5000.0f;
-    Instant timeLast;
-    Instant timeNow;
-    Instant[] times = new Instant[maxCount];
-    long timeChange;
-    int bpmNow;
-    int bpmAvg;
+    private static int tapCount = 0;
+    private static int tapNext = 0;
+    private static int maxCount;
+    private static double timeOut;
+    private static Instant timeLast;
+    private static Instant timeNow;
+    private static Instant[] times ;
+    private static long timeChange;
+    private static int bpmNow;
+    private static int bpmAvg;
+    private static int sampleRate=44100;
 
 
     /**
@@ -76,38 +75,28 @@ public class GUI extends JFrame implements Receiver {
         super("Arpeggiatorum");
         timeLast = Instant.now();
 
-        // Tools.printAudioDevices(); // print a list of all available audio devices
-        // int audioInputDeviceID = Tools.getDeviceID("Primärer Soundaufnahmetreiber");
-        // //Problem with system language
-        //	 int audioInputDeviceID = Tools.getDeviceID("Primary Sound Capture Driver");
-        //	 int numAudioInputChannels = this.synth.getAudioDeviceManager().getMaxInputChannels(audioInputDeviceID);
+        Tools.printAudioDevices(); // print a list of all available audio devices
 
         this.synth.setRealTime(true);
         this.synth.start();
-//		 this.synth.start(44100, // frame rate
-//		 audioInputDeviceID, // input device ID
-//		 numAudioInputChannels, // num input channels
-//		 AudioDeviceManager.USE_DEFAULT_DEVICE, // output device ID
-//		 0); // num output channels (here we need no output channels as we have no
-        // audio output)
         //Passing a value greater than 0 for input channels will cause an error. why?
         //this.synth.start(44100,AudioDeviceManager.USE_DEFAULT_DEVICE,2,AudioDeviceManager.USE_DEFAULT_DEVICE,0);
         this.arpeggiator = new Arpeggiator(this.synth, this); // instantiate the Arpeggiator and specify this GUI as
         // receiver of outgoing MIDI messages (to monitor
         // controller movements as slider movements in the GUI)
 
+        //Pitch processors
         this.mic2Midi = new ArrayList<>();
-        this.mic2Midi.add(new Mic2MIDI_JSyn(this.arpeggiator));
-        this.mic2Midi.add(new Mic2MIDI_FFT(this.arpeggiator));
-        this.mic2Midi.add(new Mic2MIDI_Tarsos(this.arpeggiator));
-        this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, true));
+        this.mic2Midi.add(new Mic2MIDI_JSyn(this.arpeggiator, sampleRate));
+        this.mic2Midi.add(new Mic2MIDI_FFT(this.arpeggiator, sampleRate, 9,1567.98));
+        this.mic2Midi.add(new Mic2MIDI_Tarsos(this.arpeggiator, sampleRate, 1024, 0.98));
+        this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, sampleRate, 41.205,2637.02,0.01f,0.55f,true));
         for (Mic2MIDI processor : mic2Midi) {
             this.synth.add(processor);
         }
 
         GUI.exitOnEsc(this); // close window on ESC
         // this.setResizable(false); // don't allow resizing
-        //this.setLocationRelativeTo(null); // set window position
 
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); // what happens when the X is clicked
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdownHook)); // do what has to be done on shutdown
@@ -123,18 +112,17 @@ public class GUI extends JFrame implements Receiver {
                 SaveNClose();
             }
         });
-        // execute the GUI building in the EDT (Event Dispatch Thread)
+        // Execute the GUI building in the EDT (Event Dispatch Thread)
         SwingUtilities.invokeLater(() -> {
-            // set look and feel
+            // Set look and feel
             try {
-                //Should set the correct system look and feel
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
                      | UnsupportedLookAndFeelException e) {
                 GUI.updateLogGUI(e.getMessage());
             }
 
-            // the container panel
+            // The container panel
             GridBagLayout layout = new GridBagLayout();
             JPanel mainPanel = new JPanel(layout);
             this.add(mainPanel);
@@ -293,7 +281,7 @@ public class GUI extends JFrame implements Receiver {
 
                 int deviceID = Tools.getDeviceID((String) audioInputChooser.getSelectedItem());
                 int deviceInputChannels = this.synth.getAudioDeviceManager().getMaxInputChannels(deviceID);
-                this.synth.start(44100,
+                this.synth.start(sampleRate,
                         deviceID,
                         deviceInputChannels,
                         AudioDeviceManager.USE_DEFAULT_DEVICE,
@@ -357,22 +345,22 @@ public class GUI extends JFrame implements Receiver {
 
             activateAudioInput.addItemListener(new ItemListener() {
                 public void itemStateChanged(ItemEvent ev) {
-                if (ev.getStateChange()==ItemEvent.SELECTED) {
-                    activateAudioInput.setForeground(Color.green);
-                    activateAudioInput.setBackground(Color.green);
-                    activateAudioInput.setText("Active");
-                    ((Mic2MIDI) mic2MIDIChooser.getSelectedItem()).start();
-                    ((Mic2MIDI) mic2MIDIChooser.getSelectedItem()).setSignalToNoiseThreshold(((double) signal2noiseThreshold.getValue()) / signal2noiseThreshold.getMaximum());
-                } else {
-                    activateAudioInput.setForeground(Color.DARK_GRAY);
-                    activateAudioInput.setBackground(Color.DARK_GRAY);
-                    activateAudioInput.setText("Inactive");
-                    for (Mic2MIDI processor : mic2Midi) {
-                        processor.stop();
+                    if (ev.getStateChange() == ItemEvent.SELECTED) {
+                        activateAudioInput.setForeground(Color.green);
+                        activateAudioInput.setBackground(Color.green);
+                        activateAudioInput.setText("Active");
+                        ((Mic2MIDI) mic2MIDIChooser.getSelectedItem()).start();
+                        ((Mic2MIDI) mic2MIDIChooser.getSelectedItem()).setSignalToNoiseThreshold(((double) signal2noiseThreshold.getValue()) / signal2noiseThreshold.getMaximum());
+                    } else {
+                        activateAudioInput.setForeground(Color.DARK_GRAY);
+                        activateAudioInput.setBackground(Color.DARK_GRAY);
+                        activateAudioInput.setText("Inactive");
+                        for (Mic2MIDI processor : mic2Midi) {
+                            processor.stop();
+                        }
+                        //Try to avoid calling panic
+                        arpeggiator.panic();
                     }
-                    //Try to avoid calling panic
-                   arpeggiator.panic();
-                }
                 }
             });
 
@@ -578,13 +566,7 @@ public class GUI extends JFrame implements Receiver {
             tonalEnrichmentButton.addActionListener(actionEvent -> {
                 int[] intervals = new int[]{
                         (e1.getValue() instanceof Long) ? ((Long) e1.getValue()).intValue() : (Integer) e1.getValue(), // it
-                        // can
-                        // be
-                        // of
-                        // type
-                        // Long
-                        // or
-                        // Integer
+                        // can be of type Long or Integer
                         (e2.getValue() instanceof Long) ? ((Long) e2.getValue()).intValue() : (Integer) e2.getValue(),
                         (e3.getValue() instanceof Long) ? ((Long) e3.getValue()).intValue() : (Integer) e3.getValue(),
                         (e4.getValue() instanceof Long) ? ((Long) e4.getValue()).intValue() : (Integer) e4.getValue(),
@@ -706,7 +688,7 @@ public class GUI extends JFrame implements Receiver {
             GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
             this.setMaximizedBounds(env.getMaximumWindowBounds());
             this.setExtendedState(this.getExtendedState() | MAXIMIZED_BOTH);
-            //Menu Bar for Log and Histogram
+            //Menu Bar for Log
             JMenuBar menuBar = new JMenuBar();
             JMenu menu = new JMenu("Utilities");
             JMenuItem menuLog = new JMenuItem("Log");
@@ -746,7 +728,10 @@ public class GUI extends JFrame implements Receiver {
                 tonalEnrichmentSlider.setValue(Integer.parseInt(configProp.getProperty("Density", "0")));
                 tonalEnrichmentPresetChooser.setSelectedIndex(Integer.parseInt(configProp.getProperty("Enrichment Preset", "0")));
                 patternChooser.setSelectedIndex(Integer.parseInt(configProp.getProperty("Enrichment Pattern", "0")));
-
+                timeOut = Double.parseDouble(configProp.getProperty("Tap Timeout", "5000"));
+                maxCount= Integer.parseInt(configProp.getProperty("Tap Count", "8"));
+                times= new Instant[maxCount];
+                sampleRate= Integer.parseInt(configProp.getProperty("Sample Rate", "44100"));
 
             } catch (IOException ex) {
                 GUI.updateLogGUI(ex.getMessage());
@@ -793,11 +778,10 @@ public class GUI extends JFrame implements Receiver {
 
     private static void SaveNClose() {
         try (OutputStream output = new FileOutputStream("config.properties")) {
-
             Properties prop = new Properties();
-            // set the properties values
+            // Set the properties values
             prop.setProperty("Name", "Arpeggiatorum");
-            prop.setProperty("Version", "1.0");
+            prop.setProperty("Version", "2.0");
             prop.setProperty("Channel", inputChannelChooser.getSelectedItem().toString());
             prop.setProperty("Arpeggio", arpeggioChannelChooser.getSelectedItem().toString());
             prop.setProperty("Bass", bassChannelChooser.getSelectedItem().toString());
@@ -810,14 +794,16 @@ public class GUI extends JFrame implements Receiver {
             prop.setProperty("Density", String.valueOf(tonalEnrichmentSlider.getValue()));
             prop.setProperty("Enrichment Preset", String.valueOf(tonalEnrichmentPresetChooser.getSelectedIndex()));
             prop.setProperty("Enrichment Pattern", String.valueOf(patternChooser.getSelectedIndex()));
-
-            // save properties to project root folder
+            prop.setProperty("Tap Timeout", String.valueOf(timeOut));
+            prop.setProperty("Tap Count", String.valueOf(maxCount));
+            prop.setProperty("Sample Rate", String.valueOf(sampleRate));
+            // Save properties to project root folder
             prop.store(output, null);
 
         } catch (IOException io) {
             GUI.updateLogGUI(io.getMessage());
         } finally {
-            System.exit(0); // the program may still run, enforce exit
+            System.exit(0); // The program may still run, enforce exit
         }
     }
 
@@ -898,7 +884,7 @@ public class GUI extends JFrame implements Receiver {
         JComboBox<MidiDeviceChooserItem> midiPortChooser = new JComboBox<>();
 
         for (MidiDevice.Info info : MidiSystem.getMidiDeviceInfo()) { // iterate the info of each device
-            // get the corresponding device
+            // Get the corresponding device
             MidiDevice device;
             try {
                 device = MidiSystem.getMidiDevice(info);
@@ -906,12 +892,11 @@ public class GUI extends JFrame implements Receiver {
                 continue;
             }
 
-            // the device should be a MIDI port with receiver or a synthesizer (Gervill)
+            // The device should be a MIDI port with receiver or a synthesizer (Gervill)
             if (!(device instanceof Synthesizer) && (device.getMaxTransmitters() != 0)) {
                 try {
                     midiPortChooser.addItem(new MidiDeviceChooserItem(info));
                 } catch (MidiUnavailableException e) {
-                    //e.printStackTrace();
                     GUI.updateLogGUI(e.getMessage());
                 }
             }
@@ -929,7 +914,7 @@ public class GUI extends JFrame implements Receiver {
         JComboBox<MidiDeviceChooserItem> midiPortChooser = new JComboBox<>();
 
         for (MidiDevice.Info info : MidiSystem.getMidiDeviceInfo()) { // iterate the info of each device
-            // get the corresponding device
+            // Get the corresponding device
             MidiDevice device;
             try {
                 device = MidiSystem.getMidiDevice(info);
@@ -937,12 +922,11 @@ public class GUI extends JFrame implements Receiver {
                 continue;
             }
 
-            // the device should be a MIDI port with receiver or a synthesizer (Gervill)
+            // The device should be a MIDI port with receiver or a synthesizer (Gervill)
             if (!(device instanceof Sequencer) && (device.getMaxReceivers() != 0)) {
                 try {
                     midiPortChooser.addItem(new MidiDeviceChooserItem(info));
                 } catch (MidiUnavailableException e) {
-                    //e.printStackTrace();
                     GUI.updateLogGUI(e.getMessage());
                 }
             }

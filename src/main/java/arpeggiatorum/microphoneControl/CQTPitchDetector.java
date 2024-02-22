@@ -24,25 +24,22 @@ public class CQTPitchDetector extends UnitGenerator{
 
 	private final ConstantQ CQT;
 	public double[] frequencies;
-	float sampleRate;
-	double[] pushData;
-	int lowIndex;
+	private double[] pushData;
+	private final int lowIndex;
 
 	public CQTPitchDetector(){
-		this(44100.0f, 41.20f, 2000.0f, 12);
+		this(44100.0f, 41.20f, 2000.0f, 12,0.01f,0.55f);
 	}
 
-	public CQTPitchDetector(float sampleRate, float minFreq, float maxFreq, int binsPerOctave){
+	public CQTPitchDetector(float sampleRate, float minFreq, float maxFreq, int binsPerOctave, float threshold, float spread){
 		this.addPort(this.input = new UnitInputPort("Input"));
-		this.sampleRate = sampleRate;
-		CQT = new ConstantQ(sampleRate, minFreq, maxFreq, binsPerOctave,0.01f,0.55f);
+		CQT = new ConstantQ(sampleRate, minFreq, maxFreq, binsPerOctave,threshold,spread);
 		frequencies = Mic2MIDI_Tarsos.toDoubleArray(CQT.getFreqencies());
 		this.addPort(this.output = new UnitVariableOutputPort("CQT Bins", frequencies.length));
 		buffer = new double[CQT.getFFTlength()];
 		pushData = output.getData();
-		lowIndex = ((int) (Math.log((minFreq / Mic2MIDI_CQT.minFreq)) / Math.log(2))) * (binsPerOctave);
-		String message=String.format("CQT Pitch Detection: Min Frequency (%.2fHz) Max Frequency (%.2fHz)  Delay (%.03fs) FFT: %d samples  \r\n",minFreq, maxFreq, buffer.length/this.sampleRate, buffer.length);
-		//System.out.printf(message);
+		lowIndex = ((int) (Math.log((minFreq / minFreq)) / Math.log(2))) * (binsPerOctave);
+		String message=String.format("CQT Pitch Detection: Min Frequency (%.2fHz) Max Frequency (%.2fHz)  Delay (%.03fs) FFT: %d samples  \r\n",minFreq, maxFreq, buffer.length/sampleRate, buffer.length);
 		GUI.updateLogGUI(message);
 	}
 

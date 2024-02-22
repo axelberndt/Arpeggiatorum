@@ -16,7 +16,7 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
     public boolean POLY = false;
     public Receiver receiver;// the MIDI receiver
     public final ChannelIn channelIn = new ChannelIn();// microphone input
-    public static final double sampleRate = 44100.00;
+    public static double sampleRate;
     protected int currentPitch = -1;
     protected final SchmidtTrigger schmidtTrigger = new SchmidtTrigger();
     public static final double SET_LEVEL = 0.5;
@@ -26,6 +26,13 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
     public static final double FREQUENCY_RAMP_TIME = 0.01;
     public static final double PEAK_FOLLOWER_RAMP_TIME = 0.25;
 
+    public Mic2MIDI(){
+        sampleRate=44100.0f;
+    }
+
+    public Mic2MIDI(double sampleRate){
+        this.sampleRate=sampleRate;
+    }
     /**
      * set the receiver of outgoing MIDI messages
      *
@@ -90,7 +97,6 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
         try {
             noteOn = new ShortMessage(EventMaker.NOTE_ON, pitch, 100);
         } catch (InvalidMidiDataException e) {
-            //e.printStackTrace();
             GUI.updateLogGUI(e.getMessage());
             return;
         }
@@ -103,7 +109,6 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
         try {
             noteOff = new ShortMessage(EventMaker.NOTE_OFF, pitch, 0);
         } catch (InvalidMidiDataException e) {
-            //e.printStackTrace();
             GUI.updateLogGUI(e.getMessage());
             return;
         }

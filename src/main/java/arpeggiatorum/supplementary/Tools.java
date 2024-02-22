@@ -17,7 +17,7 @@ public class Tools {
         double[] imaginaryPart = spectrum.getImaginary();
         int numBins = Math.min(realPart.length, imaginaryPart.length);
 
-        // Berechne die Energiedichte als Quadrat der absoluten Werte des komplexen Spektrums
+        // Calculate the energy density as the square of the absolute values of the complex spectrum
         double[] energyDensity = new double[numBins];
         for (int i = 0; i < numBins; i++) {
             double realValue = realPart[i];
@@ -37,7 +37,6 @@ public class Tools {
         try {
             Thread.sleep(milliseconds);
         } catch (InterruptedException e) {
-            //e.printStackTrace();
             GUI.updateLogGUI(e.getMessage());
         }
     }
@@ -49,27 +48,19 @@ public class Tools {
         AudioDeviceManager audioManager = AudioDeviceFactory.createAudioDeviceManager();
         int numDevices = audioManager.getDeviceCount();
 
-        GUI.updateLogGUI("\nID\tdevice name (input/output channels)\n--\t-----------------------------------------------------------\r\n");
-        // System.out.println("\nID\tdevice name (input/output channels)\n--\t-----------------------------------------------------------");
+        GUI.updateLogGUI("\nID\tdevice name (Input/Output channels)\n--\t-----------------------------------------------------------\r\n");
         for (int i = 0; i < numDevices; ++i) {
-            //  System.out.print(i + "\t" + audioManager.getDeviceName(i)
-            //           + " (" + audioManager.getMaxInputChannels(i)
-            //           + "/" + audioManager.getMaxOutputChannels(i) + ")");
             GUI.updateLogGUI(i + "\t" + audioManager.getDeviceName(i)
                     + " (" + audioManager.getMaxInputChannels(i)
                     + "/" + audioManager.getMaxOutputChannels(i) + ")");
             if (i == audioManager.getDefaultInputDeviceID())
-                // System.out.println("\t[default input device]");
-                GUI.updateLogGUI("\t[default input device]\n");
+                GUI.updateLogGUI("\t[Default Input device]\n");
             else if (i == audioManager.getDefaultOutputDeviceID())
-                // System.out.println("\t[default output device]");
-                GUI.updateLogGUI("\t[default output device]\n");
+                GUI.updateLogGUI("\t[Default Output device]\n");
             else
-                // System.out.print("\n");
                 GUI.updateLogGUI("\n");
 
         }
-        // System.out.print("\n");
         GUI.updateLogGUI("\n");
     }
 
