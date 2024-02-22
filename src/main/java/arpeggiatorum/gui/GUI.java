@@ -61,11 +61,11 @@ public class GUI extends JFrame implements Receiver {
     private static double timeOut;
     private static Instant timeLast;
     private static Instant timeNow;
-    private static Instant[] times ;
+    private static Instant[] times;
     private static long timeChange;
     private static int bpmNow;
     private static int bpmAvg;
-    private static int sampleRate=44100;
+    private static int sampleRate = 44100;
 
 
     /**
@@ -88,9 +88,9 @@ public class GUI extends JFrame implements Receiver {
         //Pitch processors
         this.mic2Midi = new ArrayList<>();
         this.mic2Midi.add(new Mic2MIDI_JSyn(this.arpeggiator, sampleRate));
-        this.mic2Midi.add(new Mic2MIDI_FFT(this.arpeggiator, sampleRate, 9,1567.98));
+        this.mic2Midi.add(new Mic2MIDI_FFT(this.arpeggiator, sampleRate, 9, 1567.98));
         this.mic2Midi.add(new Mic2MIDI_Tarsos(this.arpeggiator, sampleRate, 1024, 0.98));
-        this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, sampleRate, 41.205,2637.02,0.01f,0.55f,true));
+        this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, sampleRate, 41.205, 2637.02, 0.01f, 0.55f, true));
         for (Mic2MIDI processor : mic2Midi) {
             this.synth.add(processor);
         }
@@ -728,10 +728,11 @@ public class GUI extends JFrame implements Receiver {
                 tonalEnrichmentSlider.setValue(Integer.parseInt(configProp.getProperty("Density", "0")));
                 tonalEnrichmentPresetChooser.setSelectedIndex(Integer.parseInt(configProp.getProperty("Enrichment Preset", "0")));
                 patternChooser.setSelectedIndex(Integer.parseInt(configProp.getProperty("Enrichment Pattern", "0")));
+
                 timeOut = Double.parseDouble(configProp.getProperty("Tap Timeout", "5000"));
-                maxCount= Integer.parseInt(configProp.getProperty("Tap Count", "8"));
-                times= new Instant[maxCount];
-                sampleRate= Integer.parseInt(configProp.getProperty("Sample Rate", "44100"));
+                maxCount = Integer.parseInt(configProp.getProperty("Tap Count", "8"));
+                times = new Instant[maxCount];
+                sampleRate = Integer.parseInt(configProp.getProperty("Sample Rate", "44100"));
 
             } catch (IOException ex) {
                 GUI.updateLogGUI(ex.getMessage());
@@ -794,9 +795,19 @@ public class GUI extends JFrame implements Receiver {
             prop.setProperty("Density", String.valueOf(tonalEnrichmentSlider.getValue()));
             prop.setProperty("Enrichment Preset", String.valueOf(tonalEnrichmentPresetChooser.getSelectedIndex()));
             prop.setProperty("Enrichment Pattern", String.valueOf(patternChooser.getSelectedIndex()));
+
             prop.setProperty("Tap Timeout", String.valueOf(timeOut));
             prop.setProperty("Tap Count", String.valueOf(maxCount));
             prop.setProperty("Sample Rate", String.valueOf(sampleRate));
+            prop.setProperty("CQT Min Freq", String.valueOf(41.205));
+            prop.setProperty("CQT Max Freq", String.valueOf(2637.02));
+            prop.setProperty("CQT Threshold ", String.valueOf(0.01));
+            prop.setProperty("CQT Spread", String.valueOf(0.55));
+            prop.setProperty("Tarsos Buffer Size ", String.valueOf(1024));
+            prop.setProperty("Tarsos Confidence Threshold", String.valueOf(0.98));
+            prop.setProperty("FFT Bin size ", String.valueOf(9));
+            prop.setProperty("FFT Max Freq", String.valueOf(1567.98));
+
             // Save properties to project root folder
             prop.store(output, null);
 

@@ -17,14 +17,15 @@ import java.util.Arrays;
  */
 public class Mic2MIDI_CQT extends Mic2MIDI {
     //CQT
-    private  final int binsPerOctave = 12;
-    private  final int binsToCompute = 16;
+    private final int binsPerOctave = 12;
+    private final int binsToCompute = 16;
     private final CQTPitchDetector[] cqtPitchDetectors;
     private Integer newPitch;
     public final UnitVariableInputPort[] CQTPorts;
     private double[] CQTBins;
     private double[] CQTFrequencies;
     private int[] CQTBinsSortedIndexes;
+    public static double minFreq;
     //Histogram
     public static CQTHistogram cqtHist;
     private double PITCH_THRESHOLD;
@@ -34,6 +35,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
         super(sampleRate);
         NAME = "CQT-Based Pitch Detector";
         POLY = isPoly;
+        this.minFreq=minFreq;
         // Build DSP patch
         this.add(this.channelIn);// add channelIn to the synth
 
@@ -75,7 +77,6 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
     @Override
     public void generate(int start, int limit) {
         super.generate(start, limit);
-
         //Pull CQT Data from individual Bands
         for (int i = 0; i < CQTPorts.length; i++) {
             if (CQTPorts[i].isAvailable()) {
@@ -87,7 +88,6 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                 }
             }
         }
-
         if (!isPoly()) {
             CQTBinsSortedIndexes = getMaxBins(CQTBins, binsToCompute);
             if (CQTBins[CQTBinsSortedIndexes[0]] >= (PITCH_THRESHOLD)) {

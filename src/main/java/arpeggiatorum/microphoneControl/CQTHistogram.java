@@ -10,13 +10,12 @@ public class CQTHistogram extends JPanel {
     private final int WIDTH = 1080;
     private final int HEIGHT = 500;
     private final int BORDER = 10;
-    private final float fontScale=0.75f;
+    private final float fontScale = 0.75f;
 
     public CQTHistogram(double[] binCounts, double[] frequencies) {
         this.binCounts = binCounts;
         this.frequencies = frequencies;
         max = 1.0f;
-
     }
 
     public void updateBins(double[] binCounts) {
@@ -34,10 +33,9 @@ public class CQTHistogram extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
         Font currentFont = g.getFont();
         Font newFont = currentFont.deriveFont(currentFont.getSize() * fontScale);
-
-        super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g.create();
         g2d.setFont(newFont);
         g2d.clearRect(0, 0, getWidth(), getHeight());
@@ -47,7 +45,7 @@ public class CQTHistogram extends JPanel {
         for (int i = 0; i < binCounts.length; i++) {
             int barHeight = (int) ((binCounts[i] / max) * (getHeight() - BORDER));
             Rectangle rect = new Rectangle(i * barWidth, getHeight() - barHeight, barWidth, barHeight);
-            if (barHeight >(getHeight() - BORDER) /2)
+            if (barHeight > (getHeight() - BORDER) / 2)
                 g2d.setColor(Color.GREEN);
             else
                 g2d.setColor(Color.lightGray);
@@ -59,5 +57,4 @@ public class CQTHistogram extends JPanel {
         }
         g2d.dispose();
     }
-
 }

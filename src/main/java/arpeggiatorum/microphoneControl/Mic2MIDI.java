@@ -16,7 +16,7 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
     public boolean POLY = false;
     public Receiver receiver;// the MIDI receiver
     public final ChannelIn channelIn = new ChannelIn();// microphone input
-    public static double sampleRate;
+    public final double sampleRate;
     protected int currentPitch = -1;
     protected final SchmidtTrigger schmidtTrigger = new SchmidtTrigger();
     public static final double SET_LEVEL = 0.5;
