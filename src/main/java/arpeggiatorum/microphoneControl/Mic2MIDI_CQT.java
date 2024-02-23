@@ -30,12 +30,14 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
     public static CQTHistogram cqtHist;
     private double PITCH_THRESHOLD;
     private final SortedList<Integer> currentPitches = new SortedList<>();
+    private final boolean autoTune;
 
-    public Mic2MIDI_CQT(Receiver receiver, double sampleRate, double minFreq, double maxFreq, float threshold, float spread, boolean isPoly) {
+    public Mic2MIDI_CQT(Receiver receiver, double sampleRate, double minFreq, double maxFreq, float threshold, float spread, boolean isPoly, boolean autoTune) {
         super(sampleRate);
         NAME = "CQT-Based Pitch Detector";
         POLY = isPoly;
         this.minFreq=minFreq;
+        this.autoTune=autoTune;
         // Build DSP patch
         this.add(this.channelIn);// add channelIn to the synth
 

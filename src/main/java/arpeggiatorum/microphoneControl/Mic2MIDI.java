@@ -92,16 +92,19 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
         this.schmidtTrigger.resetLevel.set(Math.max(0.0, value - DIFFERENCE_LEVEL));
     }
 
-    public void sendNoteOn(int pitch) {
+    public void sendNoteOn(int pitch, int velocity) {
         ShortMessage noteOn;
         try {
-            noteOn = new ShortMessage(EventMaker.NOTE_ON, pitch, 100);
+            noteOn = new ShortMessage(EventMaker.NOTE_ON, pitch, velocity);
         } catch (InvalidMidiDataException e) {
             GUI.updateLogGUI(e.getMessage());
             return;
         }
         this.getReceiver().send(noteOn, -1);
         this.currentPitch = pitch;
+    }
+    public void sendNoteOn(int pitch) {
+    sendNoteOn(pitch);
     }
 
     public void sendNoteOff(int pitch) {

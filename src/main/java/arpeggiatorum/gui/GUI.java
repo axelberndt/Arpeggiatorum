@@ -32,6 +32,7 @@ import java.util.*;
  * @author Axel Berndt
  */
 public class GUI extends JFrame implements Receiver {
+
     private final Synthesizer synth = JSyn.createSynthesizer(); // this Synthesizer instance is used for scheduling and audio processing
     private final int padding = 10;
     private static JComboBox<Integer> inputChannelChooser;
@@ -66,6 +67,7 @@ public class GUI extends JFrame implements Receiver {
     private static int bpmNow;
     private static int bpmAvg;
     private static int sampleRate;
+    private static boolean cqtAutoTune;
     private static double cqtMin;
     private static double cqtMax;
     private static float cqtThreshold;
@@ -74,6 +76,7 @@ public class GUI extends JFrame implements Receiver {
     private static double tarsosConfidence;
     private static int fftBinSize;
     private static double fftMaxFreq;
+
     /**
      * constructor
      */
@@ -98,27 +101,27 @@ public class GUI extends JFrame implements Receiver {
         } catch (IOException ex) {
             GUI.updateLogGUI(ex.getMessage());
         }
-//Get the properties for internal values
-
+        //Get the properties for internal values
         timeOut = Double.parseDouble(configProp.getProperty("Tap Timeout", "5000"));
         maxCount = Integer.parseInt(configProp.getProperty("Tap Count", "8"));
         times = new Instant[maxCount];
         sampleRate = Integer.parseInt(configProp.getProperty("Sample Rate", "44100"));
-        cqtMin=Double.parseDouble(configProp.getProperty("CQT Min Freq", "41.205"));
-        cqtMax=Double.parseDouble(configProp.getProperty("CQT Max Freq", "2637.02"));
-        cqtThreshold=Float.parseFloat(configProp.getProperty("CQT Threshold", "0.01"));
-        cqtSpread=Float.parseFloat(configProp.getProperty("CQT Spread", "0.55"));
-        tarsosBuffer=Integer.parseInt(configProp.getProperty("Tarsos Buffer", "1024"));
-        tarsosConfidence=Double.parseDouble(configProp.getProperty("Tarsos Confidence", "0.98"));
-        fftBinSize=Integer.parseInt(configProp.getProperty("FFT Bin Size", "9"));
-        fftMaxFreq=Double.parseDouble(configProp.getProperty("FFT Max Freq", "1567.98"));
+        cqtMin = Double.parseDouble(configProp.getProperty("CQT Min Freq", "41.205"));
+        cqtMax = Double.parseDouble(configProp.getProperty("CQT Max Freq", "2637.02"));
+        cqtThreshold = Float.parseFloat(configProp.getProperty("CQT Threshold", "0.01"));
+        cqtSpread = Float.parseFloat(configProp.getProperty("CQT Spread", "0.55"));
+        cqtAutoTune = Boolean.parseBoolean(configProp.getProperty("CQT Auto-Tune", "false"));
+        tarsosBuffer = Integer.parseInt(configProp.getProperty("Tarsos Buffer", "1024"));
+        tarsosConfidence = Double.parseDouble(configProp.getProperty("Tarsos Confidence", "0.98"));
+        fftBinSize = Integer.parseInt(configProp.getProperty("FFT Bin Size", "9"));
+        fftMaxFreq = Double.parseDouble(configProp.getProperty("FFT Max Freq", "1567.98"));
 
         //Pitch processors
         this.mic2Midi = new ArrayList<>();
         this.mic2Midi.add(new Mic2MIDI_JSyn(this.arpeggiator, sampleRate));
         this.mic2Midi.add(new Mic2MIDI_FFT(this.arpeggiator, sampleRate, fftBinSize, fftMaxFreq));
         this.mic2Midi.add(new Mic2MIDI_Tarsos(this.arpeggiator, sampleRate, tarsosBuffer, tarsosConfidence));
-        this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, sampleRate, cqtMin, cqtMax, cqtThreshold,cqtSpread, true));
+        this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, sampleRate, cqtMin, cqtMax, cqtThreshold, cqtSpread, true, cqtAutoTune));
         for (Mic2MIDI processor : mic2Midi) {
             this.synth.add(processor);
         }
@@ -357,7 +360,7 @@ public class GUI extends JFrame implements Receiver {
             signal2noiseThreshold.setToolTipText("Signal to Noise Threshold");
             Hashtable<Integer, JLabel> signal2noiseThresholdLabel = new Hashtable<>();
             signal2noiseThresholdLabel.put(0, new JLabel("0.0"));
-            signal2noiseThresholdLabel.put(500, new JLabel("Noise Threshold"));
+            signal2noiseThresholdLabel.put(500, new JLabel("Threshold"));
             signal2noiseThresholdLabel.put(1000, new JLabel("1.0"));
             signal2noiseThreshold.setLabelTable(signal2noiseThresholdLabel);
             signal2noiseThreshold.setPaintLabels(true);
@@ -739,7 +742,6 @@ public class GUI extends JFrame implements Receiver {
             menuBar.add(menu);
             this.setJMenuBar(menuBar);
 
-
             //Get the properties values for GUI
             inputChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Channel", "0")));
             arpeggioChannelChooser.setSelectedItem(Integer.parseInt(configProp.getProperty("Arpeggio", "1")));
@@ -773,9 +775,8 @@ public class GUI extends JFrame implements Receiver {
             tapCount++;
             // Enough beats to make a measurement (2 or more)?
             if (tapCount > 1) {
-                // Rnough to make an average measurement?
-                if (tapCount > maxCount) // average over maxCount
-                {
+                // Enough to make an average measurement?
+                if (tapCount > maxCount) {// average over maxCount
                     bpmAvg = (int) ((2 * 60.0 * maxCount / Duration.between(times[tapNext], timeNow).toMillis()) * 1000);
                     tempoSlider.setValue(bpmAvg);
                 } else {
@@ -800,6 +801,7 @@ public class GUI extends JFrame implements Receiver {
             // Set the properties values
             prop.setProperty("Name", "Arpeggiatorum");
             prop.setProperty("Version", "2.0");
+
             prop.setProperty("Channel", inputChannelChooser.getSelectedItem().toString());
             prop.setProperty("Arpeggio", arpeggioChannelChooser.getSelectedItem().toString());
             prop.setProperty("Bass", bassChannelChooser.getSelectedItem().toString());
@@ -815,13 +817,18 @@ public class GUI extends JFrame implements Receiver {
 
             prop.setProperty("Tap Timeout", String.valueOf(timeOut));
             prop.setProperty("Tap Count", String.valueOf(maxCount));
+
             prop.setProperty("Sample Rate", String.valueOf(sampleRate));
+
             prop.setProperty("CQT Min Freq", String.valueOf(cqtMin));
             prop.setProperty("CQT Max Freq", String.valueOf(cqtMax));
             prop.setProperty("CQT Threshold", String.valueOf(cqtThreshold));
             prop.setProperty("CQT Spread", String.valueOf(cqtSpread));
+            prop.setProperty("CQT Auto-Tune", String.valueOf(cqtAutoTune));
+
             prop.setProperty("Tarsos Buffer Size", String.valueOf(tarsosBuffer));
             prop.setProperty("Tarsos Confidence Threshold", String.valueOf(tarsosConfidence));
+
             prop.setProperty("FFT Bin Size", String.valueOf(fftBinSize));
             prop.setProperty("FFT Max Freq", String.valueOf(fftMaxFreq));
 
