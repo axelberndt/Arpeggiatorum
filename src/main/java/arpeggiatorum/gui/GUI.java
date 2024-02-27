@@ -44,6 +44,7 @@ public class GUI extends JFrame implements Receiver {
     private static JSlider tonalEnrichmentSlider;
     private static JComboBox<NotePool.Pattern> patternChooser;
     private static JComboBox<TonalEnrichmentChooserItem> tonalEnrichmentPresetChooser;
+    private static JComboBox<Mic2MIDI> mic2MIDIChooser;
     private static JSlider signal2noiseThreshold;
     private static RangeSlider rangeSlider;
 
@@ -68,6 +69,7 @@ public class GUI extends JFrame implements Receiver {
     private static int bpmAvg;
     private static int sampleRate;
     private static boolean cqtAutoTune;
+    private static boolean cqtisPoly;
     private static double cqtMin;
     private static double cqtMax;
     private static float cqtThreshold;
@@ -112,6 +114,7 @@ public class GUI extends JFrame implements Receiver {
         cqtMax = Double.parseDouble(configProp.getProperty("CQT Max Freq", "2637.02"));
         cqtThreshold = Float.parseFloat(configProp.getProperty("CQT Threshold", "0.01"));
         cqtSpread = Float.parseFloat(configProp.getProperty("CQT Spread", "0.55"));
+        cqtisPoly = Boolean.parseBoolean(configProp.getProperty("CQT Poly", "true"));
         cqtAutoTune = Boolean.parseBoolean(configProp.getProperty("CQT Auto-Tune", "false"));
         cqtMinVel = Integer.parseInt(configProp.getProperty("CQT Min Velocity", "60"));
         cqtMaxVel = Integer.parseInt(configProp.getProperty("CQT Max Velocity", "127"));
@@ -125,7 +128,7 @@ public class GUI extends JFrame implements Receiver {
         this.mic2Midi.add(new Mic2MIDI_JSyn(this.arpeggiator, sampleRate));
         this.mic2Midi.add(new Mic2MIDI_FFT(this.arpeggiator, sampleRate, fftBinSize, fftMaxFreq));
         this.mic2Midi.add(new Mic2MIDI_Tarsos(this.arpeggiator, sampleRate, tarsosBuffer, tarsosConfidence));
-        this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, sampleRate, cqtMin, cqtMax, cqtThreshold, cqtSpread, false, cqtAutoTune, cqtMinVel,cqtMaxVel));
+        this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, sampleRate, cqtMin, cqtMax, cqtThreshold, cqtSpread, cqtisPoly, cqtAutoTune, cqtMinVel,cqtMaxVel));
         for (Mic2MIDI processor : mic2Midi) {
             this.synth.add(processor);
         }
@@ -332,7 +335,7 @@ public class GUI extends JFrame implements Receiver {
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
 
             // Select the pitch processor
-            JComboBox<Mic2MIDI> mic2MIDIChooser = new JComboBox<>();
+            mic2MIDIChooser = new JComboBox<>();
             for (Mic2MIDI processor : mic2Midi) {
                 mic2MIDIChooser.addItem(processor);
             }
@@ -759,6 +762,7 @@ public class GUI extends JFrame implements Receiver {
             tonalEnrichmentSlider.setValue(Integer.parseInt(configProp.getProperty("Density", "0")));
             tonalEnrichmentPresetChooser.setSelectedIndex(Integer.parseInt(configProp.getProperty("Enrichment Preset", "0")));
             patternChooser.setSelectedIndex(Integer.parseInt(configProp.getProperty("Enrichment Pattern", "0")));
+            mic2MIDIChooser.setSelectedIndex(Integer.parseInt(configProp.getProperty("Pitch Detector", "0")));
 
         });
     }
@@ -818,6 +822,7 @@ public class GUI extends JFrame implements Receiver {
             prop.setProperty("Density", String.valueOf(tonalEnrichmentSlider.getValue()));
             prop.setProperty("Enrichment Preset", String.valueOf(tonalEnrichmentPresetChooser.getSelectedIndex()));
             prop.setProperty("Enrichment Pattern", String.valueOf(patternChooser.getSelectedIndex()));
+            prop.setProperty("Pitch Detector", String.valueOf(mic2MIDIChooser.getSelectedIndex()));
 
             prop.setProperty("Tap Timeout", String.valueOf(timeOut));
             prop.setProperty("Tap Count", String.valueOf(maxCount));
@@ -829,6 +834,7 @@ public class GUI extends JFrame implements Receiver {
             prop.setProperty("CQT Threshold", String.valueOf(cqtThreshold));
             prop.setProperty("CQT Spread", String.valueOf(cqtSpread));
             prop.setProperty("CQT Auto-Tune", String.valueOf(cqtAutoTune));
+            prop.setProperty("CQT Poly", String.valueOf(cqtisPoly));
             prop.setProperty("CQT Min Velocity", String.valueOf(cqtMinVel));
             prop.setProperty("CQT Max Velocity", String.valueOf(cqtMaxVel));
 

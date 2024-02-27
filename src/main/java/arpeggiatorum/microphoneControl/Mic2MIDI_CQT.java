@@ -140,13 +140,21 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                         //TODO Autotune logic and polyphonic aftertouch
 
                         //Velocity
-                        double ratioVel = Math.clamp(CQTBins[i] / PITCH_THRESHOLD, 1.0, 2.0);
-                        int newVel = Math.clamp((int) (minVelocity + ((ratioVel * diffVelocity) - 1)), minVelocity, maxVelocity);
+                        double ratioVelocity = Math.clamp(CQTBins[i] / PITCH_THRESHOLD, 1.0, 2.0)-1;
+                        int newVelocity = Math.clamp((int) (minVelocity + (ratioVelocity* diffVelocity)), minVelocity, maxVelocity);
 
-                        this.sendNoteOn(newPitch, newVel);
+                        this.sendNoteOn(newPitch, newVelocity);
 
-                        String message = String.format("[%d] %.0fHz \r\n", newPitch, CQTFrequencies[i]);
+                        String message = String.format("[%d] %.0fHz: %d\r\n", newPitch, CQTFrequencies[i], newVelocity);
                         GUI.updateLogGUI(message);
+                    }
+                    else{
+                        double ratioVelocity = Math.clamp(CQTBins[i] / PITCH_THRESHOLD, 1.0, 2.0)-1;
+                        int newVelocity = Math.clamp((int) (minVelocity + (ratioVelocity* diffVelocity)), minVelocity, maxVelocity);
+                        if (newVelocity!=currentVelocity){
+                            this.sendAftertouch(newPitch,newVelocity);
+                            currentVelocity=newVelocity;
+                        }
                     }
                 } else {
                     Integer removed = currentPitches.remove(newPitch);
