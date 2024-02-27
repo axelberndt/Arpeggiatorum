@@ -142,7 +142,7 @@ public class Mic2MIDI_FFT extends Mic2MIDI {
         maxBinCep = getMaxBin(logMagFFT, outputLength - hiBin, outputLength - lowBin);
 
         // Check if at the end of the buffer we have to play or stop a note
-        int newPitch = (int) Math.round(AudioMath.frequencyToPitch(getFrequencyForIndex(maxBinHPS, nyquist)));
+        int newPitch = (int) Math.round(AudioMath.frequencyToPitch(getFrequencyForIndex(maxBinCep, nyquist)));
         if (newPitch <= 0 || currentPitch < -1 || newPitch >= 128 || currentPitch >= 128) {
             //this.previousTriggerValue = triggerInputs[0]; //[limit - 1]
             //((Arpeggiator)receiver).panic();

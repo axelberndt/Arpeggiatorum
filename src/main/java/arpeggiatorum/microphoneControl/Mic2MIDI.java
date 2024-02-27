@@ -103,8 +103,21 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
         this.getReceiver().send(noteOn, -1);
         this.currentPitch = pitch;
     }
+    public void sendAftertouch(int pitch, int velocity) {
+        ShortMessage aftertouch;
+        //TODO needs to be improved, it's sending a message on everychannel
+        for (int i = 0; i < 16; i++) {
+            try {
+                aftertouch = new ShortMessage(ShortMessage.POLY_PRESSURE, i, pitch, velocity);
+            } catch (InvalidMidiDataException e) {
+                GUI.updateLogGUI(e.getMessage());
+                return;
+            }
+            this.getReceiver().send(aftertouch, -1);
+        }
+    }
     public void sendNoteOn(int pitch) {
-    sendNoteOn(pitch);
+    sendNoteOn(pitch,100);
     }
 
     public void sendNoteOff(int pitch) {

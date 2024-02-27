@@ -72,6 +72,8 @@ public class GUI extends JFrame implements Receiver {
     private static double cqtMax;
     private static float cqtThreshold;
     private static float cqtSpread;
+    private static int cqtMinVel;
+    private static int cqtMaxVel;
     private static int tarsosBuffer;
     private static double tarsosConfidence;
     private static int fftBinSize;
@@ -111,6 +113,8 @@ public class GUI extends JFrame implements Receiver {
         cqtThreshold = Float.parseFloat(configProp.getProperty("CQT Threshold", "0.01"));
         cqtSpread = Float.parseFloat(configProp.getProperty("CQT Spread", "0.55"));
         cqtAutoTune = Boolean.parseBoolean(configProp.getProperty("CQT Auto-Tune", "false"));
+        cqtMinVel = Integer.parseInt(configProp.getProperty("CQT Min Velocity", "60"));
+        cqtMaxVel = Integer.parseInt(configProp.getProperty("CQT Max Velocity", "127"));
         tarsosBuffer = Integer.parseInt(configProp.getProperty("Tarsos Buffer", "1024"));
         tarsosConfidence = Double.parseDouble(configProp.getProperty("Tarsos Confidence", "0.98"));
         fftBinSize = Integer.parseInt(configProp.getProperty("FFT Bin Size", "9"));
@@ -121,7 +125,7 @@ public class GUI extends JFrame implements Receiver {
         this.mic2Midi.add(new Mic2MIDI_JSyn(this.arpeggiator, sampleRate));
         this.mic2Midi.add(new Mic2MIDI_FFT(this.arpeggiator, sampleRate, fftBinSize, fftMaxFreq));
         this.mic2Midi.add(new Mic2MIDI_Tarsos(this.arpeggiator, sampleRate, tarsosBuffer, tarsosConfidence));
-        this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, sampleRate, cqtMin, cqtMax, cqtThreshold, cqtSpread, true, cqtAutoTune));
+        this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, sampleRate, cqtMin, cqtMax, cqtThreshold, cqtSpread, false, cqtAutoTune, cqtMinVel,cqtMaxVel));
         for (Mic2MIDI processor : mic2Midi) {
             this.synth.add(processor);
         }
@@ -825,6 +829,9 @@ public class GUI extends JFrame implements Receiver {
             prop.setProperty("CQT Threshold", String.valueOf(cqtThreshold));
             prop.setProperty("CQT Spread", String.valueOf(cqtSpread));
             prop.setProperty("CQT Auto-Tune", String.valueOf(cqtAutoTune));
+            prop.setProperty("CQT Min Velocity", String.valueOf(cqtMinVel));
+            prop.setProperty("CQT Max Velocity", String.valueOf(cqtMaxVel));
+
 
             prop.setProperty("Tarsos Buffer Size", String.valueOf(tarsosBuffer));
             prop.setProperty("Tarsos Confidence Threshold", String.valueOf(tarsosConfidence));

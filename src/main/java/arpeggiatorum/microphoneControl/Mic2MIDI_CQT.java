@@ -31,13 +31,20 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
     private double PITCH_THRESHOLD;
     private final SortedList<Integer> currentPitches = new SortedList<>();
     private final boolean autoTune;
+    private final int minVelocity;
+    private final int maxVelocity;
+    private final int diffVelocity;
+    private int currentVelocity;
 
-    public Mic2MIDI_CQT(Receiver receiver, double sampleRate, double minFreq, double maxFreq, float threshold, float spread, boolean isPoly, boolean autoTune) {
+    public Mic2MIDI_CQT(Receiver receiver, double sampleRate, double minFreq, double maxFreq, float threshold, float spread, boolean isPoly, boolean autoTune, int cqtMinVel, int cqtMaxVel) {
         super(sampleRate);
         NAME = "CQT-Based Pitch Detector";
         POLY = isPoly;
-        this.minFreq=minFreq;
-        this.autoTune=autoTune;
+        this.minFreq = minFreq;
+        this.autoTune = autoTune;
+        minVelocity = cqtMinVel;
+        maxVelocity = cqtMaxVel;
+        diffVelocity = maxVelocity - minVelocity;
         // Build DSP patch
         this.add(this.channelIn);// add channelIn to the synth
 
@@ -98,16 +105,30 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                     if (currentPitch != -1) {
                         this.sendNoteOff(this.currentPitch);
                     }
-                    this.sendNoteOn(newPitch);
+                    //Velocity
+                    double ratioVelocity = Math.clamp(CQTBins[CQTBinsSortedIndexes[0]] / PITCH_THRESHOLD, 1.0, 2.0)-1;
+                    int newVelocity = Math.clamp((int) (minVelocity + (ratioVelocity* diffVelocity)), minVelocity, maxVelocity);
+                    currentVelocity=newVelocity;
+                    this.sendNoteOn(newPitch, newVelocity);
+
                     currentPitch = newPitch;
-                    String message = String.format("[%d] %.0fHz", newPitch, CQTFrequencies[CQTBinsSortedIndexes[0]]);
+                    String message = String.format("[%d] %.0fHz: %d\r\n", newPitch, CQTFrequencies[CQTBinsSortedIndexes[0]],newVelocity);
                     GUI.updateLogGUI(message);
+                }
+                else{
+                    double ratioVelocity = Math.clamp(CQTBins[CQTBinsSortedIndexes[0]] / PITCH_THRESHOLD, 1.0, 2.0)-1;
+                    int newVelocity = Math.clamp((int) (minVelocity + (ratioVelocity* diffVelocity)), minVelocity, maxVelocity);
+                    if (newVelocity!=currentVelocity){
+                        this.sendAftertouch(currentPitch,newVelocity);
+                        currentVelocity=newVelocity;
+                    }
                 }
             } else {
                 if (currentPitch != -1) {
                     this.sendNoteOff(currentPitch);
                     currentPitch = -1;
                 }
+
             }
         } else {
             //Polyphonic version
@@ -116,9 +137,16 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                 if (CQTBins[i] >= PITCH_THRESHOLD) {
                     if (currentPitches.add(newPitch)) {
                         //We have to play a new note
+                        //TODO Autotune logic and polyphonic aftertouch
+
+                        //Velocity
+                        double ratioVel = Math.clamp(CQTBins[i] / PITCH_THRESHOLD, 1.0, 2.0);
+                        int newVel = Math.clamp((int) (minVelocity + ((ratioVel * diffVelocity) - 1)), minVelocity, maxVelocity);
+
+                        this.sendNoteOn(newPitch, newVel);
+
                         String message = String.format("[%d] %.0fHz \r\n", newPitch, CQTFrequencies[i]);
                         GUI.updateLogGUI(message);
-                        this.sendNoteOn(newPitch);
                     }
                 } else {
                     Integer removed = currentPitches.remove(newPitch);
