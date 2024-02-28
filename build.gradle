@@ -34,7 +34,14 @@ dependencies {
     implementation 'be.tarsos.dsp:jvm:2.5'
 
 }
-
+//jar {
+//    manifest {
+//        attributes("Implementation-Title": "Arpeggiatorum",
+//                "Implementation-Version": archiveVersion,
+//                "Manifest-Version": "1.0",
+//                "Main-Class": "arpeggiatorum.Main")
+//    }
+//}
 test {
     useJUnitPlatform()
 }

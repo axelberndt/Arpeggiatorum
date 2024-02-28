@@ -97,9 +97,8 @@ public class GUI extends JFrame implements Receiver {
         this.arpeggiator = new Arpeggiator(this.synth, this); // instantiate the Arpeggiator and specify this GUI as
         // receiver of outgoing MIDI messages (to monitor
         // controller movements as slider movements in the GUI)
-
+        configProp = new Properties();
         try (FileInputStream inputConfig = new FileInputStream("config.properties")) {
-            configProp = new Properties();
             //load a properties file from class path, inside static method
             configProp.load(inputConfig);
         } catch (IOException ex) {
