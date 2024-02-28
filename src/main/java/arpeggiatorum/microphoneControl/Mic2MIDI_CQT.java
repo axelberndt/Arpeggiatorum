@@ -134,36 +134,37 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
             //Polyphonic version
             for (int i = 0; i < CQTBins.length; i++) {
                 newPitch = (int) Math.round(AudioMath.frequencyToPitch(CQTFrequencies[i]));
-                if (CQTBins[i] >= PITCH_THRESHOLD) {
-                    if (currentPitches.add(newPitch)) {
-                        //We have to play a new note
-                        //TODO Autotune logic and polyphonic aftertouch
+                if (!autoTune) {
+                    if (CQTBins[i] >= PITCH_THRESHOLD) {
+                        if (currentPitches.add(newPitch)) {
+                            //We have to play a new note
+                            //Velocity
+                            double ratioVelocity = Math.clamp(CQTBins[i] / PITCH_THRESHOLD, 1.0, 2.0) - 1;
+                            int newVelocity = Math.clamp((int) (minVelocity + (ratioVelocity * diffVelocity)), minVelocity, maxVelocity);
 
-                        //Velocity
-                        double ratioVelocity = Math.clamp(CQTBins[i] / PITCH_THRESHOLD, 1.0, 2.0)-1;
-                        int newVelocity = Math.clamp((int) (minVelocity + (ratioVelocity* diffVelocity)), minVelocity, maxVelocity);
+                            this.sendNoteOn(newPitch, newVelocity);
 
-                        this.sendNoteOn(newPitch, newVelocity);
-
-                        String message = String.format("[%d] %.0fHz: %d\r\n", newPitch, CQTFrequencies[i], newVelocity);
-                        GUI.updateLogGUI(message);
-                    }
-                    else{
-                        double ratioVelocity = Math.clamp(CQTBins[i] / PITCH_THRESHOLD, 1.0, 2.0)-1;
-                        int newVelocity = Math.clamp((int) (minVelocity + (ratioVelocity* diffVelocity)), minVelocity, maxVelocity);
-                        if (newVelocity!=currentVelocity){
-                            this.sendAftertouch(newPitch,newVelocity);
-                            currentVelocity=newVelocity;
+                            String message = String.format("[%d] %.0fHz: %d\r\n", newPitch, CQTFrequencies[i], newVelocity);
+                            GUI.updateLogGUI(message);
+                        } else {
+                            double ratioVelocity = Math.clamp(CQTBins[i] / PITCH_THRESHOLD, 1.0, 2.0) - 1;
+                            int newVelocity = Math.clamp((int) (minVelocity + (ratioVelocity * diffVelocity)), minVelocity, maxVelocity);
+                            if (newVelocity != currentVelocity) {
+                                this.sendAftertouch(newPitch, newVelocity);
+                                currentVelocity = newVelocity;
+                            }
                         }
+                    } else {
+                        Integer removed = currentPitches.remove(newPitch);
+                        if (removed != null)
+                            this.sendNoteOff(removed);
                     }
-                } else {
-                    Integer removed = currentPitches.remove(newPitch);
-                    if (removed != null)
-                        this.sendNoteOff(removed);
+
                 }
-
+                else{
+                    //TODO Autotune logic
+                }
             }
-
         }
 
 
@@ -171,7 +172,8 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
 
     @Override
     public void setSignalToNoiseThreshold(double value) {
-        double modValue = value / 5.0f;
+        float scalingFactor=5.0f; //This is quite arbitrary, different interfaces get considerable different ranges, can we do better?
+        double modValue = value / scalingFactor;
         PITCH_THRESHOLD = modValue / 2;
         cqtHist.max = modValue;
     }
