@@ -135,10 +135,9 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                     currentMag[i] = CQTBins[i];
                 }
             } else {
-                if (currentPitches[i] == true) {
                     this.sendNoteOff(newPitch);
                     currentPitches[i] = false;
-                }
+                    currentMag[i] = 0.0;
             }
         }
         //Auto-Tune post-processing, sends correct NoteOn
@@ -175,7 +174,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
 
                             message.append(String.format("[%d] %.0fHz: %d ", pitchNow, CQTFrequencies[i], newVelocity));
                         }
-                        i=j;
+                        i = j;
                     } else {
                         //Aftertouch?
                     }
