@@ -35,18 +35,26 @@ public class GUI extends JFrame implements Receiver {
 
     private final Synthesizer synth = JSyn.createSynthesizer(); // this Synthesizer instance is used for scheduling and audio processing
     private final int padding = 10;
+
     private static JComboBox<Integer> inputChannelChooser;
     private static JComboBox<Integer> arpeggioChannelChooser;
     private static JComboBox<Integer> heldNotesChannelChooser;
     private static JComboBox<Integer> bassChannelChooser;
-    private static JSlider tempoSlider;
-    private static JSlider articulationSlider;
-    private static JSlider tonalEnrichmentSlider;
+    private static JComboBox<MidiDeviceChooserItem> midiInChooser;
+    private static JComboBox<String> audioInputChooser;
     private static JComboBox<NotePool.Pattern> patternChooser;
     private static JComboBox<TonalEnrichmentChooserItem> tonalEnrichmentPresetChooser;
     private static JComboBox<Mic2MIDI> mic2MIDIChooser;
+    private static JComboBox<MidiDeviceChooserItem> midiOutChooser;
+    private static JSlider tempoSlider;
+    private static JSlider articulationSlider;
+    private static JSlider tonalEnrichmentSlider;
     private static JSlider signal2noiseThreshold;
     private static RangeSlider rangeSlider;
+    private static JToggleButton activateAudioInput;
+    private static JToggleButton activateAutoTune;
+    private static JButton tonalEnrichmentButton;
+    private static JButton panic;
 
     private final Arpeggiator arpeggiator;
     private final ArrayList<Mic2MIDI> mic2Midi;
@@ -127,7 +135,7 @@ public class GUI extends JFrame implements Receiver {
         this.mic2Midi.add(new Mic2MIDI_JSyn(this.arpeggiator, sampleRate));
         this.mic2Midi.add(new Mic2MIDI_FFT(this.arpeggiator, sampleRate, fftBinSize, fftMaxFreq));
         this.mic2Midi.add(new Mic2MIDI_Tarsos(this.arpeggiator, sampleRate, tarsosBuffer, tarsosConfidence));
-        this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, sampleRate, cqtMin, cqtMax, cqtThreshold, cqtSpread, cqtisPoly, cqtAutoTune, cqtMinVel,cqtMaxVel));
+        this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, sampleRate, cqtMin, cqtMax, cqtThreshold, cqtSpread, cqtisPoly, cqtAutoTune, cqtMinVel, cqtMaxVel));
         for (Mic2MIDI processor : mic2Midi) {
             this.synth.add(processor);
         }
@@ -171,7 +179,7 @@ public class GUI extends JFrame implements Receiver {
             addComponentToGridBagLayout(mainPanel, layout, midiInLabel, 0, 0, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
-            JComboBox<MidiDeviceChooserItem> midiInChooser = createMidiInChooser();
+            midiInChooser = createMidiInChooser();
             if (midiInChooser.getSelectedItem() != null) {
                 MidiDeviceChooserItem item = (MidiDeviceChooserItem) midiInChooser.getSelectedItem();
                 if (item.getValue() != null) {
@@ -222,7 +230,7 @@ public class GUI extends JFrame implements Receiver {
             addComponentToGridBagLayout(mainPanel, layout, midiOutLabel, 0, 1, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
-            JComboBox<MidiDeviceChooserItem> midiOutChooser = createMidiOutChooser();
+            midiOutChooser = createMidiOutChooser();
             if (midiOutChooser.getSelectedItem() != null) {
                 MidiDeviceChooserItem item = (MidiDeviceChooserItem) midiOutChooser.getSelectedItem();
                 if (item.getValue() != null) {
@@ -304,13 +312,35 @@ public class GUI extends JFrame implements Receiver {
             addComponentToGridBagLayout(mainPanel, layout, audioInputLabel, 0, 4, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
-            JToggleButton activateAudioInput = new JToggleButton("Activate", false);
+            activateAudioInput = new JToggleButton("Activate", false);
             activateAudioInput.setOpaque(true);
 
             addComponentToGridBagLayout(mainPanel, layout, activateAudioInput, 3, 4, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
 
-            JComboBox<String> audioInputChooser = createAudioInChooser();
+
+            activateAutoTune = new JToggleButton("Auto-Tune", false);
+            activateAutoTune.setOpaque(true);
+            activateAutoTune.addItemListener(new ItemListener() {
+                public void itemStateChanged(ItemEvent ev) {
+                    if (ev.getStateChange() == ItemEvent.SELECTED) {
+                        activateAutoTune.setForeground(Color.green);
+                        activateAutoTune.setBackground(Color.green);
+                        cqtAutoTune=true;
+                    } else {
+                        activateAutoTune.setForeground(Color.DARK_GRAY);
+                        activateAutoTune.setBackground(Color.DARK_GRAY);
+                        cqtAutoTune=false;
+                    }
+                    activateAudioInput.setSelected(false);
+                    Mic2MIDI_CQT.autoTune=cqtAutoTune;
+                }
+            });
+
+            addComponentToGridBagLayout(mainPanel, layout, activateAutoTune, 3, 5, 1, 1, 1.0, 1.0, this.padding,
+                    this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
+
+            audioInputChooser = createAudioInChooser();
             audioInputChooser.addActionListener(actionEvent -> {
                 // TODO: the following lines do not work!
                 //Windows appear to be the problem, works on Mac
@@ -421,11 +451,6 @@ public class GUI extends JFrame implements Receiver {
 
             ////////////////////
 
-//            JLabel tempoLabel = new JLabel("Tempo in keystrokes/min   ");
-//            tempoLabel.setHorizontalAlignment(JLabel.RIGHT);
-//            addComponentToGridBagLayout(mainPanel, layout, tempoLabel, 0, 6, 1, 1, 1.0, 1.0, this.padding, this.padding,
-//                    GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
-
             JLabel tempoValue = new JLabel("   500");
             tempoValue.setHorizontalAlignment(JLabel.CENTER);
             addComponentToGridBagLayout(mainPanel, layout, tempoValue, 0, 6, 1, 1, 1.0, 1.0, this.padding, this.padding,
@@ -529,7 +554,7 @@ public class GUI extends JFrame implements Receiver {
             addComponentToGridBagLayout(mainPanel, layout, tonalEnrichmentLabel, 0, 9, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
-            JButton tonalEnrichmentButton = new JButton("Upload");
+            tonalEnrichmentButton = new JButton("Upload");
 
             NumberTextField e1 = new NumberTextField(NumberFormat.getIntegerInstance(), 0);
             NumberTextField e2 = new NumberTextField(NumberFormat.getIntegerInstance(), 0);
@@ -706,7 +731,7 @@ public class GUI extends JFrame implements Receiver {
 
             ////////////////////
 
-            JButton panic = new JButton("PANIC!");
+            panic = new JButton("PANIC!");
             panic.setBackground(Color.red);
             panic.setForeground(Color.red);
             panic.addActionListener(actionEvent -> this.arpeggiator.panic());
@@ -762,6 +787,7 @@ public class GUI extends JFrame implements Receiver {
             tonalEnrichmentPresetChooser.setSelectedIndex(Integer.parseInt(configProp.getProperty("Enrichment Preset", "0")));
             patternChooser.setSelectedIndex(Integer.parseInt(configProp.getProperty("Enrichment Pattern", "0")));
             mic2MIDIChooser.setSelectedIndex(Integer.parseInt(configProp.getProperty("Pitch Detector", "0")));
+            activateAutoTune.setSelected(Boolean.parseBoolean(configProp.getProperty("CQT Auto-Tune", "false")));
 
         });
     }

@@ -22,15 +22,15 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
     private final CQTPitchDetector[] cqtPitchDetectors;
     private Integer newPitch;
     public final UnitVariableInputPort[] CQTPorts;
-    private double[] CQTBins;
-    private double[] CQTFrequencies;
+    private final double[] CQTBins;
+    private final double[] CQTFrequencies;
     private int[] CQTBinsSortedIndexes;
     public static double minFreq;
     //Histogram
     public static CQTHistogram cqtHist;
     private double PITCH_THRESHOLD;
     private final SortedList<Integer> currentPitches = new SortedList<>();
-    private final boolean autoTune;
+    public static boolean autoTune;
     private final int minVelocity;
     private final int maxVelocity;
     private final int diffVelocity;
@@ -40,8 +40,8 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
         super(sampleRate);
         NAME = "CQT-Based Pitch Detector";
         POLY = isPoly;
-        this.minFreq = minFreq;
-        this.autoTune = autoTune;
+        Mic2MIDI_CQT.minFreq = minFreq;
+        Mic2MIDI_CQT.autoTune = autoTune;
         minVelocity = cqtMinVel;
         maxVelocity = cqtMaxVel;
         diffVelocity = maxVelocity - minVelocity;
@@ -98,88 +98,140 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
             }
         }
         if (!isPoly()) {
-            CQTBinsSortedIndexes = getMaxBins(CQTBins, binsToCompute);
-            if (CQTBins[CQTBinsSortedIndexes[0]] >= (PITCH_THRESHOLD)) {
-                int newPitch = (int) Math.round(AudioMath.frequencyToPitch(CQTFrequencies[CQTBinsSortedIndexes[0]]));
-                if (newPitch != currentPitch) {
-                    if (currentPitch != -1) {
-                        this.sendNoteOff(this.currentPitch);
-                    }
-                    //Velocity
-                    double ratioVelocity = Math.clamp(CQTBins[CQTBinsSortedIndexes[0]] / PITCH_THRESHOLD, 1.0, 2.0)-1;
-                    int newVelocity = Math.clamp((int) (minVelocity + (ratioVelocity* diffVelocity)), minVelocity, maxVelocity);
-                    currentVelocity=newVelocity;
-                    this.sendNoteOn(newPitch, newVelocity);
-
-                    currentPitch = newPitch;
-                    String message = String.format("[%d] %.0fHz: %d\r\n", newPitch, CQTFrequencies[CQTBinsSortedIndexes[0]],newVelocity);
-                    GUI.updateLogGUI(message);
-                }
-                else{
-                    double ratioVelocity = Math.clamp(CQTBins[CQTBinsSortedIndexes[0]] / PITCH_THRESHOLD, 1.0, 2.0)-1;
-                    int newVelocity = Math.clamp((int) (minVelocity + (ratioVelocity* diffVelocity)), minVelocity, maxVelocity);
-                    if (newVelocity!=currentVelocity){
-                        this.sendAftertouch(currentPitch,newVelocity);
-                        currentVelocity=newVelocity;
-                    }
-                }
-            } else {
-                if (currentPitch != -1) {
-                    this.sendNoteOff(currentPitch);
-                    currentPitch = -1;
-                }
-
-            }
+            playMono();
         } else {
-            //Polyphonic version
-            for (int i = 0; i < CQTBins.length; i++) {
-                newPitch = (int) Math.round(AudioMath.frequencyToPitch(CQTFrequencies[i]));
-                if (!autoTune) {
-                    if (CQTBins[i] >= PITCH_THRESHOLD) {
-                        if (currentPitches.add(newPitch)) {
-                            //We have to play a new note
-                            //Velocity
-                            double ratioVelocity = Math.clamp(CQTBins[i] / PITCH_THRESHOLD, 1.0, 2.0) - 1;
-                            int newVelocity = Math.clamp((int) (minVelocity + (ratioVelocity * diffVelocity)), minVelocity, maxVelocity);
-
-                            this.sendNoteOn(newPitch, newVelocity);
-
-                            String message = String.format("[%d] %.0fHz: %d\r\n", newPitch, CQTFrequencies[i], newVelocity);
-                            GUI.updateLogGUI(message);
-                        } else {
-                            double ratioVelocity = Math.clamp(CQTBins[i] / PITCH_THRESHOLD, 1.0, 2.0) - 1;
-                            int newVelocity = Math.clamp((int) (minVelocity + (ratioVelocity * diffVelocity)), minVelocity, maxVelocity);
-                            if (newVelocity != currentVelocity) {
-                                this.sendAftertouch(newPitch, newVelocity);
-                                currentVelocity = newVelocity;
-                            }
-                        }
-                    } else {
-                        Integer removed = currentPitches.remove(newPitch);
-                        if (removed != null)
-                            this.sendNoteOff(removed);
-                    }
-
-                }
-                else{
-                    //TODO Autotune logic
-                }
-            }
+            playPoly();
         }
 
 
     }
 
+    private void playPoly() {
+        //Polyphonic version
+        StringBuilder message = new StringBuilder();
+        for (int i = 0; i < CQTBins.length; i++) {
+            newPitch = (int) Math.round(AudioMath.frequencyToPitch(CQTFrequencies[i]));
+            if (!autoTune) {
+                if (CQTBins[i] >= PITCH_THRESHOLD) {
+                    if (currentPitches.add(newPitch)) {
+                        //We have to play a new note
+                        //Velocity
+                        double ratioVelocity = Math.clamp(CQTBins[i] / PITCH_THRESHOLD, 1.0, 2.0) - 1;
+                        int newVelocity = Math.clamp((int) (minVelocity + (ratioVelocity * diffVelocity)), minVelocity, maxVelocity);
+
+                        this.sendNoteOn(newPitch, newVelocity);
+
+                        message.append(String.format("[%d] %.0fHz: %d ", newPitch, CQTFrequencies[i], newVelocity));
+
+                    } else {
+                        double ratioVelocity = Math.clamp(CQTBins[i] / PITCH_THRESHOLD, 1.0, 2.0) - 1;
+                        int newVelocity = Math.clamp((int) (minVelocity + (ratioVelocity * diffVelocity)), minVelocity, maxVelocity);
+                        if (newVelocity != currentVelocity) {
+                            this.sendAftertouch(newPitch, newVelocity);
+                            currentVelocity = newVelocity;
+                        }
+                    }
+                } else {
+                    Integer removed = currentPitches.remove(newPitch);
+                    if (removed != null)
+                        this.sendNoteOff(removed);
+                }
+
+            } else {
+                //Auto-Tune
+                if (CQTBins[i] >= PITCH_THRESHOLD) {
+                    currentPitches.add(newPitch);
+                } else {
+                    Integer removed = currentPitches.remove(newPitch);
+                    if (removed != null)
+                        this.sendNoteOff(removed);
+                }
+            }
+
+        }
+        //Auto-Tune post-processing, sends correct NoteOn
+//        if (autoTune && !currentPitches.isEmpty()) {
+//            ArrayList<Integer> actualPitches = new ArrayList<>();
+//            actualPitches.add(currentPitches.get(0));
+//            for (int i = 0; i < currentPitches.size(); i++) {
+//                if (currentPitches.get(i) == actualPitches.getLast() + 1) {
+//                    actualPitches.add(currentPitches.get(i));
+//                } else {
+//                    if (actualPitches.size() == 1 || actualPitches.size() > 3) {
+//                        for (int pitch : actualPitches) {
+//                            //We have to play a new note
+//                            //Velocity
+//                            double ratioVelocity = Math.clamp(CQTBins[i] / PITCH_THRESHOLD, 1.0, 2.0) - 1;
+//                            int newVelocity = Math.clamp((int) (minVelocity + (ratioVelocity * diffVelocity)), minVelocity, maxVelocity);
+//
+//                            this.sendNoteOn(pitch, newVelocity);
+//
+//                            message.append(String.format("[%d] %.0fHz: %d\r\n", pitch, CQTFrequencies[i], newVelocity));
+//                        }
+//                        actualPitches.clear();
+//                    } else {
+//                        //Find the highest
+//                        //We have to play a new note
+//                        //Velocity
+//                        double ratioVelocity = Math.clamp(CQTBins[i] / PITCH_THRESHOLD, 1.0, 2.0) - 1;
+//                        int newVelocity = Math.clamp((int) (minVelocity + (ratioVelocity * diffVelocity)), minVelocity, maxVelocity);
+//
+//                        this.sendNoteOn(actualPitches.getFirst(), newVelocity);
+//
+//                        message.append(String.format("[%d] %.0fHz: %d\r\n", actualPitches.getFirst(), CQTFrequencies[i], newVelocity));
+//                    }
+//                }
+//            }
+//        }
+
+        if (!message.isEmpty()) {
+            GUI.updateLogGUI(message + "\r\n");
+        }
+    }
+
+    private void playMono() {
+        CQTBinsSortedIndexes = getMaxBins(CQTBins, binsToCompute);
+        if (CQTBins[CQTBinsSortedIndexes[0]] >= (PITCH_THRESHOLD)) {
+            int newPitch = (int) Math.round(AudioMath.frequencyToPitch(CQTFrequencies[CQTBinsSortedIndexes[0]]));
+            if (newPitch != currentPitch) {
+                if (currentPitch != -1) {
+                    this.sendNoteOff(this.currentPitch);
+                }
+                //Velocity
+                double ratioVelocity = Math.clamp(CQTBins[CQTBinsSortedIndexes[0]] / PITCH_THRESHOLD, 1.0, 2.0) - 1;
+                int newVelocity = Math.clamp((int) (minVelocity + (ratioVelocity * diffVelocity)), minVelocity, maxVelocity);
+                currentVelocity = newVelocity;
+                this.sendNoteOn(newPitch, newVelocity);
+
+                currentPitch = newPitch;
+                String message = String.format("[%d] %.0fHz: %d\r\n", newPitch, CQTFrequencies[CQTBinsSortedIndexes[0]], newVelocity);
+                GUI.updateLogGUI(message);
+            } else {
+                double ratioVelocity = Math.clamp(CQTBins[CQTBinsSortedIndexes[0]] / PITCH_THRESHOLD, 1.0, 2.0) - 1;
+                int newVelocity = Math.clamp((int) (minVelocity + (ratioVelocity * diffVelocity)), minVelocity, maxVelocity);
+                if (newVelocity != currentVelocity) {
+                    this.sendAftertouch(currentPitch, newVelocity);
+                    currentVelocity = newVelocity;
+                }
+            }
+        } else {
+            if (currentPitch != -1) {
+                this.sendNoteOff(currentPitch);
+                currentPitch = -1;
+            }
+        }
+    }
+
     @Override
     public void setSignalToNoiseThreshold(double value) {
-        float scalingFactor=5.0f; //This is quite arbitrary, different interfaces get considerable different ranges, can we do better?
+        float scalingFactor = 5.0f; //This is quite arbitrary, different interfaces get considerable different ranges, can we do better?
         double modValue = value / scalingFactor;
         PITCH_THRESHOLD = modValue / 2;
         cqtHist.max = modValue;
     }
 
     /**
-     * Return the indexes correspond to the top-k largest in an array.
+     * Return the indexes corresponding to the top-k largest in an array.
      */
     public static int[] getMaxBins(double[] array, int top_k) {
         double[] max = new double[top_k];
