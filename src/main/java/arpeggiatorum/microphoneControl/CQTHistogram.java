@@ -7,6 +7,7 @@ public class CQTHistogram extends JPanel {
     private double[] binCounts;
     private final double[] frequencies;
     public double max;
+    public static int binSize;
     private final int WIDTH = 1080;
     private final int HEIGHT = 500;
     private final int BORDER = 10;
@@ -14,6 +15,7 @@ public class CQTHistogram extends JPanel {
 
     public CQTHistogram(double[] binCounts, double[] frequencies) {
         this.binCounts = binCounts;
+        binSize=binCounts.length;
         this.frequencies = frequencies;
         max = 1.0f;
     }

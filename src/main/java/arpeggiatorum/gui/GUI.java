@@ -416,6 +416,7 @@ public class GUI extends JFrame implements Receiver {
                         activateAudioInput.setForeground(Color.green);
                         activateAudioInput.setBackground(Color.green);
                         activateAudioInput.setText("Active");
+
                         ((Mic2MIDI) mic2MIDIChooser.getSelectedItem()).start();
                         ((Mic2MIDI) mic2MIDIChooser.getSelectedItem()).setSignalToNoiseThreshold(((double) signal2noiseThreshold.getValue()) / signal2noiseThreshold.getMaximum());
                     } else {
