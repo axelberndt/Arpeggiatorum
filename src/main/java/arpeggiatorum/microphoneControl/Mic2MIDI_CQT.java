@@ -25,6 +25,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
     private final double[] CQTFrequencies;
     private int[] CQTBinsSortedIndexes;
     public static double minFreq;
+    public static double scalingFactor;
     //Histogram
     public static CQTHistogram cqtHist;
     private double PITCH_THRESHOLD;
@@ -257,7 +258,6 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
 
     @Override
     public void setSignalToNoiseThreshold(double value) {
-        float scalingFactor = 5.0f; //This is quite arbitrary, different interfaces get considerable different ranges, can we do better?
         double modValue = value / scalingFactor;
         PITCH_THRESHOLD = modValue / 2;
         cqtHist.max = modValue;

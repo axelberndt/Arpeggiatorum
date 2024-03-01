@@ -85,6 +85,8 @@ public class GUI extends JFrame implements Receiver {
     private static int cqtMinVel;
     private static int cqtMaxVel;
     private static int tarsosBuffer;
+    private static double histScale;
+
     private static double tarsosConfidence;
     private static int fftBinSize;
     private static double fftMaxFreq;
@@ -125,11 +127,12 @@ public class GUI extends JFrame implements Receiver {
         cqtAutoTune = Boolean.parseBoolean(configProp.getProperty("CQT Auto-Tune", "false"));
         cqtMinVel = Integer.parseInt(configProp.getProperty("CQT Min Velocity", "60"));
         cqtMaxVel = Integer.parseInt(configProp.getProperty("CQT Max Velocity", "127"));
+        Mic2MIDI_CQT.scalingFactor=Double.parseDouble(configProp.getProperty("CQT Scaling Factor", "1.0"));
         tarsosBuffer = Integer.parseInt(configProp.getProperty("Tarsos Buffer", "1024"));
         tarsosConfidence = Double.parseDouble(configProp.getProperty("Tarsos Confidence", "0.98"));
         fftBinSize = Integer.parseInt(configProp.getProperty("FFT Bin Size", "9"));
         fftMaxFreq = Double.parseDouble(configProp.getProperty("FFT Max Freq", "1567.98"));
-
+        histScale = Double.parseDouble(configProp.getProperty("Histogram Scale", "10.00"));
         //Pitch processors
         this.mic2Midi = new ArrayList<>();
         this.mic2Midi.add(new Mic2MIDI_JSyn(this.arpeggiator, sampleRate));
@@ -741,7 +744,7 @@ public class GUI extends JFrame implements Receiver {
 
             ////////////////////
             cqtBinsPanel = Mic2MIDI_CQT.cqtHist;
-            addComponentToGridBagLayout(mainPanel, layout, cqtBinsPanel, 0, 13, 4, 1, 1, 1000, this.padding,
+            addComponentToGridBagLayout(mainPanel, layout, cqtBinsPanel, 0, 13, 4, 1, 1, histScale, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
 
             // pack it all together and show it
@@ -863,6 +866,7 @@ public class GUI extends JFrame implements Receiver {
             prop.setProperty("CQT Poly", String.valueOf(cqtisPoly));
             prop.setProperty("CQT Min Velocity", String.valueOf(cqtMinVel));
             prop.setProperty("CQT Max Velocity", String.valueOf(cqtMaxVel));
+            prop.setProperty("CQT Scaling Factor", String.valueOf(Mic2MIDI_CQT.scalingFactor));
 
 
             prop.setProperty("Tarsos Buffer Size", String.valueOf(tarsosBuffer));
@@ -870,6 +874,7 @@ public class GUI extends JFrame implements Receiver {
 
             prop.setProperty("FFT Bin Size", String.valueOf(fftBinSize));
             prop.setProperty("FFT Max Freq", String.valueOf(fftMaxFreq));
+            prop.setProperty("Histogram Scale", String.valueOf(histScale));
 
             // Save properties to project root folder
             prop.store(output, null);
