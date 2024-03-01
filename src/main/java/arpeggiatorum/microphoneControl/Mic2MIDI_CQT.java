@@ -30,6 +30,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
     public static CQTHistogram cqtHist;
     private double PITCH_THRESHOLD;
     private boolean[] currentPitches;
+    private int[] currentVelocities;
     private double[] currentMag;
     public static boolean autoTune;
     private final int minVelocity;
@@ -40,8 +41,18 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
     @Override
     public void stop() {
         super.stop();
+        //Reset everything
+
+        //Mono Version
+        currentVelocity = 0;
+        currentPitch = -1;
+
+        //Poly Version
         currentPitches = new boolean[CQTBins.length];
         currentMag = new double[CQTBins.length];
+        currentVelocities= new int[CQTBins.length];
+
+        //Histogram
         cqtHist.updateBins(new double[CQTHistogram.binSize]);
         GUI.cqtBinsPanel.revalidate();
         GUI.cqtBinsPanel.repaint();
@@ -90,6 +101,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
         }
         currentPitches = new boolean[CQTBins.length];
         currentMag = new double[currentPitches.length];
+        currentVelocities= new int[CQTBins.length];
         //CQT Histogram
         double[] initializer = new double[CQTFrequencies.length];
         cqtHist = new CQTHistogram(initializer, CQTFrequencies);
@@ -136,9 +148,9 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                     currentMag[i] = CQTBins[i];
                 }
             } else {
-                    this.sendNoteOff(newPitch);
-                    currentPitches[i] = false;
-                    currentMag[i] = 0.0;
+                this.sendNoteOff(newPitch);
+                currentPitches[i] = false;
+                currentMag[i] = 0.0;
             }
         }
         //Auto-Tune post-processing, sends correct NoteOn
@@ -206,15 +218,16 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                 } else {
                     double ratioVelocity = Math.clamp(CQTBins[i] / PITCH_THRESHOLD, 1.0, 2.0) - 1;
                     int newVelocity = Math.clamp((int) (minVelocity + (ratioVelocity * diffVelocity)), minVelocity, maxVelocity);
-                    if (newVelocity != currentVelocity) {
-                        this.sendAftertouch(newPitch, newVelocity);
-                        currentVelocity = newVelocity;
+                    if (newVelocity != currentVelocities[i]) {
+                        this.sendAftertouch((int) Math.round(AudioMath.frequencyToPitch(CQTFrequencies[i])), newVelocity);
+                        currentVelocities[i] = newVelocity;
                     }
                 }
             } else {
                 if (currentPitches[i] == true) {
                     this.sendNoteOff(newPitch);
                     currentPitches[i] = false;
+                    currentVelocities[i]=0;
                 }
             }
         }

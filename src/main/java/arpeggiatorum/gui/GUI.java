@@ -133,6 +133,7 @@ public class GUI extends JFrame implements Receiver {
         fftBinSize = Integer.parseInt(configProp.getProperty("FFT Bin Size", "9"));
         fftMaxFreq = Double.parseDouble(configProp.getProperty("FFT Max Freq", "1567.98"));
         histScale = Double.parseDouble(configProp.getProperty("Histogram Scale", "10.00"));
+
         //Pitch processors
         this.mic2Midi = new ArrayList<>();
         this.mic2Midi.add(new Mic2MIDI_JSyn(this.arpeggiator, sampleRate));
