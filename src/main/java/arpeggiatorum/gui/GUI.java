@@ -329,11 +329,9 @@ public class GUI extends JFrame implements Receiver {
                 public void itemStateChanged(ItemEvent ev) {
                     if (ev.getStateChange() == ItemEvent.SELECTED) {
                         activateAutoTune.setForeground(Color.green);
-                        activateAutoTune.setBackground(Color.green);
                         cqtAutoTune=true;
                     } else {
                         activateAutoTune.setForeground(Color.DARK_GRAY);
-                        activateAutoTune.setBackground(Color.DARK_GRAY);
                         cqtAutoTune=false;
                     }
                     activateAudioInput.setSelected(false);
@@ -418,14 +416,12 @@ public class GUI extends JFrame implements Receiver {
                 public void itemStateChanged(ItemEvent ev) {
                     if (ev.getStateChange() == ItemEvent.SELECTED) {
                         activateAudioInput.setForeground(Color.green);
-                        activateAudioInput.setBackground(Color.green);
                         activateAudioInput.setText("Active");
 
                         ((Mic2MIDI) mic2MIDIChooser.getSelectedItem()).start();
                         ((Mic2MIDI) mic2MIDIChooser.getSelectedItem()).setSignalToNoiseThreshold(((double) signal2noiseThreshold.getValue()) / signal2noiseThreshold.getMaximum());
                     } else {
                         activateAudioInput.setForeground(Color.DARK_GRAY);
-                        activateAudioInput.setBackground(Color.DARK_GRAY);
                         activateAudioInput.setText("Inactive");
                         for (Mic2MIDI processor : mic2Midi) {
                             processor.stop();
@@ -737,7 +733,6 @@ public class GUI extends JFrame implements Receiver {
             ////////////////////
 
             panic = new JButton("PANIC!");
-            panic.setBackground(Color.red);
             panic.setForeground(Color.red);
             panic.addActionListener(actionEvent -> this.arpeggiator.panic());
             addComponentToGridBagLayout(mainPanel, layout, panic, 1, 12, 2, 1, 1.0, 1.0, this.padding, this.padding,

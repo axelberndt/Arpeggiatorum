@@ -52,9 +52,11 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
         currentPitch = -1;
 
         //Poly Version
-        //  currentPitches = new boolean[CQTBins.length];
-        //  currentMag = new double[CQTBins.length];
-        //   currentVelocities = new int[CQTBins.length];
+        currentPitches = new boolean[128];
+        currentActive = new boolean[128];
+        currentAboveThreshold = new boolean[128];
+        currentVelocities = new int[128];
+        currentMag = new double[128];
 
         //Histogram
         cqtHist.updateBins(new double[CQTHistogram.binSize]);
@@ -179,7 +181,13 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                                         currentActive[k] = true;
                                         message.append(String.format("[%d] %.0fHz: %d ", k, AudioMath.pitchToFrequency(k), newVelocity));
                                     } else {
-                                        //Aftertouch?
+                                        //Aftertouch
+                                        double ratioVelocity = Math.clamp(currentMag[k] / PITCH_THRESHOLD, 1.0, 2.0) - 1;
+                                        int newVelocity = Math.clamp((int) (minVelocity + (ratioVelocity * diffVelocity)), minVelocity, maxVelocity);
+                                        if (newVelocity != currentVelocities[k]) {
+                                            this.sendAftertouch(k, newVelocity);
+                                            currentVelocities[k] = newVelocity;
+                                        }
                                     }
                                 }
                             } else {
@@ -245,6 +253,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
 
                     message.append(String.format("[%d] %.0fHz: %d ", newPitch, CQTFrequencies[i], newVelocity));
                 } else {
+                    //Aftertouch
                     double ratioVelocity = Math.clamp(CQTBins[i] / PITCH_THRESHOLD, 1.0, 2.0) - 1;
                     int newVelocity = Math.clamp((int) (minVelocity + (ratioVelocity * diffVelocity)), minVelocity, maxVelocity);
                     if (newVelocity != currentVelocities[newPitch]) {
@@ -283,6 +292,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                 String message = String.format("[%d] %.0fHz: %d\r\n", newPitch, CQTFrequencies[CQTBinsSortedIndexes[0]], newVelocity);
                 GUI.updateLogGUI(message);
             } else {
+                //Aftertouch
                 double ratioVelocity = Math.clamp(CQTBins[CQTBinsSortedIndexes[0]] / PITCH_THRESHOLD, 1.0, 2.0) - 1;
                 int newVelocity = Math.clamp((int) (minVelocity + (ratioVelocity * diffVelocity)), minVelocity, maxVelocity);
                 if (newVelocity != currentVelocity) {
