@@ -36,6 +36,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
     private int[] currentVelocities = new int[128];
     private double[] currentMag = new double[128];
     public static boolean autoTune;
+    public static int clusterSize;
     private final int minVelocity;
     private final int maxVelocity;
     private final int diffVelocity;
@@ -169,7 +170,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                             //Then you can compute the length
                             int clusterLen = j - i;
                             //If the cluster has size 1 or greater than 3 you play all the notes
-                            if (clusterLen == 1 || clusterLen > 3) {
+                            if (clusterLen == 1 || clusterLen > clusterSize) {
                                 for (int k = i; k < j; k++) {
                                     if (currentActive[k] == false) {
                                         //We have to play a new note
@@ -191,7 +192,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                                     }
                                 }
                             } else {
-                                //I have a cluster of size 2 or 3, I have to determine the maximum
+                                //I have a cluster of size X, I have to determine the maximum
                                 double localMax = currentMag[i];
                                 int localPitch = i;
                                 for (int k = i; k < j; k++) {

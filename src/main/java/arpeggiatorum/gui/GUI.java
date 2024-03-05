@@ -125,6 +125,8 @@ public class GUI extends JFrame implements Receiver {
         cqtSpread = Float.parseFloat(configProp.getProperty("CQT Spread", "0.55"));
         cqtisPoly = Boolean.parseBoolean(configProp.getProperty("CQT Poly", "true"));
         cqtAutoTune = Boolean.parseBoolean(configProp.getProperty("CQT Auto-Tune", "false"));
+        Mic2MIDI_CQT.clusterSize=Integer.parseInt(configProp.getProperty("CQT Auto-Tune Cluster Size", "3"));
+
         cqtMinVel = Integer.parseInt(configProp.getProperty("CQT Min Velocity", "60"));
         cqtMaxVel = Integer.parseInt(configProp.getProperty("CQT Max Velocity", "127"));
         Mic2MIDI_CQT.scalingFactor=Double.parseDouble(configProp.getProperty("CQT Scaling Factor", "1.0"));
@@ -789,6 +791,25 @@ public class GUI extends JFrame implements Receiver {
             mic2MIDIChooser.setSelectedIndex(Integer.parseInt(configProp.getProperty("Pitch Detector", "0")));
             activateAutoTune.setSelected(Boolean.parseBoolean(configProp.getProperty("CQT Auto-Tune", "false")));
 
+
+            midiInChooser.setSelectedIndex(0);
+            midiOutChooser.setSelectedIndex(0);
+            audioInputChooser.setSelectedIndex(0);
+            String midiInProp=configProp.getProperty("MIDI Input","0");
+            String midiOutProp=configProp.getProperty("MIDI Output","0");
+            String audioInProp=configProp.getProperty("Audio Input","0");
+            for (int i = 0; i <midiInChooser.getItemCount() ; i++) {
+                if (midiInChooser.getItemAt(i).toString().equals(midiInProp))
+                    midiInChooser.setSelectedIndex(i);
+            }
+            for (int i = 0; i <midiOutChooser.getItemCount() ; i++) {
+                if (midiOutChooser.getItemAt(i).toString().equals(midiOutProp))
+                    midiOutChooser.setSelectedIndex(i);
+            }
+            for (int i = 0; i <audioInputChooser.getItemCount() ; i++) {
+                if (audioInputChooser.getItemAt(i).toString().equals(audioInProp))
+                    audioInputChooser.setSelectedIndex(i);
+            }
         });
     }
 
@@ -859,6 +880,7 @@ public class GUI extends JFrame implements Receiver {
             prop.setProperty("CQT Threshold", String.valueOf(cqtThreshold));
             prop.setProperty("CQT Spread", String.valueOf(cqtSpread));
             prop.setProperty("CQT Auto-Tune", String.valueOf(cqtAutoTune));
+            prop.setProperty("CQT Auto-Tune Cluster Size", String.valueOf(Mic2MIDI_CQT.clusterSize));
             prop.setProperty("CQT Poly", String.valueOf(cqtisPoly));
             prop.setProperty("CQT Min Velocity", String.valueOf(cqtMinVel));
             prop.setProperty("CQT Max Velocity", String.valueOf(cqtMaxVel));
@@ -871,6 +893,11 @@ public class GUI extends JFrame implements Receiver {
             prop.setProperty("FFT Bin Size", String.valueOf(fftBinSize));
             prop.setProperty("FFT Max Freq", String.valueOf(fftMaxFreq));
             prop.setProperty("Histogram Scale", String.valueOf(histScale));
+
+            prop.setProperty("MIDI Input", String.valueOf(midiInChooser.getSelectedItem().toString()));
+            prop.setProperty("MIDI Output",String.valueOf(midiOutChooser.getSelectedItem().toString()));
+            prop.setProperty("Audio Input",String.valueOf(audioInputChooser.getSelectedItem().toString()));
+
 
             // Save properties to project root folder
             prop.store(output, null);
