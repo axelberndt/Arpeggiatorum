@@ -42,6 +42,7 @@ public class GUI extends JFrame implements Receiver {
     private static JComboBox<Integer> bassChannelChooser;
     private static JComboBox<MidiDeviceChooserItem> midiInChooser;
     private static JComboBox<String> audioInputChooser;
+    private static JComboBox<String> audioOutputChooser;
     private static JComboBox<NotePool.Pattern> patternChooser;
     private static JComboBox<TonalEnrichmentChooserItem> tonalEnrichmentPresetChooser;
     private static JComboBox<Mic2MIDI> mic2MIDIChooser;
@@ -101,7 +102,7 @@ public class GUI extends JFrame implements Receiver {
         Tools.printAudioDevices(); // print a list of all available audio devices
 
         this.synth.setRealTime(true);
-        this.synth.start();
+        //this.synth.start();
         //Passing a value greater than 0 for input channels will cause an error. why?
         //this.synth.start(44100,AudioDeviceManager.USE_DEFAULT_DEVICE,2,AudioDeviceManager.USE_DEFAULT_DEVICE,0);
         this.arpeggiator = new Arpeggiator(this.synth, this); // instantiate the Arpeggiator and specify this GUI as
@@ -125,11 +126,11 @@ public class GUI extends JFrame implements Receiver {
         cqtSpread = Float.parseFloat(configProp.getProperty("CQT Spread", "0.55"));
         cqtisPoly = Boolean.parseBoolean(configProp.getProperty("CQT Poly", "true"));
         cqtAutoTune = Boolean.parseBoolean(configProp.getProperty("CQT Auto-Tune", "false"));
-        Mic2MIDI_CQT.clusterSize=Integer.parseInt(configProp.getProperty("CQT Auto-Tune Cluster Size", "3"));
+        Mic2MIDI_CQT.clusterSize = Integer.parseInt(configProp.getProperty("CQT Auto-Tune Cluster Size", "3"));
 
         cqtMinVel = Integer.parseInt(configProp.getProperty("CQT Min Velocity", "60"));
         cqtMaxVel = Integer.parseInt(configProp.getProperty("CQT Max Velocity", "127"));
-        Mic2MIDI_CQT.scalingFactor=Double.parseDouble(configProp.getProperty("CQT Scaling Factor", "1.0"));
+        Mic2MIDI_CQT.scalingFactor = Double.parseDouble(configProp.getProperty("CQT Scaling Factor", "1.0"));
         tarsosBuffer = Integer.parseInt(configProp.getProperty("Tarsos Buffer", "1024"));
         tarsosConfidence = Double.parseDouble(configProp.getProperty("Tarsos Confidence", "0.98"));
         fftBinSize = Integer.parseInt(configProp.getProperty("FFT Bin Size", "9"));
@@ -317,6 +318,12 @@ public class GUI extends JFrame implements Receiver {
             audioInputLabel.setHorizontalAlignment(JLabel.RIGHT);
             addComponentToGridBagLayout(mainPanel, layout, audioInputLabel, 0, 4, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
+            JLabel audioOutputLabel = new JLabel("Audio Output   ");
+            audioInputLabel.setHorizontalAlignment(JLabel.RIGHT);
+            addComponentToGridBagLayout(mainPanel, layout, audioOutputLabel, 0, 3, 1, 1, 1.0, 1.0, this.padding,
+                    this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
+            audioOutputLabel.setHorizontalAlignment(JLabel.RIGHT);
+
 
             activateAudioInput = new JToggleButton("Activate", false);
             activateAudioInput.setOpaque(true);
@@ -331,41 +338,51 @@ public class GUI extends JFrame implements Receiver {
                 public void itemStateChanged(ItemEvent ev) {
                     if (ev.getStateChange() == ItemEvent.SELECTED) {
                         activateAutoTune.setForeground(Color.green);
-                        cqtAutoTune=true;
+                        cqtAutoTune = true;
                     } else {
                         activateAutoTune.setForeground(Color.DARK_GRAY);
-                        cqtAutoTune=false;
+                        cqtAutoTune = false;
                     }
                     activateAudioInput.setSelected(false);
-                    Mic2MIDI_CQT.autoTune=cqtAutoTune;
+                    Mic2MIDI_CQT.autoTune = cqtAutoTune;
                 }
             });
 
             addComponentToGridBagLayout(mainPanel, layout, activateAutoTune, 3, 5, 1, 1, 1.0, 1.0, this.padding,
+                    this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
+            audioOutputChooser = createAudioOutChooser();
+            audioOutputChooser.setEnabled(true);
+            //Selecting the first interface for startup
+            audioOutputChooser.setSelectedIndex(0);
+            addComponentToGridBagLayout(mainPanel, layout, audioOutputChooser, 1, 3, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
 
             audioInputChooser = createAudioInChooser();
             audioInputChooser.addActionListener(actionEvent -> {
                 // TODO: the following lines do not work!
                 //Windows appear to be the problem, works on Mac
-                this.synth.stop();
-
-                int deviceID = Tools.getDeviceID((String) audioInputChooser.getSelectedItem());
-                int deviceInputChannels = this.synth.getAudioDeviceManager().getMaxInputChannels(deviceID);
+                if (this.synth.isRunning()) {
+                    this.synth.stop();
+                }
+                int deviceInputID = Tools.getDeviceID((String) audioInputChooser.getSelectedItem());
+                int deviceInputChannels = this.synth.getAudioDeviceManager().getMaxInputChannels(deviceInputID);
+                int deviceOutputID = Tools.getDeviceID((String) audioOutputChooser.getSelectedItem());
+                int deviceOutputChannels = this.synth.getAudioDeviceManager().getMaxOutputChannels(deviceOutputID);
                 this.synth.start(sampleRate,
-                        deviceID,
+                        deviceInputID,
                         deviceInputChannels,
-                        AudioDeviceManager.USE_DEFAULT_DEVICE,
-                        0);
+                        deviceOutputID,
+                        deviceOutputChannels);
                 if (activateAudioInput.isSelected()) {
                     activateAudioInput.setSelected(false);
                 }
             });
             audioInputChooser.setEnabled(true);
             //Selecting the first interface for startup
-            audioInputChooser.setSelectedIndex(0);
+           // audioInputChooser.setSelectedIndex(0);
             addComponentToGridBagLayout(mainPanel, layout, audioInputChooser, 1, 4, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
+
 
             // Select the pitch processor
             mic2MIDIChooser = new JComboBox<>();
@@ -791,27 +808,32 @@ public class GUI extends JFrame implements Receiver {
             mic2MIDIChooser.setSelectedIndex(Integer.parseInt(configProp.getProperty("Pitch Detector", "0")));
             activateAutoTune.setSelected(Boolean.parseBoolean(configProp.getProperty("CQT Auto-Tune", "false")));
 
+            String midiInProp = configProp.getProperty("MIDI Input", "0");
+            String midiOutProp = configProp.getProperty("MIDI Output", "0");
+            String audioInProp = configProp.getProperty("Audio Input", "0");
+            String audioOutProp = configProp.getProperty("Audio Output", "0");
 
-            midiInChooser.setSelectedIndex(0);
-            midiOutChooser.setSelectedIndex(0);
-            audioInputChooser.setSelectedIndex(0);
-            String midiInProp=configProp.getProperty("MIDI Input","0");
-            String midiOutProp=configProp.getProperty("MIDI Output","0");
-            String audioInProp=configProp.getProperty("Audio Input","0");
-            for (int i = 0; i <midiInChooser.getItemCount() ; i++) {
+            for (int i = 0; i < midiInChooser.getItemCount(); i++) {
                 if (midiInChooser.getItemAt(i).toString().equals(midiInProp))
                     midiInChooser.setSelectedIndex(i);
             }
-            for (int i = 0; i <midiOutChooser.getItemCount() ; i++) {
+            for (int i = 0; i < midiOutChooser.getItemCount(); i++) {
                 if (midiOutChooser.getItemAt(i).toString().equals(midiOutProp))
                     midiOutChooser.setSelectedIndex(i);
             }
-            for (int i = 0; i <audioInputChooser.getItemCount() ; i++) {
+            for (int i = 0; i < audioOutputChooser.getItemCount(); i++) {
+                if (audioOutputChooser.getItemAt(i).toString().equals(audioOutProp))
+                    audioOutputChooser.setSelectedIndex(i);
+            }
+
+            for (int i = 0; i < audioInputChooser.getItemCount(); i++) {
                 if (audioInputChooser.getItemAt(i).toString().equals(audioInProp))
                     audioInputChooser.setSelectedIndex(i);
             }
+
         });
     }
+
 
     private JButton getTempo() {
         JButton tapTempo = new JButton("Tap Tempo");
@@ -895,8 +917,9 @@ public class GUI extends JFrame implements Receiver {
             prop.setProperty("Histogram Scale", String.valueOf(histScale));
 
             prop.setProperty("MIDI Input", String.valueOf(midiInChooser.getSelectedItem().toString()));
-            prop.setProperty("MIDI Output",String.valueOf(midiOutChooser.getSelectedItem().toString()));
-            prop.setProperty("Audio Input",String.valueOf(audioInputChooser.getSelectedItem().toString()));
+            prop.setProperty("MIDI Output", String.valueOf(midiOutChooser.getSelectedItem().toString()));
+            prop.setProperty("Audio Input", String.valueOf(audioInputChooser.getSelectedItem().toString()));
+            prop.setProperty("Audio Output", String.valueOf(audioOutputChooser.getSelectedItem().toString()));
 
 
             // Save properties to project root folder
@@ -1057,6 +1080,25 @@ public class GUI extends JFrame implements Receiver {
         return audioInChooser;
     }
 
+    /**
+     * create a combobox with audio output devices
+     *
+     * @return
+     */
+    public static JComboBox<String> createAudioOutChooser() {
+        JComboBox<String> audioOutChooser = new JComboBox<>();
+
+        AudioDeviceManager audioManager = AudioDeviceFactory.createAudioDeviceManager();
+        int numDevices = audioManager.getDeviceCount();
+
+        for (int i = 0; i < numDevices; ++i) {
+            if (audioManager.getMaxOutputChannels(i) <= 0)
+                continue;
+            audioOutChooser.addItem(audioManager.getDeviceName(i));
+        }
+
+        return audioOutChooser;
+    }
 
     /**
      * process incoming MIDI messages from the Arpeggiator
@@ -1142,7 +1184,9 @@ public class GUI extends JFrame implements Receiver {
      */
     @Override
     public void close() {
-        this.synth.stop();
+        if (this.synth.isRunning()) {
+            this.synth.stop();
+        }
     }
 
     public static void updateLogGUI(final String message) {
