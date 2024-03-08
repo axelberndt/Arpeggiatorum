@@ -131,7 +131,7 @@ public class GUI extends JFrame implements Receiver {
         cqtMinVel = Integer.parseInt(configProp.getProperty("CQT Min Velocity", "60"));
         cqtMaxVel = Integer.parseInt(configProp.getProperty("CQT Max Velocity", "127"));
         Mic2MIDI_CQT.scalingFactor = Double.parseDouble(configProp.getProperty("CQT Scaling Factor", "1.0"));
-        tarsosBuffer = Integer.parseInt(configProp.getProperty("Tarsos Buffer", "1024"));
+        tarsosBuffer = Integer.parseInt(configProp.getProperty("Tarsos Buffer Size", "1024"));
         tarsosConfidence = Double.parseDouble(configProp.getProperty("Tarsos Confidence", "0.98"));
         fftBinSize = Integer.parseInt(configProp.getProperty("FFT Bin Size", "9"));
         fftMaxFreq = Double.parseDouble(configProp.getProperty("FFT Max Freq", "1567.98"));
