@@ -4,6 +4,7 @@ import arpeggiatorum.gui.GUI;
 
 
 public class Main {
+    public static final String version = "0.1.0";
     /**
      * execution entry point
      *
