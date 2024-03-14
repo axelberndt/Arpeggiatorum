@@ -16,8 +16,7 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
     public boolean POLY = false;
     public Receiver receiver;// the MIDI receiver
 
-    //TODO replace with a list of channels for multichannel interfaces
-    public  ChannelIn channelIn = new ChannelIn();// microphone input
+    public final ChannelIn channelIn = new ChannelIn();// microphone input
     public final double sampleRate;
     protected int currentPitch = -1;
     protected final SchmidtTrigger schmidtTrigger = new SchmidtTrigger();
@@ -28,19 +27,19 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
     public static final double FREQUENCY_RAMP_TIME = 0.01;
     public static final double PEAK_FOLLOWER_RAMP_TIME = 0.25;
 
-    public Mic2MIDI(){
-        sampleRate=44100.0f;
+    public Mic2MIDI() {
+        sampleRate = 44100.0f;
     }
 
-    public Mic2MIDI(double sampleRate){
-        this.sampleRate=sampleRate;
+    public Mic2MIDI(double sampleRate) {
+        this.sampleRate = sampleRate;
     }
 
 
-    public void setChannel(int chn){
-       this.channelIn=new ChannelIn(chn);
-        GUI.updateLogGUI("New Channel: "+ chn);
+    public void setChannel(int chn) {
+        channelIn.setChannelIndex(chn);
     }
+
     /**
      * set the receiver of outgoing MIDI messages
      *
@@ -111,6 +110,7 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
         this.getReceiver().send(noteOn, -1);
         this.currentPitch = pitch;
     }
+
     public void sendAftertouch(int pitch, int velocity) {
         ShortMessage aftertouch;
         //TODO needs to be improved, it's sending a message on everychannel
@@ -124,8 +124,9 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
             this.getReceiver().send(aftertouch, -1);
         }
     }
+
     public void sendNoteOn(int pitch) {
-    sendNoteOn(pitch,100);
+        sendNoteOn(pitch, 100);
     }
 
     public void sendNoteOff(int pitch) {

@@ -398,7 +398,7 @@ public class GUI extends JFrame implements Receiver {
             audioChannelChooser.addActionListener(actionEvent -> {
                 if(audioChannelChooser.getSelectedItem()!=null) {
                     for (Mic2MIDI dev : mic2Midi) {
-                        dev.setChannel((int) audioChannelChooser.getSelectedItem());
+                        dev.setChannel((int) audioChannelChooser.getSelectedItem()-1);
                     }
                 }
             });
@@ -1141,8 +1141,8 @@ public class GUI extends JFrame implements Receiver {
         audioChannelChooser.removeAllItems();
         AudioDeviceManager audioManager = AudioDeviceFactory.createAudioDeviceManager();
         int numDevices = audioManager.getMaxInputChannels(devID);
-        for (int i = 1; i <= numDevices; ++i) {
-            audioChannelChooser.addItem(i);
+        for (int i = 0; i < numDevices; ++i) {
+            audioChannelChooser.addItem(i+1);
         }
 
         return;
