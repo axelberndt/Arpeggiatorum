@@ -15,6 +15,8 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
     public String NAME = "Abstract";
     public boolean POLY = false;
     public Receiver receiver;// the MIDI receiver
+
+    //TODO replace with a list of channels for multichannel interfaces
     public final ChannelIn channelIn = new ChannelIn();// microphone input
     public final double sampleRate;
     protected int currentPitch = -1;

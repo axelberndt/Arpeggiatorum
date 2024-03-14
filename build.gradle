@@ -7,7 +7,7 @@ application {
 }
 
 group = 'com.github.axelberndt'
-version = '2.0'
+version = '0.1.1'
 
 repositories {
     mavenCentral()

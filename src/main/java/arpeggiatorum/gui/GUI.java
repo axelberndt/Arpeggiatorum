@@ -47,6 +47,8 @@ public class GUI extends JFrame implements Receiver {
     private static JComboBox<TonalEnrichmentChooserItem> tonalEnrichmentPresetChooser;
     private static JComboBox<Mic2MIDI> mic2MIDIChooser;
     private static JComboBox<MidiDeviceChooserItem> midiOutChooser;
+    private static JComboBox<Integer> audioChannelChooser;
+
     private static JSlider tempoSlider;
     private static JSlider articulationSlider;
     private static JSlider tonalEnrichmentSlider;
@@ -316,14 +318,17 @@ public class GUI extends JFrame implements Receiver {
 
             JLabel audioInputLabel = new JLabel("Audio Input   ");
             audioInputLabel.setHorizontalAlignment(JLabel.RIGHT);
-            addComponentToGridBagLayout(mainPanel, layout, audioInputLabel, 0, 4, 1, 1, 1.0, 1.0, this.padding,
+            addComponentToGridBagLayout(mainPanel, layout, audioInputLabel, 0, 3, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
             JLabel audioOutputLabel = new JLabel("Audio Output   ");
             audioInputLabel.setHorizontalAlignment(JLabel.RIGHT);
-            addComponentToGridBagLayout(mainPanel, layout, audioOutputLabel, 0, 3, 1, 1, 1.0, 1.0, this.padding,
+            addComponentToGridBagLayout(mainPanel, layout, audioOutputLabel, 0, 2, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
             audioOutputLabel.setHorizontalAlignment(JLabel.RIGHT);
-
+            JLabel audioChannelLabel = new JLabel("Channel   ");
+            audioChannelLabel.setHorizontalAlignment(JLabel.RIGHT);
+            addComponentToGridBagLayout(mainPanel, layout, audioChannelLabel, 0, 4, 1, 1, 1.0, 1.0, this.padding,
+                    this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_END);
 
             activateAudioInput = new JToggleButton("Activate", false);
             activateAudioInput.setOpaque(true);
@@ -354,7 +359,7 @@ public class GUI extends JFrame implements Receiver {
             audioOutputChooser.setEnabled(true);
             //Selecting the first interface for startup
             audioOutputChooser.setSelectedIndex(0);
-            addComponentToGridBagLayout(mainPanel, layout, audioOutputChooser, 1, 3, 1, 1, 1.0, 1.0, this.padding,
+            addComponentToGridBagLayout(mainPanel, layout, audioOutputChooser, 1, 2, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
 
             audioInputChooser = createAudioInChooser();
@@ -366,6 +371,10 @@ public class GUI extends JFrame implements Receiver {
                 }
                 int deviceInputID = Tools.getDeviceID((String) audioInputChooser.getSelectedItem());
                 int deviceInputChannels = this.synth.getAudioDeviceManager().getMaxInputChannels(deviceInputID);
+                updateAudioChannelChooser(deviceInputID);
+                audioChannelChooser.revalidate();
+                audioChannelChooser.repaint();
+
                 int deviceOutputID = Tools.getDeviceID((String) audioOutputChooser.getSelectedItem());
                 int deviceOutputChannels = this.synth.getAudioDeviceManager().getMaxOutputChannels(deviceOutputID);
                 this.synth.start(sampleRate,
@@ -380,9 +389,14 @@ public class GUI extends JFrame implements Receiver {
             audioInputChooser.setEnabled(true);
             //Selecting the first interface for startup
            // audioInputChooser.setSelectedIndex(0);
-            addComponentToGridBagLayout(mainPanel, layout, audioInputChooser, 1, 4, 1, 1, 1.0, 1.0, this.padding,
+            addComponentToGridBagLayout(mainPanel, layout, audioInputChooser, 1, 3, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
 
+
+            audioChannelChooser = createAudioChannelChooser();
+            audioChannelChooser.setEnabled(true);
+            addComponentToGridBagLayout(mainPanel, layout, audioChannelChooser, 1, 4, 1, 1, 1.0, 1.0, this.padding,
+                    this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
 
             // Select the pitch processor
             mic2MIDIChooser = new JComboBox<>();
@@ -1098,6 +1112,33 @@ public class GUI extends JFrame implements Receiver {
         }
 
         return audioOutChooser;
+    }
+    /**
+     * create a combobox with audio output devices
+     *
+     * @return
+     */
+    public static JComboBox<Integer> createAudioChannelChooser() {
+        JComboBox<Integer> audioChannelChooser = new JComboBox<>();
+
+        AudioDeviceManager audioManager = AudioDeviceFactory.createAudioDeviceManager();
+        int numDevices = audioManager.getMaxInputChannels(audioManager.getDefaultInputDeviceID());
+        for (int i = 1; i <= numDevices; ++i) {
+            audioChannelChooser.addItem(i);
+        }
+
+        return audioChannelChooser;
+    }
+
+    public static void updateAudioChannelChooser(int devID) {
+        audioChannelChooser.removeAllItems();
+        AudioDeviceManager audioManager = AudioDeviceFactory.createAudioDeviceManager();
+        int numDevices = audioManager.getMaxInputChannels(devID);
+        for (int i = 1; i <= numDevices; ++i) {
+            audioChannelChooser.addItem(i);
+        }
+
+        return;
     }
 
     /**
