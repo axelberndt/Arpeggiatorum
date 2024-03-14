@@ -17,7 +17,7 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
     public Receiver receiver;// the MIDI receiver
 
     //TODO replace with a list of channels for multichannel interfaces
-    public final ChannelIn channelIn = new ChannelIn();// microphone input
+    public  ChannelIn channelIn = new ChannelIn();// microphone input
     public final double sampleRate;
     protected int currentPitch = -1;
     protected final SchmidtTrigger schmidtTrigger = new SchmidtTrigger();
@@ -34,6 +34,12 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
 
     public Mic2MIDI(double sampleRate){
         this.sampleRate=sampleRate;
+    }
+
+
+    public void setChannel(int chn){
+       this.channelIn=new ChannelIn(chn);
+        GUI.updateLogGUI("New Channel: "+ chn);
     }
     /**
      * set the receiver of outgoing MIDI messages

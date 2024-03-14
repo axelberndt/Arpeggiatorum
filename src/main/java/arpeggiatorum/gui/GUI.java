@@ -395,6 +395,13 @@ public class GUI extends JFrame implements Receiver {
 
             audioChannelChooser = createAudioChannelChooser();
             audioChannelChooser.setEnabled(true);
+            audioChannelChooser.addActionListener(actionEvent -> {
+                if(audioChannelChooser.getSelectedItem()!=null) {
+                    for (Mic2MIDI dev : mic2Midi) {
+                        dev.setChannel((int) audioChannelChooser.getSelectedItem());
+                    }
+                }
+            });
             addComponentToGridBagLayout(mainPanel, layout, audioChannelChooser, 1, 4, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
 
