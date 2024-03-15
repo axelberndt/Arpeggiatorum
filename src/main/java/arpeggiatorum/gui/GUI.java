@@ -1089,7 +1089,7 @@ public class GUI extends JFrame implements Receiver {
     public static JComboBox<String> createAudioInChooser() {
         JComboBox<String> audioInChooser = new JComboBox<>();
 
-        AudioDeviceManager audioManager = AudioDeviceFactory.createAudioDeviceManager();
+        AudioDeviceManager audioManager = AudioDeviceFactory.createAudioDeviceManager(false);
         int numDevices = audioManager.getDeviceCount();
 
         for (int i = 0; i < numDevices; ++i) {
@@ -1109,7 +1109,7 @@ public class GUI extends JFrame implements Receiver {
     public static JComboBox<String> createAudioOutChooser() {
         JComboBox<String> audioOutChooser = new JComboBox<>();
 
-        AudioDeviceManager audioManager = AudioDeviceFactory.createAudioDeviceManager();
+        AudioDeviceManager audioManager = AudioDeviceFactory.createAudioDeviceManager(false);
         int numDevices = audioManager.getDeviceCount();
 
         for (int i = 0; i < numDevices; ++i) {
@@ -1128,7 +1128,7 @@ public class GUI extends JFrame implements Receiver {
     public static JComboBox<Integer> createAudioChannelChooser() {
         JComboBox<Integer> audioChannelChooser = new JComboBox<>();
 
-        AudioDeviceManager audioManager = AudioDeviceFactory.createAudioDeviceManager();
+        AudioDeviceManager audioManager = AudioDeviceFactory.createAudioDeviceManager(false);
         int numDevices = audioManager.getMaxInputChannels(audioManager.getDefaultInputDeviceID());
         for (int i = 1; i <= numDevices; ++i) {
             audioChannelChooser.addItem(i);
@@ -1139,7 +1139,7 @@ public class GUI extends JFrame implements Receiver {
 
     public static void updateAudioChannelChooser(int devID) {
         audioChannelChooser.removeAllItems();
-        AudioDeviceManager audioManager = AudioDeviceFactory.createAudioDeviceManager();
+        AudioDeviceManager audioManager = AudioDeviceFactory.createAudioDeviceManager(false);
         int numDevices = audioManager.getMaxInputChannels(devID);
         for (int i = 0; i < numDevices; ++i) {
             audioChannelChooser.addItem(i+1);

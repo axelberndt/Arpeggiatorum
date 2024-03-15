@@ -45,7 +45,7 @@ public class Tools {
      * a little helper method to get an overview over all available audio devices and their input/output channels
      */
     public static void printAudioDevices() {
-        AudioDeviceManager audioManager = AudioDeviceFactory.createAudioDeviceManager();
+        AudioDeviceManager audioManager = AudioDeviceFactory.createAudioDeviceManager(false);
         int numDevices = audioManager.getDeviceCount();
 
         GUI.updateLogGUI("\nID\tdevice name (Input/Output channels)\n--\t-----------------------------------------------------------\r\n");
@@ -74,7 +74,7 @@ public class Tools {
         if (deviceName == null)
             return AudioDeviceManager.USE_DEFAULT_DEVICE;
 
-        AudioDeviceManager audioManager = AudioDeviceFactory.createAudioDeviceManager();
+        AudioDeviceManager audioManager = AudioDeviceFactory.createAudioDeviceManager(false);
         int numDevices = audioManager.getDeviceCount();
 
         for (int i = 0; i < numDevices; ++i)
@@ -91,7 +91,7 @@ public class Tools {
      * @return
      */
     public static Integer isDeviceAvailable(String deviceName) {
-        AudioDeviceManager audioManager = AudioDeviceFactory.createAudioDeviceManager();
+        AudioDeviceManager audioManager = AudioDeviceFactory.createAudioDeviceManager(false);
         int numDevices = audioManager.getDeviceCount();
 
         for (int i = 0; i < numDevices; ++i)
