@@ -16,6 +16,7 @@ import javax.sound.midi.*;
  * @author Axel Berndt
  */
 public class Arpeggiator implements Receiver, Transmitter {
+    public static final String version = "0.1.2";
     private MidiDevice inDevice = null;
     private int inputChannel = 0;
     private MidiDevice outDevice = null;

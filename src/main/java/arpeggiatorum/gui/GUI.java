@@ -98,7 +98,7 @@ public class GUI extends JFrame implements Receiver {
      * constructor
      */
     public GUI() {
-        super("Arpeggiatorum");
+        super("Arpeggiatorum v"+Arpeggiator.version);
         timeLast = Instant.now();
 
         Tools.printAudioDevices(); // print a list of all available audio devices

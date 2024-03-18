@@ -1,9 +1,16 @@
 plugins {
     id 'application'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
 application {
-    mainClass = 'arpeggiatorum.Main'
+    mainClass = 'arpeggiatorum.Arpeggiatorum'
+    //mainClass = 'arpeggiatorum.Main'
+}
+
+javafx {
+    version = "21.0.2"
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
 group = 'com.github.axelberndt'
@@ -43,6 +50,7 @@ dependencies {
 //                "Main-Class": "arpeggiatorum.Main")
 //    }
 //}
+
 test {
     useJUnitPlatform()
 }
