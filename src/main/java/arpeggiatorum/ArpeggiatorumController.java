@@ -15,9 +15,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ArpeggiatorumController {
+    @FXML
+    private ChoiceBox<Integer> choiceAudioChannel;
 
-    public ChoiceBox choiceAudioChannel;
 
+    @FXML
+    public void initialize(){
+        createAudioChannelChooser();
+    }
     @FXML
     public void buttonPanicClick(Event e) {
         Arpeggiatorum.getInstance().getArpeggiator().panic();
@@ -39,14 +44,13 @@ public class ArpeggiatorumController {
             logger.log(Level.SEVERE, "Failed to create new Window.", e);
         }
     }
-    public static ChoiceBox<Integer> createAudioChannelChooser() {
-        ChoiceBox<Integer> audioChannelChooser = new ChoiceBox<>();
-
+    @FXML
+    public void createAudioChannelChooser() {
         AudioDeviceManager audioManager = AudioDeviceFactory.createAudioDeviceManager(false);
         int numDevices = audioManager.getMaxInputChannels(audioManager.getDefaultInputDeviceID());
         for (int i = 1; i <= numDevices; ++i) {
-            audioChannelChooser.getItems().add(i);
+           choiceAudioChannel.getItems().add(i);
         }
-        return audioChannelChooser;
+
     }
 }
