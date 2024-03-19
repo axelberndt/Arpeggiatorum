@@ -4,7 +4,7 @@ plugins {
 }
 
 application {
-    mainClass = 'arpeggiatorum.Arpeggiatorum'
+    mainClass = 'arpeggiatorum.ArpeggiatorumGUI'
     //mainClass = 'arpeggiatorum.Main'
 }
 
