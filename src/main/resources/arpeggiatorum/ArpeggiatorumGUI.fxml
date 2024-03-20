@@ -70,7 +70,7 @@
             <Text text="Current Tempo" fx:id="textTempo"
                   GridPane.columnIndex="0" GridPane.rowIndex="6"
                   GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
-            <Text text="Articulation"
+            <Text text="Articulation (staccato)"
                   GridPane.columnIndex="0" GridPane.rowIndex="7"
                   GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
             <Text text="Pitch Range"
@@ -98,15 +98,18 @@
                       GridPane.rowIndex="4" maxHeight="Infinity" maxWidth="Infinity"/>
             <Slider fx:id="sliderThreshold" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5"
                     maxHeight="Infinity" maxWidth="Infinity" SplitPane.resizableWithParent="true"
-                    GridPane.fillWidth="true" min="1" max="1000" value="500" showTickMarks="true"/>
+                    GridPane.fillWidth="true" min="1" max="1000" value="500" showTickMarks="true"
+            showTickLabels="true" majorTickUnit="100" minorTickCount="5"/>
             <Slider fx:id="sliderTempo" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="6"
                     maxHeight="Infinity" maxWidth="Infinity"
-                    min="100" max="1000" value="500" showTickMarks="true"/>
+                    min="100" max="1000" value="550" showTickMarks="true"
+            showTickLabels="true" majorTickUnit="100" minorTickCount="2"/>
             <Slider fx:id="sliderArticulation" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="7"
                     maxHeight="Infinity" maxWidth="Infinity"
                     min="50" max="150" value="100" showTickMarks="true"/>
             <RangeSlider fx:id="sliderRange" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="8"
-                         maxHeight="Infinity" maxWidth="Infinity" min="0" max="127" lowValue="0" highValue="127"/>
+                         maxHeight="Infinity" maxWidth="Infinity" min="0" max="127" lowValue="0" highValue="127"
+            showTickLabels="true" showTickMarks="true" majorTickUnit="12" minorTickCount="1"/>
             <ComboBox fx:id="comboEnrichment" GridPane.columnIndex="1" GridPane.columnSpan="1" maxHeight="Infinity"
                       maxWidth="Infinity"
                       GridPane.rowIndex="9"/>
@@ -132,7 +135,8 @@
             </HBox>
             <Slider fx:id="sliderEnrichment" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="11"
                     maxHeight="Infinity" maxWidth="Infinity"
-            min="0" max="100" showTickMarks="true" value="0"/>
+            min="0" max="100" showTickMarks="true" value="0"
+            showTickLabels="true" majorTickUnit="10" minorTickCount="1"/>
 
             <Button fx:id="buttonPanic" textAlignment="CENTER" text="PANIC!" onAction="#buttonPanicClick"
                     GridPane.columnIndex="1"
@@ -186,6 +190,9 @@
                     maxHeight="Infinity" maxWidth="Infinity"
                     textAlignment="CENTER"
                     onAction="#buttonTapTempoClick"/>
+            <Text text="(legato)"
+                  GridPane.columnIndex="3" GridPane.rowIndex="7"
+                  GridPane.columnSpan="1"/>
             <Text text="[0-127]" fx:id="textRange"
                   GridPane.columnIndex="3" GridPane.rowIndex="8"
                   GridPane.columnSpan="1"/>

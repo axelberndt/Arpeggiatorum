@@ -4,15 +4,6 @@ import arpeggiatorum.microphoneControl.*;
 import arpeggiatorum.supplementary.Tools;
 import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
-import com.jsyn.devices.AudioDeviceFactory;
-import com.jsyn.devices.AudioDeviceManager;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.control.ChoiceBox;
-import javafx.stage.Stage;
-import meico.midi.EventMaker;
 
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiMessage;
@@ -25,8 +16,6 @@ import java.io.OutputStream;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Arpeggiatorum implements Receiver {
     private static Arpeggiatorum instance;
@@ -34,10 +23,8 @@ public class Arpeggiatorum implements Receiver {
     private final Arpeggiator arpeggiator;
     private final ArrayList<Mic2MIDI> mic2Midi;
 
-    //GUI
-    public ChoiceBox choiceAudioChannel;
     //Properties
-    private Properties configProp;
+    private static Properties configProp;
     //Tap Tempo
     private static int tapCount = 0;
     private static int tapNext = 0;
@@ -144,6 +131,8 @@ public class Arpeggiatorum implements Receiver {
             this.synth.add(processor);
         }
 
+
+
     }
 
     /**
@@ -248,28 +237,68 @@ public class Arpeggiatorum implements Receiver {
         }
     }
 
+    public static void LoadConfig(ArpeggiatorumGUI arpeggiatorumGUI) {
+        //Get the properties values for GUI
+        ArpeggiatorumGUI.controllerHandle.comboMIDIChannel.setValue(Integer.parseInt(configProp.getProperty("Channel", "0")));
+        ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.setValue(Integer.parseInt(configProp.getProperty("Arpeggio", "1")));
+        ArpeggiatorumGUI.controllerHandle.comboBassChannel.setValue(Integer.parseInt(configProp.getProperty("Bass", "0")));
+        ArpeggiatorumGUI.controllerHandle.comboHeldChannel.setValue(Integer.parseInt(configProp.getProperty("Held", "2")));
+        ArpeggiatorumGUI.controllerHandle.sliderThreshold.setValue(Double.parseDouble(configProp.getProperty("Threshold", "500")));
+        ArpeggiatorumGUI.controllerHandle.sliderTempo.setValue(Double.parseDouble(configProp.getProperty("Tempo", "500")));
+        ArpeggiatorumGUI.controllerHandle.sliderArticulation.setValue(Double.parseDouble(configProp.getProperty("Articulation", "100")));
+        ArpeggiatorumGUI.controllerHandle.sliderRange.setLowValue(Double.parseDouble(configProp.getProperty("RangeMin", "0")));
+        ArpeggiatorumGUI.controllerHandle.sliderRange.setHighValue(Double.parseDouble(configProp.getProperty("RangeMax", "127")));
+        ArpeggiatorumGUI.controllerHandle.sliderEnrichment.setValue(Double.parseDouble(configProp.getProperty("Density", "0")));
+        //ArpeggiatorumGUI.controllerHandle.comboEnrichment.setValue(Integer.parseInt(configProp.getProperty("Enrichment Preset", "0")));
+        //ArpeggiatorumGUI.controllerHandle.comboPattern.setValue(configProp.getProperty("Enrichment Pattern", "0"));
+        //mic2MIDIChooser.setSelectedIndex(Integer.parseInt(configProp.getProperty("Pitch Detector", "0")));
+        //activateAutoTune.setSelected(Boolean.parseBoolean(configProp.getProperty("CQT Auto-Tune", "false")));
 
-    public static void SaveNClose() {
+        String midiInProp = configProp.getProperty("MIDI Input", "0");
+        String midiOutProp = configProp.getProperty("MIDI Output", "0");
+        String audioInProp = configProp.getProperty("Audio Input", "0");
+        String audioOutProp = configProp.getProperty("Audio Output", "0");
+
+        for (int i = 0; i < ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getItems().stream().count(); i++) {
+            if (ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getItems().get(i).toString().equals(midiInProp)) {
+               // ArpeggiatorumGUI.controllerHandle.comboMIDIIn.setValue(i);
+            }
+        }
+//        for (int i = 0; i < midiOutChooser.getItemCount(); i++) {
+//            if (midiOutChooser.getItemAt(i).toString().equals(midiOutProp))
+//                midiOutChooser.setSelectedIndex(i);
+//        }
+//        for (int i = 0; i < audioOutputChooser.getItemCount(); i++) {
+//            if (audioOutputChooser.getItemAt(i).toString().equals(audioOutProp))
+//                audioOutputChooser.setSelectedIndex(i);
+//        }
+//
+//        for (int i = 0; i < audioInputChooser.getItemCount(); i++) {
+//            if (audioInputChooser.getItemAt(i).toString().equals(audioInProp))
+//                audioInputChooser.setSelectedIndex(i);
+//        }
+    }
+
+    public static void SaveNClose(ArpeggiatorumGUI arpeggiatorumGUI) {
         //Save Config Properties
         try (OutputStream output = new FileOutputStream("config.properties")) {
             Properties prop = new Properties();
             // Set the properties values
             prop.setProperty("Name", "ArpeggiatorumGUI");
             prop.setProperty("Version", "0.1.2");
-
-//            prop.setProperty("Channel", inputChannelChooser.getSelectedItem().toString());
-//            prop.setProperty("Arpeggio", arpeggioChannelChooser.getSelectedItem().toString());
-//            prop.setProperty("Bass", bassChannelChooser.getSelectedItem().toString());
-//            prop.setProperty("Held", heldNotesChannelChooser.getSelectedItem().toString());
-//            prop.setProperty("Threshold", String.valueOf(signal2noiseThreshold.getValue()));
-//            prop.setProperty("Tempo", String.valueOf(tempoSlider.getValue()));
-//            prop.setProperty("Articulation", String.valueOf(articulationSlider.getValue()));
-//            prop.setProperty("RangeMin", String.valueOf(rangeSlider.getValue()));
-//            prop.setProperty("RangeMax", String.valueOf(rangeSlider.getUpperValue()));
-//            prop.setProperty("Density", String.valueOf(tonalEnrichmentSlider.getValue()));
-//            prop.setProperty("Enrichment Preset", String.valueOf(tonalEnrichmentPresetChooser.getSelectedIndex()));
-//            prop.setProperty("Enrichment Pattern", String.valueOf(patternChooser.getSelectedIndex()));
-//            prop.setProperty("Pitch Detector", String.valueOf(mic2MIDIChooser.getSelectedIndex()));
+            prop.setProperty("Channel", ArpeggiatorumGUI.controllerHandle.comboMIDIChannel.getValue().toString());
+            prop.setProperty("Arpeggio", ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getValue().toString());
+            prop.setProperty("Bass", ArpeggiatorumGUI.controllerHandle.comboBassChannel.getValue().toString());
+            prop.setProperty("Held", ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getValue().toString());
+            prop.setProperty("Threshold", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderThreshold.getValue()));
+            prop.setProperty("Tempo", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue()));
+            prop.setProperty("Articulation", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderArticulation.getValue()));
+            prop.setProperty("RangeMin", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderRange.getLowValue()));
+            prop.setProperty("RangeMax", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderRange.getHighValue()));
+            prop.setProperty("Density", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderEnrichment.getValue()));
+            prop.setProperty("Enrichment Preset", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboEnrichment.getValue()));
+            prop.setProperty("Enrichment Pattern", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboPattern.getValue()));
+            prop.setProperty("Pitch Detector", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboMic2MIDI.getValue()));
 
             prop.setProperty("Tap Timeout", String.valueOf(timeOut));
             prop.setProperty("Tap Count", String.valueOf(maxCount));
@@ -295,10 +324,10 @@ public class Arpeggiatorum implements Receiver {
             prop.setProperty("FFT Max Freq", String.valueOf(fftMaxFreq));
             prop.setProperty("Histogram Scale", String.valueOf(histScale));
 
-//            prop.setProperty("MIDI Input", String.valueOf(midiInChooser.getSelectedItem().toString()));
-//            prop.setProperty("MIDI Output", String.valueOf(midiOutChooser.getSelectedItem().toString()));
-//            prop.setProperty("Audio Input", String.valueOf(audioInputChooser.getSelectedItem().toString()));
-//            prop.setProperty("Audio Output", String.valueOf(audioOutputChooser.getSelectedItem().toString()));
+            prop.setProperty("MIDI Input", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getValue().toString()));
+            prop.setProperty("MIDI Output", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboMIDIOut.getValue().toString()));
+            prop.setProperty("Audio Input", ArpeggiatorumGUI.controllerHandle.comboAudioIn.getValue().toString());
+            prop.setProperty("Audio Output", ArpeggiatorumGUI.controllerHandle.comboAudioOut.getValue().toString());
 
 
             // Save properties to project root folder

@@ -54,9 +54,6 @@ public class ArpeggiatorumController {
     public ComboBox<String> comboAudioOut;
     @FXML
     public ComboBox<String> comboAudioIn;
-
-
-
     @FXML
     private ComboBox<Integer> comboAudioChannel;
     @FXML
