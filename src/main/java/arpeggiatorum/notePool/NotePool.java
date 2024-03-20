@@ -345,11 +345,26 @@ public class NotePool {
      * indicates the pattern according to which notes are provided
      */
     public enum Pattern {
-        up,
-        down,
-        up_down,
-        down_up,
-        random_no_repetitions,
-        random_with_repetitions
+        up ("Up"),
+        down ("Down"),
+        up_down ("Up-Down"),
+        down_up ("Down-Up"),
+        random_no_repetitions ("Random (No Repetitions)"),
+        random_with_repetitions ("Random (with Repetitions)");
+
+        private final String name;
+
+        private Pattern(String s) {
+            name = s;
+        }
+
+        public boolean equalsName(String otherName) {
+            // (otherName == null) check is not needed because name.equals(null) returns false
+            return name.equals(otherName);
+        }
+
+        public String toString() {
+            return this.name;
+        }
     }
 }

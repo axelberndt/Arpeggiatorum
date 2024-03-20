@@ -37,6 +37,10 @@ public class ArpeggiatorumGUI extends Application {
                     Arpeggiatorum.getInstance().SaveNClose();
                     break;
                 }
+                case KeyCode.L: {
+                    //Open Log Menu
+                    break;
+                }
                 default: {
                     //  System.out.println("Unrecognized key");
                 }

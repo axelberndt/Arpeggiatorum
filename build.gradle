@@ -40,6 +40,9 @@ dependencies {
     implementation(":jportaudio:0.1.0")
     implementation 'be.tarsos.dsp:core:2.5'
     implementation 'be.tarsos.dsp:jvm:2.5'
+    // https://mvnrepository.com/artifact/org.controlsfx/controlsfx
+    implementation 'org.controlsfx:controlsfx:latest.release'
+
 
 }
 //jar {

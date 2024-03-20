@@ -83,6 +83,9 @@ public class Arpeggiatorum implements Receiver {
         return arpeggiator;
     }
 
+   public ArrayList<Mic2MIDI> getMic2Midi() {return mic2Midi; }
+
+
     public Arpeggiatorum() {
         super();
         synchronized (Arpeggiatorum.class) {
