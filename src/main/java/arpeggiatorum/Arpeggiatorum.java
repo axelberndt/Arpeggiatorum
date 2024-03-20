@@ -4,6 +4,9 @@ import arpeggiatorum.microphoneControl.*;
 import arpeggiatorum.supplementary.Tools;
 import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiMessage;
@@ -16,6 +19,8 @@ import java.io.OutputStream;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Arpeggiatorum implements Receiver {
     private static Arpeggiatorum instance;
@@ -337,6 +342,22 @@ public class Arpeggiatorum implements Receiver {
             //GUI.updateLogGUI(io.getMessage());
         } finally {
             System.exit(0); // The program may still run, enforce exit
+        }
+    }
+
+    public static void LoadLog(ArpeggiatorumGUI arpeggiatorumGUI){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(arpeggiatorumGUI.getClass().getResource("LogGUI.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            Stage stage = new Stage();
+            stage.setTitle("Log Messages");
+            stage.setScene(scene);
+            stage.show();
+            stage.setMaximized(true);
+        } catch (IOException e) {
+            Logger logger = Logger.getLogger(arpeggiatorumGUI.getClass().getName());
+            logger.log(Level.SEVERE, "Failed to create new Window.", e);
         }
     }
 }

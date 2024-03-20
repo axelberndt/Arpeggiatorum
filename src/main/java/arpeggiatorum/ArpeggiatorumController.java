@@ -10,23 +10,14 @@ import com.jsyn.devices.AudioDeviceFactory;
 import com.jsyn.devices.AudioDeviceManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import org.controlsfx.control.RangeSlider;
 
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Sequencer;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ArpeggiatorumController {
 
@@ -88,9 +79,9 @@ public class ArpeggiatorumController {
 
     //Fourth Column
     @FXML
-    public Button buttonActivate;
+    public ToggleButton toggleButtonActivate;
     @FXML
-    public Button buttonAutoTune;
+    public ToggleButton toggleButtonAutoTune;
     @FXML
     public Button buttonTapTempo;
     @FXML
@@ -193,19 +184,7 @@ public class ArpeggiatorumController {
 
     @FXML
     public void buttonLogClick(ActionEvent actionEvent) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("LogGUI.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
-            Stage stage = new Stage();
-            stage.setTitle("Log Messages");
-            stage.setScene(scene);
-            stage.show();
-            stage.setMaximized(true);
-        } catch (IOException e) {
-            Logger logger = Logger.getLogger(getClass().getName());
-            logger.log(Level.SEVERE, "Failed to create new Window.", e);
-        }
+        Arpeggiatorum.LoadLog(ArpeggiatorumGUI.getInstance());
     }
 
     /**
@@ -335,10 +314,10 @@ public class ArpeggiatorumController {
         }
     }
 
-    public void buttonActivateClick(ActionEvent actionEvent) {
+    public void toggleButtonActivateClick(ActionEvent actionEvent) {
     }
 
-    public void buttonAutoTuneClick(ActionEvent actionEvent) {
+    public void toggleButtonAutoTuneClick(ActionEvent actionEvent) {
     }
 
     public void buttonTapTempoClick(ActionEvent actionEvent) {

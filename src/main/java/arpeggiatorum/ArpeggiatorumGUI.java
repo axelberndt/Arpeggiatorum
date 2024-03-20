@@ -14,6 +14,29 @@ public class ArpeggiatorumGUI extends Application {
     private static Arpeggiatorum arpeggiatorum;
 
     public static ArpeggiatorumController controllerHandle;
+    private static ArpeggiatorumGUI instance;
+    //Singleton pattern
+    public static synchronized ArpeggiatorumGUI getInstance() {
+        if (instance == null) {
+            synchronized (ArpeggiatorumGUI.class) {
+                if (instance == null) {
+                    instance = new ArpeggiatorumGUI();
+                }
+            }
+        }
+        return instance;
+    }
+
+    @Override
+    public void init() throws Exception {
+        super.init();
+        synchronized (ArpeggiatorumGUI.class) {
+            if (instance != null) throw new UnsupportedOperationException(
+                    getClass() + " is singleton but constructor called more than once");
+            instance = this;
+        }
+    }
+
     /**
      * @param primaryStage
      * @throws Exception
@@ -43,6 +66,7 @@ public class ArpeggiatorumGUI extends Application {
                 }
                 case KeyCode.L: {
                     //Open Log Menu
+                    Arpeggiatorum.getInstance().LoadLog(this);
                     break;
                 }
                 default: {
