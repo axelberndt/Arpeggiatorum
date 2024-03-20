@@ -254,34 +254,38 @@ public class Arpeggiatorum implements Receiver {
         ArpeggiatorumGUI.controllerHandle.sliderRange.setLowValue(Double.parseDouble(configProp.getProperty("RangeMin", "0")));
         ArpeggiatorumGUI.controllerHandle.sliderRange.setHighValue(Double.parseDouble(configProp.getProperty("RangeMax", "127")));
         ArpeggiatorumGUI.controllerHandle.sliderEnrichment.setValue(Double.parseDouble(configProp.getProperty("Density", "0")));
-        //ArpeggiatorumGUI.controllerHandle.comboEnrichment.setValue(Integer.parseInt(configProp.getProperty("Enrichment Preset", "0")));
-        //ArpeggiatorumGUI.controllerHandle.comboPattern.setValue(configProp.getProperty("Enrichment Pattern", "0"));
-        //mic2MIDIChooser.setSelectedIndex(Integer.parseInt(configProp.getProperty("Pitch Detector", "0")));
-        //activateAutoTune.setSelected(Boolean.parseBoolean(configProp.getProperty("CQT Auto-Tune", "false")));
+        ArpeggiatorumGUI.controllerHandle.comboEnrichment.getSelectionModel().select(Integer.parseInt(configProp.getProperty("Enrichment Preset", "Empty")));
+        ArpeggiatorumGUI.controllerHandle.comboPattern.getSelectionModel().select(Integer.parseInt(configProp.getProperty("Enrichment Pattern", "0")));
+        ArpeggiatorumGUI.controllerHandle.comboMic2MIDI.getSelectionModel().select(Integer.parseInt(configProp.getProperty("Pitch Detector", "0")));
+        ArpeggiatorumGUI.controllerHandle.toggleButtonAutoTune.setSelected(Boolean.parseBoolean(configProp.getProperty("CQT Auto-Tune", "false")));
 
         String midiInProp = configProp.getProperty("MIDI Input", "0");
         String midiOutProp = configProp.getProperty("MIDI Output", "0");
         String audioInProp = configProp.getProperty("Audio Input", "0");
         String audioOutProp = configProp.getProperty("Audio Output", "0");
+        ArpeggiatorumGUI.controllerHandle.comboAudioChannel.getSelectionModel().select(0);
 
         for (int i = 0; i < ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getItems().stream().count(); i++) {
             if (ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getItems().get(i).toString().equals(midiInProp)) {
-               // ArpeggiatorumGUI.controllerHandle.comboMIDIIn.setValue(i);
+                ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getSelectionModel().select(i);
             }
         }
-//        for (int i = 0; i < midiOutChooser.getItemCount(); i++) {
-//            if (midiOutChooser.getItemAt(i).toString().equals(midiOutProp))
-//                midiOutChooser.setSelectedIndex(i);
-//        }
-//        for (int i = 0; i < audioOutputChooser.getItemCount(); i++) {
-//            if (audioOutputChooser.getItemAt(i).toString().equals(audioOutProp))
-//                audioOutputChooser.setSelectedIndex(i);
-//        }
-//
-//        for (int i = 0; i < audioInputChooser.getItemCount(); i++) {
-//            if (audioInputChooser.getItemAt(i).toString().equals(audioInProp))
-//                audioInputChooser.setSelectedIndex(i);
-//        }
+        for (int i = 0; i < ArpeggiatorumGUI.controllerHandle.comboMIDIOut.getItems().stream().count(); i++) {
+            if (ArpeggiatorumGUI.controllerHandle.comboMIDIOut.getItems().get(i).toString().equals(midiOutProp)) {
+                ArpeggiatorumGUI.controllerHandle.comboMIDIOut.getSelectionModel().select(i);
+            }
+        }
+        for (int i = 0; i < ArpeggiatorumGUI.controllerHandle.comboAudioOut.getItems().stream().count(); i++) {
+            if (ArpeggiatorumGUI.controllerHandle.comboAudioOut.getItems().get(i).toString().equals(audioOutProp)) {
+                ArpeggiatorumGUI.controllerHandle.comboAudioOut.getSelectionModel().select(i);
+            }
+        }
+
+        for (int i = 0; i < ArpeggiatorumGUI.controllerHandle.comboAudioIn.getItems().stream().count(); i++) {
+            if (ArpeggiatorumGUI.controllerHandle.comboAudioIn.getItems().get(i).toString().equals(audioInProp)) {
+                ArpeggiatorumGUI.controllerHandle.comboAudioIn.getSelectionModel().select(i);
+            }
+        }
     }
 
     public static void SaveNClose(ArpeggiatorumGUI arpeggiatorumGUI) {
@@ -291,6 +295,7 @@ public class Arpeggiatorum implements Receiver {
             // Set the properties values
             prop.setProperty("Name", "ArpeggiatorumGUI");
             prop.setProperty("Version", "0.1.2");
+
             prop.setProperty("Channel", ArpeggiatorumGUI.controllerHandle.comboMIDIChannel.getValue().toString());
             prop.setProperty("Arpeggio", ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getValue().toString());
             prop.setProperty("Bass", ArpeggiatorumGUI.controllerHandle.comboBassChannel.getValue().toString());
@@ -301,9 +306,9 @@ public class Arpeggiatorum implements Receiver {
             prop.setProperty("RangeMin", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderRange.getLowValue()));
             prop.setProperty("RangeMax", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderRange.getHighValue()));
             prop.setProperty("Density", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderEnrichment.getValue()));
-            prop.setProperty("Enrichment Preset", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboEnrichment.getValue()));
-            prop.setProperty("Enrichment Pattern", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboPattern.getValue()));
-            prop.setProperty("Pitch Detector", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboMic2MIDI.getValue()));
+            prop.setProperty("Enrichment Preset", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboEnrichment.getSelectionModel().getSelectedIndex()));
+            prop.setProperty("Enrichment Pattern", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboPattern.getSelectionModel().getSelectedIndex()));
+            prop.setProperty("Pitch Detector", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboMic2MIDI.getSelectionModel().getSelectedIndex()));
 
             prop.setProperty("Tap Timeout", String.valueOf(timeOut));
             prop.setProperty("Tap Count", String.valueOf(maxCount));

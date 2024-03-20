@@ -57,7 +57,7 @@ public class ArpeggiatorumGUI extends Application {
             Arpeggiatorum.getInstance().SaveNClose(this);
         });
 
-        Arpeggiatorum.LoadConfig(this);
+
         primaryStage.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
             switch (event.getCode()) {
                 case KeyCode.Q: {
@@ -75,7 +75,7 @@ public class ArpeggiatorumGUI extends Application {
             }
         });
 
-
+        Arpeggiatorum.LoadConfig(this);
     }
 
     public static void main(String[] args) {

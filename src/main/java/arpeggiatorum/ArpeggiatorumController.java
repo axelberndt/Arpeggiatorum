@@ -46,7 +46,7 @@ public class ArpeggiatorumController {
     @FXML
     public ComboBox<String> comboAudioIn;
     @FXML
-    private ComboBox<Integer> comboAudioChannel;
+    public ComboBox<Integer> comboAudioChannel;
     @FXML
     public Slider sliderThreshold;
     @FXML
