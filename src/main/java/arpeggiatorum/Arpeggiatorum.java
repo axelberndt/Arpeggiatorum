@@ -23,7 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Arpeggiatorum implements Receiver {
-    private static Arpeggiatorum instance;
+    private static volatile Arpeggiatorum instance;
     private final Synthesizer synth = JSyn.createSynthesizer(); // this Synthesizer instance is used for scheduling and audio processing
     private final Arpeggiator arpeggiator;
     private final ArrayList<Mic2MIDI> mic2Midi;
@@ -45,7 +45,7 @@ public class Arpeggiatorum implements Receiver {
     private static int sampleRate;
     // CQT Properties
     private static boolean cqtAutoTune;
-    private static boolean cqtisPoly;
+    private static boolean cqtIsPoly;
     private static double cqtMin;
     private static double cqtMax;
     private static float cqtThreshold;
@@ -102,7 +102,7 @@ public class Arpeggiatorum implements Receiver {
             //load a properties file from class path, inside static method
             configProp.load(inputConfig);
         } catch (IOException ex) {
-            // GUI.updateLogGUI(ex.getMessage());
+            LogGUIController.logBuffer.append(ex.getMessage());
         }
         //Get the properties for internal values
         timeOut = Double.parseDouble(configProp.getProperty("Tap Timeout", "5000"));
@@ -113,7 +113,7 @@ public class Arpeggiatorum implements Receiver {
         cqtMax = Double.parseDouble(configProp.getProperty("CQT Max Freq", "2637.02"));
         cqtThreshold = Float.parseFloat(configProp.getProperty("CQT Threshold", "0.01"));
         cqtSpread = Float.parseFloat(configProp.getProperty("CQT Spread", "0.55"));
-        cqtisPoly = Boolean.parseBoolean(configProp.getProperty("CQT Poly", "true"));
+        cqtIsPoly = Boolean.parseBoolean(configProp.getProperty("CQT Poly", "true"));
         cqtAutoTune = Boolean.parseBoolean(configProp.getProperty("CQT Auto-Tune", "false"));
         Mic2MIDI_CQT.clusterSize = Integer.parseInt(configProp.getProperty("CQT Auto-Tune Cluster Size", "3"));
 
@@ -131,7 +131,7 @@ public class Arpeggiatorum implements Receiver {
         this.mic2Midi.add(new Mic2MIDI_JSyn(this.arpeggiator, sampleRate));
         this.mic2Midi.add(new Mic2MIDI_FFT(this.arpeggiator, sampleRate, fftBinSize, fftMaxFreq));
         this.mic2Midi.add(new Mic2MIDI_Tarsos(this.arpeggiator, sampleRate, tarsosBuffer, tarsosConfidence));
-        this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, sampleRate, cqtMin, cqtMax, cqtThreshold, cqtSpread, cqtisPoly, cqtAutoTune, cqtMinVel, cqtMaxVel));
+        this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, sampleRate, cqtMin, cqtMax, cqtThreshold, cqtSpread, cqtIsPoly, cqtAutoTune, cqtMinVel, cqtMaxVel));
         for (Mic2MIDI processor : mic2Midi) {
             this.synth.add(processor);
         }
@@ -254,7 +254,7 @@ public class Arpeggiatorum implements Receiver {
         ArpeggiatorumGUI.controllerHandle.sliderRange.setLowValue(Double.parseDouble(configProp.getProperty("RangeMin", "0")));
         ArpeggiatorumGUI.controllerHandle.sliderRange.setHighValue(Double.parseDouble(configProp.getProperty("RangeMax", "127")));
         ArpeggiatorumGUI.controllerHandle.sliderEnrichment.setValue(Double.parseDouble(configProp.getProperty("Density", "0")));
-        ArpeggiatorumGUI.controllerHandle.comboEnrichment.getSelectionModel().select(Integer.parseInt(configProp.getProperty("Enrichment Preset", "Empty")));
+        ArpeggiatorumGUI.controllerHandle.comboEnrichment.getSelectionModel().select(Integer.parseInt(configProp.getProperty("Enrichment Preset", "0")));
         ArpeggiatorumGUI.controllerHandle.comboPattern.getSelectionModel().select(Integer.parseInt(configProp.getProperty("Enrichment Pattern", "0")));
         ArpeggiatorumGUI.controllerHandle.comboMic2MIDI.getSelectionModel().select(Integer.parseInt(configProp.getProperty("Pitch Detector", "0")));
         ArpeggiatorumGUI.controllerHandle.toggleButtonAutoTune.setSelected(Boolean.parseBoolean(configProp.getProperty("CQT Auto-Tune", "false")));
@@ -265,24 +265,24 @@ public class Arpeggiatorum implements Receiver {
         String audioOutProp = configProp.getProperty("Audio Output", "0");
         ArpeggiatorumGUI.controllerHandle.comboAudioChannel.getSelectionModel().select(0);
 
-        for (int i = 0; i < ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getItems().stream().count(); i++) {
+        for (int i = 0; i < (long) ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getItems().size(); i++) {
             if (ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getItems().get(i).toString().equals(midiInProp)) {
                 ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getSelectionModel().select(i);
             }
         }
-        for (int i = 0; i < ArpeggiatorumGUI.controllerHandle.comboMIDIOut.getItems().stream().count(); i++) {
+        for (int i = 0; i < (long) ArpeggiatorumGUI.controllerHandle.comboMIDIOut.getItems().size(); i++) {
             if (ArpeggiatorumGUI.controllerHandle.comboMIDIOut.getItems().get(i).toString().equals(midiOutProp)) {
                 ArpeggiatorumGUI.controllerHandle.comboMIDIOut.getSelectionModel().select(i);
             }
         }
-        for (int i = 0; i < ArpeggiatorumGUI.controllerHandle.comboAudioOut.getItems().stream().count(); i++) {
-            if (ArpeggiatorumGUI.controllerHandle.comboAudioOut.getItems().get(i).toString().equals(audioOutProp)) {
+        for (int i = 0; i < (long) ArpeggiatorumGUI.controllerHandle.comboAudioOut.getItems().size(); i++) {
+            if (ArpeggiatorumGUI.controllerHandle.comboAudioOut.getItems().get(i).equals(audioOutProp)) {
                 ArpeggiatorumGUI.controllerHandle.comboAudioOut.getSelectionModel().select(i);
             }
         }
 
-        for (int i = 0; i < ArpeggiatorumGUI.controllerHandle.comboAudioIn.getItems().stream().count(); i++) {
-            if (ArpeggiatorumGUI.controllerHandle.comboAudioIn.getItems().get(i).toString().equals(audioInProp)) {
+        for (int i = 0; i < (long) ArpeggiatorumGUI.controllerHandle.comboAudioIn.getItems().size(); i++) {
+            if (ArpeggiatorumGUI.controllerHandle.comboAudioIn.getItems().get(i).equals(audioInProp)) {
                 ArpeggiatorumGUI.controllerHandle.comboAudioIn.getSelectionModel().select(i);
             }
         }
@@ -321,7 +321,7 @@ public class Arpeggiatorum implements Receiver {
             prop.setProperty("CQT Spread", String.valueOf(cqtSpread));
             prop.setProperty("CQT Auto-Tune", String.valueOf(cqtAutoTune));
             prop.setProperty("CQT Auto-Tune Cluster Size", String.valueOf(Mic2MIDI_CQT.clusterSize));
-            prop.setProperty("CQT Poly", String.valueOf(cqtisPoly));
+            prop.setProperty("CQT Poly", String.valueOf(cqtIsPoly));
             prop.setProperty("CQT Min Velocity", String.valueOf(cqtMinVel));
             prop.setProperty("CQT Max Velocity", String.valueOf(cqtMaxVel));
             prop.setProperty("CQT Scaling Factor", String.valueOf(Mic2MIDI_CQT.scalingFactor));
@@ -336,15 +336,15 @@ public class Arpeggiatorum implements Receiver {
 
             prop.setProperty("MIDI Input", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getValue().toString()));
             prop.setProperty("MIDI Output", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboMIDIOut.getValue().toString()));
-            prop.setProperty("Audio Input", ArpeggiatorumGUI.controllerHandle.comboAudioIn.getValue().toString());
-            prop.setProperty("Audio Output", ArpeggiatorumGUI.controllerHandle.comboAudioOut.getValue().toString());
+            prop.setProperty("Audio Input", ArpeggiatorumGUI.controllerHandle.comboAudioIn.getValue());
+            prop.setProperty("Audio Output", ArpeggiatorumGUI.controllerHandle.comboAudioOut.getValue());
 
 
             // Save properties to project root folder
             prop.store(output, null);
 
         } catch (IOException io) {
-            //GUI.updateLogGUI(io.getMessage());
+            LogGUIController.logBuffer.append(io.getMessage());
         } finally {
             System.exit(0); // The program may still run, enforce exit
         }

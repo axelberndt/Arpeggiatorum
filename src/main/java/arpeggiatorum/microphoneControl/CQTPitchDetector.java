@@ -1,13 +1,13 @@
 package arpeggiatorum.microphoneControl;
 
 
+import arpeggiatorum.LogGUIController;
 import arpeggiatorum.gui.GUI;
+import arpeggiatorum.supplementary.UnitVariableOutputPort;
 import be.tarsos.dsp.ConstantQ;
-
 import com.jsyn.ports.UnitInputPort;
 import com.jsyn.unitgen.UnitGenerator;
 
-import arpeggiatorum.supplementary.UnitVariableOutputPort;
 import static arpeggiatorum.microphoneControl.Mic2MIDI_CQT.cqtHist;
 
 public class CQTPitchDetector extends UnitGenerator{
@@ -40,7 +40,7 @@ public class CQTPitchDetector extends UnitGenerator{
 		pushData = output.getData();
 		lowIndex = ((int) (Math.log((minFreq / Mic2MIDI_CQT.minFreq)) / Math.log(2))) * (binsPerOctave);
 		String message=String.format("CQT Pitch Detection: Min Frequency (%.2fHz) Max Frequency (%.2fHz)  Delay (%.03fs) FFT: %d samples  \r\n",minFreq, maxFreq, buffer.length/sampleRate, buffer.length);
-		GUI.updateLogGUI(message);
+		LogGUIController.logBuffer.append(message);
 	}
 
 	/**

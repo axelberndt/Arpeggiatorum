@@ -1,8 +1,8 @@
 package arpeggiatorum.microphoneControl;
 
+import arpeggiatorum.LogGUIController;
 import arpeggiatorum.gui.GUI;
 import arpeggiatorum.supplementary.UnitVariableInputPort;
-
 import com.softsynth.math.AudioMath;
 
 import javax.sound.midi.Receiver;
@@ -163,16 +163,16 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
             int i = 0;
             while (i < 128) {
                 //Process further
-                if (currentAboveThreshold[i] == true) {
+                if (currentAboveThreshold[i]) {
                     //Start a temporary cluster, a cluster is over when you retrieve the first False.
                     for (int j = i + 1; j < 128; j++) {
-                        if (currentAboveThreshold[j] == false) {
+                        if (!currentAboveThreshold[j]) {
                             //Then you can compute the length
                             int clusterLen = j - i;
                             //If the cluster has size 1 or greater than 3 you play all the notes
                             if (clusterLen == 1 || clusterLen > clusterSize) {
                                 for (int k = i; k < j; k++) {
-                                    if (currentActive[k] == false) {
+                                    if (!currentActive[k]) {
                                         //We have to play a new note
                                         //Velocity
                                         double ratioVelocity = Math.clamp(currentMag[k] / PITCH_THRESHOLD, 1.0, 2.0) - 1;
@@ -210,7 +210,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                                         currentMag[k] = 0.0;
                                     }
                                 }
-                                if (currentActive[localPitch] == false) {
+                                if (!currentActive[localPitch]) {
                                     //We have to play a new note
                                     double ratioVelocity = Math.clamp(localMax / PITCH_THRESHOLD, 1.0, 2.0) - 1;
                                     int newVelocity = Math.clamp((int) (minVelocity + (ratioVelocity * diffVelocity)), minVelocity, maxVelocity);
@@ -232,7 +232,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
             }
             //Print what's playing
             if (!message.isEmpty()) {
-                GUI.updateLogGUI(message + "\r\n");
+                LogGUIController.logBuffer.append(message + "\r\n");
             }
         }
     }
@@ -243,7 +243,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
         for (int i = 0; i < CQTBins.length; i++) {
             newPitch = (int) Math.round(AudioMath.frequencyToPitch(CQTFrequencies[i]));
             if (CQTBins[i] >= PITCH_THRESHOLD) {
-                if (currentPitches[newPitch] == false) {
+                if (!currentPitches[newPitch]) {
                     //We have to play a new note
                     //Velocity
                     currentPitches[newPitch] = true;
@@ -263,7 +263,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                     }
                 }
             } else {
-                if (currentPitches[newPitch] == true) {
+                if (currentPitches[newPitch]) {
                     this.sendNoteOff(newPitch);
                     currentPitches[newPitch] = false;
                     currentVelocities[newPitch] = 0;
@@ -271,7 +271,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
             }
         }
         if (!message.isEmpty()) {
-            GUI.updateLogGUI(message + "\r\n");
+            LogGUIController.logBuffer.append(message + "\r\n");
         }
     }
 
@@ -291,7 +291,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
 
                 currentPitch = newPitch;
                 String message = String.format("[%d] %.0fHz: %d\r\n", newPitch, CQTFrequencies[CQTBinsSortedIndexes[0]], newVelocity);
-                GUI.updateLogGUI(message);
+                LogGUIController.logBuffer.append(message);
             } else {
                 //Aftertouch
                 double ratioVelocity = Math.clamp(CQTBins[CQTBinsSortedIndexes[0]] / PITCH_THRESHOLD, 1.0, 2.0) - 1;

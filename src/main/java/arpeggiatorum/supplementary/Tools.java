@@ -1,6 +1,6 @@
 package arpeggiatorum.supplementary;
 
-import arpeggiatorum.gui.GUI;
+import arpeggiatorum.LogGUIController;
 import com.jsyn.data.Spectrum;
 import com.jsyn.devices.AudioDeviceFactory;
 import com.jsyn.devices.AudioDeviceManager;
@@ -37,7 +37,7 @@ public class Tools {
         try {
             Thread.sleep(milliseconds);
         } catch (InterruptedException e) {
-            GUI.updateLogGUI(e.getMessage());
+            LogGUIController.logBuffer.append(e.getMessage());
         }
     }
 
@@ -48,20 +48,20 @@ public class Tools {
         AudioDeviceManager audioManager = AudioDeviceFactory.createAudioDeviceManager(false);
         int numDevices = audioManager.getDeviceCount();
 
-        GUI.updateLogGUI("\nID\tdevice name (Input/Output channels)\n--\t-----------------------------------------------------------\r\n");
+        LogGUIController.logBuffer.append("\nID\tdevice name (Input/Output channels)\n--\t-----------------------------------------------------------\r\n");
         for (int i = 0; i < numDevices; ++i) {
-            GUI.updateLogGUI(i + "\t" + audioManager.getDeviceName(i)
+            LogGUIController.logBuffer.append(i + "\t" + audioManager.getDeviceName(i)
                     + " (" + audioManager.getMaxInputChannels(i)
                     + "/" + audioManager.getMaxOutputChannels(i) + ")");
             if (i == audioManager.getDefaultInputDeviceID())
-                GUI.updateLogGUI("\t[Default Input device]\n");
+                LogGUIController.logBuffer.append("\t[Default Input device]\n");
             else if (i == audioManager.getDefaultOutputDeviceID())
-                GUI.updateLogGUI("\t[Default Output device]\n");
+                LogGUIController.logBuffer.append("\t[Default Output device]\n");
             else
-                GUI.updateLogGUI("\n");
+                LogGUIController.logBuffer.append("\n");
 
         }
-        GUI.updateLogGUI("\n");
+        LogGUIController.logBuffer.append("\n");
     }
 
     /**

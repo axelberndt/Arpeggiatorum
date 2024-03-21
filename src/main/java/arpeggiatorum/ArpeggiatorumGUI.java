@@ -14,7 +14,8 @@ public class ArpeggiatorumGUI extends Application {
     private static Arpeggiatorum arpeggiatorum;
 
     public static ArpeggiatorumController controllerHandle;
-    private static ArpeggiatorumGUI instance;
+    private static volatile ArpeggiatorumGUI instance;
+
     //Singleton pattern
     public static synchronized ArpeggiatorumGUI getInstance() {
         if (instance == null) {
@@ -54,19 +55,19 @@ public class ArpeggiatorumGUI extends Application {
         primaryStage.setFullScreen(true);
 
         primaryStage.setOnCloseRequest((event) -> {
-            Arpeggiatorum.getInstance().SaveNClose(this);
+            Arpeggiatorum.SaveNClose(this);
         });
 
 
         primaryStage.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
             switch (event.getCode()) {
                 case KeyCode.Q: {
-                    Arpeggiatorum.getInstance().SaveNClose(this);
+                    Arpeggiatorum.SaveNClose(this);
                     break;
                 }
                 case KeyCode.L: {
                     //Open Log Menu
-                    Arpeggiatorum.getInstance().LoadLog(this);
+                    Arpeggiatorum.LoadLog(this);
                     break;
                 }
                 default: {
@@ -79,9 +80,7 @@ public class ArpeggiatorumGUI extends Application {
     }
 
     public static void main(String[] args) {
-        arpeggiatorum=new Arpeggiatorum();
+        arpeggiatorum = new Arpeggiatorum();
         Application.launch(args);
     }
-
-
 }

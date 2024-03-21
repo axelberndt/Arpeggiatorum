@@ -1,16 +1,11 @@
 package arpeggiatorum.microphoneControl;
 
 
-import arpeggiatorum.gui.GUI;
+import arpeggiatorum.LogGUIController;
 import arpeggiatorum.supplementary.UnitVariableOutputPort;
 import be.tarsos.dsp.pitch.*;
-import be.tarsos.dsp.pitch.PitchDetectionResult;
-import be.tarsos.dsp.pitch.PitchDetector;
-import be.tarsos.dsp.pitch.PitchProcessor;
-
-import be.tarsos.dsp.pitch.Yin;
-import com.jsyn.unitgen.*;
-import com.jsyn.ports.*;
+import com.jsyn.ports.UnitInputPort;
+import com.jsyn.unitgen.UnitGenerator;
 
 import java.util.Arrays;
 
@@ -43,7 +38,7 @@ public class TarsosPitchDetector extends UnitGenerator {
         buffer = new double[bufferSize];
 
         String message = String.format("Tarsos Pitch Detection: Minimum Frequency (%.2fHz) Delay (%.03fs) \r\n", (sampleRate / bufferSize) * 2, (bufferSize / sampleRate) / 2);
-        GUI.updateLogGUI(message);
+        LogGUIController.logBuffer.append(message);
 
         if (algo == PitchProcessor.PitchEstimationAlgorithm.MPM) {
             detector = new McLeodPitchMethod(sampleRate, bufferSize);

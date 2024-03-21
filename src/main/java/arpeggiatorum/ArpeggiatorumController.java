@@ -1,6 +1,5 @@
 package arpeggiatorum;
 
-import arpeggiatorum.gui.GUI;
 import arpeggiatorum.gui.MidiDeviceChooserItem;
 import arpeggiatorum.gui.TonalEnrichmentChooserItem;
 import arpeggiatorum.microphoneControl.Mic2MIDI;
@@ -137,7 +136,7 @@ public class ArpeggiatorumController {
                 try {
                     Arpeggiatorum.getInstance().getArpeggiator().setMidiIn(item.getValue());
                 } catch (MidiUnavailableException e) {
-                    updateLogGUI(e.getMessage());
+                    LogGUIController.logBuffer.append(e.getMessage());
                 }
             }
         }
@@ -206,7 +205,7 @@ public class ArpeggiatorumController {
                 try {
                     comboMIDIIn.getItems().add(new MidiDeviceChooserItem(info));
                 } catch (MidiUnavailableException e) {
-                    GUI.updateLogGUI(e.getMessage());
+                    LogGUIController.logBuffer.append(e.getMessage());
                 }
             }
         }
@@ -231,7 +230,7 @@ public class ArpeggiatorumController {
                 try {
                     comboMIDIOut.getItems().add(new MidiDeviceChooserItem(info));
                 } catch (MidiUnavailableException e) {
-                    GUI.updateLogGUI(e.getMessage());
+                    LogGUIController.logBuffer.append(e.getMessage());
                 }
             }
         }
@@ -310,7 +309,7 @@ public class ArpeggiatorumController {
         try {
             Arpeggiatorum.getInstance().getArpeggiator().setMidiIn(item.getValue());
         } catch (MidiUnavailableException e) {
-            updateLogGUI(e.getMessage());
+            LogGUIController.logBuffer.append(e.getMessage());
         }
     }
 

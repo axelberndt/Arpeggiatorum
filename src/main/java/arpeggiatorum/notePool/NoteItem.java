@@ -1,6 +1,6 @@
 package arpeggiatorum.notePool;
 
-import arpeggiatorum.gui.GUI;
+import arpeggiatorum.LogGUIController;
 import meico.midi.EventMaker;
 import meico.supplementary.KeyValue;
 
@@ -126,8 +126,7 @@ public class NoteItem extends KeyValue<Integer, Integer> implements Comparable<N
                 return new ShortMessage(EventMaker.NOTE_ON, channel, this.getPitch(), this.getVelocity());
             return new ShortMessage(EventMaker.NOTE_OFF, channel, this.getPitch(), 0);
         } catch (InvalidMidiDataException e) {
-            //e.printStackTrace();
-            GUI.updateLogGUI(e.getMessage());
+            LogGUIController.logBuffer.append(e.getMessage());
         }
         return null;
     }

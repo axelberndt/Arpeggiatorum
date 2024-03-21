@@ -1,6 +1,6 @@
 package arpeggiatorum.microphoneControl;
 
-import arpeggiatorum.gui.GUI;
+import arpeggiatorum.LogGUIController;
 import com.jsyn.unitgen.ChannelIn;
 import com.jsyn.unitgen.Circuit;
 import com.jsyn.unitgen.SchmidtTrigger;
@@ -104,7 +104,7 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
         try {
             noteOn = new ShortMessage(EventMaker.NOTE_ON, pitch, velocity);
         } catch (InvalidMidiDataException e) {
-            GUI.updateLogGUI(e.getMessage());
+            LogGUIController.logBuffer.append(e.getMessage());
             return;
         }
         this.getReceiver().send(noteOn, -1);
@@ -113,12 +113,12 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
 
     public void sendAftertouch(int pitch, int velocity) {
         ShortMessage aftertouch;
-        //TODO needs to be improved, it's sending a message on everychannel
+        //TODO needs to be improved, it's sending a message on every channel
         for (int i = 0; i < 16; i++) {
             try {
                 aftertouch = new ShortMessage(ShortMessage.POLY_PRESSURE, i, pitch, velocity);
             } catch (InvalidMidiDataException e) {
-                GUI.updateLogGUI(e.getMessage());
+                LogGUIController.logBuffer.append(e.getMessage());
                 return;
             }
             this.getReceiver().send(aftertouch, -1);
@@ -134,7 +134,7 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
         try {
             noteOff = new ShortMessage(EventMaker.NOTE_OFF, pitch, 0);
         } catch (InvalidMidiDataException e) {
-            GUI.updateLogGUI(e.getMessage());
+            LogGUIController.logBuffer.append(e.getMessage());
             return;
         }
         this.getReceiver().send(noteOff, -1);

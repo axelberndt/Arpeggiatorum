@@ -1,18 +1,16 @@
 package arpeggiatorum.gui;
 
 import arpeggiatorum.Arpeggiator;
+import arpeggiatorum.LogGUIController;
+import arpeggiatorum.microphoneControl.*;
 import arpeggiatorum.notePool.NotePool;
 import arpeggiatorum.supplementary.NumberTextField;
 import arpeggiatorum.supplementary.Tools;
 import arpeggiatorum.supplementary.rangeSlider.RangeSlider;
-
-import arpeggiatorum.microphoneControl.*;
-
 import com.jsyn.JSyn;
+import com.jsyn.Synthesizer;
 import com.jsyn.devices.AudioDeviceFactory;
 import com.jsyn.devices.AudioDeviceManager;
-import com.jsyn.Synthesizer;
-
 import meico.midi.EventMaker;
 
 import javax.sound.midi.*;
@@ -20,11 +18,16 @@ import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.NumberFormat;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Properties;
 
 /**
  * A graphical user interface for Arpeggiatorum.
@@ -115,7 +118,7 @@ public class GUI extends JFrame implements Receiver {
             //load a properties file from class path, inside static method
             configProp.load(inputConfig);
         } catch (IOException ex) {
-            GUI.updateLogGUI(ex.getMessage());
+            LogGUIController.logBuffer.append(ex.getMessage());
         }
         //Get the properties for internal values
         timeOut = Double.parseDouble(configProp.getProperty("Tap Timeout", "5000"));
@@ -173,7 +176,7 @@ public class GUI extends JFrame implements Receiver {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
                      | UnsupportedLookAndFeelException e) {
-                GUI.updateLogGUI(e.getMessage());
+                LogGUIController.logBuffer.append(e.getMessage());
             }
 
             // The container panel
@@ -196,7 +199,7 @@ public class GUI extends JFrame implements Receiver {
                         this.arpeggiator.setMidiIn(item.getValue());
                     } catch (MidiUnavailableException e) {
                         //e.printStackTrace();
-                        GUI.updateLogGUI(e.getMessage());
+                        LogGUIController.logBuffer.append(e.getMessage());
                     }
                 }
             }
@@ -212,7 +215,7 @@ public class GUI extends JFrame implements Receiver {
                     this.arpeggiator.setMidiIn(item.getValue());
                 } catch (MidiUnavailableException e) {
                     //e.printStackTrace();
-                    GUI.updateLogGUI(e.getMessage());
+                    LogGUIController.logBuffer.append(e.getMessage());
                 }
             });
             addComponentToGridBagLayout(mainPanel, layout, midiInChooser, 1, 0, 1, 1, 1.0, 1.0, this.padding,
@@ -247,7 +250,7 @@ public class GUI extends JFrame implements Receiver {
                         this.arpeggiator.setMidiOut(item.getValue());
                     } catch (MidiUnavailableException e) {
                         //e.printStackTrace();
-                        GUI.updateLogGUI(e.getMessage());
+                        LogGUIController.logBuffer.append(e.getMessage());
                     }
                 }
             }
@@ -263,7 +266,7 @@ public class GUI extends JFrame implements Receiver {
                     this.arpeggiator.setMidiOut(item.getValue());
                 } catch (MidiUnavailableException e) {
                     //e.printStackTrace();
-                    GUI.updateLogGUI(e.getMessage());
+                    LogGUIController.logBuffer.append(e.getMessage());
                 }
             });
             addComponentToGridBagLayout(mainPanel, layout, midiOutChooser, 1, 1, 1, 1, 1.0, 1.0, this.padding,
@@ -947,7 +950,7 @@ public class GUI extends JFrame implements Receiver {
             prop.store(output, null);
 
         } catch (IOException io) {
-            GUI.updateLogGUI(io.getMessage());
+            LogGUIController.logBuffer.append(io.getMessage());
         } finally {
             System.exit(0); // The program may still run, enforce exit
         }
@@ -1043,7 +1046,7 @@ public class GUI extends JFrame implements Receiver {
                 try {
                     midiPortChooser.addItem(new MidiDeviceChooserItem(info));
                 } catch (MidiUnavailableException e) {
-                    GUI.updateLogGUI(e.getMessage());
+                    LogGUIController.logBuffer.append(e.getMessage());
                 }
             }
         }
@@ -1073,7 +1076,7 @@ public class GUI extends JFrame implements Receiver {
                 try {
                     midiPortChooser.addItem(new MidiDeviceChooserItem(info));
                 } catch (MidiUnavailableException e) {
-                    GUI.updateLogGUI(e.getMessage());
+                    LogGUIController.logBuffer.append(e.getMessage());
                 }
             }
         }

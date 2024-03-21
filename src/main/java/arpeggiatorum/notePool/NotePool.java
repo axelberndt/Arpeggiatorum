@@ -354,7 +354,7 @@ public class NotePool {
 
         private final String name;
 
-        private Pattern(String s) {
+        Pattern(String s) {
             name = s;
         }
 

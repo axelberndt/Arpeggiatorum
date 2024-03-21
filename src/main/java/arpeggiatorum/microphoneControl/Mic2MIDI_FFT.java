@@ -1,10 +1,13 @@
 package arpeggiatorum.microphoneControl;
 
-import arpeggiatorum.gui.GUI;
-import com.jsyn.data.*;
-import com.jsyn.ports.*;
-import com.jsyn.unitgen.*;
-
+import arpeggiatorum.LogGUIController;
+import com.jsyn.data.HammingWindow;
+import com.jsyn.data.Spectrum;
+import com.jsyn.ports.UnitInputPort;
+import com.jsyn.ports.UnitSpectralInputPort;
+import com.jsyn.unitgen.LinearRamp;
+import com.jsyn.unitgen.PeakFollower;
+import com.jsyn.unitgen.SpectralFFT;
 import com.softsynth.math.AudioMath;
 
 import javax.sound.midi.Receiver;
@@ -78,7 +81,7 @@ public class Mic2MIDI_FFT extends Mic2MIDI {
 
         String message = String.format("FFT Pitch Detection: Minimum Frequency (%.2fHz) Delay (%.03fs) \r\n", sampleRate / numberBins, numberBins / sampleRate);
         // System.out.printf(message);
-        GUI.updateLogGUI(message);
+        LogGUIController.logBuffer.append(message);
 
         this.setReceiver(receiver);
     }
@@ -151,27 +154,27 @@ public class Mic2MIDI_FFT extends Mic2MIDI {
 
         if (this.previousTriggerValue > CONFIDENCE_THRESHOLD) { // we are currently playing a tone
             if (triggerInputs[0] <= CONFIDENCE_THRESHOLD) { // if we have to stop the note
-                GUI.updateLogGUI("> " + this.currentPitch + "\r\n");
-                GUI.updateLogGUI("> FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist) + "\r\n");
-                GUI.updateLogGUI("> FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))) + "\r\n");
-                GUI.updateLogGUI("\r\n");
+                LogGUIController.logBuffer.append("> " + this.currentPitch + "\r\n");
+                LogGUIController.logBuffer.append("> FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist) + "\r\n");
+                LogGUIController.logBuffer.append("> FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))) + "\r\n");
+                LogGUIController.logBuffer.append("\r\n");
                 this.sendNoteOff(this.currentPitch);
             } else {// we may have to update the pitch
-                //GUI.updateLogGUI("- " + currentPitch);
+                //LogGUIController.logBuffer.append("- " + currentPitch);
                 if (newPitch != this.currentPitch) {
-                    GUI.updateLogGUI("- " + this.currentPitch + " ->" + newPitch + "\r\n");
-                    GUI.updateLogGUI("- FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist) + "\r\n");
-                    GUI.updateLogGUI("- FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))) + "\r\n");
-                    GUI.updateLogGUI("\r\n");
+                    LogGUIController.logBuffer.append("- " + this.currentPitch + " ->" + newPitch + "\r\n");
+                    LogGUIController.logBuffer.append("- FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist) + "\r\n");
+                    LogGUIController.logBuffer.append("- FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))) + "\r\n");
+                    LogGUIController.logBuffer.append("\r\n");
                     this.sendNoteOff(this.currentPitch);
                     this.sendNoteOn(newPitch);
                 }
             }
         } else if (triggerInputs[0] > CONFIDENCE_THRESHOLD) {   //we have to start a note
-            GUI.updateLogGUI("< " + this.currentPitch + "\r\n");
-            GUI.updateLogGUI("< FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist) + "\r\n");
-            GUI.updateLogGUI("< FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))) + "\r\n");
-            GUI.updateLogGUI("\r\n");
+            LogGUIController.logBuffer.append("< " + this.currentPitch + "\r\n");
+            LogGUIController.logBuffer.append("< FFT to Pitch using HPS: " + getFrequencyForIndex(maxBinHPS, nyquist) + "\r\n");
+            LogGUIController.logBuffer.append("< FFT to Pitch using Cepstrum: " + ((sampleRate) - (maxBinCep * (sampleRate / outputLength))) + "\r\n");
+            LogGUIController.logBuffer.append("\r\n");
             this.sendNoteOn(newPitch);
         }
 

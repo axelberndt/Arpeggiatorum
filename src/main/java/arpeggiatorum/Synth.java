@@ -32,13 +32,13 @@
 //            app.test();
 //        } catch (MidiUnavailableException e) {
 //            //e.printStackTrace();
-//GUI.updateLogGUI(e.getMessage());
+//LogGUIController.logBuffer.append(e.getMessage());
 //        } catch (IOException e) {
 //            //e.printStackTrace();
-//GUI.updateLogGUI(e.getMessage());
+//LogGUIController.logBuffer.append(e.getMessage());
 //        } catch (InterruptedException e) {
 //            //e.printStackTrace();
-//GUI.updateLogGUI(e.getMessage());
+//LogGUIController.logBuffer.append(e.getMessage());
 //        }
 //    }
 //
@@ -54,11 +54,11 @@
 //            if (device.getMaxReceivers() != 0)
 //                continue;
 //           // System.out.println(deviceMap.size() + " " + info.getName());
-//            GUI.updateLogGUI(deviceMap.size() + " " + info.getName()+"\r\n");
+//            LogGUIController.logBuffer.append(deviceMap.size() + " " + info.getName()+"\r\n");
 //            deviceMap.add(device);
 //        }
 ////        System.out.println("\nChoose your input device: ");
-//        GUI.updateLogGUI("\nChoose your input device: \r\n");
+//        LogGUIController.logBuffer.append("\nChoose your input device: \r\n");
 //        Scanner in = new Scanner(System.in);
 //        MidiDevice keyboard = deviceMap.get(in.nextInt());
 //
@@ -72,11 +72,11 @@
 //            // This gives fairly low latency playing.
 //            keyboard.getTransmitter().setReceiver(receiver);
 ////            System.out.println("Play MIDI keyboard: " + keyboard.getDeviceInfo().getName());
-//            GUI.updateLogGUI("Play MIDI keyboard: " + keyboard.getDeviceInfo().getName()+"\r\n");
+//            LogGUIController.logBuffer.append("Play MIDI keyboard: " + keyboard.getDeviceInfo().getName()+"\r\n");
 //            result = 0;
 //        } else {
 ////            System.out.println("Could not find a keyboard.");
-//            GUI.updateLogGUI("Could not find a keyboard.\r\n");
+//            LogGUIController.logBuffer.append("Could not find a keyboard.\r\n");
 //        }
 //        return result;
 //    }
@@ -108,7 +108,7 @@
 //        @Override
 //        public void close() {
 ////            System.out.print("Closed.");
-//            GUI.updateLogGUI("Closed.");
+//            LogGUIController.logBuffer.append("Closed.");
 //        }
 //
 //        @Override

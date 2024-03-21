@@ -23,17 +23,17 @@
 //    public void run() {
 //        while (!this.notePool.isEmpty()) {
 //            //System.out.print(".");
-//            GUI.updateLogGUI(".");
+//            LogGUIController.logBuffer.append(".");
 //            synchronized (this.lock) {
 //                try {
 //                    this.lock.wait(50);
 //                } catch (InterruptedException e) {
 //                   // //e.printStackTrace();
-//                    GUI.updateLogGUI(e.getMessage());
+//                    LogGUIController.logBuffer.append(e.getMessage());
 //                }
 //            }
 //        }
 //        //System.out.println("|");
-//        GUI.updateLogGUI("|");
+//        LogGUIController.logBuffer.append("|");
 //    }
 //}
