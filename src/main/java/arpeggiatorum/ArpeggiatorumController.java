@@ -418,8 +418,9 @@ public class ArpeggiatorumController {
 
     @FXML
     public void comboArpeggioChannelChanged(ActionEvent actionEvent) {
-        if (comboArpeggioChannel.getValue() != null)
+        if (comboArpeggioChannel.getValue() != null) {
             Arpeggiatorum.getInstance().getArpeggiator().setArpeggioChannel(comboArpeggioChannel.getValue());
+        }
     }
 
     @FXML

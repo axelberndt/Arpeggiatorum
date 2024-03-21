@@ -74,6 +74,7 @@ public class Arpeggiator implements Receiver, Transmitter {
             this.outDevice.close();
 
         this.outDevice = outDevice;
+        //this.outDevice.getTransmitter().setReceiver(this);
         this.outReceiver = outDevice.getReceiver();
         this.outDevice.open();
     }
@@ -96,7 +97,8 @@ public class Arpeggiator implements Receiver, Transmitter {
         if (this.arpeggioChannel >= 0) {
             try {
                 this.outReceiver.send(new ShortMessage(EventMaker.CONTROL_CHANGE, this.arpeggioChannel, EventMaker.CC_All_Notes_Off, 0), -1);
-            } catch (InvalidMidiDataException e) {
+            } catch (Exception e) {
+                e.printStackTrace();
                 LogGUIController.logBuffer.append(e.getMessage());
 
             }
@@ -249,7 +251,8 @@ public class Arpeggiator implements Receiver, Transmitter {
         for (int chan = 0; chan < 16; ++chan) {
             try {
                 this.outReceiver.send(new ShortMessage(EventMaker.CONTROL_CHANGE, chan, EventMaker.CC_All_Notes_Off, 0), -1);
-            } catch (InvalidMidiDataException e) {
+            } catch (Exception e) {
+                e.printStackTrace();
                 LogGUIController.logBuffer.append(e.getMessage());
 
             }
@@ -306,9 +309,9 @@ public class Arpeggiator implements Receiver, Transmitter {
                 if (sMsg.getData2() == 0) {                         // noteOn with velocity 0 is effectively a noteOff
                     try {
                         this.send(new ShortMessage(EventMaker.NOTE_OFF, sMsg.getData1(), sMsg.getData2()), -1); // make real noteOff of it and process it accordingly
-                    } catch (InvalidMidiDataException e) {
+                    } catch (Exception e) {
+                        e.printStackTrace();
                         LogGUIController.logBuffer.append(e.getMessage());
-
                     }
                     return;
                 }
@@ -408,7 +411,8 @@ public class Arpeggiator implements Receiver, Transmitter {
 
         try {
             this.monitorReceiver.send(message, timeStamp);
-        } catch (IllegalStateException e) {     // if the receiver is closed
+        } catch (Exception e) {     // if the receiver is closed
+            e.printStackTrace();
             LogGUIController.logBuffer.append(e.getMessage());
             this.monitorReceiver = null;
             return false;
@@ -448,7 +452,8 @@ public class Arpeggiator implements Receiver, Transmitter {
                 for (int chan = 0; chan < 16; ++chan) {
                     try {
                         this.sendMessage(new ShortMessage(EventMaker.CONTROL_CHANGE, chan, EventMaker.CC_All_Notes_Off, 0), timeStamp);
-                    } catch (InvalidMidiDataException e) {
+                    } catch (Exception e) {
+                        e.printStackTrace();
                         LogGUIController.logBuffer.append(e.getMessage());
                     }
                 }

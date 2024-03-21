@@ -52,7 +52,7 @@ public class ArpeggiatorumGUI extends Application {
         primaryStage.setTitle("ArpeggiatorumGUI v" + Arpeggiator.version);
         primaryStage.setScene(scene);
         primaryStage.show();
-        primaryStage.setFullScreen(true);
+        //primaryStage.setFullScreen(true);
 
         primaryStage.setOnCloseRequest((event) -> {
             Arpeggiatorum.SaveNClose(this);
@@ -77,6 +77,7 @@ public class ArpeggiatorumGUI extends Application {
         });
 
         Arpeggiatorum.LoadConfig(this);
+
     }
 
     public static void main(String[] args) {
