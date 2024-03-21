@@ -196,7 +196,7 @@ public class GUI extends JFrame implements Receiver {
                 MidiDeviceChooserItem item = (MidiDeviceChooserItem) midiInChooser.getSelectedItem();
                 if (item.getValue() != null) {
                     try {
-                        this.arpeggiator.setMidiIn(item.getValue());
+                        this.arpeggiator.setMIDIIn(item.getValue());
                     } catch (MidiUnavailableException e) {
                         //e.printStackTrace();
                         LogGUIController.logBuffer.append(e.getMessage());
@@ -212,7 +212,7 @@ public class GUI extends JFrame implements Receiver {
                     return;
 
                 try {
-                    this.arpeggiator.setMidiIn(item.getValue());
+                    this.arpeggiator.setMIDIIn(item.getValue());
                 } catch (MidiUnavailableException e) {
                     //e.printStackTrace();
                     LogGUIController.logBuffer.append(e.getMessage());
@@ -247,7 +247,7 @@ public class GUI extends JFrame implements Receiver {
                 MidiDeviceChooserItem item = (MidiDeviceChooserItem) midiOutChooser.getSelectedItem();
                 if (item.getValue() != null) {
                     try {
-                        this.arpeggiator.setMidiOut(item.getValue());
+                        this.arpeggiator.setMIDIOut(item.getValue());
                     } catch (MidiUnavailableException e) {
                         //e.printStackTrace();
                         LogGUIController.logBuffer.append(e.getMessage());
@@ -263,7 +263,7 @@ public class GUI extends JFrame implements Receiver {
                     return;
 
                 try {
-                    this.arpeggiator.setMidiOut(item.getValue());
+                    this.arpeggiator.setMIDIOut(item.getValue());
                 } catch (MidiUnavailableException e) {
                     //e.printStackTrace();
                     LogGUIController.logBuffer.append(e.getMessage());

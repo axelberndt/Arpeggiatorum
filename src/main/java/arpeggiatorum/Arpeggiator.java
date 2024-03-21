@@ -1,6 +1,5 @@
 package arpeggiatorum;
 
-import arpeggiatorum.gui.GUI;
 import arpeggiatorum.notePool.NotePool;
 import arpeggiatorum.notePool.NoteItem;
 import com.jsyn.Synthesizer;
@@ -55,7 +54,7 @@ public class Arpeggiator implements Receiver, Transmitter {
      * @param inDevice
      * @throws MidiUnavailableException
      */
-    public void setMidiIn(MidiDevice inDevice) throws MidiUnavailableException {
+    public void setMIDIIn(MidiDevice inDevice) throws MidiUnavailableException {
         if (this.inDevice != null)
             this.inDevice.close();
 
@@ -70,7 +69,7 @@ public class Arpeggiator implements Receiver, Transmitter {
      * @param outDevice
      * @throws MidiUnavailableException
      */
-    public void setMidiOut(MidiDevice outDevice) throws MidiUnavailableException {
+    public void setMIDIOut(MidiDevice outDevice) throws MidiUnavailableException {
         if (this.outDevice != null)
             this.outDevice.close();
 

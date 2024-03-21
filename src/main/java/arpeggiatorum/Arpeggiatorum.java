@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -22,8 +23,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Arpeggiatorum implements Receiver {
+
     private static volatile Arpeggiatorum instance;
-    private final Synthesizer synth = JSyn.createSynthesizer(); // this Synthesizer instance is used for scheduling and audio processing
+    public static final Synthesizer synth = JSyn.createSynthesizer(); // this Synthesizer instance is used for scheduling and audio processing
     private final Arpeggiator arpeggiator;
     private final ArrayList<Mic2MIDI> mic2Midi;
 
@@ -41,7 +43,7 @@ public class Arpeggiatorum implements Receiver {
     private static int bpmNow;
     private static int bpmAvg;
     //Sample Rate
-    private static int sampleRate;
+    public static int sampleRate;
     // CQT Properties
     private static boolean cqtAutoTune;
     private static boolean cqtIsPoly;
@@ -74,7 +76,9 @@ public class Arpeggiatorum implements Receiver {
         return arpeggiator;
     }
 
-   public ArrayList<Mic2MIDI> getMic2Midi() {return mic2Midi; }
+    public ArrayList<Mic2MIDI> getMic2Midi() {
+        return mic2Midi;
+    }
 
 
     public Arpeggiatorum() {
@@ -134,7 +138,6 @@ public class Arpeggiatorum implements Receiver {
         for (Mic2MIDI processor : mic2Midi) {
             this.synth.add(processor);
         }
-
 
 
     }
@@ -349,7 +352,7 @@ public class Arpeggiatorum implements Receiver {
         }
     }
 
-    public static void LoadLog(ArpeggiatorumGUI arpeggiatorumGUI){
+    public static void LoadLog(ArpeggiatorumGUI arpeggiatorumGUI) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(arpeggiatorumGUI.getClass().getResource("LogGUI.fxml"));
@@ -363,5 +366,103 @@ public class Arpeggiatorum implements Receiver {
             Logger logger = Logger.getLogger(arpeggiatorumGUI.getClass().getName());
             logger.log(Level.SEVERE, "Failed to create new Window.", e);
         }
+    }
+
+    public void tapTempo() {
+        //              Modified from:
+//              <!-- Original:  Derek Chilcote-Batto (dac-b@usa.net) -->
+//              <!-- Web Site:  http://www.mixed.net -->
+//              <!-- Rewritten by: Rich Reel all8.com -->
+
+        timeNow = Instant.now();
+        timeChange = Duration.between(timeLast, timeNow).toMillis();
+        if (timeChange > timeOut) {
+            tapCount = 0;
+            tapNext = 0;
+        }
+        tapCount++;
+        // Enough beats to make a measurement (2 or more)?
+        if (tapCount > 1) {
+            // Enough to make an average measurement?
+            if (tapCount > maxCount) {// average over maxCount
+                bpmAvg = (int) ((2 * 60.0 * maxCount / Duration.between(times[tapNext], timeNow).toMillis()) * 1000);
+                ArpeggiatorumGUI.controllerHandle.sliderTempo.setValue(bpmAvg);
+            } else {
+                bpmNow = (int) ((2 * 60.0 / timeChange) * 1000); // instantaneous measurement
+                ArpeggiatorumGUI.controllerHandle.sliderTempo.setValue(bpmNow);
+            }
+        }
+
+        timeLast = timeNow; // for instantaneous measurement and for timeout
+        times[tapNext] = timeNow;
+        tapNext++;
+        if (tapNext >= maxCount) {
+            tapNext = 0;
+        }
+    }
+
+    public void AutoTune(boolean selected) {
+        if (selected) {
+            ArpeggiatorumGUI.controllerHandle.toggleButtonAutoTune.setStyle("-fx-background-color: Chartreuse;");
+            cqtAutoTune = true;
+        } else {
+            ArpeggiatorumGUI.controllerHandle.toggleButtonAutoTune.setStyle("");
+
+            cqtAutoTune = false;
+        }
+        ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setSelected(false);
+        Mic2MIDI_CQT.autoTune = cqtAutoTune;
+    }
+
+    public void Activate(boolean selected) {
+        if (selected) {
+            ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setStyle("-fx-background-color: Chartreuse;");
+            ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setText("Active");
+
+            ArpeggiatorumGUI.controllerHandle.comboMic2MIDI.getValue().start();
+            ArpeggiatorumGUI.controllerHandle.comboMic2MIDI.getValue().setSignalToNoiseThreshold(ArpeggiatorumGUI.controllerHandle.sliderThreshold.getValue() /ArpeggiatorumGUI.controllerHandle.sliderThreshold.getValue());
+        } else {
+            ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setStyle("");
+            ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setText("Activate");
+            for (Mic2MIDI processor : mic2Midi) {
+                processor.stop();
+            }
+            //TODO Try to avoid calling panic
+            arpeggiator.panic();
+        }
+    }
+
+    public void Upload() {
+        int[] intervals = new int[]{
+                Integer.parseInt(ArpeggiatorumGUI.controllerHandle.e1.getText()),
+                Integer.parseInt(ArpeggiatorumGUI.controllerHandle.e2.getText()),
+                Integer.parseInt(ArpeggiatorumGUI.controllerHandle.e3.getText()),
+                Integer.parseInt(ArpeggiatorumGUI.controllerHandle.e4.getText()),
+                Integer.parseInt(ArpeggiatorumGUI.controllerHandle.e5.getText()),
+                Integer.parseInt(ArpeggiatorumGUI.controllerHandle.e6.getText()),
+                Integer.parseInt(ArpeggiatorumGUI.controllerHandle.e7.getText()),
+                Integer.parseInt(ArpeggiatorumGUI.controllerHandle.e8.getText()),
+                Integer.parseInt(ArpeggiatorumGUI.controllerHandle.e9.getText()),
+                Integer.parseInt(ArpeggiatorumGUI.controllerHandle.e10.getText()),
+                Integer.parseInt(ArpeggiatorumGUI.controllerHandle.e11.getText()),
+                Integer.parseInt(ArpeggiatorumGUI.controllerHandle.e12.getText()),
+                Integer.parseInt(ArpeggiatorumGUI.controllerHandle.e13.getText()),
+                Integer.parseInt(ArpeggiatorumGUI.controllerHandle.e14.getText()),
+                Integer.parseInt(ArpeggiatorumGUI.controllerHandle.e15.getText()),
+                Integer.parseInt(ArpeggiatorumGUI.controllerHandle.e16.getText()),
+        };
+        this.arpeggiator.setTonalEnrichment(intervals);
+    }
+
+    public void ThresholdChange(Number value) {
+    }
+
+    public void TempoChange(Number value) {
+    }
+
+    public void RangeChange(Number lowValue, Number hiValue) {
+    }
+
+    public void EnrichmentChange(Number value) {
     }
 }

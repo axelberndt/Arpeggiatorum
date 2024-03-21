@@ -9,6 +9,7 @@
            orientation="VERTICAL" maxHeight="Infinity" maxWidth="Infinity"
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="arpeggiatorum.ArpeggiatorumController"
+           dividerPositions="0.8"
 >
     <GridPane
             xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="5" vgap="5"
@@ -82,13 +83,13 @@
                   GridPane.rowIndex="0" maxHeight="Infinity" maxWidth="Infinity"
                   onAction="#comboMIDIInChanged"/>
         <ComboBox fx:id="comboMIDIOut" GridPane.columnIndex="1" GridPane.columnSpan="1"
-                  GridPane.rowIndex="1" maxHeight="Infinity" maxWidth="Infinity"/>
+                  GridPane.rowIndex="1" maxHeight="Infinity" maxWidth="Infinity" onAction="#comboMIDIOutChanged"/>
         <ComboBox fx:id="comboAudioOut" GridPane.columnIndex="1" GridPane.columnSpan="1"
-                  GridPane.rowIndex="2" maxHeight="Infinity" maxWidth="Infinity"/>
+                  GridPane.rowIndex="2" maxHeight="Infinity" maxWidth="Infinity" onAction="#comboAudioOutChanged"/>
         <ComboBox fx:id="comboAudioIn" GridPane.columnIndex="1" GridPane.columnSpan="1"
-                  GridPane.rowIndex="3" maxHeight="Infinity" maxWidth="Infinity"/>
+                  GridPane.rowIndex="3" maxHeight="Infinity" maxWidth="Infinity" onAction="#comboAudioInChanged"/>
         <ComboBox fx:id="comboAudioChannel" GridPane.columnIndex="1" GridPane.columnSpan="1"
-                  GridPane.rowIndex="4" maxHeight="Infinity" maxWidth="Infinity"/>
+                  GridPane.rowIndex="4" maxHeight="Infinity" maxWidth="Infinity" onAction="#comboAudioChannelChanged"/>
         <Slider fx:id="sliderThreshold" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5"
                 maxHeight="Infinity" maxWidth="Infinity" SplitPane.resizableWithParent="true"
                 GridPane.fillWidth="true" min="1" max="1000" value="500" showTickMarks="true"
@@ -102,29 +103,29 @@
                 min="50" max="150" value="100" showTickMarks="true"/>
         <RangeSlider fx:id="sliderRange" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="8"
                      maxHeight="Infinity" maxWidth="Infinity" min="0" max="127" lowValue="0" highValue="127"
-                     showTickLabels="true" showTickMarks="true" majorTickUnit="12" minorTickCount="1"/>
+                     showTickLabels="true" showTickMarks="true" majorTickUnit="12" minorTickCount="1" />
         <ComboBox fx:id="comboEnrichment" GridPane.columnIndex="1" GridPane.columnSpan="1" maxHeight="Infinity"
                   maxWidth="Infinity"
-                  GridPane.rowIndex="9"/>
+                  GridPane.rowIndex="9" onAction="#comboEnrichmentChanged"/>
         <HBox GridPane.fillWidth="true" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="10"
               maxHeight="Infinity"
               maxWidth="Infinity">
-            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField fx:id="e1" text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField fx:id="e2" text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField fx:id="e3" text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField fx:id="e4" text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField fx:id="e5" text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField fx:id="e6" text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField fx:id="e7" text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField fx:id="e8" text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField fx:id="e9" text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField fx:id="e10" text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField fx:id="e11" text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField fx:id="e12" text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField fx:id="e13" text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField fx:id="e14" text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField fx:id="e15" text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField fx:id="e16" text="0" maxWidth="Infinity" maxHeight="Infinity"/>
         </HBox>
         <Slider fx:id="sliderEnrichment" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="11"
                 maxHeight="Infinity" maxWidth="Infinity"
@@ -139,17 +140,17 @@
 
         <!--            //Third Column-->
         <ComboBox fx:id="comboMIDIChannel" GridPane.columnIndex="2" GridPane.columnSpan="1"
-                  GridPane.rowIndex="0" maxHeight="Infinity" maxWidth="Infinity"/>
+                  GridPane.rowIndex="0" maxHeight="Infinity" maxWidth="Infinity" onAction="#comboMIDIChannelChanged"/>
         <ComboBox fx:id="comboArpeggioChannel" GridPane.columnIndex="2" GridPane.columnSpan="1"
-                  GridPane.rowIndex="1" maxHeight="Infinity" maxWidth="Infinity"/>
+                  GridPane.rowIndex="1" maxHeight="Infinity" maxWidth="Infinity" onAction="#comboArpeggioChannelChanged"/>
         <ComboBox fx:id="comboHeldChannel" GridPane.columnIndex="2" GridPane.columnSpan="1"
-                  GridPane.rowIndex="2" maxHeight="Infinity" maxWidth="Infinity"/>
+                  GridPane.rowIndex="2" maxHeight="Infinity" maxWidth="Infinity" onAction="#comboHeldChannelChanged"/>
         <ComboBox fx:id="comboBassChannel" GridPane.columnIndex="2" GridPane.columnSpan="1"
-                  GridPane.rowIndex="3" maxHeight="Infinity" maxWidth="Infinity"/>
+                  GridPane.rowIndex="3" maxHeight="Infinity" maxWidth="Infinity" onAction="#comboBassChannelChanged"/>
         <ComboBox fx:id="comboMic2MIDI" GridPane.columnIndex="2" GridPane.columnSpan="1"
-                  GridPane.rowIndex="4" maxHeight="Infinity" maxWidth="Infinity"/>
+                  GridPane.rowIndex="4" maxHeight="Infinity" maxWidth="Infinity" onAction="#comboMic2MIDIChanged"/>
         <ComboBox fx:id="comboPattern" GridPane.columnIndex="2" GridPane.columnSpan="1"
-                  GridPane.rowIndex="9" maxHeight="Infinity" maxWidth="Infinity"/>
+                  GridPane.rowIndex="9" maxHeight="Infinity" maxWidth="Infinity" onAction="#comboPatternChanged"/>
 
 
         <!--            //Fourth Column-->
@@ -201,10 +202,6 @@
 
     </GridPane>
 
-    <BorderPane SplitPane.resizableWithParent="true">
-        <bottom>
-            <Text SplitPane.resizableWithParent="true" text="CQT Bins will be here..." textAlignment="CENTER"
-                  VBox.vgrow="ALWAYS"/>
-        </bottom>
+    <BorderPane fx:id="borderPane" SplitPane.resizableWithParent="true">
     </BorderPane>
 </SplitPane>
