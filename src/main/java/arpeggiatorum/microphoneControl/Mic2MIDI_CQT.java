@@ -1,6 +1,7 @@
 package arpeggiatorum.microphoneControl;
 
 import arpeggiatorum.LogGUIController;
+import arpeggiatorum.gui.CQTHistogram;
 import arpeggiatorum.gui.GUI;
 import arpeggiatorum.supplementary.UnitVariableInputPort;
 import com.softsynth.math.AudioMath;

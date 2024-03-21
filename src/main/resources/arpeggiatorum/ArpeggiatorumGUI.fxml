@@ -5,214 +5,206 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import org.controlsfx.control.RangeSlider?>
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="arpeggiatorum.ArpeggiatorumController"
-      prefHeight="Infinity" maxHeight="Infinity">
-    <MenuBar>
-        <Menu text="Utilities">
-            <MenuItem text="Log" fx:id="menuLog" onAction="#buttonLogClick"/>
-        </Menu>
-    </MenuBar>
+<SplitPane xmlns="http://javafx.com/javafx"
+           orientation="VERTICAL" maxHeight="Infinity" maxWidth="Infinity"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="arpeggiatorum.ArpeggiatorumController"
+>
+    <GridPane
+            xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="5" vgap="5"
+            maxHeight="Infinity" maxWidth="Infinity">
+        <padding>
+            <Insets top="5" right="5" bottom="5" left="5"/>
+        </padding>
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" percentWidth="10"/>
+            <ColumnConstraints hgrow="ALWAYS" percentWidth="40" minWidth="40"
+                               prefWidth="Infinity"/>
+            <ColumnConstraints hgrow="ALWAYS" percentWidth="40" minWidth="40"
+                               prefWidth="Infinity"/>
+            <ColumnConstraints hgrow="ALWAYS" percentWidth="10"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
+            <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
+            <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
+            <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
+            <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
+            <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
+            <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
+            <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
+            <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
+            <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
+            <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
+            <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
+            <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
+        </rowConstraints>
 
-    <SplitPane xmlns="http://javafx.com/javafx"
-               orientation="VERTICAL" maxHeight="Infinity" maxWidth="Infinity">
-        <GridPane
-                xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="5" vgap="5"
-                maxHeight="Infinity" maxWidth="Infinity">
-            <padding>
-                <Insets top="5" right="5" bottom="5" left="5"/>
-            </padding>
-            <columnConstraints>
-                <ColumnConstraints hgrow="ALWAYS" percentWidth="10"/>
-                <ColumnConstraints hgrow="ALWAYS" percentWidth="40" minWidth="40"
-                                   prefWidth="Infinity"/>
-                <ColumnConstraints hgrow="ALWAYS" percentWidth="40" minWidth="40"
-                                   prefWidth="Infinity"/>
-                <ColumnConstraints hgrow="ALWAYS" percentWidth="10"/>
-            </columnConstraints>
-            <rowConstraints>
-                <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
-                <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
-                <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
-                <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
-                <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
-                <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
-                <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
-                <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
-                <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
-                <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
-                <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
-                <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
-                <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
-            </rowConstraints>
-
-            <!--            //First Column-->
-            <Text text="MIDI Input Port"
-                  GridPane.columnIndex="0" GridPane.rowIndex="0"
-                  GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
-            <Text text="MIDI Output Port"
-                  GridPane.columnIndex="0" GridPane.rowIndex="1"
-                  GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
-            <Text text="Audio Output"
-                  GridPane.columnIndex="0" GridPane.rowIndex="2"
-                  GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
-            <Text text="Audio Input"
-                  GridPane.columnIndex="0" GridPane.rowIndex="3"
-                  GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
-            <Text text="Audio Channel"
-                  GridPane.columnIndex="0" GridPane.rowIndex="4"
-                  GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
-            <Text text="Current Threshold"
-                  fx:id="textThreshold"
-                  GridPane.columnIndex="0" GridPane.rowIndex="5"
-                  GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
-            <Text text="Current Tempo" fx:id="textTempo"
-                  GridPane.columnIndex="0" GridPane.rowIndex="6"
-                  GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
-            <Text text="Articulation (staccato)"
-                  GridPane.columnIndex="0" GridPane.rowIndex="7"
-                  GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
-            <Text text="Pitch Range"
-                  GridPane.columnIndex="0" GridPane.rowIndex="8"
-                  GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
-            <Text text="Tonal Enrichment"
-                  GridPane.columnIndex="0" GridPane.rowIndex="9"
-                  GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
-            <Text text="0 %" fx:id="textEnrichment"
-                  GridPane.columnIndex="0" GridPane.rowIndex="11"
-                  GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
+        <!--            //First Column-->
+        <Text text="MIDI Input Port"
+              GridPane.columnIndex="0" GridPane.rowIndex="0"
+              GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
+        <Text text="MIDI Output Port"
+              GridPane.columnIndex="0" GridPane.rowIndex="1"
+              GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
+        <Text text="Audio Output"
+              GridPane.columnIndex="0" GridPane.rowIndex="2"
+              GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
+        <Text text="Audio Input"
+              GridPane.columnIndex="0" GridPane.rowIndex="3"
+              GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
+        <Text text="Audio Channel"
+              GridPane.columnIndex="0" GridPane.rowIndex="4"
+              GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
+        <Text text="Current Threshold"
+              fx:id="textThreshold"
+              GridPane.columnIndex="0" GridPane.rowIndex="5"
+              GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
+        <Text text="Current Tempo" fx:id="textTempo"
+              GridPane.columnIndex="0" GridPane.rowIndex="6"
+              GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
+        <Text text="Articulation (staccato)"
+              GridPane.columnIndex="0" GridPane.rowIndex="7"
+              GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
+        <Text text="Pitch Range"
+              GridPane.columnIndex="0" GridPane.rowIndex="8"
+              GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
+        <Text text="Tonal Enrichment"
+              GridPane.columnIndex="0" GridPane.rowIndex="9"
+              GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
+        <Text text="0 %" fx:id="textEnrichment"
+              GridPane.columnIndex="0" GridPane.rowIndex="11"
+              GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
 
 
-            <!--            //Second Column-->
-            <ComboBox fx:id="comboMIDIIn" GridPane.columnIndex="1" GridPane.columnSpan="1"
-                      GridPane.rowIndex="0" maxHeight="Infinity" maxWidth="Infinity"
-                      onAction="#comboMIDIInChanged"/>
-            <ComboBox fx:id="comboMIDIOut" GridPane.columnIndex="1" GridPane.columnSpan="1"
-                      GridPane.rowIndex="1" maxHeight="Infinity" maxWidth="Infinity"/>
-            <ComboBox fx:id="comboAudioOut" GridPane.columnIndex="1" GridPane.columnSpan="1"
-                      GridPane.rowIndex="2" maxHeight="Infinity" maxWidth="Infinity"/>
-            <ComboBox fx:id="comboAudioIn" GridPane.columnIndex="1" GridPane.columnSpan="1"
-                      GridPane.rowIndex="3" maxHeight="Infinity" maxWidth="Infinity"/>
-            <ComboBox fx:id="comboAudioChannel" GridPane.columnIndex="1" GridPane.columnSpan="1"
-                      GridPane.rowIndex="4" maxHeight="Infinity" maxWidth="Infinity"/>
-            <Slider fx:id="sliderThreshold" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5"
-                    maxHeight="Infinity" maxWidth="Infinity" SplitPane.resizableWithParent="true"
-                    GridPane.fillWidth="true" min="1" max="1000" value="500" showTickMarks="true"
-            showTickLabels="true" majorTickUnit="100" minorTickCount="5"/>
-            <Slider fx:id="sliderTempo" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="6"
-                    maxHeight="Infinity" maxWidth="Infinity"
-                    min="100" max="1000" value="550" showTickMarks="true"
-            showTickLabels="true" majorTickUnit="100" minorTickCount="2"/>
-            <Slider fx:id="sliderArticulation" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="7"
-                    maxHeight="Infinity" maxWidth="Infinity"
-                    min="50" max="150" value="100" showTickMarks="true"/>
-            <RangeSlider fx:id="sliderRange" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="8"
-                         maxHeight="Infinity" maxWidth="Infinity" min="0" max="127" lowValue="0" highValue="127"
-            showTickLabels="true" showTickMarks="true" majorTickUnit="12" minorTickCount="1"/>
-            <ComboBox fx:id="comboEnrichment" GridPane.columnIndex="1" GridPane.columnSpan="1" maxHeight="Infinity"
-                      maxWidth="Infinity"
-                      GridPane.rowIndex="9"/>
-            <HBox GridPane.fillWidth="true" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="10"
-                  maxHeight="Infinity"
-                  maxWidth="Infinity">
-                <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-                <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-                <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-                <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-                <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-                <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-                <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-                <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-                <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-                <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-                <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-                <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-                <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-                <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-                <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-                <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
-            </HBox>
-            <Slider fx:id="sliderEnrichment" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="11"
-                    maxHeight="Infinity" maxWidth="Infinity"
-            min="0" max="100" showTickMarks="true" value="0"
-            showTickLabels="true" majorTickUnit="10" minorTickCount="1"/>
+        <!--            //Second Column-->
+        <ComboBox fx:id="comboMIDIIn" GridPane.columnIndex="1" GridPane.columnSpan="1"
+                  GridPane.rowIndex="0" maxHeight="Infinity" maxWidth="Infinity"
+                  onAction="#comboMIDIInChanged"/>
+        <ComboBox fx:id="comboMIDIOut" GridPane.columnIndex="1" GridPane.columnSpan="1"
+                  GridPane.rowIndex="1" maxHeight="Infinity" maxWidth="Infinity"/>
+        <ComboBox fx:id="comboAudioOut" GridPane.columnIndex="1" GridPane.columnSpan="1"
+                  GridPane.rowIndex="2" maxHeight="Infinity" maxWidth="Infinity"/>
+        <ComboBox fx:id="comboAudioIn" GridPane.columnIndex="1" GridPane.columnSpan="1"
+                  GridPane.rowIndex="3" maxHeight="Infinity" maxWidth="Infinity"/>
+        <ComboBox fx:id="comboAudioChannel" GridPane.columnIndex="1" GridPane.columnSpan="1"
+                  GridPane.rowIndex="4" maxHeight="Infinity" maxWidth="Infinity"/>
+        <Slider fx:id="sliderThreshold" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5"
+                maxHeight="Infinity" maxWidth="Infinity" SplitPane.resizableWithParent="true"
+                GridPane.fillWidth="true" min="1" max="1000" value="500" showTickMarks="true"
+                showTickLabels="true" majorTickUnit="100" minorTickCount="5"/>
+        <Slider fx:id="sliderTempo" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="6"
+                maxHeight="Infinity" maxWidth="Infinity"
+                min="100" max="1000" value="550" showTickMarks="true"
+                showTickLabels="true" majorTickUnit="100" minorTickCount="2"/>
+        <Slider fx:id="sliderArticulation" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="7"
+                maxHeight="Infinity" maxWidth="Infinity"
+                min="50" max="150" value="100" showTickMarks="true"/>
+        <RangeSlider fx:id="sliderRange" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="8"
+                     maxHeight="Infinity" maxWidth="Infinity" min="0" max="127" lowValue="0" highValue="127"
+                     showTickLabels="true" showTickMarks="true" majorTickUnit="12" minorTickCount="1"/>
+        <ComboBox fx:id="comboEnrichment" GridPane.columnIndex="1" GridPane.columnSpan="1" maxHeight="Infinity"
+                  maxWidth="Infinity"
+                  GridPane.rowIndex="9"/>
+        <HBox GridPane.fillWidth="true" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="10"
+              maxHeight="Infinity"
+              maxWidth="Infinity">
+            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+            <TextField text="0" maxWidth="Infinity" maxHeight="Infinity"/>
+        </HBox>
+        <Slider fx:id="sliderEnrichment" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="11"
+                maxHeight="Infinity" maxWidth="Infinity"
+                min="0" max="100" showTickMarks="true" value="0"
+                showTickLabels="true" majorTickUnit="10" minorTickCount="1"/>
 
-            <Button fx:id="buttonPanic" textAlignment="CENTER" text="PANIC!" onAction="#buttonPanicClick"
-                    GridPane.columnIndex="1"
-                    GridPane.columnSpan="2" GridPane.rowIndex="12"
-                    maxHeight="Infinity" maxWidth="Infinity"/>
-
-
-            <!--            //Third Column-->
-            <ComboBox fx:id="comboMIDIChannel" GridPane.columnIndex="2" GridPane.columnSpan="1"
-                      GridPane.rowIndex="0" maxHeight="Infinity" maxWidth="Infinity"/>
-            <ComboBox fx:id="comboArpeggioChannel" GridPane.columnIndex="2" GridPane.columnSpan="1"
-                      GridPane.rowIndex="1" maxHeight="Infinity" maxWidth="Infinity"/>
-            <ComboBox fx:id="comboHeldChannel" GridPane.columnIndex="2" GridPane.columnSpan="1"
-                      GridPane.rowIndex="2" maxHeight="Infinity" maxWidth="Infinity"/>
-            <ComboBox fx:id="comboBassChannel" GridPane.columnIndex="2" GridPane.columnSpan="1"
-                      GridPane.rowIndex="3" maxHeight="Infinity" maxWidth="Infinity"/>
-            <ComboBox fx:id="comboMic2MIDI" GridPane.columnIndex="2" GridPane.columnSpan="1"
-                      GridPane.rowIndex="4" maxHeight="Infinity" maxWidth="Infinity"/>
-            <ComboBox fx:id="comboPattern" GridPane.columnIndex="2" GridPane.columnSpan="1"
-                      GridPane.rowIndex="9" maxHeight="Infinity" maxWidth="Infinity"/>
+        <Button fx:id="buttonPanic" textAlignment="CENTER" text="PANIC!" onAction="#buttonPanicClick"
+                GridPane.columnIndex="1"
+                GridPane.columnSpan="2" GridPane.rowIndex="12"
+                maxHeight="Infinity" maxWidth="Infinity"/>
 
 
-            <!--            //Fourth Column-->
-            <Text text="Channel"
-                  GridPane.columnIndex="3" GridPane.rowIndex="0"
-                  GridPane.columnSpan="1"/>
-            <Text text="Arpeggio Channel"
-                  GridPane.columnIndex="3" GridPane.rowIndex="1"
-                  GridPane.columnSpan="1"/>
-            <Text text="Held Notes Channel"
-                  GridPane.columnIndex="3" GridPane.rowIndex="2"
-                  GridPane.columnSpan="1"/>
-            <Text text="Bass Channel"
-                  GridPane.columnIndex="3" GridPane.rowIndex="3"
-                  GridPane.columnSpan="1"/>
-            <ToggleButton fx:id="toggleButtonActivate" text="Activate"
-                    GridPane.columnIndex="3" GridPane.rowIndex="4"
-                    GridPane.columnSpan="1"
-                    maxHeight="Infinity" maxWidth="Infinity"
-                    textAlignment="CENTER"
-                    onAction="#toggleButtonActivateClick"/>
-            <ToggleButton fx:id="toggleButtonAutoTune" text="Auto-Tune"
-                    GridPane.columnIndex="3" GridPane.rowIndex="5"
-                    GridPane.columnSpan="1"
-                    maxHeight="Infinity" maxWidth="Infinity"
-                    textAlignment="CENTER"
-                    onAction="#toggleButtonAutoTuneClick"/>
-            <Button fx:id="buttonTapTempo" text="Tap Tempo"
-                    GridPane.columnIndex="3" GridPane.rowIndex="6"
-                    GridPane.columnSpan="1"
-                    maxHeight="Infinity" maxWidth="Infinity"
-                    textAlignment="CENTER"
-                    onAction="#buttonTapTempoClick"/>
-            <Text text="(legato)"
-                  GridPane.columnIndex="3" GridPane.rowIndex="7"
-                  GridPane.columnSpan="1"/>
-            <Text text="[0-127]" fx:id="textRange"
-                  GridPane.columnIndex="3" GridPane.rowIndex="8"
-                  GridPane.columnSpan="1"/>
-            <Text text="Arpeggiator Pattern"
-                  GridPane.columnIndex="3" GridPane.rowIndex="9"
-                  GridPane.columnSpan="1"/>
-            <Button fx:id="buttonUpload" text="Upload"
-                    GridPane.columnIndex="3" GridPane.rowIndex="10"
-                    GridPane.columnSpan="1"
-                    maxHeight="Infinity" maxWidth="Infinity"
-                    textAlignment="CENTER"
-                    onAction="#buttonUploadClick"/>
+        <!--            //Third Column-->
+        <ComboBox fx:id="comboMIDIChannel" GridPane.columnIndex="2" GridPane.columnSpan="1"
+                  GridPane.rowIndex="0" maxHeight="Infinity" maxWidth="Infinity"/>
+        <ComboBox fx:id="comboArpeggioChannel" GridPane.columnIndex="2" GridPane.columnSpan="1"
+                  GridPane.rowIndex="1" maxHeight="Infinity" maxWidth="Infinity"/>
+        <ComboBox fx:id="comboHeldChannel" GridPane.columnIndex="2" GridPane.columnSpan="1"
+                  GridPane.rowIndex="2" maxHeight="Infinity" maxWidth="Infinity"/>
+        <ComboBox fx:id="comboBassChannel" GridPane.columnIndex="2" GridPane.columnSpan="1"
+                  GridPane.rowIndex="3" maxHeight="Infinity" maxWidth="Infinity"/>
+        <ComboBox fx:id="comboMic2MIDI" GridPane.columnIndex="2" GridPane.columnSpan="1"
+                  GridPane.rowIndex="4" maxHeight="Infinity" maxWidth="Infinity"/>
+        <ComboBox fx:id="comboPattern" GridPane.columnIndex="2" GridPane.columnSpan="1"
+                  GridPane.rowIndex="9" maxHeight="Infinity" maxWidth="Infinity"/>
 
-        </GridPane>
-        <VBox prefWidth="Infinity" maxHeight="Infinity" SplitPane.resizableWithParent="true">
-            <BorderPane SplitPane.resizableWithParent="true">
-                <bottom>
-                    <Text SplitPane.resizableWithParent="true" text="CQT Bins will be here..." textAlignment="CENTER"/>
-                </bottom>
-            </BorderPane>
-        </VBox>
-    </SplitPane>
-</VBox>
+
+        <!--            //Fourth Column-->
+        <Text text="Channel"
+              GridPane.columnIndex="3" GridPane.rowIndex="0"
+              GridPane.columnSpan="1"/>
+        <Text text="Arpeggio Channel"
+              GridPane.columnIndex="3" GridPane.rowIndex="1"
+              GridPane.columnSpan="1"/>
+        <Text text="Held Notes Channel"
+              GridPane.columnIndex="3" GridPane.rowIndex="2"
+              GridPane.columnSpan="1"/>
+        <Text text="Bass Channel"
+              GridPane.columnIndex="3" GridPane.rowIndex="3"
+              GridPane.columnSpan="1"/>
+        <ToggleButton fx:id="toggleButtonActivate" text="Activate"
+                      GridPane.columnIndex="3" GridPane.rowIndex="4"
+                      GridPane.columnSpan="1"
+                      maxHeight="Infinity" maxWidth="Infinity"
+                      textAlignment="CENTER"
+                      onAction="#toggleButtonActivateClick"/>
+        <ToggleButton fx:id="toggleButtonAutoTune" text="Auto-Tune"
+                      GridPane.columnIndex="3" GridPane.rowIndex="5"
+                      GridPane.columnSpan="1"
+                      maxHeight="Infinity" maxWidth="Infinity"
+                      textAlignment="CENTER"
+                      onAction="#toggleButtonAutoTuneClick"/>
+        <Button fx:id="buttonTapTempo" text="Tap Tempo"
+                GridPane.columnIndex="3" GridPane.rowIndex="6"
+                GridPane.columnSpan="1"
+                maxHeight="Infinity" maxWidth="Infinity"
+                textAlignment="CENTER"
+                onAction="#buttonTapTempoClick"/>
+        <Text text="(legato)"
+              GridPane.columnIndex="3" GridPane.rowIndex="7"
+              GridPane.columnSpan="1"/>
+        <Text text="[0-127]" fx:id="textRange"
+              GridPane.columnIndex="3" GridPane.rowIndex="8"
+              GridPane.columnSpan="1"/>
+        <Text text="Arpeggiator Pattern"
+              GridPane.columnIndex="3" GridPane.rowIndex="9"
+              GridPane.columnSpan="1"/>
+        <Button fx:id="buttonUpload" text="Upload"
+                GridPane.columnIndex="3" GridPane.rowIndex="10"
+                GridPane.columnSpan="1"
+                maxHeight="Infinity" maxWidth="Infinity"
+                textAlignment="CENTER"
+                onAction="#buttonUploadClick"/>
+
+    </GridPane>
+
+    <BorderPane SplitPane.resizableWithParent="true">
+        <bottom>
+            <Text SplitPane.resizableWithParent="true" text="CQT Bins will be here..." textAlignment="CENTER"
+                  VBox.vgrow="ALWAYS"/>
+        </bottom>
+    </BorderPane>
+</SplitPane>

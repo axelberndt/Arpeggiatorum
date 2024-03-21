@@ -71,7 +71,7 @@ public class ArpeggiatorumGUI extends Application {
                     break;
                 }
                 default: {
-                    //  System.out.println("Unrecognized key");
+                    LogGUIController.logBuffer.append("Unrecognized key.");
                 }
             }
         });

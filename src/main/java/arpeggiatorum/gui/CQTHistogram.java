@@ -1,7 +1,7 @@
-package arpeggiatorum.microphoneControl;
+package arpeggiatorum.gui;
 
+import javax.swing.*;
 import java.awt.*;
-import javax.swing.JPanel;
 
 public class CQTHistogram extends JPanel {
     private double[] binCounts;

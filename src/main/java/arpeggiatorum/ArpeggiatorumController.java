@@ -9,6 +9,10 @@ import com.jsyn.devices.AudioDeviceFactory;
 import com.jsyn.devices.AudioDeviceManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import org.controlsfx.control.RangeSlider;
@@ -21,9 +25,6 @@ import javax.sound.midi.Sequencer;
 public class ArpeggiatorumController {
 
     //GUI Controls
-    //Menu Bar
-    @FXML
-    public MenuItem menuLog;
 
     //First Column
     @FXML
@@ -85,6 +86,14 @@ public class ArpeggiatorumController {
     public Button buttonTapTempo;
     @FXML
     public Button buttonUpload;
+    @FXML
+    public BarChart chartCQTHistogram;
+    private XYChart.Data<String, Number>[] seriesDataCQTBins;
+    private final CategoryAxis xAxis = new CategoryAxis();
+    private final NumberAxis yAxis = new NumberAxis(0, 50, 10);
+    private final XYChart.Series<String, Number> chartSeries = new XYChart.Series<>();
+    private XYChart.Data<String, Number>[] chartData;
+
 
     @FXML
     public void initialize() {
@@ -128,6 +137,31 @@ public class ArpeggiatorumController {
         comboPattern.getItems().add(NotePool.Pattern.up_down);
         comboPattern.getItems().add(NotePool.Pattern.random_no_repetitions);
         comboPattern.getItems().add(NotePool.Pattern.random_with_repetitions);
+
+        //Histogram
+        chartCQTHistogram = new BarChart<>(xAxis, yAxis);
+        chartCQTHistogram.setLegendVisible(false);
+        chartCQTHistogram.setAnimated(false);
+        chartCQTHistogram.setBarGap(0);
+        chartCQTHistogram.setCategoryGap(1);
+        chartCQTHistogram.setVerticalGridLinesVisible(false);
+        // setup chart
+        chartCQTHistogram.setTitle("CQT");
+        xAxis.setLabel("Frequency Bins");
+        yAxis.setLabel("Magnitudes");
+        yAxis.setTickLabelFormatter(new NumberAxis.DefaultFormatter(yAxis, null, "dB"));
+        // add starting data
+        chartSeries.setName("Data Series");
+        //noinspection unchecked
+        chartData = new XYChart.Data[128];
+        String[] categories = new String[128];
+        for (int i = 0; i < chartData.length; i++) {
+            categories[i] = Integer.toString(i + 1);
+            chartData[i] = new XYChart.Data<String, Number>(categories[i], 50);
+            chartSeries.getData().add(chartData[i]);
+
+        }
+        chartCQTHistogram.getData().add(chartSeries);
 
         //Initialize internal components
         if (comboMIDIIn.getValue() != null) {
@@ -174,16 +208,6 @@ public class ArpeggiatorumController {
 
 
         });
-    }
-
-    @FXML
-    public void buttonPanicClick(ActionEvent actionEvent) {
-        Arpeggiatorum.getInstance().getArpeggiator().panic();
-    }
-
-    @FXML
-    public void buttonLogClick(ActionEvent actionEvent) {
-        Arpeggiatorum.LoadLog(ArpeggiatorumGUI.getInstance());
     }
 
     /**
@@ -286,16 +310,6 @@ public class ArpeggiatorumController {
         }
     }
 
-    @FXML
-    public void buttonUploadClick(ActionEvent actionEvent) {
-        //Do something
-    }
-
-    @FXML
-    public void updateLogGUI(final String message) {
-        //Execute on correct thread
-        // Then edit your GUI objects
-    }
 
     @FXML
     public void comboMIDIInChanged(ActionEvent actionEvent) {
@@ -313,12 +327,26 @@ public class ArpeggiatorumController {
         }
     }
 
+    @FXML
     public void toggleButtonActivateClick(ActionEvent actionEvent) {
     }
 
+    @FXML
     public void toggleButtonAutoTuneClick(ActionEvent actionEvent) {
     }
 
+    @FXML
     public void buttonTapTempoClick(ActionEvent actionEvent) {
     }
+
+    @FXML
+    public void buttonUploadClick(ActionEvent actionEvent) {
+        //Do something
+    }
+
+    @FXML
+    public void buttonPanicClick(ActionEvent actionEvent) {
+        Arpeggiatorum.getInstance().getArpeggiator().panic();
+    }
+
 }

@@ -14,7 +14,7 @@ public class LogGUIController {
     @FXML
     public void initialize() {
         logTextArea.textProperty().bind(logBuffer);
-        
+
         logBuffer.addListener(new ChangeListener<Object>() {
             @Override
             public void changed(ObservableValue<?> observable, Object oldValue,

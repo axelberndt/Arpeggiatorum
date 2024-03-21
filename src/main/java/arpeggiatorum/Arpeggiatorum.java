@@ -4,14 +4,13 @@ import arpeggiatorum.microphoneControl.*;
 import arpeggiatorum.supplementary.Tools;
 import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import meico.midi.EventMaker;
 
-import javax.sound.midi.MidiDevice;
-import javax.sound.midi.MidiMessage;
-import javax.sound.midi.MidiSystem;
-import javax.sound.midi.Receiver;
+import javax.sound.midi.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -148,75 +147,75 @@ public class Arpeggiatorum implements Receiver {
      */
     @Override
     public void send(MidiMessage message, long timeStamp) {
-//        if (!(message instanceof ShortMessage sMsg))
-//            return;
-//
-//        if ((inputChannelChooser.getSelectedItem() == null)
-//                || (((ShortMessage) message).getChannel() != (int) inputChannelChooser.getSelectedItem()))
-//            return;
-//
-//        switch (message.getStatus() & 0xF0) {
-//            case EventMaker.CONTROL_CHANGE:
-//                switch (sMsg.getData1()) {
-//                    case EventMaker.CC_General_Purpose_Ctrl_1: // tonal enrichment slider
-//                        SwingUtilities.invokeLater(() -> {
-//                            float tonalEnrichmentAmount = ((float) sMsg.getData2()) / 127f;
-//                            tonalEnrichmentSlider.setValue((int) (tonalEnrichmentAmount * 100));
-//                        });
-//                        break;
-//                    case EventMaker.CC_General_Purpose_Ctrl_2: // tempo slider
-//                        SwingUtilities.invokeLater(() -> {
-//                            double tempo = ((900.0 * sMsg.getData2()) / 127.0) + 100.0;
-//                            tempoSlider.setValue((int) tempo);
-//                        });
-//                        break;
-//                    case EventMaker.CC_General_Purpose_Ctrl_3: // articulation slider
-//                        SwingUtilities.invokeLater(() -> {
-//                            double articulation = ((double) sMsg.getData2() / 127.0) - 0.5;
-//                            articulationSlider.setValue((int) ((articulation * 100.0) + 100));
-//                        });
-//                        break;
-//                    case EventMaker.CC_Undefined_Ctrl_8: // switch tonal enrichment set/tonality
-//                        SwingUtilities.invokeLater(() -> {
-//                            int numberOfOptions = tonalEnrichmentPresetChooser.getItemCount();
-//                            int sliderValue = sMsg.getData2();
-//                            int choice = (sliderValue * (--numberOfOptions)) / 127;
-//                            tonalEnrichmentPresetChooser.setSelectedIndex(choice);
-//                        });
-//                        break;
-//                    case EventMaker.CC_Undefined_Ctrl_7: // arpeggio pattern
-//                        SwingUtilities.invokeLater(() -> {
-//                            int numberOfOptions = patternChooser.getItemCount();
-//                            int sliderValue = sMsg.getData2();
-//                            int choice = (sliderValue * (--numberOfOptions) / 127);
-//                            patternChooser.setSelectedIndex(choice);
-//                        });
-//                        break;
-//                    case EventMaker.CC_Effect_Ctrl_2_14b: // trigger arpeggio channel
-//                        SwingUtilities.invokeLater(() -> {
-//                            int choice = (sMsg.getData2() >= 64) ? Arpeggiator.ARPEGGIO_CHANNEL_PRESET : -1;
-//                            arpeggioChannelChooser.setSelectedItem(choice);
-//                        });
-//                        break;
-//                    case EventMaker.CC_Undefined_Ctrl_3_14b: // trigger held notes channel
-//                        SwingUtilities.invokeLater(() -> {
-//                            int choice = (sMsg.getData2() >= 64) ? Arpeggiator.HELD_NOTES_CHANNEL_PRESET : -1;
-//                            heldNotesChannelChooser.setSelectedItem(choice);
-//                        });
-//                        break;
-//                    case EventMaker.CC_Undefined_Ctrl_4_14b: // trigger bass channel
-//                        SwingUtilities.invokeLater(() -> {
-//                            int choice = (sMsg.getData2() >= 64) ? Arpeggiator.BASS_CHANNEL_PRESET : -1;
-//                            bassChannelChooser.setSelectedItem(choice);
-//                        });
-//                        break;
-//                    default:
-//                        break;
-//                }
-//                break;
-//            default:
-//                break;
-//        }
+        if (!(message instanceof ShortMessage sMsg))
+            return;
+
+        if ((ArpeggiatorumGUI.controllerHandle.comboMIDIChannel.getValue() == null)
+                || (((ShortMessage) message).getChannel() != ArpeggiatorumGUI.controllerHandle.comboMIDIChannel.getValue()))
+            return;
+
+        switch (message.getStatus() & 0xF0) {
+            case EventMaker.CONTROL_CHANGE:
+                switch (sMsg.getData1()) {
+                    case EventMaker.CC_General_Purpose_Ctrl_1: // tonal enrichment slider
+                        Platform.runLater(() -> {
+                            float tonalEnrichmentAmount = ((float) sMsg.getData2()) / 127f;
+                            ArpeggiatorumGUI.controllerHandle.sliderEnrichment.setValue((int) (tonalEnrichmentAmount * 100));
+                        });
+                        break;
+                    case EventMaker.CC_General_Purpose_Ctrl_2: // tempo slider
+                        Platform.runLater(() -> {
+                            double tempo = ((900.0 * sMsg.getData2()) / 127.0) + 100.0;
+                            ArpeggiatorumGUI.controllerHandle.sliderTempo.setValue((int) tempo);
+                        });
+                        break;
+                    case EventMaker.CC_General_Purpose_Ctrl_3: // articulation slider
+                        Platform.runLater(() -> {
+                            double articulation = ((double) sMsg.getData2() / 127.0) - 0.5;
+                            ArpeggiatorumGUI.controllerHandle.sliderArticulation.setValue((int) ((articulation * 100.0) + 100));
+                        });
+                        break;
+                    case EventMaker.CC_Undefined_Ctrl_8: // switch tonal enrichment set/tonality
+                        Platform.runLater(() -> {
+                            int numberOfOptions = ArpeggiatorumGUI.controllerHandle.comboEnrichment.getItems().size();
+                            int sliderValue = sMsg.getData2();
+                            int choice = (sliderValue * (--numberOfOptions)) / 127;
+                            ArpeggiatorumGUI.controllerHandle.comboEnrichment.getSelectionModel().select(choice);
+                        });
+                        break;
+                    case EventMaker.CC_Undefined_Ctrl_7: // arpeggio pattern
+                        Platform.runLater(() -> {
+                            int numberOfOptions = ArpeggiatorumGUI.controllerHandle.comboPattern.getItems().size();
+                            int sliderValue = sMsg.getData2();
+                            int choice = (sliderValue * (--numberOfOptions) / 127);
+                            ArpeggiatorumGUI.controllerHandle.comboPattern.getSelectionModel().select(choice);
+                        });
+                        break;
+                    case EventMaker.CC_Effect_Ctrl_2_14b: // trigger arpeggio channel
+                        Platform.runLater(() -> {
+                            int choice = (sMsg.getData2() >= 64) ? Arpeggiator.ARPEGGIO_CHANNEL_PRESET : -1;
+                            ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(choice);
+                        });
+                        break;
+                    case EventMaker.CC_Undefined_Ctrl_3_14b: // trigger held notes channel
+                        Platform.runLater(() -> {
+                            int choice = (sMsg.getData2() >= 64) ? Arpeggiator.HELD_NOTES_CHANNEL_PRESET : -1;
+                            ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getSelectionModel().select(choice);
+                        });
+                        break;
+                    case EventMaker.CC_Undefined_Ctrl_4_14b: // trigger bass channel
+                        Platform.runLater(() -> {
+                            int choice = (sMsg.getData2() >= 64) ? Arpeggiator.BASS_CHANNEL_PRESET : -1;
+                            ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().select(choice);
+                        });
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     /**
