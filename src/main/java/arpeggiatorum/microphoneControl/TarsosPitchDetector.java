@@ -2,6 +2,7 @@ package arpeggiatorum.microphoneControl;
 
 
 import arpeggiatorum.gui.LogGUIController;
+import arpeggiatorum.supplementary.Tools;
 import arpeggiatorum.supplementary.UnitVariableOutputPort;
 import be.tarsos.dsp.pitch.*;
 import com.jsyn.ports.UnitInputPort;
@@ -75,7 +76,7 @@ public class TarsosPitchDetector extends UnitGenerator {
                 ++cursor;
                 // When it is full, do something.
                 if (cursor == buffer.length) {
-                    float[] fBuffer = Mic2MIDI_Tarsos.toFloatArray(buffer);
+                    float[] fBuffer = Tools.toFloatArray(buffer);
                     PitchDetectionResult pitchDetectionResult = detector.getPitch(fBuffer);
                     Arrays.fill(pushPitch, pitchDetectionResult.getPitch());
                     Arrays.fill(pushConf, pitchDetectionResult.getProbability());

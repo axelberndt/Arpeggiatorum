@@ -1,7 +1,9 @@
 package arpeggiatorum.microphoneControl;
 
 
+import arpeggiatorum.gui.ArpeggiatorumGUI;
 import arpeggiatorum.gui.LogGUIController;
+import arpeggiatorum.supplementary.Tools;
 import arpeggiatorum.supplementary.UnitVariableOutputPort;
 import be.tarsos.dsp.ConstantQ;
 import com.jsyn.ports.UnitInputPort;
@@ -29,7 +31,7 @@ public class CQTPitchDetector extends UnitGenerator {
     public CQTPitchDetector(float sampleRate, float minFreq, float maxFreq, int binsPerOctave, float threshold, float spread) {
         this.addPort(this.input = new UnitInputPort("Input"));
         CQT = new ConstantQ(sampleRate, minFreq, maxFreq, binsPerOctave, threshold, spread);
-        frequencies = Mic2MIDI_Tarsos.toDoubleArray(CQT.getFreqencies());
+        frequencies = Tools.toDoubleArray(CQT.getFreqencies());
         this.addPort(this.output = new UnitVariableOutputPort("CQT Bins", frequencies.length));
         buffer = new double[CQT.getFFTlength()];
         pushData = output.getData();
@@ -62,12 +64,10 @@ public class CQTPitchDetector extends UnitGenerator {
                 // When it is full, do something.
                 if (cursor == buffer.length) {
                     //CQT
-                    CQT.calculateMagintudes(Mic2MIDI_Tarsos.toFloatArray(buffer));
+                    CQT.calculateMagintudes(Tools.toFloatArray(buffer));
                     float[] CQTBins = CQT.getMagnitudes();
                     //Visualize CQT Bins
-                    //cqtHist.updateBins(Mic2MIDI_Tarsos.toDoubleArray(CQTBins), lowIndex);
-                    //GUI.cqtBinsPanel.revalidate();
-                    //GUI.cqtBinsPanel.repaint();
+                    ArpeggiatorumGUI.controllerHandle.updateHist(Tools.toDoubleArray(CQTBins), lowIndex);
                     for (int j = 0; j < pushData.length; j++) {
                         pushData[j] = CQTBins[j];
                     }

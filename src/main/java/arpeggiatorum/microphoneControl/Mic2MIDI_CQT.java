@@ -1,5 +1,6 @@
 package arpeggiatorum.microphoneControl;
 
+import arpeggiatorum.gui.ArpeggiatorumGUI;
 import arpeggiatorum.gui.LogGUIController;
 import arpeggiatorum.supplementary.UnitVariableInputPort;
 import com.softsynth.math.AudioMath;
@@ -16,8 +17,6 @@ import java.util.Arrays;
 public class Mic2MIDI_CQT extends Mic2MIDI {
     public static double minFreq;
     public static double scalingFactor;
-    //Histogram
-    //public static CQTHistogram cqtHist;
     public static boolean autoTune;
     public static int clusterSize;
     public final UnitVariableInputPort[] CQTPorts;
@@ -26,7 +25,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
     private final int binsToCompute = 16;
     private final CQTPitchDetector[] cqtPitchDetectors;
     private final double[] CQTBins;
-    private final double[] CQTFrequencies;
+    public final double[] CQTFrequencies;
     private final int minVelocity;
     private final int maxVelocity;
     private final int diffVelocity;
@@ -82,9 +81,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
             CQTFrequencies[i] = (float) (minFreq * Math.pow(2, i / (float) binsPerOctave));
 
         }
-        //CQT Histogram
-        //double[] initializer = new double[CQTFrequencies.length];
-        //cqtHist = new CQTHistogram(initializer, CQTFrequencies);
+
         this.setReceiver(receiver);
     }
 
@@ -131,9 +128,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
         currentMag = new double[128];
 
         //Histogram
-        //cqtHist.updateBins(new double[CQTHistogram.binSize]);
-        // GUI.cqtBinsPanel.revalidate();
-        //GUI.cqtBinsPanel.repaint();
+        ArpeggiatorumGUI.controllerHandle.updateHist(new double[CQTFrequencies.length]);
     }
 
     @Override
@@ -337,7 +332,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
     public void setSignalToNoiseThreshold(double value) {
         double modValue = value / scalingFactor;
         PITCH_THRESHOLD = modValue / 2;
-        //ArpeggiatorumGUI.controllerHandle.chartCQTHistogram.get
-        //cqtHist.max = modValue;
+        ArpeggiatorumGUI.controllerHandle.yAxis.setUpperBound(modValue);
+        ArpeggiatorumGUI.controllerHandle.yAxis.setTickUnit(modValue/10);
     }
 }

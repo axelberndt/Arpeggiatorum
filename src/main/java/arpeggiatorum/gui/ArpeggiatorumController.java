@@ -2,6 +2,7 @@ package arpeggiatorum.gui;
 
 import arpeggiatorum.Arpeggiatorum;
 import arpeggiatorum.microphoneControl.Mic2MIDI;
+import arpeggiatorum.microphoneControl.Mic2MIDI_CQT;
 import arpeggiatorum.notePool.NotePool;
 import arpeggiatorum.supplementary.Tools;
 import com.jsyn.Synthesizer;
@@ -32,9 +33,10 @@ public class ArpeggiatorumController {
 
     //GUI Controls
 
-    private final CategoryAxis xAxis = new CategoryAxis();
-    private final NumberAxis yAxis = new NumberAxis(0, 1, 0.1);
-    private final XYChart.Series<String, Number> chartSeries = new XYChart.Series<>();
+    public final CategoryAxis xAxis = new CategoryAxis();
+    public final NumberAxis yAxis = new NumberAxis(0, 1, 0.1);
+    public final XYChart.Series<String, Number> chartSeries = new XYChart.Series<>();
+    public XYChart.Data<String, Number>[] chartData;
     //First Column
     @FXML
     public Text textThreshold;
@@ -128,7 +130,6 @@ public class ArpeggiatorumController {
     public TextField e15;
     @FXML
     public TextField e16;
-    private static XYChart.Data<String, Number>[] chartData;
 
 
     @FXML
@@ -184,19 +185,25 @@ public class ArpeggiatorumController {
 
         //Setup Chart
         //chartCQTHistogram.setTitle("CQT Bins"); //Save space avoiding title
-        xAxis.setLabel("Frequency (Hz)");
-        yAxis.setLabel("Magnitude");
+        // xAxis.setLabel("Frequency (Hz)");
+        //yAxis.setLabel("Magnitude");
         yAxis.setTickLabelFormatter(new NumberAxis.DefaultFormatter(yAxis, null, ""));
 
         // add starting data
         chartSeries.setName("Data Series");
         //noinspection unchecked
         //Mic2MIDI_CQT.
-        chartData = new XYChart.Data[64];
-        String[] cqtFrequencies = new String[64];
+        double[] cqtFreqs = new double[0];
+        for (Mic2MIDI processor : Arpeggiatorum.getInstance().getMic2Midi()) {
+            if (processor instanceof Mic2MIDI_CQT) {
+                cqtFreqs = ((Mic2MIDI_CQT) processor).CQTFrequencies;
+            }
+        }
+        chartData = new XYChart.Data[cqtFreqs.length];
         for (int i = 0; i < chartData.length; i++) {
-            cqtFrequencies[i] = Integer.toString(i + 1);
-            chartData[i] = new XYChart.Data<>(cqtFrequencies[i], (float) i / chartData.length);
+
+            chartData[i] = new XYChart.Data<>(String.format("%.2f", cqtFreqs[i]),
+                    1);
             chartSeries.getData().add(chartData[i]);
 
         }
@@ -544,6 +551,21 @@ public class ArpeggiatorumController {
         Arpeggiatorum.getInstance().getArpeggiator().setTonalEnrichment(intervals);
     }
 
+    public void updateHist(double[] newData) {
+        chartSeries.getData().clear();
+        for (int i = 0; i < chartData.length; i++) {
+            chartData[i] = new XYChart.Data<>(chartData[i].getXValue(),
+                    newData[i]);
+            chartSeries.getData().add(chartData[i]);
+
+        }
+    }
+
+    public void updateHist(double[] newData, int lowIndex) {
+        for (int i = 0; i < newData.length; i++) {
+            chartSeries.getData().get(i + lowIndex).setYValue(newData[i]);
+        }
+    }
     //Sliders
     //They don't have event handlers...
 
