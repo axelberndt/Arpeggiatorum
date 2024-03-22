@@ -452,15 +452,15 @@ public class ArpeggiatorumController {
     @FXML
     public void comboMic2MIDIChanged(ActionEvent actionEvent) {
 //        if (toggleButtonActivate.isSelected()) {
-            for (Mic2MIDI processor : Arpeggiatorum.getInstance().getMic2Midi()) {
-                processor.stop();
+//            for (Mic2MIDI processor : Arpeggiatorum.getInstance().getMic2Midi()) {
+//                processor.stop();
 //            }
-            comboMic2MIDI.getValue().start();
+            //comboMic2MIDI.getValue().start();
            if( toggleButtonActivate.isSelected()) {
                toggleButtonActivate.fire();
            }
         }
-    }
+//    }
 
     @FXML
     public void comboAudioOutChanged(ActionEvent actionEvent) {
