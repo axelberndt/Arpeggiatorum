@@ -28,7 +28,6 @@ public class ArpeggiatorumGUI extends Application {
     }
 
     public static void main(String[] args) {
-        arpeggiatorum = new Arpeggiatorum();
         Application.launch(args);
     }
 
@@ -58,6 +57,7 @@ public class ArpeggiatorumGUI extends Application {
         primaryStage.show();
         //IntelliJ fails to debug fullscreen apps (crashes when switching to IDE)
         //primaryStage.setFullScreen(true);
+        primaryStage.setMaximized(true);
 
         primaryStage.setOnCloseRequest((event) -> {
             Arpeggiatorum.SaveNClose(this);
@@ -71,7 +71,6 @@ public class ArpeggiatorumGUI extends Application {
                     break;
                 }
                 case KeyCode.L: {
-                    //Open Log Menu
                     Arpeggiatorum.LoadLog(this);
                     break;
                 }
@@ -82,6 +81,5 @@ public class ArpeggiatorumGUI extends Application {
         });
 
         Arpeggiatorum.LoadConfig(this);
-
     }
 }

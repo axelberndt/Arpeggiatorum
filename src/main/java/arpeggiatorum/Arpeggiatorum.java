@@ -467,14 +467,28 @@ public class Arpeggiatorum implements Receiver {
     }
 
     public void ThresholdChange(Number value) {
+        double scaledValue = value.doubleValue() / ArpeggiatorumGUI.controllerHandle.sliderThreshold.getMax();
+        for (Mic2MIDI processor : mic2Midi) {
+            processor.setSignalToNoiseThreshold(scaledValue);
+        }
     }
 
     public void TempoChange(Number value) {
+        this.arpeggiator.setTempo(value.doubleValue());
+
     }
 
     public void RangeChange(Number lowValue, Number hiValue) {
+        this.arpeggiator.setPitchRange(lowValue.intValue(), hiValue.intValue());
     }
 
     public void EnrichmentChange(Number value) {
+        float tonalEnrichmentAmount = value.floatValue() / 100.0f;
+        this.arpeggiator.setTonalEnrichmentAmount(tonalEnrichmentAmount);
+    }
+
+    public void ArticulationChange(Number value) {
+        double articulation = (value.doubleValue() - 100) / 100.0;
+        this.arpeggiator.setArticulation(articulation);
     }
 }

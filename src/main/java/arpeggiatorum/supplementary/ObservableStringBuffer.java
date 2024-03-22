@@ -1,5 +1,6 @@
 package arpeggiatorum.supplementary;
 
+import javafx.application.Platform;
 import javafx.beans.binding.StringBinding;
 
 public class ObservableStringBuffer extends StringBinding {
@@ -16,8 +17,14 @@ public class ObservableStringBuffer extends StringBinding {
     }
 
     public void append(String text) {
-        buffer.append(text);
-        invalidate();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                buffer.append(text);
+                invalidate();
+            }
+        });
+
     }
     // wrap other StringBuffer methods as needed...
 }

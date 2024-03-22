@@ -204,5 +204,6 @@
     </GridPane>
 
     <BorderPane fx:id="borderPane" SplitPane.resizableWithParent="true">
+        <!--        //Histogram here -->
     </BorderPane>
 </SplitPane>

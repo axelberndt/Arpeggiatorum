@@ -2,7 +2,6 @@ package arpeggiatorum.microphoneControl;
 
 import arpeggiatorum.LogGUIController;
 import arpeggiatorum.gui.CQTHistogram;
-import arpeggiatorum.gui.GUI;
 import arpeggiatorum.supplementary.UnitVariableInputPort;
 import com.softsynth.math.AudioMath;
 
@@ -134,8 +133,8 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
 
         //Histogram
         cqtHist.updateBins(new double[CQTHistogram.binSize]);
-        GUI.cqtBinsPanel.revalidate();
-        GUI.cqtBinsPanel.repaint();
+        // GUI.cqtBinsPanel.revalidate();
+        //GUI.cqtBinsPanel.repaint();
     }
 
     @Override

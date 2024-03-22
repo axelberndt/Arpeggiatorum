@@ -79,7 +79,6 @@ public class Mic2MIDI_FFT extends Mic2MIDI {
         this.trigger.connect(0, this.schmidtTrigger.output, 0);
 
         String message = String.format("FFT Pitch Detection: Minimum Frequency (%.2fHz) Delay (%.03fs) \r\n", sampleRate / numberBins, numberBins / sampleRate);
-        // System.out.printf(message);
         LogGUIController.logBuffer.append(message);
 
         this.setReceiver(receiver);

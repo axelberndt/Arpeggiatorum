@@ -183,14 +183,14 @@ public class ArpeggiatorumController {
         //Setup Chart
         //chartCQTHistogram.setTitle("CQT Bins"); //Save space avoiding title
         xAxis.setLabel("Frequency (Hz)");
-        yAxis.setLabel("Magnitudes (dB FS)");
-        yAxis.setTickLabelFormatter(new NumberAxis.DefaultFormatter(yAxis, null, "dB"));
+        yAxis.setLabel("Magnitude");
+        yAxis.setTickLabelFormatter(new NumberAxis.DefaultFormatter(yAxis, null, ""));
 
         // add starting data
         chartSeries.setName("Data Series");
         //noinspection unchecked
-        chartData = new XYChart.Data[128];
-        String[] categories = new String[128];
+        chartData = new XYChart.Data[64];
+        String[] categories = new String[64];
         for (int i = 0; i < chartData.length; i++) {
             categories[i] = Integer.toString(i + 1);
             chartData[i] = new XYChart.Data<String, Number>(categories[i], 50);
@@ -229,14 +229,18 @@ public class ArpeggiatorumController {
             Arpeggiatorum.getInstance().TempoChange(newValue);
         });
 
+        sliderArticulation.valueProperty().addListener((observable, oldValue, newValue) -> {
+            Arpeggiatorum.getInstance().ArticulationChange(newValue);
+        });
+
         sliderRange.highValueProperty().addListener((observable, oldValue, newValue) -> {
             textRange.setText(String.format("[%d-%d]", ((int) sliderRange.getLowValue()), newValue.intValue()));
-            Arpeggiatorum.getInstance().RangeChange(newValue, newValue);
+            Arpeggiatorum.getInstance().RangeChange(sliderRange.getLowValue(), newValue);
         });
 
         sliderRange.lowValueProperty().addListener((observable, oldValue, newValue) -> {
             textRange.setText(String.format("[%d-%d]", newValue.intValue(), ((int) sliderRange.getHighValue())));
-            Arpeggiatorum.getInstance().RangeChange(newValue, newValue);
+            Arpeggiatorum.getInstance().RangeChange(newValue, sliderRange.getHighValue());
         });
 
         sliderEnrichment.valueProperty().addListener((observable, oldValue, newValue) -> {
@@ -447,11 +451,14 @@ public class ArpeggiatorumController {
 
     @FXML
     public void comboMic2MIDIChanged(ActionEvent actionEvent) {
-        if (toggleButtonActivate.isSelected()) {
+//        if (toggleButtonActivate.isSelected()) {
             for (Mic2MIDI processor : Arpeggiatorum.getInstance().getMic2Midi()) {
                 processor.stop();
-            }
+//            }
             comboMic2MIDI.getValue().start();
+           if( toggleButtonActivate.isSelected()) {
+               toggleButtonActivate.fire();
+           }
         }
     }
 
