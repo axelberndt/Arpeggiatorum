@@ -1,15 +1,17 @@
-package arpeggiatorum;
+package arpeggiatorum.gui;
 
-import arpeggiatorum.gui.MidiDeviceChooserItem;
-import arpeggiatorum.gui.TonalEnrichmentChooserItem;
+import arpeggiatorum.Arpeggiatorum;
 import arpeggiatorum.microphoneControl.Mic2MIDI;
 import arpeggiatorum.notePool.NotePool;
 import arpeggiatorum.supplementary.Tools;
 import com.jsyn.Synthesizer;
 import com.jsyn.devices.AudioDeviceFactory;
 import com.jsyn.devices.AudioDeviceManager;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
@@ -31,7 +33,7 @@ public class ArpeggiatorumController {
     //GUI Controls
 
     private final CategoryAxis xAxis = new CategoryAxis();
-    private final NumberAxis yAxis = new NumberAxis(0, 50, 10);
+    private final NumberAxis yAxis = new NumberAxis(0, 1, 0.1);
     private final XYChart.Series<String, Number> chartSeries = new XYChart.Series<>();
     //First Column
     @FXML
@@ -91,7 +93,7 @@ public class ArpeggiatorumController {
     public Button buttonUpload;
     //Histogram
     @FXML
-    public BarChart chartCQTHistogram;
+    public BarChart<String, Number> chartCQTHistogram;
     @FXML
     public BorderPane borderPane;
     @FXML
@@ -126,8 +128,7 @@ public class ArpeggiatorumController {
     public TextField e15;
     @FXML
     public TextField e16;
-    private XYChart.Data<String, Number>[] seriesDataCQTBins;
-    private XYChart.Data<String, Number>[] chartData;
+    private static XYChart.Data<String, Number>[] chartData;
 
 
     @FXML
@@ -190,17 +191,35 @@ public class ArpeggiatorumController {
         // add starting data
         chartSeries.setName("Data Series");
         //noinspection unchecked
+        //Mic2MIDI_CQT.
         chartData = new XYChart.Data[64];
-        String[] categories = new String[64];
+        String[] cqtFrequencies = new String[64];
         for (int i = 0; i < chartData.length; i++) {
-            categories[i] = Integer.toString(i + 1);
-            chartData[i] = new XYChart.Data<String, Number>(categories[i], 50);
+            cqtFrequencies[i] = Integer.toString(i + 1);
+            chartData[i] = new XYChart.Data<>(cqtFrequencies[i], (float) i / chartData.length);
             chartSeries.getData().add(chartData[i]);
 
         }
         chartCQTHistogram.getData().add(chartSeries);
+        chartCQTHistogram.lookupAll(".default-color0.chart-bar").forEach(n -> n.setStyle("-fx-bar-fill: Gainsboro;"));
         borderPane.centerProperty().setValue(chartCQTHistogram);
 
+        //TODO fix as this does not change color
+        chartSeries.nodeProperty().addListener(new ChangeListener<Node>() {
+            @Override
+            public void changed(ObservableValue<? extends Node> ov, Node oldNode, Node newNode) {
+                if (newNode != null) {
+                    chartSeries.getData().forEach(n -> {
+                        if (n.getYValue().floatValue() > 0.5) {
+                            newNode.setStyle("-fx-bar-fill: Chartreuse;");
+
+                        } else if (n.getYValue().floatValue() > 1.0) {
+                            newNode.setStyle("-fx-bar-fill: Red;");
+                        }
+                    });
+                }
+            }
+        });
 
         //Initialize internal components
         if (comboMIDIIn.getValue() != null) {

@@ -1,6 +1,6 @@
 package arpeggiatorum.microphoneControl;
 
-import arpeggiatorum.LogGUIController;
+import arpeggiatorum.gui.LogGUIController;
 import com.jsyn.ports.UnitInputPort;
 import com.jsyn.unitgen.LinearRamp;
 import com.jsyn.unitgen.Multiply;

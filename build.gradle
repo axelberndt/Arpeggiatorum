@@ -4,13 +4,12 @@ plugins {
 }
 
 application {
-    mainClass = 'arpeggiatorum.ArpeggiatorumGUI'
-    //mainClass = 'arpeggiatorum.Main'
+    mainClass = 'arpeggiatorum.gui.ArpeggiatorumGUI'
 }
 
 javafx {
     version = "21.0.2"
-    modules = [ 'javafx.controls', 'javafx.fxml' ]
+    modules = ['javafx.controls', 'javafx.fxml']
 }
 
 group = 'com.github.axelberndt'
@@ -18,7 +17,7 @@ version = '0.1.2'
 
 repositories {
     mavenCentral()
-    maven { url  "https://jitpack.io" }
+    maven { url "https://jitpack.io" }
     maven {
         name = "TarsosDSP repository"
         url = "https://mvn.0110.be/releases"
@@ -42,17 +41,7 @@ dependencies {
     implementation 'be.tarsos.dsp:jvm:2.5'
     // https://mvnrepository.com/artifact/org.controlsfx/controlsfx
     implementation 'org.controlsfx:controlsfx:latest.release'
-
-
 }
-//jar {
-//    manifest {
-//        attributes("Implementation-Title": "Arpeggiatorum",
-//                "Implementation-Version": archiveVersion,
-//                "Manifest-Version": "1.0",
-//                "Main-Class": "arpeggiatorum.Main")
-//    }
-//}
 
 test {
     useJUnitPlatform()

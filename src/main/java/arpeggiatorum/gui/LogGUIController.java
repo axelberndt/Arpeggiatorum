@@ -1,4 +1,4 @@
-package arpeggiatorum;
+package arpeggiatorum.gui;
 
 import arpeggiatorum.supplementary.ObservableStringBuffer;
 import javafx.beans.value.ChangeListener;

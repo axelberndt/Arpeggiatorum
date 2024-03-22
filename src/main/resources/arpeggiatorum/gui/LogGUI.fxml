@@ -8,7 +8,7 @@
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             xmlns="http://javafx.com/javafx"
-            fx:controller="arpeggiatorum.LogGUIController">
+            fx:controller="arpeggiatorum.gui.LogGUIController">
     <center>
         <TextArea fx:id="logTextArea"/>
     </center>

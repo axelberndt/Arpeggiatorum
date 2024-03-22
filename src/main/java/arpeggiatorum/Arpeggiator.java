@@ -1,5 +1,7 @@
 package arpeggiatorum;
 
+import arpeggiatorum.gui.ArpeggiatorumGUI;
+import arpeggiatorum.gui.LogGUIController;
 import arpeggiatorum.notePool.NotePool;
 import arpeggiatorum.notePool.NoteItem;
 import com.jsyn.Synthesizer;

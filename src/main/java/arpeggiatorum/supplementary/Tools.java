@@ -1,8 +1,7 @@
 package arpeggiatorum.supplementary;
 
-import arpeggiatorum.Arpeggiatorum;
-import arpeggiatorum.ArpeggiatorumGUI;
-import arpeggiatorum.LogGUIController;
+import arpeggiatorum.gui.ArpeggiatorumGUI;
+import arpeggiatorum.gui.LogGUIController;
 import com.jsyn.data.Spectrum;
 import com.jsyn.devices.AudioDeviceFactory;
 import com.jsyn.devices.AudioDeviceManager;

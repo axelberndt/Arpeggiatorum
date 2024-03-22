@@ -1,6 +1,6 @@
 package arpeggiatorum.notePool;
 
-import arpeggiatorum.ArpeggiatorumGUI;
+import arpeggiatorum.gui.ArpeggiatorumGUI;
 import arpeggiatorum.supplementary.SortedList;
 import meico.midi.EventMaker;
 

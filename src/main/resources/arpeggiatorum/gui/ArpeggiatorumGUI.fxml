@@ -8,7 +8,7 @@
 <SplitPane xmlns:fx="http://javafx.com/fxml"
            xmlns="http://javafx.com/javafx" orientation="VERTICAL" maxHeight="Infinity"
            maxWidth="Infinity"
-           fx:controller="arpeggiatorum.ArpeggiatorumController"
+           fx:controller="arpeggiatorum.gui.ArpeggiatorumController"
            dividerPositions="0.8"
 >
     <GridPane

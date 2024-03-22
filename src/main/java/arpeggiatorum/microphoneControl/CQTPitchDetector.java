@@ -1,13 +1,11 @@
 package arpeggiatorum.microphoneControl;
 
 
-import arpeggiatorum.LogGUIController;
+import arpeggiatorum.gui.LogGUIController;
 import arpeggiatorum.supplementary.UnitVariableOutputPort;
 import be.tarsos.dsp.ConstantQ;
 import com.jsyn.ports.UnitInputPort;
 import com.jsyn.unitgen.UnitGenerator;
-
-import static arpeggiatorum.microphoneControl.Mic2MIDI_CQT.cqtHist;
 
 public class CQTPitchDetector extends UnitGenerator {
     private final double[] buffer;
@@ -67,7 +65,7 @@ public class CQTPitchDetector extends UnitGenerator {
                     CQT.calculateMagintudes(Mic2MIDI_Tarsos.toFloatArray(buffer));
                     float[] CQTBins = CQT.getMagnitudes();
                     //Visualize CQT Bins
-                    cqtHist.updateBins(Mic2MIDI_Tarsos.toDoubleArray(CQTBins), lowIndex);
+                    //cqtHist.updateBins(Mic2MIDI_Tarsos.toDoubleArray(CQTBins), lowIndex);
                     //GUI.cqtBinsPanel.revalidate();
                     //GUI.cqtBinsPanel.repaint();
                     for (int j = 0; j < pushData.length; j++) {

@@ -1,6 +1,6 @@
 package arpeggiatorum.microphoneControl;
 
-import arpeggiatorum.LogGUIController;
+import arpeggiatorum.gui.LogGUIController;
 import arpeggiatorum.supplementary.UnitVariableInputPort;
 import be.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
 import com.softsynth.math.AudioMath;

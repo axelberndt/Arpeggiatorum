@@ -1,5 +1,7 @@
 package arpeggiatorum;
 
+import arpeggiatorum.gui.ArpeggiatorumGUI;
+import arpeggiatorum.gui.LogGUIController;
 import arpeggiatorum.microphoneControl.*;
 import arpeggiatorum.supplementary.Tools;
 import com.jsyn.JSyn;
@@ -100,7 +102,7 @@ public class Arpeggiatorum implements Receiver {
         cqtAutoTune = Boolean.parseBoolean(configProp.getProperty("CQT Auto-Tune", "false"));
         Mic2MIDI_CQT.clusterSize = Integer.parseInt(configProp.getProperty("CQT Auto-Tune Cluster Size", "3"));
 
-        cqtMinVel = Integer.parseInt(configProp.getProperty("CQT Min Velocity", "60"));
+        cqtMinVel = Integer.parseInt(configProp.getProperty("CQT Min Velocity", "30"));
         cqtMaxVel = Integer.parseInt(configProp.getProperty("CQT Max Velocity", "127"));
         Mic2MIDI_CQT.scalingFactor = Double.parseDouble(configProp.getProperty("CQT Scaling Factor", "1.0"));
         tarsosBuffer = Integer.parseInt(configProp.getProperty("Tarsos Buffer Size", "1024"));

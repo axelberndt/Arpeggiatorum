@@ -1,7 +1,7 @@
 package arpeggiatorum.notePool;
 
-import arpeggiatorum.ArpeggiatorumGUI;
-import arpeggiatorum.LogGUIController;
+import arpeggiatorum.gui.ArpeggiatorumGUI;
+import arpeggiatorum.gui.LogGUIController;
 import meico.midi.EventMaker;
 import meico.supplementary.KeyValue;
 

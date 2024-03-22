@@ -1,7 +1,7 @@
 package arpeggiatorum.microphoneControl;
 
-import arpeggiatorum.ArpeggiatorumGUI;
-import arpeggiatorum.LogGUIController;
+import arpeggiatorum.gui.ArpeggiatorumGUI;
+import arpeggiatorum.gui.LogGUIController;
 import com.jsyn.unitgen.ChannelIn;
 import com.jsyn.unitgen.Circuit;
 import com.jsyn.unitgen.SchmidtTrigger;

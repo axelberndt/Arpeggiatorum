@@ -1,5 +1,7 @@
-package arpeggiatorum;
+package arpeggiatorum.gui;
 
+import arpeggiatorum.Arpeggiator;
+import arpeggiatorum.Arpeggiatorum;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

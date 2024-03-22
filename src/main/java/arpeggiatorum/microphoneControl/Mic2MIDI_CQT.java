@@ -1,7 +1,6 @@
 package arpeggiatorum.microphoneControl;
 
-import arpeggiatorum.LogGUIController;
-import arpeggiatorum.gui.CQTHistogram;
+import arpeggiatorum.gui.LogGUIController;
 import arpeggiatorum.supplementary.UnitVariableInputPort;
 import com.softsynth.math.AudioMath;
 
@@ -18,7 +17,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
     public static double minFreq;
     public static double scalingFactor;
     //Histogram
-    public static CQTHistogram cqtHist;
+    //public static CQTHistogram cqtHist;
     public static boolean autoTune;
     public static int clusterSize;
     public final UnitVariableInputPort[] CQTPorts;
@@ -84,8 +83,8 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
 
         }
         //CQT Histogram
-        double[] initializer = new double[CQTFrequencies.length];
-        cqtHist = new CQTHistogram(initializer, CQTFrequencies);
+        //double[] initializer = new double[CQTFrequencies.length];
+        //cqtHist = new CQTHistogram(initializer, CQTFrequencies);
         this.setReceiver(receiver);
     }
 
@@ -132,7 +131,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
         currentMag = new double[128];
 
         //Histogram
-        cqtHist.updateBins(new double[CQTHistogram.binSize]);
+        //cqtHist.updateBins(new double[CQTHistogram.binSize]);
         // GUI.cqtBinsPanel.revalidate();
         //GUI.cqtBinsPanel.repaint();
     }
@@ -338,6 +337,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
     public void setSignalToNoiseThreshold(double value) {
         double modValue = value / scalingFactor;
         PITCH_THRESHOLD = modValue / 2;
-        cqtHist.max = modValue;
+        //ArpeggiatorumGUI.controllerHandle.chartCQTHistogram.get
+        //cqtHist.max = modValue;
     }
 }
