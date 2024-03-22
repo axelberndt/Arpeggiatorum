@@ -180,6 +180,7 @@ public class ArpeggiatorumController {
         chartCQTHistogram.setBarGap(0);
         chartCQTHistogram.setCategoryGap(1);
         chartCQTHistogram.setVerticalGridLinesVisible(false);
+
         //Setup Chart
         //chartCQTHistogram.setTitle("CQT Bins"); //Save space avoiding title
         xAxis.setLabel("Frequency (Hz)");
@@ -455,11 +456,11 @@ public class ArpeggiatorumController {
 //            for (Mic2MIDI processor : Arpeggiatorum.getInstance().getMic2Midi()) {
 //                processor.stop();
 //            }
-            //comboMic2MIDI.getValue().start();
-           if( toggleButtonActivate.isSelected()) {
-               toggleButtonActivate.fire();
-           }
+        //comboMic2MIDI.getValue().start();
+        if (toggleButtonActivate.isSelected()) {
+            toggleButtonActivate.fire();
         }
+    }
 //    }
 
     @FXML
@@ -471,20 +472,15 @@ public class ArpeggiatorumController {
     public void comboAudioInChanged(ActionEvent actionEvent) {
         // TODO: the following lines do not work!
         //Windows appear to be the problem, works on Mac
-        Arpeggiatorum.getInstance();
         if (Arpeggiatorum.synth.isRunning()) {
-            Arpeggiatorum.getInstance();
             Arpeggiatorum.synth.stop();
         }
         int deviceInputID = Tools.getDeviceID(comboAudioIn.getValue());
-        Arpeggiatorum.getInstance();
         int deviceInputChannels = Arpeggiatorum.synth.getAudioDeviceManager().getMaxInputChannels(deviceInputID);
         updateAudioChannelChooser(deviceInputID);
 
         int deviceOutputID = Tools.getDeviceID(comboAudioOut.getValue());
-        Arpeggiatorum.getInstance();
         int deviceOutputChannels = Arpeggiatorum.synth.getAudioDeviceManager().getMaxOutputChannels(deviceOutputID);
-        Arpeggiatorum.getInstance();
         Arpeggiatorum.synth.start(Arpeggiatorum.sampleRate,
                 deviceInputID,
                 deviceInputChannels,

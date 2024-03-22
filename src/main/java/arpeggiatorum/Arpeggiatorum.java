@@ -145,8 +145,8 @@ public class Arpeggiatorum implements Receiver {
         //Select first value on startup (useful for first execution without properties)
         ArpeggiatorumGUI.controllerHandle.comboMIDIOut.getSelectionModel().select(0);
         ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getSelectionModel().select(0);
-        ArpeggiatorumGUI.controllerHandle.comboAudioIn.getSelectionModel().select(0);
         ArpeggiatorumGUI.controllerHandle.comboAudioOut.getSelectionModel().select(0);
+        ArpeggiatorumGUI.controllerHandle.comboAudioIn.getSelectionModel().select(0);
         ArpeggiatorumGUI.controllerHandle.comboAudioChannel.getSelectionModel().select(0);
 
         for (int i = 0; i < (long) ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getItems().size(); i++) {
