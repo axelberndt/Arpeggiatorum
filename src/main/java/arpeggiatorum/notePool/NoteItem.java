@@ -1,11 +1,14 @@
 package arpeggiatorum.notePool;
 
+import arpeggiatorum.ArpeggiatorumGUI;
 import arpeggiatorum.LogGUIController;
 import meico.midi.EventMaker;
 import meico.supplementary.KeyValue;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.ShortMessage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class represents a note item in a SortedList.
@@ -126,6 +129,8 @@ public class NoteItem extends KeyValue<Integer, Integer> implements Comparable<N
                 return new ShortMessage(EventMaker.NOTE_ON, channel, this.getPitch(), this.getVelocity());
             return new ShortMessage(EventMaker.NOTE_OFF, channel, this.getPitch(), 0);
         } catch (InvalidMidiDataException e) {
+            Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+            logger.log(Level.SEVERE, "MIDI Exception.", e);
             LogGUIController.logBuffer.append(e.getMessage());
         }
         return null;

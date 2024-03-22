@@ -6,18 +6,20 @@ import java.text.NumberFormat;
 
 /**
  * A text field for numeric input.
+ *
  * @author Axel Berndt
  */
 public class NumberTextField extends JFormattedTextField {
     /**
      * default constructor
      */
-    public NumberTextField(){
+    public NumberTextField() {
         this(NumberFormat.getInstance());
     }
 
     /**
      * constructor
+     *
      * @param format
      */
     public NumberTextField(NumberFormat format) {
@@ -32,6 +34,7 @@ public class NumberTextField extends JFormattedTextField {
 
     /**
      * constructor
+     *
      * @param format
      * @param initialValue
      */

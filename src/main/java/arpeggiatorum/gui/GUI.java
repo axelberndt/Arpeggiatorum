@@ -1,6 +1,7 @@
 package arpeggiatorum.gui;
 
 import arpeggiatorum.Arpeggiator;
+import arpeggiatorum.ArpeggiatorumGUI;
 import arpeggiatorum.LogGUIController;
 import arpeggiatorum.microphoneControl.*;
 import arpeggiatorum.notePool.NotePool;
@@ -28,6 +29,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A graphical user interface for Arpeggiatorum.
@@ -36,9 +39,10 @@ import java.util.Properties;
  */
 public class GUI extends JFrame implements Receiver {
 
-    private final Synthesizer synth = JSyn.createSynthesizer(); // this Synthesizer instance is used for scheduling and audio processing
-    private final int padding = 10;
-
+    private static final JFrame logFrame = new JFrame("Arpeggiatorum Log");
+    private static final JTextArea logMessages = new JTextArea();
+    //Helper Windows
+    public static JPanel cqtBinsPanel;
     private static JComboBox<Integer> inputChannelChooser;
     private static JComboBox<Integer> arpeggioChannelChooser;
     private static JComboBox<Integer> heldNotesChannelChooser;
@@ -51,7 +55,6 @@ public class GUI extends JFrame implements Receiver {
     private static JComboBox<Mic2MIDI> mic2MIDIChooser;
     private static JComboBox<MidiDeviceChooserItem> midiOutChooser;
     private static JComboBox<Integer> audioChannelChooser;
-
     private static JSlider tempoSlider;
     private static JSlider articulationSlider;
     private static JSlider tonalEnrichmentSlider;
@@ -61,15 +64,6 @@ public class GUI extends JFrame implements Receiver {
     private static JToggleButton activateAutoTune;
     private static JButton tonalEnrichmentButton;
     private static JButton panic;
-
-    private final Arpeggiator arpeggiator;
-    private final ArrayList<Mic2MIDI> mic2Midi;
-    //Helper Windows
-    public static JPanel cqtBinsPanel;
-    private static final JFrame logFrame = new JFrame("Arpeggiatorum Log");
-    private static final JTextArea logMessages = new JTextArea();
-
-    Properties configProp;
     //Tap Tempo
     private static int tapCount = 0;
     private static int tapNext = 0;
@@ -92,16 +86,20 @@ public class GUI extends JFrame implements Receiver {
     private static int cqtMaxVel;
     private static int tarsosBuffer;
     private static double histScale;
-
     private static double tarsosConfidence;
     private static int fftBinSize;
     private static double fftMaxFreq;
+    private final Synthesizer synth = JSyn.createSynthesizer(); // this Synthesizer instance is used for scheduling and audio processing
+    private final int padding = 10;
+    private final Arpeggiator arpeggiator;
+    private final ArrayList<Mic2MIDI> mic2Midi;
+    Properties configProp;
 
     /**
      * constructor
      */
     public GUI() {
-        super("Arpeggiatorum v"+Arpeggiator.version);
+        super("Arpeggiatorum v" + Arpeggiator.version);
         timeLast = Instant.now();
 
         Tools.printAudioDevices(); // print a list of all available audio devices
@@ -118,6 +116,8 @@ public class GUI extends JFrame implements Receiver {
             //load a properties file from class path, inside static method
             configProp.load(inputConfig);
         } catch (IOException ex) {
+            Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+            logger.log(Level.SEVERE, "Failed to read properties.", ex);
             LogGUIController.logBuffer.append(ex.getMessage());
         }
         //Get the properties for internal values
@@ -198,7 +198,8 @@ public class GUI extends JFrame implements Receiver {
                     try {
                         this.arpeggiator.setMIDIIn(item.getValue());
                     } catch (MidiUnavailableException e) {
-                        //e.printStackTrace();
+                        Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+                        logger.log(Level.SEVERE, "MIDI Exception.", e);
                         LogGUIController.logBuffer.append(e.getMessage());
                     }
                 }
@@ -214,7 +215,8 @@ public class GUI extends JFrame implements Receiver {
                 try {
                     this.arpeggiator.setMIDIIn(item.getValue());
                 } catch (MidiUnavailableException e) {
-                    //e.printStackTrace();
+                    Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+                    logger.log(Level.SEVERE, "MIDI Exception.", e);
                     LogGUIController.logBuffer.append(e.getMessage());
                 }
             });
@@ -249,7 +251,8 @@ public class GUI extends JFrame implements Receiver {
                     try {
                         this.arpeggiator.setMIDIOut(item.getValue());
                     } catch (MidiUnavailableException e) {
-                        //e.printStackTrace();
+                        Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+                        logger.log(Level.SEVERE, "MIDI Exception.", e);
                         LogGUIController.logBuffer.append(e.getMessage());
                     }
                 }
@@ -265,7 +268,8 @@ public class GUI extends JFrame implements Receiver {
                 try {
                     this.arpeggiator.setMIDIOut(item.getValue());
                 } catch (MidiUnavailableException e) {
-                    //e.printStackTrace();
+                    Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+                    logger.log(Level.SEVERE, "MIDI Exception.", e);
                     LogGUIController.logBuffer.append(e.getMessage());
                 }
             });
@@ -391,7 +395,7 @@ public class GUI extends JFrame implements Receiver {
             });
             audioInputChooser.setEnabled(true);
             //Selecting the first interface for startup
-           // audioInputChooser.setSelectedIndex(0);
+            // audioInputChooser.setSelectedIndex(0);
             addComponentToGridBagLayout(mainPanel, layout, audioInputChooser, 1, 3, 1, 1, 1.0, 1.0, this.padding,
                     this.padding, GridBagConstraints.BOTH, GridBagConstraints.LINE_START);
 
@@ -399,9 +403,9 @@ public class GUI extends JFrame implements Receiver {
             audioChannelChooser = createAudioChannelChooser();
             audioChannelChooser.setEnabled(true);
             audioChannelChooser.addActionListener(actionEvent -> {
-                if(audioChannelChooser.getSelectedItem()!=null) {
+                if (audioChannelChooser.getSelectedItem() != null) {
                     for (Mic2MIDI dev : mic2Midi) {
-                        dev.setChannel((int) audioChannelChooser.getSelectedItem()-1);
+                        dev.setChannel((int) audioChannelChooser.getSelectedItem() - 1);
                     }
                 }
             });
@@ -846,53 +850,16 @@ public class GUI extends JFrame implements Receiver {
                     midiOutChooser.setSelectedIndex(i);
             }
             for (int i = 0; i < audioOutputChooser.getItemCount(); i++) {
-                if (audioOutputChooser.getItemAt(i).toString().equals(audioOutProp))
+                if (audioOutputChooser.getItemAt(i).equals(audioOutProp))
                     audioOutputChooser.setSelectedIndex(i);
             }
 
             for (int i = 0; i < audioInputChooser.getItemCount(); i++) {
-                if (audioInputChooser.getItemAt(i).toString().equals(audioInProp))
+                if (audioInputChooser.getItemAt(i).equals(audioInProp))
                     audioInputChooser.setSelectedIndex(i);
             }
 
         });
-    }
-
-
-    private JButton getTempo() {
-        JButton tapTempo = new JButton("Tap Tempo");
-//              Modified from:
-//              <!-- Original:  Derek Chilcote-Batto (dac-b@usa.net) -->
-//              <!-- Web Site:  http://www.mixed.net -->
-//              <!-- Rewritten by: Rich Reel all8.com -->
-        tapTempo.addActionListener(actionEvent -> {
-            timeNow = Instant.now();
-            timeChange = Duration.between(timeLast, timeNow).toMillis();
-            if (timeChange > timeOut) {
-                tapCount = 0;
-                tapNext = 0;
-            }
-            tapCount++;
-            // Enough beats to make a measurement (2 or more)?
-            if (tapCount > 1) {
-                // Enough to make an average measurement?
-                if (tapCount > maxCount) {// average over maxCount
-                    bpmAvg = (int) ((2 * 60.0 * maxCount / Duration.between(times[tapNext], timeNow).toMillis()) * 1000);
-                    tempoSlider.setValue(bpmAvg);
-                } else {
-                    bpmNow = (int) ((2 * 60.0 / timeChange) * 1000); // instantaneous measurement
-                    tempoSlider.setValue(bpmNow);
-                }
-            }
-
-            timeLast = timeNow; // for instantaneous measurement and for timeout
-            times[tapNext] = timeNow;
-            tapNext++;
-            if (tapNext >= maxCount) {
-                tapNext = 0;
-            }
-        });
-        return tapTempo;
     }
 
     private static void SaveNClose() {
@@ -950,6 +917,8 @@ public class GUI extends JFrame implements Receiver {
             prop.store(output, null);
 
         } catch (IOException io) {
+            Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+            logger.log(Level.SEVERE, "Failed saving properties.", io);
             LogGUIController.logBuffer.append(io.getMessage());
         } finally {
             System.exit(0); // The program may still run, enforce exit
@@ -972,14 +941,6 @@ public class GUI extends JFrame implements Receiver {
 
             }
         });
-    }
-
-    /**
-     * Do all that must be done before shutdown.
-     */
-    private void shutdownHook() {
-        // AllNotesOff? Anything?
-        // exitOnEsc(this);
     }
 
     public static void addComponentToGridBagLayout(Container container, GridBagLayout gridBagLayout,
@@ -1038,6 +999,8 @@ public class GUI extends JFrame implements Receiver {
             try {
                 device = MidiSystem.getMidiDevice(info);
             } catch (MidiUnavailableException e) {
+                Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+                logger.log(Level.SEVERE, "MIDI Exception.", e);
                 continue;
             }
 
@@ -1046,6 +1009,8 @@ public class GUI extends JFrame implements Receiver {
                 try {
                     midiPortChooser.addItem(new MidiDeviceChooserItem(info));
                 } catch (MidiUnavailableException e) {
+                    Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+                    logger.log(Level.SEVERE, "MIDI Exception.", e);
                     LogGUIController.logBuffer.append(e.getMessage());
                 }
             }
@@ -1068,6 +1033,8 @@ public class GUI extends JFrame implements Receiver {
             try {
                 device = MidiSystem.getMidiDevice(info);
             } catch (MidiUnavailableException e) {
+                Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+                logger.log(Level.SEVERE, "MIDI Exception.", e);
                 continue;
             }
 
@@ -1076,6 +1043,8 @@ public class GUI extends JFrame implements Receiver {
                 try {
                     midiPortChooser.addItem(new MidiDeviceChooserItem(info));
                 } catch (MidiUnavailableException e) {
+                    Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+                    logger.log(Level.SEVERE, "MIDI Exception.", e);
                     LogGUIController.logBuffer.append(e.getMessage());
                 }
             }
@@ -1123,6 +1092,7 @@ public class GUI extends JFrame implements Receiver {
 
         return audioOutChooser;
     }
+
     /**
      * create a combobox with audio output devices
      *
@@ -1145,10 +1115,62 @@ public class GUI extends JFrame implements Receiver {
         AudioDeviceManager audioManager = AudioDeviceFactory.createAudioDeviceManager(false);
         int numDevices = audioManager.getMaxInputChannels(devID);
         for (int i = 0; i < numDevices; ++i) {
-            audioChannelChooser.addItem(i+1);
+            audioChannelChooser.addItem(i + 1);
         }
 
-        return;
+    }
+
+    public static void updateLogGUI(final String message) {
+        if (!SwingUtilities.isEventDispatchThread()) {
+            SwingUtilities.invokeLater(() -> updateLogGUI(message));
+            return;
+        }
+        //Now edit your GUI objects
+        GUI.logMessages.append(message);
+    }
+
+    private JButton getTempo() {
+        JButton tapTempo = new JButton("Tap Tempo");
+//              Modified from:
+//              <!-- Original:  Derek Chilcote-Batto (dac-b@usa.net) -->
+//              <!-- Web Site:  http://www.mixed.net -->
+//              <!-- Rewritten by: Rich Reel all8.com -->
+        tapTempo.addActionListener(actionEvent -> {
+            timeNow = Instant.now();
+            timeChange = Duration.between(timeLast, timeNow).toMillis();
+            if (timeChange > timeOut) {
+                tapCount = 0;
+                tapNext = 0;
+            }
+            tapCount++;
+            // Enough beats to make a measurement (2 or more)?
+            if (tapCount > 1) {
+                // Enough to make an average measurement?
+                if (tapCount > maxCount) {// average over maxCount
+                    bpmAvg = (int) ((2 * 60.0 * maxCount / Duration.between(times[tapNext], timeNow).toMillis()) * 1000);
+                    tempoSlider.setValue(bpmAvg);
+                } else {
+                    bpmNow = (int) ((2 * 60.0 / timeChange) * 1000); // instantaneous measurement
+                    tempoSlider.setValue(bpmNow);
+                }
+            }
+
+            timeLast = timeNow; // for instantaneous measurement and for timeout
+            times[tapNext] = timeNow;
+            tapNext++;
+            if (tapNext >= maxCount) {
+                tapNext = 0;
+            }
+        });
+        return tapTempo;
+    }
+
+    /**
+     * Do all that must be done before shutdown.
+     */
+    private void shutdownHook() {
+        // AllNotesOff? Anything?
+        // exitOnEsc(this);
     }
 
     /**
@@ -1238,14 +1260,5 @@ public class GUI extends JFrame implements Receiver {
         if (this.synth.isRunning()) {
             this.synth.stop();
         }
-    }
-
-    public static void updateLogGUI(final String message) {
-        if (!SwingUtilities.isEventDispatchThread()) {
-            SwingUtilities.invokeLater(() -> updateLogGUI(message));
-            return;
-        }
-        //Now edit your GUI objects
-        GUI.logMessages.append(message);
     }
 }

@@ -1,5 +1,6 @@
 package arpeggiatorum.microphoneControl;
 
+import arpeggiatorum.ArpeggiatorumGUI;
 import arpeggiatorum.LogGUIController;
 import com.jsyn.unitgen.ChannelIn;
 import com.jsyn.unitgen.Circuit;
@@ -10,22 +11,23 @@ import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Transmitter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI {
-    public String NAME = "Abstract";
-    public boolean POLY = false;
-    public Receiver receiver;// the MIDI receiver
-
-    public final ChannelIn channelIn = new ChannelIn();// microphone input
-    public final double sampleRate;
-    protected int currentPitch = -1;
-    protected final SchmidtTrigger schmidtTrigger = new SchmidtTrigger();
     public static final double SET_LEVEL = 0.5;
     public static final double DIFFERENCE_LEVEL = 0.05;
     public static final double RESET_LEVEL = SET_LEVEL - DIFFERENCE_LEVEL;
     public static final double CONFIDENCE_THRESHOLD = 0.3;
     public static final double FREQUENCY_RAMP_TIME = 0.01;
     public static final double PEAK_FOLLOWER_RAMP_TIME = 0.25;
+    public final ChannelIn channelIn = new ChannelIn();// microphone input
+    public final double sampleRate;
+    protected final SchmidtTrigger schmidtTrigger = new SchmidtTrigger();
+    public String NAME = "Abstract";
+    public boolean POLY = false;
+    public Receiver receiver;// the MIDI receiver
+    protected int currentPitch = -1;
 
     public Mic2MIDI() {
         sampleRate = 44100.0f;
@@ -41,16 +43,6 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
     }
 
     /**
-     * set the receiver of outgoing MIDI messages
-     *
-     * @param receiver the desired receiver.
-     */
-    @Override
-    public void setReceiver(Receiver receiver) {
-        this.receiver = receiver;
-    }
-
-    /**
      * get the receiver of outgoing MIDI messages
      *
      * @return The MIDI Receiver
@@ -58,6 +50,16 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
     @Override
     public Receiver getReceiver() {
         return this.receiver;
+    }
+
+    /**
+     * set the receiver of outgoing MIDI messages
+     *
+     * @param receiver the desired receiver.
+     */
+    @Override
+    public void setReceiver(Receiver receiver) {
+        this.receiver = receiver;
     }
 
     /**
@@ -104,6 +106,8 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
         try {
             noteOn = new ShortMessage(EventMaker.NOTE_ON, pitch, velocity);
         } catch (InvalidMidiDataException e) {
+            Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+            logger.log(Level.SEVERE, "MIDI Exception.", e);
             LogGUIController.logBuffer.append(e.getMessage());
             return;
         }
@@ -118,6 +122,8 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
             try {
                 aftertouch = new ShortMessage(ShortMessage.POLY_PRESSURE, i, pitch, velocity);
             } catch (InvalidMidiDataException e) {
+                Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+                logger.log(Level.SEVERE, "MIDI Exception.", e);
                 LogGUIController.logBuffer.append(e.getMessage());
                 return;
             }
@@ -134,6 +140,8 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
         try {
             noteOff = new ShortMessage(EventMaker.NOTE_OFF, pitch, 0);
         } catch (InvalidMidiDataException e) {
+            Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+            logger.log(Level.SEVERE, "MIDI Exception.", e);
             LogGUIController.logBuffer.append(e.getMessage());
             return;
         }

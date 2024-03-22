@@ -1,9 +1,14 @@
 package arpeggiatorum.supplementary;
 
+import arpeggiatorum.Arpeggiatorum;
+import arpeggiatorum.ArpeggiatorumGUI;
 import arpeggiatorum.LogGUIController;
 import com.jsyn.data.Spectrum;
 import com.jsyn.devices.AudioDeviceFactory;
 import com.jsyn.devices.AudioDeviceManager;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Tools {
     /**
@@ -37,6 +42,8 @@ public class Tools {
         try {
             Thread.sleep(milliseconds);
         } catch (InterruptedException e) {
+            Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+            logger.log(Level.SEVERE, "Failed to sleep.", e);
             LogGUIController.logBuffer.append(e.getMessage());
         }
     }

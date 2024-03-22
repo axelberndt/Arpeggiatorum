@@ -24,11 +24,10 @@ import java.util.logging.Logger;
 
 public class Arpeggiatorum implements Receiver {
 
-    private static volatile Arpeggiatorum instance;
     public static final Synthesizer synth = JSyn.createSynthesizer(); // this Synthesizer instance is used for scheduling and audio processing
-    private final Arpeggiator arpeggiator;
-    private final ArrayList<Mic2MIDI> mic2Midi;
-
+    //Sample Rate
+    public static int sampleRate;
+    private static volatile Arpeggiatorum instance;
     //Properties
     private static Properties configProp;
     //Tap Tempo
@@ -42,8 +41,6 @@ public class Arpeggiatorum implements Receiver {
     private static long timeChange;
     private static int bpmNow;
     private static int bpmAvg;
-    //Sample Rate
-    public static int sampleRate;
     // CQT Properties
     private static boolean cqtAutoTune;
     private static boolean cqtIsPoly;
@@ -59,27 +56,8 @@ public class Arpeggiatorum implements Receiver {
     private static double tarsosConfidence;
     private static int fftBinSize;
     private static double fftMaxFreq;
-
-    //Singleton pattern
-    public static synchronized Arpeggiatorum getInstance() {
-        if (instance == null) {
-            synchronized (Arpeggiatorum.class) {
-                if (instance == null) {
-                    instance = new Arpeggiatorum();
-                }
-            }
-        }
-        return instance;
-    }
-
-    public Arpeggiator getArpeggiator() {
-        return arpeggiator;
-    }
-
-    public ArrayList<Mic2MIDI> getMic2Midi() {
-        return mic2Midi;
-    }
-
+    private final Arpeggiator arpeggiator;
+    private final ArrayList<Mic2MIDI> mic2Midi;
 
     public Arpeggiatorum() {
         super();
@@ -93,11 +71,11 @@ public class Arpeggiatorum implements Receiver {
 
         Tools.printAudioDevices(); // print a list of all available audio devices
 
-        this.synth.setRealTime(true);
+        synth.setRealTime(true);
         //this.synth.start();
         //Passing a value greater than 0 for input channels will cause an error. why?
         //this.synth.start(44100,AudioDeviceManager.USE_DEFAULT_DEVICE,2,AudioDeviceManager.USE_DEFAULT_DEVICE,0);
-        this.arpeggiator = new Arpeggiator(this.synth, this); // instantiate the Arpeggiator and specify this GUI as
+        this.arpeggiator = new Arpeggiator(synth, this); // instantiate the Arpeggiator and specify this GUI as
         // receiver of outgoing MIDI messages (to monitor
         // controller movements as slider movements in the GUI)
         configProp = new Properties();
@@ -105,6 +83,8 @@ public class Arpeggiatorum implements Receiver {
             //load a properties file from class path, inside static method
             configProp.load(inputConfig);
         } catch (IOException ex) {
+            Logger logger = Logger.getLogger(this.getClass().getName());
+            logger.log(Level.SEVERE, "Failed to load properties.", ex);
             LogGUIController.logBuffer.append(ex.getMessage());
         }
         //Get the properties for internal values
@@ -136,10 +116,166 @@ public class Arpeggiatorum implements Receiver {
         this.mic2Midi.add(new Mic2MIDI_Tarsos(this.arpeggiator, sampleRate, tarsosBuffer, tarsosConfidence));
         this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, sampleRate, cqtMin, cqtMax, cqtThreshold, cqtSpread, cqtIsPoly, cqtAutoTune, cqtMinVel, cqtMaxVel));
         for (Mic2MIDI processor : mic2Midi) {
-            this.synth.add(processor);
+            synth.add(processor);
         }
 
 
+    }
+
+    //Singleton pattern
+    public static synchronized Arpeggiatorum getInstance() {
+        if (instance == null) {
+            synchronized (Arpeggiatorum.class) {
+                if (instance == null) {
+                    instance = new Arpeggiatorum();
+                }
+            }
+        }
+        return instance;
+    }
+
+    public static void LoadConfig(ArpeggiatorumGUI arpeggiatorumGUI) {
+        //Get the properties values for GUI
+
+        String midiInProp = configProp.getProperty("MIDI Input", "0");
+        String midiOutProp = configProp.getProperty("MIDI Output", "0");
+        String audioInProp = configProp.getProperty("Audio Input", "0");
+        String audioOutProp = configProp.getProperty("Audio Output", "0");
+
+        //Select first value on startup (useful for first execution without properties)
+        ArpeggiatorumGUI.controllerHandle.comboMIDIOut.getSelectionModel().select(0);
+        ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getSelectionModel().select(0);
+        ArpeggiatorumGUI.controllerHandle.comboAudioIn.getSelectionModel().select(0);
+        ArpeggiatorumGUI.controllerHandle.comboAudioOut.getSelectionModel().select(0);
+        ArpeggiatorumGUI.controllerHandle.comboAudioChannel.getSelectionModel().select(0);
+
+        for (int i = 0; i < (long) ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getItems().size(); i++) {
+            if (ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getItems().get(i).toString().equals(midiInProp)) {
+                ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getSelectionModel().select(i);
+            }
+        }
+        for (int i = 0; i < (long) ArpeggiatorumGUI.controllerHandle.comboMIDIOut.getItems().size(); i++) {
+            if (ArpeggiatorumGUI.controllerHandle.comboMIDIOut.getItems().get(i).toString().equals(midiOutProp)) {
+                ArpeggiatorumGUI.controllerHandle.comboMIDIOut.getSelectionModel().select(i);
+            }
+        }
+
+        for (int i = 0; i < (long) ArpeggiatorumGUI.controllerHandle.comboAudioOut.getItems().size(); i++) {
+            if (ArpeggiatorumGUI.controllerHandle.comboAudioOut.getItems().get(i).equals(audioOutProp)) {
+                ArpeggiatorumGUI.controllerHandle.comboAudioOut.getSelectionModel().select(i);
+            }
+        }
+
+        for (int i = 0; i < (long) ArpeggiatorumGUI.controllerHandle.comboAudioIn.getItems().size(); i++) {
+            if (ArpeggiatorumGUI.controllerHandle.comboAudioIn.getItems().get(i).equals(audioInProp)) {
+                ArpeggiatorumGUI.controllerHandle.comboAudioIn.getSelectionModel().select(i);
+            }
+        }
+
+        ArpeggiatorumGUI.controllerHandle.comboMIDIChannel.setValue(Integer.parseInt(configProp.getProperty("Channel", "0")));
+        ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.setValue(Integer.parseInt(configProp.getProperty("Arpeggio", "1")));
+        ArpeggiatorumGUI.controllerHandle.comboBassChannel.setValue(Integer.parseInt(configProp.getProperty("Bass", "0")));
+        ArpeggiatorumGUI.controllerHandle.comboHeldChannel.setValue(Integer.parseInt(configProp.getProperty("Held", "2")));
+        ArpeggiatorumGUI.controllerHandle.sliderThreshold.setValue(Double.parseDouble(configProp.getProperty("Threshold", "500")));
+        ArpeggiatorumGUI.controllerHandle.sliderTempo.setValue(Double.parseDouble(configProp.getProperty("Tempo", "500")));
+        ArpeggiatorumGUI.controllerHandle.sliderArticulation.setValue(Double.parseDouble(configProp.getProperty("Articulation", "100")));
+        ArpeggiatorumGUI.controllerHandle.sliderRange.setLowValue(Double.parseDouble(configProp.getProperty("RangeMin", "0")));
+        ArpeggiatorumGUI.controllerHandle.sliderRange.setHighValue(Double.parseDouble(configProp.getProperty("RangeMax", "127")));
+        ArpeggiatorumGUI.controllerHandle.sliderEnrichment.setValue(Double.parseDouble(configProp.getProperty("Density", "0")));
+        ArpeggiatorumGUI.controllerHandle.comboEnrichment.getSelectionModel().select(Integer.parseInt(configProp.getProperty("Enrichment Preset", "0")));
+        ArpeggiatorumGUI.controllerHandle.comboPattern.getSelectionModel().select(Integer.parseInt(configProp.getProperty("Enrichment Pattern", "0")));
+        ArpeggiatorumGUI.controllerHandle.comboMic2MIDI.getSelectionModel().select(Integer.parseInt(configProp.getProperty("Pitch Detector", "0")));
+        if (Boolean.parseBoolean(configProp.getProperty("CQT Auto-Tune", "false"))) {
+            ArpeggiatorumGUI.controllerHandle.toggleButtonAutoTune.fire();
+        }
+    }
+
+    public static void SaveNClose(ArpeggiatorumGUI arpeggiatorumGUI) {
+        //Save Config Properties
+        try (OutputStream output = new FileOutputStream("config.properties")) {
+            Properties prop = new Properties();
+            // Set the properties values
+            prop.setProperty("Name", "ArpeggiatorumGUI");
+            prop.setProperty("Version", "0.1.2");
+
+            prop.setProperty("Channel", ArpeggiatorumGUI.controllerHandle.comboMIDIChannel.getValue().toString());
+            prop.setProperty("Arpeggio", ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getValue().toString());
+            prop.setProperty("Bass", ArpeggiatorumGUI.controllerHandle.comboBassChannel.getValue().toString());
+            prop.setProperty("Held", ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getValue().toString());
+            prop.setProperty("Threshold", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderThreshold.getValue()));
+            prop.setProperty("Tempo", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue()));
+            prop.setProperty("Articulation", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderArticulation.getValue()));
+            prop.setProperty("RangeMin", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderRange.getLowValue()));
+            prop.setProperty("RangeMax", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderRange.getHighValue()));
+            prop.setProperty("Density", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderEnrichment.getValue()));
+            prop.setProperty("Enrichment Preset", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboEnrichment.getSelectionModel().getSelectedIndex()));
+            prop.setProperty("Enrichment Pattern", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboPattern.getSelectionModel().getSelectedIndex()));
+            prop.setProperty("Pitch Detector", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboMic2MIDI.getSelectionModel().getSelectedIndex()));
+
+            prop.setProperty("Tap Timeout", String.valueOf(timeOut));
+            prop.setProperty("Tap Count", String.valueOf(maxCount));
+
+            prop.setProperty("Sample Rate", String.valueOf(sampleRate));
+
+            prop.setProperty("CQT Min Freq", String.valueOf(cqtMin));
+            prop.setProperty("CQT Max Freq", String.valueOf(cqtMax));
+            prop.setProperty("CQT Threshold", String.valueOf(cqtThreshold));
+            prop.setProperty("CQT Spread", String.valueOf(cqtSpread));
+            prop.setProperty("CQT Auto-Tune", String.valueOf(cqtAutoTune));
+            prop.setProperty("CQT Auto-Tune Cluster Size", String.valueOf(Mic2MIDI_CQT.clusterSize));
+            prop.setProperty("CQT Poly", String.valueOf(cqtIsPoly));
+            prop.setProperty("CQT Min Velocity", String.valueOf(cqtMinVel));
+            prop.setProperty("CQT Max Velocity", String.valueOf(cqtMaxVel));
+            prop.setProperty("CQT Scaling Factor", String.valueOf(Mic2MIDI_CQT.scalingFactor));
+
+
+            prop.setProperty("Tarsos Buffer Size", String.valueOf(tarsosBuffer));
+            prop.setProperty("Tarsos Confidence Threshold", String.valueOf(tarsosConfidence));
+
+            prop.setProperty("FFT Bin Size", String.valueOf(fftBinSize));
+            prop.setProperty("FFT Max Freq", String.valueOf(fftMaxFreq));
+            prop.setProperty("Histogram Scale", String.valueOf(histScale));
+
+            prop.setProperty("MIDI Input", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getValue().toString()));
+            prop.setProperty("MIDI Output", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboMIDIOut.getValue().toString()));
+            prop.setProperty("Audio Input", ArpeggiatorumGUI.controllerHandle.comboAudioIn.getValue());
+            prop.setProperty("Audio Output", ArpeggiatorumGUI.controllerHandle.comboAudioOut.getValue());
+
+
+            // Save properties to project root folder
+            prop.store(output, null);
+
+        } catch (IOException io) {
+            Logger logger = Logger.getLogger(arpeggiatorumGUI.getClass().getName());
+            logger.log(Level.SEVERE, "Failed to save properties.", io);
+            LogGUIController.logBuffer.append(io.getMessage());
+        } finally {
+            System.exit(0); // The program may still run, enforce exit
+        }
+    }
+
+    public static void LoadLog(ArpeggiatorumGUI arpeggiatorumGUI) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(arpeggiatorumGUI.getClass().getResource("LogGUI.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            Stage stage = new Stage();
+            stage.setTitle("Log Messages");
+            stage.setScene(scene);
+            stage.show();
+            stage.setMaximized(true);
+        } catch (IOException e) {
+            Logger logger = Logger.getLogger(arpeggiatorumGUI.getClass().getName());
+            logger.log(Level.SEVERE, "Failed to create new Window.", e);
+        }
+    }
+
+    public Arpeggiator getArpeggiator() {
+        return arpeggiator;
+    }
+
+    public ArrayList<Mic2MIDI> getMic2Midi() {
+        return mic2Midi;
     }
 
     /**
@@ -239,135 +375,8 @@ public class Arpeggiatorum implements Receiver {
      */
     @Override
     public void close() {
-        if (this.synth.isRunning()) {
-            this.synth.stop();
-        }
-    }
-
-    public static void LoadConfig(ArpeggiatorumGUI arpeggiatorumGUI) {
-        //Get the properties values for GUI
-
-        String midiInProp = configProp.getProperty("MIDI Input", "0");
-        String midiOutProp = configProp.getProperty("MIDI Output", "0");
-        String audioInProp = configProp.getProperty("Audio Input", "0");
-        String audioOutProp = configProp.getProperty("Audio Output", "0");
-        ArpeggiatorumGUI.controllerHandle.comboAudioChannel.getSelectionModel().select(0);
-
-        for (int i = 0; i < (long) ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getItems().size(); i++) {
-            if (ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getItems().get(i).toString().equals(midiInProp)) {
-                ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getSelectionModel().select(i);
-            }
-        }
-        for (int i = 0; i < (long) ArpeggiatorumGUI.controllerHandle.comboMIDIOut.getItems().size(); i++) {
-            if (ArpeggiatorumGUI.controllerHandle.comboMIDIOut.getItems().get(i).toString().equals(midiOutProp)) {
-                ArpeggiatorumGUI.controllerHandle.comboMIDIOut.getSelectionModel().select(i);
-            }
-        }
-
-        for (int i = 0; i < (long) ArpeggiatorumGUI.controllerHandle.comboAudioOut.getItems().size(); i++) {
-            if (ArpeggiatorumGUI.controllerHandle.comboAudioOut.getItems().get(i).equals(audioOutProp)) {
-                ArpeggiatorumGUI.controllerHandle.comboAudioOut.getSelectionModel().select(i);
-            }
-        }
-
-        for (int i = 0; i < (long) ArpeggiatorumGUI.controllerHandle.comboAudioIn.getItems().size(); i++) {
-            if (ArpeggiatorumGUI.controllerHandle.comboAudioIn.getItems().get(i).equals(audioInProp)) {
-                ArpeggiatorumGUI.controllerHandle.comboAudioIn.getSelectionModel().select(i);
-            }
-        }
-
-        ArpeggiatorumGUI.controllerHandle.comboMIDIChannel.setValue(Integer.parseInt(configProp.getProperty("Channel", "0")));
-        ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.setValue(Integer.parseInt(configProp.getProperty("Arpeggio", "1")));
-        ArpeggiatorumGUI.controllerHandle.comboBassChannel.setValue(Integer.parseInt(configProp.getProperty("Bass", "0")));
-        ArpeggiatorumGUI.controllerHandle.comboHeldChannel.setValue(Integer.parseInt(configProp.getProperty("Held", "2")));
-        ArpeggiatorumGUI.controllerHandle.sliderThreshold.setValue(Double.parseDouble(configProp.getProperty("Threshold", "500")));
-        ArpeggiatorumGUI.controllerHandle.sliderTempo.setValue(Double.parseDouble(configProp.getProperty("Tempo", "500")));
-        ArpeggiatorumGUI.controllerHandle.sliderArticulation.setValue(Double.parseDouble(configProp.getProperty("Articulation", "100")));
-        ArpeggiatorumGUI.controllerHandle.sliderRange.setLowValue(Double.parseDouble(configProp.getProperty("RangeMin", "0")));
-        ArpeggiatorumGUI.controllerHandle.sliderRange.setHighValue(Double.parseDouble(configProp.getProperty("RangeMax", "127")));
-        ArpeggiatorumGUI.controllerHandle.sliderEnrichment.setValue(Double.parseDouble(configProp.getProperty("Density", "0")));
-        ArpeggiatorumGUI.controllerHandle.comboEnrichment.getSelectionModel().select(Integer.parseInt(configProp.getProperty("Enrichment Preset", "0")));
-        ArpeggiatorumGUI.controllerHandle.comboPattern.getSelectionModel().select(Integer.parseInt(configProp.getProperty("Enrichment Pattern", "0")));
-        ArpeggiatorumGUI.controllerHandle.comboMic2MIDI.getSelectionModel().select(Integer.parseInt(configProp.getProperty("Pitch Detector", "0")));
-        ArpeggiatorumGUI.controllerHandle.toggleButtonAutoTune.setSelected(Boolean.parseBoolean(configProp.getProperty("CQT Auto-Tune", "false")));
-
-    }
-
-    public static void SaveNClose(ArpeggiatorumGUI arpeggiatorumGUI) {
-        //Save Config Properties
-        try (OutputStream output = new FileOutputStream("config.properties")) {
-            Properties prop = new Properties();
-            // Set the properties values
-            prop.setProperty("Name", "ArpeggiatorumGUI");
-            prop.setProperty("Version", "0.1.2");
-
-            prop.setProperty("Channel", ArpeggiatorumGUI.controllerHandle.comboMIDIChannel.getValue().toString());
-            prop.setProperty("Arpeggio", ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getValue().toString());
-            prop.setProperty("Bass", ArpeggiatorumGUI.controllerHandle.comboBassChannel.getValue().toString());
-            prop.setProperty("Held", ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getValue().toString());
-            prop.setProperty("Threshold", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderThreshold.getValue()));
-            prop.setProperty("Tempo", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue()));
-            prop.setProperty("Articulation", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderArticulation.getValue()));
-            prop.setProperty("RangeMin", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderRange.getLowValue()));
-            prop.setProperty("RangeMax", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderRange.getHighValue()));
-            prop.setProperty("Density", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderEnrichment.getValue()));
-            prop.setProperty("Enrichment Preset", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboEnrichment.getSelectionModel().getSelectedIndex()));
-            prop.setProperty("Enrichment Pattern", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboPattern.getSelectionModel().getSelectedIndex()));
-            prop.setProperty("Pitch Detector", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboMic2MIDI.getSelectionModel().getSelectedIndex()));
-
-            prop.setProperty("Tap Timeout", String.valueOf(timeOut));
-            prop.setProperty("Tap Count", String.valueOf(maxCount));
-
-            prop.setProperty("Sample Rate", String.valueOf(sampleRate));
-
-            prop.setProperty("CQT Min Freq", String.valueOf(cqtMin));
-            prop.setProperty("CQT Max Freq", String.valueOf(cqtMax));
-            prop.setProperty("CQT Threshold", String.valueOf(cqtThreshold));
-            prop.setProperty("CQT Spread", String.valueOf(cqtSpread));
-            prop.setProperty("CQT Auto-Tune", String.valueOf(cqtAutoTune));
-            prop.setProperty("CQT Auto-Tune Cluster Size", String.valueOf(Mic2MIDI_CQT.clusterSize));
-            prop.setProperty("CQT Poly", String.valueOf(cqtIsPoly));
-            prop.setProperty("CQT Min Velocity", String.valueOf(cqtMinVel));
-            prop.setProperty("CQT Max Velocity", String.valueOf(cqtMaxVel));
-            prop.setProperty("CQT Scaling Factor", String.valueOf(Mic2MIDI_CQT.scalingFactor));
-
-
-            prop.setProperty("Tarsos Buffer Size", String.valueOf(tarsosBuffer));
-            prop.setProperty("Tarsos Confidence Threshold", String.valueOf(tarsosConfidence));
-
-            prop.setProperty("FFT Bin Size", String.valueOf(fftBinSize));
-            prop.setProperty("FFT Max Freq", String.valueOf(fftMaxFreq));
-            prop.setProperty("Histogram Scale", String.valueOf(histScale));
-
-            prop.setProperty("MIDI Input", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getValue().toString()));
-            prop.setProperty("MIDI Output", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboMIDIOut.getValue().toString()));
-            prop.setProperty("Audio Input", ArpeggiatorumGUI.controllerHandle.comboAudioIn.getValue());
-            prop.setProperty("Audio Output", ArpeggiatorumGUI.controllerHandle.comboAudioOut.getValue());
-
-
-            // Save properties to project root folder
-            prop.store(output, null);
-
-        } catch (IOException io) {
-            LogGUIController.logBuffer.append(io.getMessage());
-        } finally {
-            System.exit(0); // The program may still run, enforce exit
-        }
-    }
-
-    public static void LoadLog(ArpeggiatorumGUI arpeggiatorumGUI) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(arpeggiatorumGUI.getClass().getResource("LogGUI.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
-            Stage stage = new Stage();
-            stage.setTitle("Log Messages");
-            stage.setScene(scene);
-            stage.show();
-            stage.setMaximized(true);
-        } catch (IOException e) {
-            Logger logger = Logger.getLogger(arpeggiatorumGUI.getClass().getName());
-            logger.log(Level.SEVERE, "Failed to create new Window.", e);
+        if (synth.isRunning()) {
+            synth.stop();
         }
     }
 
@@ -423,7 +432,7 @@ public class Arpeggiatorum implements Receiver {
             ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setText("Active");
 
             ArpeggiatorumGUI.controllerHandle.comboMic2MIDI.getValue().start();
-            ArpeggiatorumGUI.controllerHandle.comboMic2MIDI.getValue().setSignalToNoiseThreshold(ArpeggiatorumGUI.controllerHandle.sliderThreshold.getValue() /ArpeggiatorumGUI.controllerHandle.sliderThreshold.getValue());
+            ArpeggiatorumGUI.controllerHandle.comboMic2MIDI.getValue().setSignalToNoiseThreshold(ArpeggiatorumGUI.controllerHandle.sliderThreshold.getValue() / ArpeggiatorumGUI.controllerHandle.sliderThreshold.getValue());
         } else {
             ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setStyle("");
             ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setText("Activate");

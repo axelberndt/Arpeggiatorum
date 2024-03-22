@@ -18,8 +18,8 @@ import java.util.stream.DoubleStream;
  */
 public class Mic2MIDI_JSyn extends Mic2MIDI {
     public UnitInputPort trigger;// this port gets a 1.0 to trigger and a 0.0 to do nothing
-    private double previousTriggerValue = 0.0;
     public UnitInputPort frequency;
+    private double previousTriggerValue = 0.0;
 
 
     /**

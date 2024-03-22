@@ -1,24 +1,28 @@
 package arpeggiatorum.notePool;
 
+import arpeggiatorum.ArpeggiatorumGUI;
 import arpeggiatorum.supplementary.SortedList;
 import meico.midi.EventMaker;
 
 import javax.sound.midi.ShortMessage;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The note pool is more than a list of notes. It also implements logic to
  * automatically add and remove notes from the pool over time and prove
  * notes according to a specified pattern.
+ *
  * @author Axel Berndt
  */
 public class NotePool {
     protected final SortedList<NoteItem> triggeredNotes = new SortedList<>(128);  // stores the notes that are currently active
     protected final SortedList<NoteItem> notePool = new SortedList<>(128);        // the pool of notes to be played; some might be added that are not directly triggered by the user
+    private final Random random = new Random();
     private Pattern pattern = Pattern.random_no_repetitions;
     private NoteItem lastNoteProvided = null;
-    private final Random random = new Random();
     private int[] tonalEnrichment = new int[]{0};     // no tonal enrichment, just the fundamental pitch
     private float tonalEnrichmentAmount = 0.0f;
     private int upperTonalEnrichmentIndex = 0;
@@ -35,6 +39,7 @@ public class NotePool {
     /**
      * add a note to the pool;
      * if the note is already in the pool, its noteOn counter will be increased
+     *
      * @param noteOn
      * @return
      */
@@ -49,6 +54,7 @@ public class NotePool {
     /**
      * add a note to the pool;
      * if the note is already in the pool, its noteOn counter will be increased
+     *
      * @param note
      * @return
      */
@@ -86,6 +92,7 @@ public class NotePool {
 
     /**
      * get a copy of the list of triggered notes, sorted by increasing pitch
+     *
      * @return
      */
     public ArrayList<NoteItem> getTriggeredNotes() {
@@ -94,6 +101,7 @@ public class NotePool {
 
     /**
      * get the lowest note in the list of triggered notes, lowered by one octave
+     *
      * @return the note or null, iff no notes are triggered
      */
     public NoteItem getBassNote() {
@@ -110,6 +118,7 @@ public class NotePool {
     /**
      * set the series of additional intervals over the fundamental pitch
      * to be added to the notePool list
+     *
      * @param intervalSeries
      */
     public void setTonalEnrichment(int[] intervalSeries) {
@@ -124,6 +133,7 @@ public class NotePool {
     /**
      * Specify the percentage how many enrichment intervals are actually added to the note pool.
      * This updates the note pool accordingly
+     *
      * @param amount in [0.0f, 1.0f]
      */
     public void setTonalEnrichmentAmount(float amount) {
@@ -156,6 +166,7 @@ public class NotePool {
 
     /**
      * specify the pitch range of notes output by this note pool
+     *
      * @param lowest
      * @param highest
      */
@@ -168,6 +179,7 @@ public class NotePool {
     /**
      * remove the note from the pool that corresponds with the given ShortMessage;
      * if it was triggered more than once, only the note's noteOn counter will be decreased
+     *
      * @param shortMessage can be a noteOn or noteOff
      * @return
      */
@@ -179,6 +191,7 @@ public class NotePool {
     /**
      * remove a note from the pool; if it was triggered more than once,
      * only the note's noteOn counter will be decreased
+     *
      * @param note
      * @return
      */
@@ -211,6 +224,7 @@ public class NotePool {
 
     /**
      * directly access an item
+     *
      * @param index
      * @return
      */
@@ -220,6 +234,7 @@ public class NotePool {
 
     /**
      * provide a note sequence according to the specified pattern
+     *
      * @return
      */
     public NoteItem getNext() {
@@ -228,6 +243,7 @@ public class NotePool {
 
     /**
      * provide a note sequence according to the specified pattern
+     *
      * @param previous
      * @return
      */
@@ -276,6 +292,8 @@ public class NotePool {
         try {   // the note pool could have become empty in the meantime, so we have to try
             this.lastNoteProvided = this.notePool.get(index);
         } catch (IndexOutOfBoundsException e) {
+            Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+            logger.log(Level.SEVERE, "Index out of bounds.", e);
             return null;
         }
 
@@ -283,15 +301,8 @@ public class NotePool {
     }
 
     /**
-     * switch the note provider pattern
-     * @param pattern
-     */
-    public void setPattern(NotePool.Pattern pattern) {
-        this.pattern = pattern;
-    }
-
-    /**
      * get the current pattern
+     *
      * @return
      */
     public NotePool.Pattern getPattern() {
@@ -299,7 +310,17 @@ public class NotePool {
     }
 
     /**
+     * switch the note provider pattern
+     *
+     * @param pattern
+     */
+    public void setPattern(NotePool.Pattern pattern) {
+        this.pattern = pattern;
+    }
+
+    /**
      * compute the index of the given note
+     *
      * @param note
      * @return the index of the search key, if it is contained in the list; otherwise, (-(insertion point) - 1). The insertion point is defined as the point at which the key would be inserted into the list: the index of the first element greater than the key, or list.size() if all elements in the list are less than the specified key. Note that this guarantees that the return value will be >= 0 if and only if the key is found.
      */
@@ -318,6 +339,7 @@ public class NotePool {
 
     /**
      * Is the pool empty?
+     *
      * @return
      */
     public boolean isEmpty() {
@@ -327,6 +349,7 @@ public class NotePool {
     /**
      * Is the note pool holding triggered notes.
      * This can be true even if the notes to be played are empty because of pitch range restrictions.
+     *
      * @return
      */
     public boolean isTriggered() {
@@ -335,6 +358,7 @@ public class NotePool {
 
     /**
      * How many notes in the pool are left? The triggered AND generated notes!
+     *
      * @return
      */
     public int size() {
@@ -345,12 +369,12 @@ public class NotePool {
      * indicates the pattern according to which notes are provided
      */
     public enum Pattern {
-        up ("Up"),
-        down ("Down"),
-        up_down ("Up-Down"),
-        down_up ("Down-Up"),
-        random_no_repetitions ("Random (No Repetitions)"),
-        random_with_repetitions ("Random (with Repetitions)");
+        up("Up"),
+        down("Down"),
+        up_down("Up-Down"),
+        down_up("Down-Up"),
+        random_no_repetitions("Random (No Repetitions)"),
+        random_with_repetitions("Random (with Repetitions)");
 
         private final String name;
 

@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 
 /**
  * A sorted list with increasing values and no double entries.
+ *
  * @param <E>
  * @author Axel Berndt
  */
@@ -20,6 +21,7 @@ public class SortedList<E extends Comparable<E>> implements Iterable<E> {
 
     /**
      * constructor with initial capacity
+     *
      * @param initialCapacity
      */
     public SortedList(int initialCapacity) {
@@ -28,6 +30,7 @@ public class SortedList<E extends Comparable<E>> implements Iterable<E> {
 
     /**
      * insert an item in the list
+     *
      * @param item
      * @return
      */
@@ -52,6 +55,7 @@ public class SortedList<E extends Comparable<E>> implements Iterable<E> {
 
     /**
      * delete an item from the list
+     *
      * @param item
      * @return
      */
@@ -66,6 +70,7 @@ public class SortedList<E extends Comparable<E>> implements Iterable<E> {
 
     /**
      * delete the item at the given index from the list
+     *
      * @param index
      * @return
      */
@@ -84,6 +89,7 @@ public class SortedList<E extends Comparable<E>> implements Iterable<E> {
 
     /**
      * access the item at the specified index
+     *
      * @param index
      * @return
      */
@@ -93,6 +99,7 @@ public class SortedList<E extends Comparable<E>> implements Iterable<E> {
 
     /**
      * get the whole list as ArrayList
+     *
      * @return
      */
     public ArrayList<E> toArrayList() {
@@ -101,6 +108,7 @@ public class SortedList<E extends Comparable<E>> implements Iterable<E> {
 
     /**
      * get the length of the list
+     *
      * @return
      */
     public int size() {
@@ -109,6 +117,7 @@ public class SortedList<E extends Comparable<E>> implements Iterable<E> {
 
     /**
      * check if the list ist empty
+     *
      * @return
      */
     public boolean isEmpty() {
@@ -117,6 +126,7 @@ public class SortedList<E extends Comparable<E>> implements Iterable<E> {
 
     /**
      * check if an item is in the list
+     *
      * @param item
      * @return
      */
@@ -127,6 +137,7 @@ public class SortedList<E extends Comparable<E>> implements Iterable<E> {
 
     /**
      * get index of item
+     *
      * @param item
      * @return the index of the search key, if it is contained in the list; otherwise, (-(insertion point) - 1). The insertion point is defined as the point at which the key would be inserted into the list: the index of the first element greater than the key, or list.size() if all elements in the list are less than the specified key. Note that this guarantees that the return value will be >= 0 if and only if the key is found.
      */

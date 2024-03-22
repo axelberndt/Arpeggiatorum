@@ -14,18 +14,18 @@ import javax.sound.midi.Receiver;
  */
 public class Mic2MIDI_Tarsos extends Mic2MIDI {
 
+    private static final int INTERVAL = 0;
     // Tarsos
     private final double pitchThreshold;
     private final int bufferSize;
-    private static final int INTERVAL = 0;
     public UnitVariableInputPort confidence;
     public UnitVariableInputPort pitch;
 
     public Mic2MIDI_Tarsos(Receiver receiver, double sampleRate, int bufferSize, double pitchThreshold) {
         super(sampleRate);
         NAME = "Tarsos Pitch Detector";
-        this.bufferSize=bufferSize;
-        this.pitchThreshold =pitchThreshold;
+        this.bufferSize = bufferSize;
+        this.pitchThreshold = pitchThreshold;
         // Build DSP patch
         this.add(this.channelIn);// add channelIn to the synth
 
@@ -41,6 +41,26 @@ public class Mic2MIDI_Tarsos extends Mic2MIDI {
 
         this.add(tarsosPitchDetector);
         this.setReceiver(receiver);
+    }
+
+    public static float[] toFloatArray(double[] arr) {
+        if (arr == null) return null;
+        int n = arr.length;
+        float[] ret = new float[n];
+        for (int i = 0; i < n; i++) {
+            ret[i] = (float) arr[i];
+        }
+        return ret;
+    }
+
+    public static double[] toDoubleArray(float[] arr) {
+        if (arr == null) return null;
+        int n = arr.length;
+        double[] ret = new double[n];
+        for (int i = 0; i < n; i++) {
+            ret[i] = arr[i];
+        }
+        return ret;
     }
 
     @Override
@@ -69,25 +89,5 @@ public class Mic2MIDI_Tarsos extends Mic2MIDI {
                 currentPitch = -1;
             }
         }
-    }
-
-    public static float[] toFloatArray(double[] arr) {
-        if (arr == null) return null;
-        int n = arr.length;
-        float[] ret = new float[n];
-        for (int i = 0; i < n; i++) {
-            ret[i] = (float) arr[i];
-        }
-        return ret;
-    }
-
-    public static double[] toDoubleArray(float[] arr) {
-        if (arr == null) return null;
-        int n = arr.length;
-        double[] ret = new double[n];
-        for (int i = 0; i < n; i++) {
-            ret[i] = arr[i];
-        }
-        return ret;
     }
 }

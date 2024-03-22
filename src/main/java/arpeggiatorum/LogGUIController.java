@@ -7,9 +7,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 
 public class LogGUIController {
+    public final static ObservableStringBuffer logBuffer = new ObservableStringBuffer();
     @FXML
     TextArea logTextArea;
-    public final static ObservableStringBuffer logBuffer = new ObservableStringBuffer();
 
     @FXML
     public void initialize() {

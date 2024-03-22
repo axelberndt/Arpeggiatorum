@@ -16,55 +16,32 @@ import java.util.Arrays;
  * @author Davide Mauro
  */
 public class Mic2MIDI_CQT extends Mic2MIDI {
-    //CQT
-    private final int binsPerOctave = 12;
-    private final int binsToCompute = 16;
-    private final CQTPitchDetector[] cqtPitchDetectors;
-    private Integer newPitch;
-    public final UnitVariableInputPort[] CQTPorts;
-    private final double[] CQTBins;
-    private final double[] CQTFrequencies;
-    private int[] CQTBinsSortedIndexes;
     public static double minFreq;
     public static double scalingFactor;
     //Histogram
     public static CQTHistogram cqtHist;
+    public static boolean autoTune;
+    public static int clusterSize;
+    public final UnitVariableInputPort[] CQTPorts;
+    //CQT
+    private final int binsPerOctave = 12;
+    private final int binsToCompute = 16;
+    private final CQTPitchDetector[] cqtPitchDetectors;
+    private final double[] CQTBins;
+    private final double[] CQTFrequencies;
+    private final int minVelocity;
+    private final int maxVelocity;
+    private final int diffVelocity;
+    int currentAboveThresholdCount = 0;
+    private Integer newPitch;
+    private int[] CQTBinsSortedIndexes;
     private double PITCH_THRESHOLD;
-
     private boolean[] currentPitches = new boolean[128];
     private boolean[] currentActive = new boolean[128];
     private boolean[] currentAboveThreshold = new boolean[128];
     private int[] currentVelocities = new int[128];
     private double[] currentMag = new double[128];
-    public static boolean autoTune;
-    public static int clusterSize;
-    private final int minVelocity;
-    private final int maxVelocity;
-    private final int diffVelocity;
     private int currentVelocity;
-    int currentAboveThresholdCount = 0;
-
-    @Override
-    public void stop() {
-        super.stop();
-        //Reset everything
-
-        //Mono Version
-        currentVelocity = 0;
-        currentPitch = -1;
-
-        //Poly Version
-        currentPitches = new boolean[128];
-        currentActive = new boolean[128];
-        currentAboveThreshold = new boolean[128];
-        currentVelocities = new int[128];
-        currentMag = new double[128];
-
-        //Histogram
-        cqtHist.updateBins(new double[CQTHistogram.binSize]);
-        GUI.cqtBinsPanel.revalidate();
-        GUI.cqtBinsPanel.repaint();
-    }
 
     public Mic2MIDI_CQT(Receiver receiver, double sampleRate, double minFreq, double maxFreq, float threshold, float spread, boolean isPoly, boolean autoTune, int cqtMinVel, int cqtMaxVel) {
         super(sampleRate);
@@ -111,6 +88,54 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
         double[] initializer = new double[CQTFrequencies.length];
         cqtHist = new CQTHistogram(initializer, CQTFrequencies);
         this.setReceiver(receiver);
+    }
+
+    /**
+     * Return the indexes corresponding to the top-k largest in an array.
+     */
+    public static int[] getMaxBins(double[] array, int top_k) {
+        double[] max = new double[top_k];
+        int[] maxIndex = new int[top_k];
+        Arrays.fill(max, Double.NEGATIVE_INFINITY);
+        Arrays.fill(maxIndex, -1);
+
+        top:
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 0; j < top_k; j++) {
+                if (array[i] > max[j]) {
+                    for (int x = top_k - 1; x > j; x--) {
+                        maxIndex[x] = maxIndex[x - 1];
+                        max[x] = max[x - 1];
+                    }
+                    maxIndex[j] = i;
+                    max[j] = array[i];
+                    continue top;
+                }
+            }
+        }
+        return maxIndex;
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        //Reset everything
+
+        //Mono Version
+        currentVelocity = 0;
+        currentPitch = -1;
+
+        //Poly Version
+        currentPitches = new boolean[128];
+        currentActive = new boolean[128];
+        currentAboveThreshold = new boolean[128];
+        currentVelocities = new int[128];
+        currentMag = new double[128];
+
+        //Histogram
+        cqtHist.updateBins(new double[CQTHistogram.binSize]);
+        GUI.cqtBinsPanel.revalidate();
+        GUI.cqtBinsPanel.repaint();
     }
 
     @Override
@@ -315,31 +340,5 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
         double modValue = value / scalingFactor;
         PITCH_THRESHOLD = modValue / 2;
         cqtHist.max = modValue;
-    }
-
-    /**
-     * Return the indexes corresponding to the top-k largest in an array.
-     */
-    public static int[] getMaxBins(double[] array, int top_k) {
-        double[] max = new double[top_k];
-        int[] maxIndex = new int[top_k];
-        Arrays.fill(max, Double.NEGATIVE_INFINITY);
-        Arrays.fill(maxIndex, -1);
-
-        top:
-        for (int i = 0; i < array.length; i++) {
-            for (int j = 0; j < top_k; j++) {
-                if (array[i] > max[j]) {
-                    for (int x = top_k - 1; x > j; x--) {
-                        maxIndex[x] = maxIndex[x - 1];
-                        max[x] = max[x - 1];
-                    }
-                    maxIndex[j] = i;
-                    max[j] = array[i];
-                    continue top;
-                }
-            }
-        }
-        return maxIndex;
     }
 }

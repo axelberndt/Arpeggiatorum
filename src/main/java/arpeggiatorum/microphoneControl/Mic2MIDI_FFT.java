@@ -18,11 +18,8 @@ import javax.sound.midi.Receiver;
  * @author Axel Berndt
  */
 public class Mic2MIDI_FFT extends Mic2MIDI {
-    public UnitInputPort trigger;// this port gets a 1.0 to trigger and a 0.0 to do nothing
-    private double previousTriggerValue = 0.0;
-    public UnitInputPort frequency;
-    public UnitSpectralInputPort spectrum;
-
+    //HPS
+    private static final int decimationSize = 3;
     //FFT to Pitch
     private final int numberBins;
     private final int windowLength;
@@ -30,14 +27,16 @@ public class Mic2MIDI_FFT extends Mic2MIDI {
     private final double lowCut = 8000.0f;
     //Highpass filter cutoff frequency
     private final double hiCut = 40.0f;
+    private final double minFreq;
+    private final double maxFreq;
+    public UnitInputPort trigger;// this port gets a 1.0 to trigger and a 0.0 to do nothing
+    public UnitInputPort frequency;
+    public UnitSpectralInputPort spectrum;
+    private double previousTriggerValue = 0.0;
     private int lowCutoff = 0;
     private int hiCutoff = 0;
     private int size = 0;
     private int nyquist = 0;
-    //HPS
-    private static final int decimationSize = 3;
-    private  final double minFreq;
-    private final double maxFreq;
 
     public Mic2MIDI_FFT(Receiver receiver, double sampleRate, int binSize, double maxFreq) {
         super(sampleRate);
@@ -84,6 +83,20 @@ public class Mic2MIDI_FFT extends Mic2MIDI {
         LogGUIController.logBuffer.append(message);
 
         this.setReceiver(receiver);
+    }
+
+    public static int getMaxBin(double[] arrayInput, int start, int end) {
+        //Look for the maximum value's index
+        int maxBin = start;
+        double maxVal = arrayInput[start];
+        for (int i = start; i < end; i++) {
+            double val = arrayInput[i];
+            if (val > maxVal) {
+                maxVal = val;
+                maxBin = i;
+            }
+        }
+        return maxBin;
     }
 
     @Override
@@ -180,21 +193,6 @@ public class Mic2MIDI_FFT extends Mic2MIDI {
 
         this.previousTriggerValue = triggerInputs[0];
     }
-
-    public static int getMaxBin(double[] arrayInput, int start, int end) {
-        //Look for the maximum value's index
-        int maxBin = start;
-        double maxVal = arrayInput[start];
-        for (int i = start; i < end; i++) {
-            double val = arrayInput[i];
-            if (val > maxVal) {
-                maxVal = val;
-                maxBin = i;
-            }
-        }
-        return maxBin;
-    }
-
 
     // Extract magnitude from spectrum
     private double[] getMagnitude(int nyquist, double[] spectrumReal, double[] spectrumImg) {

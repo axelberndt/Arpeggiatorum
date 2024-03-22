@@ -5,9 +5,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import org.controlsfx.control.RangeSlider?>
-<SplitPane xmlns="http://javafx.com/javafx"
-           orientation="VERTICAL" maxHeight="Infinity" maxWidth="Infinity"
-           xmlns:fx="http://javafx.com/fxml"
+<SplitPane xmlns:fx="http://javafx.com/fxml"
+           xmlns="http://javafx.com/javafx" orientation="VERTICAL" maxHeight="Infinity"
+           maxWidth="Infinity"
            fx:controller="arpeggiatorum.ArpeggiatorumController"
            dividerPositions="0.8"
 >
@@ -103,7 +103,7 @@
                 min="50" max="150" value="100" showTickMarks="true"/>
         <RangeSlider fx:id="sliderRange" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="8"
                      maxHeight="Infinity" maxWidth="Infinity" min="0" max="127" lowValue="0" highValue="127"
-                     showTickLabels="true" showTickMarks="true" majorTickUnit="12" minorTickCount="1" />
+                     showTickLabels="true" showTickMarks="true" majorTickUnit="12" minorTickCount="1"/>
         <ComboBox fx:id="comboEnrichment" GridPane.columnIndex="1" GridPane.columnSpan="1" maxHeight="Infinity"
                   maxWidth="Infinity"
                   GridPane.rowIndex="9" onAction="#comboEnrichmentChanged"/>
@@ -142,7 +142,8 @@
         <ComboBox fx:id="comboMIDIChannel" GridPane.columnIndex="2" GridPane.columnSpan="1"
                   GridPane.rowIndex="0" maxHeight="Infinity" maxWidth="Infinity" onAction="#comboMIDIChannelChanged"/>
         <ComboBox fx:id="comboArpeggioChannel" GridPane.columnIndex="2" GridPane.columnSpan="1"
-                  GridPane.rowIndex="1" maxHeight="Infinity" maxWidth="Infinity" onAction="#comboArpeggioChannelChanged"/>
+                  GridPane.rowIndex="1" maxHeight="Infinity" maxWidth="Infinity"
+                  onAction="#comboArpeggioChannelChanged"/>
         <ComboBox fx:id="comboHeldChannel" GridPane.columnIndex="2" GridPane.columnSpan="1"
                   GridPane.rowIndex="2" maxHeight="Infinity" maxWidth="Infinity" onAction="#comboHeldChannelChanged"/>
         <ComboBox fx:id="comboBassChannel" GridPane.columnIndex="2" GridPane.columnSpan="1"

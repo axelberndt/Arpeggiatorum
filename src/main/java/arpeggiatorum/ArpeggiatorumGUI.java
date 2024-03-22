@@ -9,11 +9,10 @@ import javafx.stage.Stage;
 
 
 public class ArpeggiatorumGUI extends Application {
+    public static ArpeggiatorumController controllerHandle;
     private static FXMLLoader fxmlLoader;
     private static Scene scene;
     private static Arpeggiatorum arpeggiatorum;
-
-    public static ArpeggiatorumController controllerHandle;
     private static volatile ArpeggiatorumGUI instance;
 
     //Singleton pattern
@@ -26,6 +25,11 @@ public class ArpeggiatorumGUI extends Application {
             }
         }
         return instance;
+    }
+
+    public static void main(String[] args) {
+        arpeggiatorum = new Arpeggiatorum();
+        Application.launch(args);
     }
 
     @Override
@@ -52,6 +56,7 @@ public class ArpeggiatorumGUI extends Application {
         primaryStage.setTitle("ArpeggiatorumGUI v" + Arpeggiator.version);
         primaryStage.setScene(scene);
         primaryStage.show();
+        //IntelliJ fails to debug fullscreen apps (crashes when switching to IDE)
         //primaryStage.setFullScreen(true);
 
         primaryStage.setOnCloseRequest((event) -> {
@@ -78,10 +83,5 @@ public class ArpeggiatorumGUI extends Application {
 
         Arpeggiatorum.LoadConfig(this);
 
-    }
-
-    public static void main(String[] args) {
-        arpeggiatorum = new Arpeggiatorum();
-        Application.launch(args);
     }
 }

@@ -23,11 +23,16 @@ import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Sequencer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ArpeggiatorumController {
 
     //GUI Controls
 
+    private final CategoryAxis xAxis = new CategoryAxis();
+    private final NumberAxis yAxis = new NumberAxis(0, 50, 10);
+    private final XYChart.Series<String, Number> chartSeries = new XYChart.Series<>();
     //First Column
     @FXML
     public Text textThreshold;
@@ -37,7 +42,6 @@ public class ArpeggiatorumController {
     public Text textTempo;
     @FXML
     public Text textEnrichment;
-
     //Second Column
     @FXML
     public ComboBox<MidiDeviceChooserItem> comboMIDIIn;
@@ -63,7 +67,6 @@ public class ArpeggiatorumController {
     public Slider sliderEnrichment;
     @FXML
     public Button buttonPanic;
-
     // Third Column
     @FXML
     public ComboBox<Integer> comboMIDIChannel;
@@ -77,8 +80,6 @@ public class ArpeggiatorumController {
     public ComboBox<Mic2MIDI> comboMic2MIDI;
     @FXML
     public ComboBox<NotePool.Pattern> comboPattern;
-
-
     //Fourth Column
     @FXML
     public ToggleButton toggleButtonActivate;
@@ -88,7 +89,6 @@ public class ArpeggiatorumController {
     public Button buttonTapTempo;
     @FXML
     public Button buttonUpload;
-
     //Histogram
     @FXML
     public BarChart chartCQTHistogram;
@@ -126,11 +126,7 @@ public class ArpeggiatorumController {
     public TextField e15;
     @FXML
     public TextField e16;
-
     private XYChart.Data<String, Number>[] seriesDataCQTBins;
-    private final CategoryAxis xAxis = new CategoryAxis();
-    private final NumberAxis yAxis = new NumberAxis(0, 50, 10);
-    private final XYChart.Series<String, Number> chartSeries = new XYChart.Series<>();
     private XYChart.Data<String, Number>[] chartData;
 
 
@@ -212,6 +208,8 @@ public class ArpeggiatorumController {
                 try {
                     Arpeggiatorum.getInstance().getArpeggiator().setMIDIIn(item.getValue());
                 } catch (MidiUnavailableException e) {
+                    Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+                    logger.log(Level.SEVERE, "MIDI Exception.", e);
                     LogGUIController.logBuffer.append(e.getMessage());
                 }
             }
@@ -259,6 +257,8 @@ public class ArpeggiatorumController {
             try {
                 device = MidiSystem.getMidiDevice(info);
             } catch (MidiUnavailableException e) {
+                Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+                logger.log(Level.SEVERE, "MIDI Exception.", e);
                 continue;
             }
 
@@ -267,6 +267,8 @@ public class ArpeggiatorumController {
                 try {
                     comboMIDIIn.getItems().add(new MidiDeviceChooserItem(info));
                 } catch (MidiUnavailableException e) {
+                    Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+                    logger.log(Level.SEVERE, "MIDI Exception.", e);
                     LogGUIController.logBuffer.append(e.getMessage());
                 }
             }
@@ -284,6 +286,8 @@ public class ArpeggiatorumController {
             try {
                 device = MidiSystem.getMidiDevice(info);
             } catch (MidiUnavailableException e) {
+                Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+                logger.log(Level.SEVERE, "MIDI Exception.", e);
                 continue;
             }
 
@@ -292,6 +296,8 @@ public class ArpeggiatorumController {
                 try {
                     comboMIDIOut.getItems().add(new MidiDeviceChooserItem(info));
                 } catch (MidiUnavailableException e) {
+                    Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+                    logger.log(Level.SEVERE, "MIDI Exception.", e);
                     LogGUIController.logBuffer.append(e.getMessage());
                 }
             }
@@ -390,6 +396,8 @@ public class ArpeggiatorumController {
         try {
             Arpeggiatorum.getInstance().getArpeggiator().setMIDIIn(item.getValue());
         } catch (MidiUnavailableException e) {
+            Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+            logger.log(Level.SEVERE, "MIDI Exception.", e);
             LogGUIController.logBuffer.append(e.getMessage());
         }
     }
@@ -406,6 +414,8 @@ public class ArpeggiatorumController {
         try {
             Arpeggiatorum.getInstance().getArpeggiator().setMIDIOut(item.getValue());
         } catch (MidiUnavailableException e) {
+            Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+            logger.log(Level.SEVERE, "MIDI Exception.", e);
             LogGUIController.logBuffer.append(e.getMessage());
         }
     }
@@ -454,16 +464,21 @@ public class ArpeggiatorumController {
     public void comboAudioInChanged(ActionEvent actionEvent) {
         // TODO: the following lines do not work!
         //Windows appear to be the problem, works on Mac
-        if (Arpeggiatorum.getInstance().synth.isRunning()) {
-            Arpeggiatorum.getInstance().synth.stop();
+        Arpeggiatorum.getInstance();
+        if (Arpeggiatorum.synth.isRunning()) {
+            Arpeggiatorum.getInstance();
+            Arpeggiatorum.synth.stop();
         }
         int deviceInputID = Tools.getDeviceID(comboAudioIn.getValue());
-        int deviceInputChannels = Arpeggiatorum.getInstance().synth.getAudioDeviceManager().getMaxInputChannels(deviceInputID);
+        Arpeggiatorum.getInstance();
+        int deviceInputChannels = Arpeggiatorum.synth.getAudioDeviceManager().getMaxInputChannels(deviceInputID);
         updateAudioChannelChooser(deviceInputID);
 
         int deviceOutputID = Tools.getDeviceID(comboAudioOut.getValue());
-        int deviceOutputChannels = Arpeggiatorum.getInstance().synth.getAudioDeviceManager().getMaxOutputChannels(deviceOutputID);
-        Arpeggiatorum.getInstance().synth.start(Arpeggiatorum.sampleRate,
+        Arpeggiatorum.getInstance();
+        int deviceOutputChannels = Arpeggiatorum.synth.getAudioDeviceManager().getMaxOutputChannels(deviceOutputID);
+        Arpeggiatorum.getInstance();
+        Arpeggiatorum.synth.start(Arpeggiatorum.sampleRate,
                 deviceInputID,
                 deviceInputChannels,
                 deviceOutputID,
