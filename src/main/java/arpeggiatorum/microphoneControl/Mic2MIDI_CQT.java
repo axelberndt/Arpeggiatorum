@@ -4,6 +4,7 @@ import arpeggiatorum.gui.ArpeggiatorumGUI;
 import arpeggiatorum.gui.LogGUIController;
 import arpeggiatorum.supplementary.UnitVariableInputPort;
 import com.softsynth.math.AudioMath;
+import javafx.scene.chart.XYChart;
 
 import javax.sound.midi.Receiver;
 import java.util.ArrayList;
@@ -333,6 +334,14 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
         double modValue = value / scalingFactor;
         PITCH_THRESHOLD = modValue / 2;
         ArpeggiatorumGUI.controllerHandle.yAxis.setUpperBound(modValue);
-        ArpeggiatorumGUI.controllerHandle.yAxis.setTickUnit(modValue/10);
+        ArpeggiatorumGUI.controllerHandle.yAxis.setTickUnit(modValue / 10);
+        //Todo redraw midline
+        ArpeggiatorumGUI.controllerHandle.middleSeries.getData().clear();
+        for (int i = 0; i < ArpeggiatorumGUI.controllerHandle.middleData.length; i++) {
+            ArpeggiatorumGUI.controllerHandle.middleData[i] = new XYChart.Data<>(ArpeggiatorumGUI.controllerHandle.middleData[i].getXValue(),
+                    PITCH_THRESHOLD);
+            ArpeggiatorumGUI.controllerHandle.middleSeries.getData().add(ArpeggiatorumGUI.controllerHandle.middleData[i]);
+
+        }
     }
 }

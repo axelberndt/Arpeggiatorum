@@ -109,7 +109,6 @@ public class Arpeggiatorum implements Receiver {
         tarsosConfidence = Double.parseDouble(configProp.getProperty("Tarsos Confidence", "0.98"));
         fftBinSize = Integer.parseInt(configProp.getProperty("FFT Bin Size", "9"));
         fftMaxFreq = Double.parseDouble(configProp.getProperty("FFT Max Freq", "1567.98"));
-        histScale = Double.parseDouble(configProp.getProperty("Histogram Scale", "10.00"));
 
         //Pitch processors
         this.mic2Midi = new ArrayList<>();
@@ -236,7 +235,6 @@ public class Arpeggiatorum implements Receiver {
 
             prop.setProperty("FFT Bin Size", String.valueOf(fftBinSize));
             prop.setProperty("FFT Max Freq", String.valueOf(fftMaxFreq));
-            prop.setProperty("Histogram Scale", String.valueOf(histScale));
 
             prop.setProperty("MIDI Input", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getValue().toString()));
             prop.setProperty("MIDI Output", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboMIDIOut.getValue().toString()));
