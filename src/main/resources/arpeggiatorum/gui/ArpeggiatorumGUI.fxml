@@ -129,7 +129,7 @@
         </HBox>
         <Slider fx:id="sliderEnrichment" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="11"
                 maxHeight="Infinity" maxWidth="Infinity"
-                min="0" max="100" showTickMarks="true" value="0"
+                showTickMarks="true"
                 showTickLabels="true" majorTickUnit="10" minorTickCount="1"/>
 
         <Button fx:id="buttonPanic" textAlignment="CENTER" text="PANIC!" onAction="#buttonPanicClick"

@@ -3,15 +3,32 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
-application {
-    mainClass = 'arpeggiatorum.gui.ArpeggiatorumGUI'
+//application {
+//    mainClass = 'arpeggiatorum.gui.ArpeggiatorumGUI'
+//}
+dependencies {
+    /* uncomment for cross-platform jar: */
+    runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:win"
+    runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:linux"
+    runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:mac"
 }
-
 javafx {
     version = "21.0.2"
     modules = ['javafx.controls', 'javafx.fxml']
 }
+tasks.withType(Jar){
 
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    jar {
+        manifest {
+            attributes 'Main-Class': 'arpeggiatorum.Launcher'
+        }
+        from {
+            configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+        }
+    }
+}
 group = 'com.github.axelberndt'
 version = '0.1.2'
 
@@ -46,3 +63,4 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+mainClassName = 'arpeggiatorum.gui.ArpeggiatorumGUI'

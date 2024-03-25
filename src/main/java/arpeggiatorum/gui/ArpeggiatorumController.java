@@ -12,6 +12,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
@@ -26,10 +27,12 @@ import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Sequencer;
+import java.net.URL;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ArpeggiatorumController {
+public class ArpeggiatorumController implements Initializable {
 
     //GUI Controls
 
@@ -132,149 +135,149 @@ public class ArpeggiatorumController {
     public TextField e16;
 
 
-    @FXML
-    public void initialize() {
-        //Initialize GUI Elements
-        createMidiInChooser();
-        createMidiOutChooser();
-        createAudioInChooser();
-        createAudioOutChooser();
-        createAudioChannelChooser();
-
-        comboMIDIChannel.getItems().addAll(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-        comboArpeggioChannel.getItems().addAll(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-        comboHeldChannel.getItems().addAll(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-        comboBassChannel.getItems().addAll(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-
-        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Empty",
-                new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
-        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Octaves",
-                new int[]{0, 12, 24, 36, 48, 60, 72, 84, 96, 108, 120, 0, 0, 0, 0, 0}));
-        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Octaves and Fifths",
-                new int[]{0, 7, 12, 19, 24, 31, 36, 43, 48, 55, 60, 67, 72, 79, 84, 91}));
-        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Major Triad",
-                new int[]{0, 4, 7, 12, 16, 19, 24, 28, 31, 36, 40, 43, 48, 52, 55, 60}));
-        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Minor Triad",
-                new int[]{0, 3, 7, 12, 15, 19, 24, 27, 31, 36, 39, 43, 48, 51, 55, 60}));
-        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Major Thirds",
-                new int[]{0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60}));
-        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Fourths",
-                new int[]{0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75}));
-        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Series of Overtones",
-                new int[]{0, 12, 19, 24, 28, 31, 34, 36, 38, 40, 42, 43, 44, 46, 47, 48}));
-        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Overtones Transposed Down",
-                new int[]{0, 12, 24, 7, 19, 4, 16, 10, 22, 2, 14, 6, 18, 8, 20, 11}));
-
-        for (Mic2MIDI processor : Arpeggiatorum.getInstance().getMic2Midi()) {
-            comboMic2MIDI.getItems().add(processor);
-        }
-
-        comboPattern.getItems().add(NotePool.Pattern.up);
-        comboPattern.getItems().add(NotePool.Pattern.down);
-        comboPattern.getItems().add(NotePool.Pattern.up_down);
-        comboPattern.getItems().add(NotePool.Pattern.random_no_repetitions);
-        comboPattern.getItems().add(NotePool.Pattern.random_with_repetitions);
-
-        //Histogram
-        chartCQTHistogram = new BarChart<>(xAxis, yAxis);
-        chartCQTHistogram.setLegendVisible(false);
-        chartCQTHistogram.setAnimated(false);
-        chartCQTHistogram.setBarGap(0);
-        chartCQTHistogram.setCategoryGap(1);
-        chartCQTHistogram.setVerticalGridLinesVisible(false);
-
-        //Setup Chart
-        //chartCQTHistogram.setTitle("CQT Bins"); //Save space avoiding title
-        // xAxis.setLabel("Frequency (Hz)");
-        //yAxis.setLabel("Magnitude");
-        yAxis.setTickLabelFormatter(new NumberAxis.DefaultFormatter(yAxis, null, ""));
-
-        // add starting data
-        chartSeries.setName("Data Series");
-        //noinspection unchecked
-        //Mic2MIDI_CQT.
-        double[] cqtFreqs = new double[0];
-        for (Mic2MIDI processor : Arpeggiatorum.getInstance().getMic2Midi()) {
-            if (processor instanceof Mic2MIDI_CQT) {
-                cqtFreqs = ((Mic2MIDI_CQT) processor).CQTFrequencies;
-            }
-        }
-        chartData = new XYChart.Data[cqtFreqs.length];
-        for (int i = 0; i < chartData.length; i++) {
-
-            chartData[i] = new XYChart.Data<>(String.format("%.2f", cqtFreqs[i]),
-                    1);
-            chartSeries.getData().add(chartData[i]);
-
-        }
-        chartCQTHistogram.getData().add(chartSeries);
-        chartCQTHistogram.lookupAll(".default-color0.chart-bar").forEach(n -> n.setStyle("-fx-bar-fill: Gainsboro;"));
-        borderPane.centerProperty().setValue(chartCQTHistogram);
-
-        //TODO fix as this does not change color
-        chartSeries.nodeProperty().addListener(new ChangeListener<Node>() {
-            @Override
-            public void changed(ObservableValue<? extends Node> ov, Node oldNode, Node newNode) {
-                if (newNode != null) {
-                    chartSeries.getData().forEach(n -> {
-                        if (n.getYValue().floatValue() > 0.5) {
-                            newNode.setStyle("-fx-bar-fill: Chartreuse;");
-
-                        } else if (n.getYValue().floatValue() > 1.0) {
-                            newNode.setStyle("-fx-bar-fill: Red;");
-                        }
-                    });
-                }
-            }
-        });
-
-        //Initialize internal components
-        if (comboMIDIIn.getValue() != null) {
-            MidiDeviceChooserItem item = comboMIDIIn.getValue();
-            if (item.getValue() != null) {
-                try {
-                    Arpeggiatorum.getInstance().getArpeggiator().setMIDIIn(item.getValue());
-                } catch (MidiUnavailableException e) {
-                    Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
-                    logger.log(Level.SEVERE, "MIDI Exception.", e);
-                    LogGUIController.logBuffer.append(e.getMessage());
-                }
-            }
-        }
-
-
-        //Event Handlers
-        //For whatever reason Sliders don’t have ActionEvents...
-        //Instead, they have a Number called valueProperty that contains the current value of the slider.
-        sliderThreshold.valueProperty().addListener((observable, oldValue, newValue) -> {
-            textThreshold.setText(String.format("Current Threshold: %d", newValue.intValue()));
-            Arpeggiatorum.getInstance().ThresholdChange(newValue);
-        });
-
-        sliderTempo.valueProperty().addListener((observable, oldValue, newValue) -> {
-            textTempo.setText(String.format("Current Tempo: %d", newValue.intValue()));
-            Arpeggiatorum.getInstance().TempoChange(newValue);
-        });
-
-        sliderArticulation.valueProperty().addListener((observable, oldValue, newValue) -> {
-            Arpeggiatorum.getInstance().ArticulationChange(newValue);
-        });
-
-        sliderRange.highValueProperty().addListener((observable, oldValue, newValue) -> {
-            textRange.setText(String.format("[%d-%d]", ((int) sliderRange.getLowValue()), newValue.intValue()));
-            Arpeggiatorum.getInstance().RangeChange(sliderRange.getLowValue(), newValue);
-        });
-
-        sliderRange.lowValueProperty().addListener((observable, oldValue, newValue) -> {
-            textRange.setText(String.format("[%d-%d]", newValue.intValue(), ((int) sliderRange.getHighValue())));
-            Arpeggiatorum.getInstance().RangeChange(newValue, sliderRange.getHighValue());
-        });
-
-        sliderEnrichment.valueProperty().addListener((observable, oldValue, newValue) -> {
-            textEnrichment.setText(String.format("%d %%", newValue.intValue()));
-            Arpeggiatorum.getInstance().EnrichmentChange(newValue);
-        });
-    }
+//    @FXML
+//    public void initialize() {
+//        //Initialize GUI Elements
+//        createMidiInChooser();
+//        createMidiOutChooser();
+//        createAudioInChooser();
+//        createAudioOutChooser();
+//        createAudioChannelChooser();
+//
+//        comboMIDIChannel.getItems().addAll(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+//        comboArpeggioChannel.getItems().addAll(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+//        comboHeldChannel.getItems().addAll(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+//        comboBassChannel.getItems().addAll(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+//
+//        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Empty",
+//                new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
+//        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Octaves",
+//                new int[]{0, 12, 24, 36, 48, 60, 72, 84, 96, 108, 120, 0, 0, 0, 0, 0}));
+//        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Octaves and Fifths",
+//                new int[]{0, 7, 12, 19, 24, 31, 36, 43, 48, 55, 60, 67, 72, 79, 84, 91}));
+//        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Major Triad",
+//                new int[]{0, 4, 7, 12, 16, 19, 24, 28, 31, 36, 40, 43, 48, 52, 55, 60}));
+//        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Minor Triad",
+//                new int[]{0, 3, 7, 12, 15, 19, 24, 27, 31, 36, 39, 43, 48, 51, 55, 60}));
+//        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Major Thirds",
+//                new int[]{0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60}));
+//        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Fourths",
+//                new int[]{0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75}));
+//        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Series of Overtones",
+//                new int[]{0, 12, 19, 24, 28, 31, 34, 36, 38, 40, 42, 43, 44, 46, 47, 48}));
+//        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Overtones Transposed Down",
+//                new int[]{0, 12, 24, 7, 19, 4, 16, 10, 22, 2, 14, 6, 18, 8, 20, 11}));
+//
+//        for (Mic2MIDI processor : Arpeggiatorum.getInstance().getMic2Midi()) {
+//            comboMic2MIDI.getItems().add(processor);
+//        }
+//
+//        comboPattern.getItems().add(NotePool.Pattern.up);
+//        comboPattern.getItems().add(NotePool.Pattern.down);
+//        comboPattern.getItems().add(NotePool.Pattern.up_down);
+//        comboPattern.getItems().add(NotePool.Pattern.random_no_repetitions);
+//        comboPattern.getItems().add(NotePool.Pattern.random_with_repetitions);
+//
+//        //Histogram
+//        chartCQTHistogram = new BarChart<>(xAxis, yAxis);
+//        chartCQTHistogram.setLegendVisible(false);
+//        chartCQTHistogram.setAnimated(false);
+//        chartCQTHistogram.setBarGap(0);
+//        chartCQTHistogram.setCategoryGap(1);
+//        chartCQTHistogram.setVerticalGridLinesVisible(false);
+//
+//        //Setup Chart
+//        //chartCQTHistogram.setTitle("CQT Bins"); //Save space avoiding title
+//        // xAxis.setLabel("Frequency (Hz)");
+//        //yAxis.setLabel("Magnitude");
+//        yAxis.setTickLabelFormatter(new NumberAxis.DefaultFormatter(yAxis, null, ""));
+//
+//        // add starting data
+//        chartSeries.setName("Data Series");
+//        //noinspection unchecked
+//        //Mic2MIDI_CQT.
+//        double[] cqtFreqs = new double[0];
+//        for (Mic2MIDI processor : Arpeggiatorum.getInstance().getMic2Midi()) {
+//            if (processor instanceof Mic2MIDI_CQT) {
+//                cqtFreqs = ((Mic2MIDI_CQT) processor).CQTFrequencies;
+//            }
+//        }
+//        chartData = new XYChart.Data[cqtFreqs.length];
+//        for (int i = 0; i < chartData.length; i++) {
+//
+//            chartData[i] = new XYChart.Data<>(String.format("%.2f", cqtFreqs[i]),
+//                    1);
+//            chartSeries.getData().add(chartData[i]);
+//
+//        }
+//        chartCQTHistogram.getData().add(chartSeries);
+//        chartCQTHistogram.lookupAll(".default-color0.chart-bar").forEach(n -> n.setStyle("-fx-bar-fill: Gainsboro;"));
+//        borderPane.centerProperty().setValue(chartCQTHistogram);
+//
+//        //TODO fix as this does not change color
+//        chartSeries.nodeProperty().addListener(new ChangeListener<Node>() {
+//            @Override
+//            public void changed(ObservableValue<? extends Node> ov, Node oldNode, Node newNode) {
+//                if (newNode != null) {
+//                    chartSeries.getData().forEach(n -> {
+//                        if (n.getYValue().floatValue() > 0.5) {
+//                            newNode.setStyle("-fx-bar-fill: Chartreuse;");
+//
+//                        } else if (n.getYValue().floatValue() > 1.0) {
+//                            newNode.setStyle("-fx-bar-fill: Red;");
+//                        }
+//                    });
+//                }
+//            }
+//        });
+//
+//        //Initialize internal components
+//        if (comboMIDIIn.getValue() != null) {
+//            MidiDeviceChooserItem item = comboMIDIIn.getValue();
+//            if (item.getValue() != null) {
+//                try {
+//                    Arpeggiatorum.getInstance().getArpeggiator().setMIDIIn(item.getValue());
+//                } catch (MidiUnavailableException e) {
+//                    Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+//                    logger.log(Level.SEVERE, "MIDI Exception.", e);
+//                    LogGUIController.logBuffer.append(e.getMessage());
+//                }
+//            }
+//        }
+//
+//
+//        //Event Handlers
+//        //For whatever reason Sliders don’t have ActionEvents...
+//        //Instead, they have a Number called valueProperty that contains the current value of the slider.
+//        sliderThreshold.valueProperty().addListener((observable, oldValue, newValue) -> {
+//            textThreshold.setText(String.format("Current Threshold: %d", newValue.intValue()));
+//            Arpeggiatorum.getInstance().ThresholdChange(newValue);
+//        });
+//
+//        sliderTempo.valueProperty().addListener((observable, oldValue, newValue) -> {
+//            textTempo.setText(String.format("Current Tempo: %d", newValue.intValue()));
+//            Arpeggiatorum.getInstance().TempoChange(newValue);
+//        });
+//
+//        sliderArticulation.valueProperty().addListener((observable, oldValue, newValue) -> {
+//            Arpeggiatorum.getInstance().ArticulationChange(newValue);
+//        });
+//
+//        sliderRange.highValueProperty().addListener((observable, oldValue, newValue) -> {
+//            textRange.setText(String.format("[%d-%d]", ((int) sliderRange.getLowValue()), newValue.intValue()));
+//            Arpeggiatorum.getInstance().RangeChange(sliderRange.getLowValue(), newValue);
+//        });
+//
+//        sliderRange.lowValueProperty().addListener((observable, oldValue, newValue) -> {
+//            textRange.setText(String.format("[%d-%d]", newValue.intValue(), ((int) sliderRange.getHighValue())));
+//            Arpeggiatorum.getInstance().RangeChange(newValue, sliderRange.getHighValue());
+//        });
+//
+//        sliderEnrichment.valueProperty().addListener((observable, oldValue, newValue) -> {
+//            textEnrichment.setText(String.format("%d %%", newValue.intValue()));
+//            Arpeggiatorum.getInstance().EnrichmentChange(newValue);
+//        });
+//    }
 
 
     /**
@@ -565,6 +568,154 @@ public class ArpeggiatorumController {
         for (int i = 0; i < newData.length; i++) {
             chartSeries.getData().get(i + lowIndex).setYValue(newData[i]);
         }
+    }
+
+    /**
+     * @param url
+     * @param resourceBundle
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        //Initialize GUI Elements
+        createMidiInChooser();
+        createMidiOutChooser();
+        createAudioInChooser();
+        createAudioOutChooser();
+        createAudioChannelChooser();
+
+        comboMIDIChannel.getItems().addAll(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+        comboArpeggioChannel.getItems().addAll(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+        comboHeldChannel.getItems().addAll(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+        comboBassChannel.getItems().addAll(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+
+        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Empty",
+                new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
+        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Octaves",
+                new int[]{0, 12, 24, 36, 48, 60, 72, 84, 96, 108, 120, 0, 0, 0, 0, 0}));
+        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Octaves and Fifths",
+                new int[]{0, 7, 12, 19, 24, 31, 36, 43, 48, 55, 60, 67, 72, 79, 84, 91}));
+        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Major Triad",
+                new int[]{0, 4, 7, 12, 16, 19, 24, 28, 31, 36, 40, 43, 48, 52, 55, 60}));
+        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Minor Triad",
+                new int[]{0, 3, 7, 12, 15, 19, 24, 27, 31, 36, 39, 43, 48, 51, 55, 60}));
+        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Major Thirds",
+                new int[]{0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60}));
+        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Fourths",
+                new int[]{0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75}));
+        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Series of Overtones",
+                new int[]{0, 12, 19, 24, 28, 31, 34, 36, 38, 40, 42, 43, 44, 46, 47, 48}));
+        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Overtones Transposed Down",
+                new int[]{0, 12, 24, 7, 19, 4, 16, 10, 22, 2, 14, 6, 18, 8, 20, 11}));
+
+        for (Mic2MIDI processor : Arpeggiatorum.getInstance().getMic2Midi()) {
+            comboMic2MIDI.getItems().add(processor);
+        }
+
+        comboPattern.getItems().add(NotePool.Pattern.up);
+        comboPattern.getItems().add(NotePool.Pattern.down);
+        comboPattern.getItems().add(NotePool.Pattern.up_down);
+        comboPattern.getItems().add(NotePool.Pattern.random_no_repetitions);
+        comboPattern.getItems().add(NotePool.Pattern.random_with_repetitions);
+
+        //Histogram
+        chartCQTHistogram = new BarChart<>(xAxis, yAxis);
+        chartCQTHistogram.setLegendVisible(false);
+        chartCQTHistogram.setAnimated(false);
+        chartCQTHistogram.setBarGap(0);
+        chartCQTHistogram.setCategoryGap(1);
+        chartCQTHistogram.setVerticalGridLinesVisible(false);
+
+        //Setup Chart
+        //chartCQTHistogram.setTitle("CQT Bins"); //Save space avoiding title
+        // xAxis.setLabel("Frequency (Hz)");
+        //yAxis.setLabel("Magnitude");
+        yAxis.setTickLabelFormatter(new NumberAxis.DefaultFormatter(yAxis, null, ""));
+
+        // add starting data
+        chartSeries.setName("Data Series");
+        //noinspection unchecked
+        //Mic2MIDI_CQT.
+        double[] cqtFreqs = new double[0];
+        for (Mic2MIDI processor : Arpeggiatorum.getInstance().getMic2Midi()) {
+            if (processor instanceof Mic2MIDI_CQT) {
+                cqtFreqs = ((Mic2MIDI_CQT) processor).CQTFrequencies;
+            }
+        }
+        chartData = new XYChart.Data[cqtFreqs.length];
+        for (int i = 0; i < chartData.length; i++) {
+
+            chartData[i] = new XYChart.Data<>(String.format("%.2f", cqtFreqs[i]),
+                    1);
+            chartSeries.getData().add(chartData[i]);
+
+        }
+        chartCQTHistogram.getData().add(chartSeries);
+        chartCQTHistogram.lookupAll(".default-color0.chart-bar").forEach(n -> n.setStyle("-fx-bar-fill: Gainsboro;"));
+        borderPane.centerProperty().setValue(chartCQTHistogram);
+
+        //TODO fix as this does not change color
+        chartSeries.nodeProperty().addListener(new ChangeListener<Node>() {
+            @Override
+            public void changed(ObservableValue<? extends Node> ov, Node oldNode, Node newNode) {
+                if (newNode != null) {
+                    chartSeries.getData().forEach(n -> {
+                        if (n.getYValue().floatValue() > 0.5) {
+                            newNode.setStyle("-fx-bar-fill: Chartreuse;");
+
+                        } else if (n.getYValue().floatValue() > 1.0) {
+                            newNode.setStyle("-fx-bar-fill: Red;");
+                        }
+                    });
+                }
+            }
+        });
+
+        //Initialize internal components
+        if (comboMIDIIn.getValue() != null) {
+            MidiDeviceChooserItem item = comboMIDIIn.getValue();
+            if (item.getValue() != null) {
+                try {
+                    Arpeggiatorum.getInstance().getArpeggiator().setMIDIIn(item.getValue());
+                } catch (MidiUnavailableException e) {
+                    Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+                    logger.log(Level.SEVERE, "MIDI Exception.", e);
+                    LogGUIController.logBuffer.append(e.getMessage());
+                }
+            }
+        }
+
+
+        //Event Handlers
+        //For whatever reason Sliders don’t have ActionEvents...
+        //Instead, they have a Number called valueProperty that contains the current value of the slider.
+        sliderThreshold.valueProperty().addListener((observable, oldValue, newValue) -> {
+            textThreshold.setText(String.format("Current Threshold: %d", newValue.intValue()));
+            Arpeggiatorum.getInstance().ThresholdChange(newValue);
+        });
+
+        sliderTempo.valueProperty().addListener((observable, oldValue, newValue) -> {
+            textTempo.setText(String.format("Current Tempo: %d", newValue.intValue()));
+            Arpeggiatorum.getInstance().TempoChange(newValue);
+        });
+
+        sliderArticulation.valueProperty().addListener((observable, oldValue, newValue) -> {
+            Arpeggiatorum.getInstance().ArticulationChange(newValue);
+        });
+
+        sliderRange.highValueProperty().addListener((observable, oldValue, newValue) -> {
+            textRange.setText(String.format("[%d-%d]", ((int) sliderRange.getLowValue()), newValue.intValue()));
+            Arpeggiatorum.getInstance().RangeChange(sliderRange.getLowValue(), newValue);
+        });
+
+        sliderRange.lowValueProperty().addListener((observable, oldValue, newValue) -> {
+            textRange.setText(String.format("[%d-%d]", newValue.intValue(), ((int) sliderRange.getHighValue())));
+            Arpeggiatorum.getInstance().RangeChange(newValue, sliderRange.getHighValue());
+        });
+
+        sliderEnrichment.valueProperty().addListener((observable, oldValue, newValue) -> {
+            textEnrichment.setText(String.format("%d %%", newValue.intValue()));
+            Arpeggiatorum.getInstance().EnrichmentChange(newValue);
+        });
     }
     //Sliders
     //They don't have event handlers...

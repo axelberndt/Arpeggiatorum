@@ -86,7 +86,7 @@ public class Arpeggiatorum implements Receiver {
             configProp.load(inputConfig);
         } catch (IOException ex) {
             Logger logger = Logger.getLogger(this.getClass().getName());
-            logger.log(Level.SEVERE, "Failed to load properties.", ex);
+            logger.log(Level.SEVERE, "Failed to load properties. Defaults will be used.", ex);
             LogGUIController.logBuffer.append(ex.getMessage());
         }
         //Get the properties for internal values
@@ -259,7 +259,8 @@ public class Arpeggiatorum implements Receiver {
     public static void LoadLog(ArpeggiatorumGUI arpeggiatorumGUI) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(arpeggiatorumGUI.getClass().getResource("LogGUI.fxml"));
+            fxmlLoader = new FXMLLoader(ArpeggiatorumGUI.class.getResource("LogGUI.fxml"));
+//            fxmlLoader.setLocation(ArpeggiatorumGUI.class.getClassLoader().getResource("arpeggiatorum/gui/LogGUI.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
             Stage stage = new Stage();
             stage.setTitle("Log Messages");
