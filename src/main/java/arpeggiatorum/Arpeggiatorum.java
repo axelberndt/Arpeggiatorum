@@ -423,7 +423,9 @@ public class Arpeggiatorum implements Receiver {
 
             cqtAutoTune = false;
         }
-        ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setSelected(false);
+        if (ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.isSelected()) {
+            ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.fire();
+        }
         Mic2MIDI_CQT.autoTune = cqtAutoTune;
     }
 

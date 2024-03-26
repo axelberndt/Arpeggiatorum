@@ -370,7 +370,7 @@ public class ArpeggiatorumController implements Initializable {
                 deviceOutputID,
                 deviceOutputChannels);
         if (toggleButtonActivate.isSelected()) {
-            toggleButtonActivate.setSelected(false);
+            toggleButtonActivate.fire();
         }
     }
 
@@ -450,9 +450,9 @@ public class ArpeggiatorumController implements Initializable {
         createAudioChannelChooser();
 
         comboMIDIChannel.getItems().addAll(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-        comboArpeggioChannel.getItems().addAll(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-        comboHeldChannel.getItems().addAll(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-        comboBassChannel.getItems().addAll(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+        comboArpeggioChannel.getItems().addAll(-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+        comboHeldChannel.getItems().addAll(-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+        comboBassChannel.getItems().addAll(-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
 
         comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Empty",
                 new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
