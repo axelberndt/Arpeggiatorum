@@ -14,6 +14,7 @@ public class CQTPitchDetector extends UnitGenerator {
     private final int offset = 0;
     private final ConstantQ CQT;
     private final int lowIndex;
+    private final float sharpness;
     public UnitInputPort input;
     /**
      * Provides arbitrary sized output.
@@ -25,10 +26,10 @@ public class CQTPitchDetector extends UnitGenerator {
     private final double[] pushData;
 
     public CQTPitchDetector() {
-        this(44100.0f, 41.20f, 2000.0f, 12, 0.01f, 0.55f);
+        this(44100.0f, 41.20f, 2000.0f, 12, 0.01f, 0.55f, 1.0f);
     }
 
-    public CQTPitchDetector(float sampleRate, float minFreq, float maxFreq, int binsPerOctave, float threshold, float spread) {
+    public CQTPitchDetector(float sampleRate, float minFreq, float maxFreq, int binsPerOctave, float threshold, float spread, float sharpness) {
         this.addPort(this.input = new UnitInputPort("Input"));
         CQT = new ConstantQ(sampleRate, minFreq, maxFreq, binsPerOctave, threshold, spread);
         frequencies = Tools.toDoubleArray(CQT.getFreqencies());
@@ -36,6 +37,7 @@ public class CQTPitchDetector extends UnitGenerator {
         buffer = new double[CQT.getFFTlength()];
         pushData = output.getData();
         lowIndex = ((int) (Math.log((minFreq / Mic2MIDI_CQT.minFreq)) / Math.log(2))) * (binsPerOctave);
+        this.sharpness = sharpness;
         String message = String.format("CQT Pitch Detection: Min Frequency (%.2fHz) Max Frequency (%.2fHz)  Delay (%.03fs) FFT: %d samples  \r\n", minFreq, maxFreq, buffer.length / sampleRate, buffer.length);
         LogGUIController.logBuffer.append(message);
     }
@@ -66,10 +68,14 @@ public class CQTPitchDetector extends UnitGenerator {
                     //CQT
                     CQT.calculateMagintudes(Tools.toFloatArray(buffer));
                     float[] CQTBins = CQT.getMagnitudes();
+                    for (int x=0; x<CQTBins.length; x++) {
+                        CQTBins[x] = (float) Math.pow(CQTBins[x], sharpness);
+                    }
                     //Visualize CQT Bins
                     ArpeggiatorumGUI.controllerHandle.updateHist(Tools.toDoubleArray(CQTBins), lowIndex);
                     for (int j = 0; j < pushData.length; j++) {
                         pushData[j] = CQTBins[j];
+
                     }
                     output.advance();
                     cursor = 0;

@@ -41,7 +41,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
     private double[] currentMag = new double[128];
     private int currentVelocity;
 
-    public Mic2MIDI_CQT(Receiver receiver, double sampleRate, double minFreq, double maxFreq, float threshold, float spread, boolean isPoly, boolean autoTune, int cqtMinVel, int cqtMaxVel) {
+    public Mic2MIDI_CQT(Receiver receiver, double sampleRate, double minFreq, double maxFreq, float threshold, float spread, boolean isPoly, boolean autoTune, int cqtMinVel, int cqtMaxVel, float cqtSharpness) {
         super(sampleRate);
         NAME = "CQT-Based Pitch Detector";
         POLY = isPoly;
@@ -66,7 +66,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
         cqtPitchDetectors = new CQTPitchDetector[bandNum];
         CQTPorts = new UnitVariableInputPort[bandNum];
         for (int i = 0; i < bandNum; i++) {
-            cqtPitchDetectors[i] = new CQTPitchDetector((float) sampleRate, bands.get(i).floatValue(), bands.get(i + 1).floatValue(), binsPerOctave, threshold, spread);
+            cqtPitchDetectors[i] = new CQTPitchDetector((float) sampleRate, bands.get(i).floatValue(), bands.get(i + 1).floatValue(), binsPerOctave, threshold, spread,cqtSharpness);
             cqtPitchDetectors[i].input.connect(0, this.channelIn.output, 0);
             this.add(cqtPitchDetectors[i]);
             addPort(this.CQTPorts[i] = new UnitVariableInputPort("CQTBins"));
@@ -335,7 +335,6 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
         PITCH_THRESHOLD = modValue / 2;
         ArpeggiatorumGUI.controllerHandle.yAxis.setUpperBound(modValue);
         ArpeggiatorumGUI.controllerHandle.yAxis.setTickUnit(modValue / 10);
-        //Todo redraw midline
         ArpeggiatorumGUI.controllerHandle.middleSeries.getData().clear();
         for (int i = 0; i < ArpeggiatorumGUI.controllerHandle.middleData.length; i++) {
             ArpeggiatorumGUI.controllerHandle.middleData[i] = new XYChart.Data<>(ArpeggiatorumGUI.controllerHandle.middleData[i].getXValue(),

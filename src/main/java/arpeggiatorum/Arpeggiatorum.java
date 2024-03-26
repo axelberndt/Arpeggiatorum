@@ -52,7 +52,7 @@ public class Arpeggiatorum implements Receiver {
     private static float cqtSpread;
     private static int cqtMinVel;
     private static int cqtMaxVel;
-    private static double histScale;
+    private static float cqtSharpness;
     //Tarsos Properties
     private static int tarsosBuffer;
     private static double tarsosConfidence;
@@ -101,6 +101,7 @@ public class Arpeggiatorum implements Receiver {
         cqtIsPoly = Boolean.parseBoolean(configProp.getProperty("CQT Poly", "true"));
         cqtAutoTune = Boolean.parseBoolean(configProp.getProperty("CQT Auto-Tune", "false"));
         Mic2MIDI_CQT.clusterSize = Integer.parseInt(configProp.getProperty("CQT Auto-Tune Cluster Size", "3"));
+        cqtSharpness = Float.parseFloat(configProp.getProperty("CQT Sharpness", "1.0"));
 
         cqtMinVel = Integer.parseInt(configProp.getProperty("CQT Min Velocity", "30"));
         cqtMaxVel = Integer.parseInt(configProp.getProperty("CQT Max Velocity", "127"));
@@ -115,7 +116,7 @@ public class Arpeggiatorum implements Receiver {
         this.mic2Midi.add(new Mic2MIDI_JSyn(this.arpeggiator, sampleRate));
         this.mic2Midi.add(new Mic2MIDI_FFT(this.arpeggiator, sampleRate, fftBinSize, fftMaxFreq));
         this.mic2Midi.add(new Mic2MIDI_Tarsos(this.arpeggiator, sampleRate, tarsosBuffer, tarsosConfidence));
-        this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, sampleRate, cqtMin, cqtMax, cqtThreshold, cqtSpread, cqtIsPoly, cqtAutoTune, cqtMinVel, cqtMaxVel));
+        this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, sampleRate, cqtMin, cqtMax, cqtThreshold, cqtSpread, cqtIsPoly, cqtAutoTune, cqtMinVel, cqtMaxVel,cqtSharpness));
         for (Mic2MIDI processor : mic2Midi) {
             synth.add(processor);
         }
@@ -228,7 +229,7 @@ public class Arpeggiatorum implements Receiver {
             prop.setProperty("CQT Min Velocity", String.valueOf(cqtMinVel));
             prop.setProperty("CQT Max Velocity", String.valueOf(cqtMaxVel));
             prop.setProperty("CQT Scaling Factor", String.valueOf(Mic2MIDI_CQT.scalingFactor));
-
+            prop.setProperty("CQT Sharpness", String.valueOf(cqtSharpness));
 
             prop.setProperty("Tarsos Buffer Size", String.valueOf(tarsosBuffer));
             prop.setProperty("Tarsos Confidence Threshold", String.valueOf(tarsosConfidence));

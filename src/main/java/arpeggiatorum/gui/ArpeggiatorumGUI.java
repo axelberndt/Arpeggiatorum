@@ -68,6 +68,7 @@ public class ArpeggiatorumGUI extends Application {
 
         primaryStage.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
             switch (event.getCode()) {
+                case KeyCode.ESCAPE:
                 case KeyCode.Q: {
                     Arpeggiatorum.SaveNClose(this);
                     break;
