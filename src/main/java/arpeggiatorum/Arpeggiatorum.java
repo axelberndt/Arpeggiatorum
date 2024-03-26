@@ -335,19 +335,20 @@ public class Arpeggiatorum implements Receiver {
                     case EventMaker.CC_Effect_Ctrl_2_14b: // trigger arpeggio channel
                         Platform.runLater(() -> {
                             int choice = (sMsg.getData2() >= 64) ? Arpeggiator.ARPEGGIO_CHANNEL_PRESET : -1;
-                            ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(choice);
+//                            ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(choice);
+                            ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().selectFirst();
                         });
                         break;
                     case EventMaker.CC_Undefined_Ctrl_3_14b: // trigger held notes channel
                         Platform.runLater(() -> {
                             int choice = (sMsg.getData2() >= 64) ? Arpeggiator.HELD_NOTES_CHANNEL_PRESET : -1;
-                            ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getSelectionModel().select(choice);
+                            ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getSelectionModel().selectFirst();
                         });
                         break;
                     case EventMaker.CC_Undefined_Ctrl_4_14b: // trigger bass channel
                         Platform.runLater(() -> {
                             int choice = (sMsg.getData2() >= 64) ? Arpeggiator.BASS_CHANNEL_PRESET : -1;
-                            ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().select(choice);
+                            ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().selectFirst();
                         });
                         break;
                     default:
