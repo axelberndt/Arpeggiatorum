@@ -171,7 +171,9 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                 currentMag[newPitch] = CQTBins[i];
                 currentAboveThresholdCount++;
             } else {
-                this.sendNoteOff(newPitch);
+                if(currentActive[newPitch]){
+                    this.sendNoteOff(newPitch);
+                }
                 currentAboveThreshold[newPitch] = false;
                 currentActive[newPitch] = false;
                 currentMag[newPitch] = 0.0;
@@ -189,7 +191,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                         if (!currentAboveThreshold[j]) {
                             //Then you can compute the length
                             int clusterLen = j - i;
-                            //If the cluster has size 1 or greater than 3 you play all the notes
+                            //If the cluster has size 1 or greater than clusterSize you play all the notes
                             if (clusterLen == 1 || clusterLen > clusterSize) {
                                 for (int k = i; k < j; k++) {
                                     if (!currentActive[k]) {

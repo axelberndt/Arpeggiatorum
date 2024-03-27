@@ -362,13 +362,13 @@ public class ArpeggiatorumController implements Initializable {
         int deviceInputChannels = Arpeggiatorum.synth.getAudioDeviceManager().getMaxInputChannels(deviceInputID);
         updateAudioChannelChooser(deviceInputID);
 
-        int deviceOutputID = Tools.getDeviceID(comboAudioOut.getValue());
-        int deviceOutputChannels = Arpeggiatorum.synth.getAudioDeviceManager().getMaxOutputChannels(deviceOutputID);
+        //int deviceOutputID = Tools.getDeviceID(comboAudioOut.getValue());
+       // int deviceOutputChannels = Arpeggiatorum.synth.getAudioDeviceManager().getMaxOutputChannels(deviceOutputID);
         Arpeggiatorum.synth.start(Arpeggiatorum.sampleRate,
                 deviceInputID,
-                deviceInputChannels,
-                deviceOutputID,
-                deviceOutputChannels);
+                deviceInputChannels,  Arpeggiatorum.synth.getAudioDeviceManager().getDefaultOutputDeviceID(),0);
+//                deviceOutputID,
+//                deviceOutputChannels);
         if (toggleButtonActivate.isSelected()) {
             toggleButtonActivate.fire();
         }
@@ -446,7 +446,7 @@ public class ArpeggiatorumController implements Initializable {
         createMidiInChooser();
         createMidiOutChooser();
         createAudioInChooser();
-        createAudioOutChooser();
+        //createAudioOutChooser();
         createAudioChannelChooser();
 
         comboMIDIChannel.getItems().addAll(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);

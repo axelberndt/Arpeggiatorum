@@ -73,7 +73,7 @@ public class Arpeggiatorum implements Receiver {
 
         Tools.printAudioDevices(); // print a list of all available audio devices
 
-        synth.setRealTime(true);
+       synth.setRealTime(true);
         //this.synth.start();
         //Passing a value greater than 0 for input channels will cause an error. why?
         //this.synth.start(44100,AudioDeviceManager.USE_DEFAULT_DEVICE,2,AudioDeviceManager.USE_DEFAULT_DEVICE,0);
@@ -147,7 +147,7 @@ public class Arpeggiatorum implements Receiver {
         //Select first value on startup (useful for first execution without properties)
         ArpeggiatorumGUI.controllerHandle.comboMIDIOut.getSelectionModel().select(0);
         ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getSelectionModel().select(0);
-        ArpeggiatorumGUI.controllerHandle.comboAudioOut.getSelectionModel().select(0);
+        //ArpeggiatorumGUI.controllerHandle.comboAudioOut.getSelectionModel().select(0);
         ArpeggiatorumGUI.controllerHandle.comboAudioIn.getSelectionModel().select(0);
         ArpeggiatorumGUI.controllerHandle.comboAudioChannel.getSelectionModel().select(0);
 
@@ -162,11 +162,11 @@ public class Arpeggiatorum implements Receiver {
             }
         }
 
-        for (int i = 0; i < (long) ArpeggiatorumGUI.controllerHandle.comboAudioOut.getItems().size(); i++) {
-            if (ArpeggiatorumGUI.controllerHandle.comboAudioOut.getItems().get(i).equals(audioOutProp)) {
-                ArpeggiatorumGUI.controllerHandle.comboAudioOut.getSelectionModel().select(i);
-            }
-        }
+//        for (int i = 0; i < (long) ArpeggiatorumGUI.controllerHandle.comboAudioOut.getItems().size(); i++) {
+//            if (ArpeggiatorumGUI.controllerHandle.comboAudioOut.getItems().get(i).equals(audioOutProp)) {
+//                ArpeggiatorumGUI.controllerHandle.comboAudioOut.getSelectionModel().select(i);
+//            }
+//        }
 
         for (int i = 0; i < (long) ArpeggiatorumGUI.controllerHandle.comboAudioIn.getItems().size(); i++) {
             if (ArpeggiatorumGUI.controllerHandle.comboAudioIn.getItems().get(i).equals(audioInProp)) {
@@ -240,7 +240,7 @@ public class Arpeggiatorum implements Receiver {
             prop.setProperty("MIDI Input", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getValue().toString()));
             prop.setProperty("MIDI Output", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboMIDIOut.getValue().toString()));
             prop.setProperty("Audio Input", ArpeggiatorumGUI.controllerHandle.comboAudioIn.getValue());
-            prop.setProperty("Audio Output", ArpeggiatorumGUI.controllerHandle.comboAudioOut.getValue());
+            //prop.setProperty("Audio Output", ArpeggiatorumGUI.controllerHandle.comboAudioOut.getValue());
 
 
             // Save properties to project root folder

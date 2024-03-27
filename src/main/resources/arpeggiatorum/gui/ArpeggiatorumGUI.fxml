@@ -48,9 +48,9 @@
         <Text text="MIDI Output Port"
               GridPane.columnIndex="0" GridPane.rowIndex="1"
               GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
-        <Text text="Audio Output"
-              GridPane.columnIndex="0" GridPane.rowIndex="2"
-              GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
+<!--        <Text text="Audio Output"-->
+<!--              GridPane.columnIndex="0" GridPane.rowIndex="2"-->
+<!--              GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>-->
         <Text text="Audio Input"
               GridPane.columnIndex="0" GridPane.rowIndex="3"
               GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
@@ -84,8 +84,8 @@
                   onAction="#comboMIDIInChanged"/>
         <ComboBox fx:id="comboMIDIOut" GridPane.columnIndex="1" GridPane.columnSpan="1"
                   GridPane.rowIndex="1" maxHeight="Infinity" maxWidth="Infinity" onAction="#comboMIDIOutChanged"/>
-        <ComboBox fx:id="comboAudioOut" GridPane.columnIndex="1" GridPane.columnSpan="1"
-                  GridPane.rowIndex="2" maxHeight="Infinity" maxWidth="Infinity" onAction="#comboAudioOutChanged"/>
+<!--        <ComboBox fx:id="comboAudioOut" GridPane.columnIndex="1" GridPane.columnSpan="1"-->
+<!--                  GridPane.rowIndex="2" maxHeight="Infinity" maxWidth="Infinity" onAction="#comboAudioOutChanged"/>-->
         <ComboBox fx:id="comboAudioIn" GridPane.columnIndex="1" GridPane.columnSpan="1"
                   GridPane.rowIndex="3" maxHeight="Infinity" maxWidth="Infinity" onAction="#comboAudioInChanged"/>
         <ComboBox fx:id="comboAudioChannel" GridPane.columnIndex="1" GridPane.columnSpan="1"
