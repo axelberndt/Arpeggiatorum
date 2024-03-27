@@ -363,10 +363,10 @@ public class ArpeggiatorumController implements Initializable {
         updateAudioChannelChooser(deviceInputID);
 
         //int deviceOutputID = Tools.getDeviceID(comboAudioOut.getValue());
-       // int deviceOutputChannels = Arpeggiatorum.synth.getAudioDeviceManager().getMaxOutputChannels(deviceOutputID);
+        // int deviceOutputChannels = Arpeggiatorum.synth.getAudioDeviceManager().getMaxOutputChannels(deviceOutputID);
         Arpeggiatorum.synth.start(Arpeggiatorum.sampleRate,
                 deviceInputID,
-                deviceInputChannels,  Arpeggiatorum.synth.getAudioDeviceManager().getDefaultOutputDeviceID(),0);
+                deviceInputChannels, Arpeggiatorum.synth.getAudioDeviceManager().getDefaultOutputDeviceID(), 0);
 //                deviceOutputID,
 //                deviceOutputChannels);
         if (toggleButtonActivate.isSelected()) {
@@ -376,6 +376,12 @@ public class ArpeggiatorumController implements Initializable {
 
     @FXML
     public void comboAudioChannelChanged(ActionEvent actionEvent) {
+        if (ArpeggiatorumGUI.controllerHandle.comboAudioChannel.getValue() != null) {
+            for (Mic2MIDI processor : Arpeggiatorum.getInstance().getMic2Midi()) {
+                processor.setChannel(ArpeggiatorumGUI.controllerHandle.comboAudioChannel.getValue() - 1);
+            }
+
+        }
     }
 
     @FXML
@@ -506,7 +512,7 @@ public class ArpeggiatorumController implements Initializable {
             }
         }
         chartData = new XYChart.Data[cqtFreqs.length];
-        middleData=new XYChart.Data[cqtFreqs.length];
+        middleData = new XYChart.Data[cqtFreqs.length];
         for (int i = 0; i < chartData.length; i++) {
 
             chartData[i] = new XYChart.Data<>(String.format("%.2f", cqtFreqs[i]),
@@ -520,7 +526,7 @@ public class ArpeggiatorumController implements Initializable {
         }
         chartCQTHistogram.getData().add(chartSeries);
         chartCQTHistogram.lookupAll(".default-color0.chart-bar").forEach(n -> n.setStyle("-fx-bar-fill: Gainsboro;"));
-      //  chartCQTHistogram.setStyle("-fx-background-color: transparent");
+        //  chartCQTHistogram.setStyle("-fx-background-color: transparent");
 
         lineChart = new LineChart<>(xAxis, yAxis);
         lineChart.setLegendVisible(false);
@@ -535,7 +541,6 @@ public class ArpeggiatorumController implements Initializable {
         lineChart.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("chart.css").toExternalForm());
 
         lineChart.getData().add(middleSeries);
-
 
 
         StackPane rootStack = new StackPane();
