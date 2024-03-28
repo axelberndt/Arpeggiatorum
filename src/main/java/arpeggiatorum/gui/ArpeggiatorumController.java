@@ -8,6 +8,7 @@ import arpeggiatorum.supplementary.Tools;
 import com.jsyn.Synthesizer;
 import com.jsyn.devices.AudioDeviceFactory;
 import com.jsyn.devices.AudioDeviceManager;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -425,6 +426,7 @@ public class ArpeggiatorumController implements Initializable {
     }
 
     public void updateHist(double[] newData, int lowIndex) {
+        Platform.runLater(() -> {
         double colorThreshold = ArpeggiatorumGUI.controllerHandle.yAxis.getUpperBound();
         for (int i = 0; i < newData.length; i++) {
             XYChart.Data dataPoint = chartSeries.getData().get(i + lowIndex);
@@ -440,6 +442,7 @@ public class ArpeggiatorumController implements Initializable {
                 dataPoint.getNode().setStyle("-fx-bar-fill: Red;");
             }
         }
+    });
     }
 
     /**
