@@ -142,7 +142,7 @@ public class Arpeggiatorum implements Receiver {
         String midiInProp = configProp.getProperty("MIDI Input", "0");
         String midiOutProp = configProp.getProperty("MIDI Output", "0");
         String audioInProp = configProp.getProperty("Audio Input", "0");
-        String audioOutProp = configProp.getProperty("Audio Output", "0");
+        //String audioOutProp = configProp.getProperty("Audio Output", "0");
 
         //Select first value on startup (useful for first execution without properties)
         ArpeggiatorumGUI.controllerHandle.comboMIDIOut.getSelectionModel().select(0);
@@ -257,7 +257,7 @@ public class Arpeggiatorum implements Receiver {
 
     public static void LoadLog(ArpeggiatorumGUI arpeggiatorumGUI) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader();
+            FXMLLoader fxmlLoader;
             fxmlLoader = new FXMLLoader(ArpeggiatorumGUI.class.getResource("LogGUI.fxml"));
 //            fxmlLoader.setLocation(ArpeggiatorumGUI.class.getClassLoader().getResource("arpeggiatorum/gui/LogGUI.fxml"));
             Scene scene = new Scene(fxmlLoader.load());

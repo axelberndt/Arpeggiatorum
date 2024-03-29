@@ -273,7 +273,6 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                     int newVelocity = Math.clamp((int) (minVelocity + (ratioVelocity * diffVelocity)), minVelocity, maxVelocity);
                     currentVelocities[newPitch] = newVelocity;
                     this.sendNoteOn(newPitch, newVelocity);
-
                     message.append(String.format("[%d] %.0fHz: %d ", newPitch, CQTFrequencies[i], newVelocity));
                 } else {
                     //Aftertouch

@@ -17,12 +17,9 @@ public class ObservableStringBuffer extends StringBinding {
     }
 
     public void append(String text) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                buffer.append(text);
-                invalidate();
-            }
+        Platform.runLater(() -> {
+            buffer.append(text);
+            invalidate();
         });
 
     }

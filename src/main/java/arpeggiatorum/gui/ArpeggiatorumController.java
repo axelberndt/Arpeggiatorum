@@ -148,6 +148,7 @@ public class ArpeggiatorumController implements Initializable {
             } catch (MidiUnavailableException e) {
                 Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
                 logger.log(Level.SEVERE, "MIDI Exception.", e);
+                LogGUIController.logBuffer.append(e.getMessage());
                 continue;
             }
 
@@ -177,6 +178,7 @@ public class ArpeggiatorumController implements Initializable {
             } catch (MidiUnavailableException e) {
                 Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
                 logger.log(Level.SEVERE, "MIDI Exception.", e);
+                LogGUIController.logBuffer.append(e.getMessage());
                 continue;
             }
 
@@ -416,33 +418,35 @@ public class ArpeggiatorumController implements Initializable {
     }
 
     public void updateHist(double[] newData) {
-        chartSeries.getData().clear();
-        for (int i = 0; i < chartData.length; i++) {
-            chartData[i] = new XYChart.Data<>(chartData[i].getXValue(),
-                    newData[i]);
-            chartSeries.getData().add(chartData[i]);
+        Platform.runLater(() -> {
+            chartSeries.getData().clear();
+            for (int i = 0; i < chartData.length; i++) {
+                chartData[i] = new XYChart.Data<>(chartData[i].getXValue(),
+                        newData[i]);
+                chartSeries.getData().add(chartData[i]);
 
-        }
+            }
+        });
     }
 
     public void updateHist(double[] newData, int lowIndex) {
         Platform.runLater(() -> {
-        double colorThreshold = ArpeggiatorumGUI.controllerHandle.yAxis.getUpperBound();
-        for (int i = 0; i < newData.length; i++) {
-            XYChart.Data dataPoint = chartSeries.getData().get(i + lowIndex);
-            dataPoint.setYValue(newData[i]);
-            //Determine colour
-            if (newData[i] < (colorThreshold / 2.0)) {
-                dataPoint.getNode().setStyle("-fx-bar-fill: Gainsboro;");
+            double colorThreshold = ArpeggiatorumGUI.controllerHandle.yAxis.getUpperBound();
+            for (int i = 0; i < newData.length; i++) {
+                XYChart.Data dataPoint = chartSeries.getData().get(i + lowIndex);
+                dataPoint.setYValue(newData[i]);
+                //Determine colour
+                if (newData[i] < (colorThreshold / 2.0)) {
+                    dataPoint.getNode().setStyle("-fx-bar-fill: Gainsboro;");
+                }
+                if (newData[i] >= (colorThreshold / 2.0)) {
+                    dataPoint.getNode().setStyle("-fx-bar-fill: Chartreuse;");
+                }
+                if (newData[i] >= colorThreshold) {
+                    dataPoint.getNode().setStyle("-fx-bar-fill: Red;");
+                }
             }
-            if (newData[i] >= (colorThreshold / 2.0)) {
-                dataPoint.getNode().setStyle("-fx-bar-fill: Chartreuse;");
-            }
-            if (newData[i] >= colorThreshold) {
-                dataPoint.getNode().setStyle("-fx-bar-fill: Red;");
-            }
-        }
-    });
+        });
     }
 
     /**
