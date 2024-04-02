@@ -1,0 +1,107 @@
+
+ID	device name (Input/Output channels)
+--	-----------------------------------------------------------
+0	Port MacBook Pro Microphone (0/0)
+1	Port MacBook Pro Speakers (0/0)
+2	Port Microsoft Teams Audio (0/0)
+3	Port VB-Cable (0/0)
+4	Port VB-Cable A (0/0)
+5	Port VB-Cable B (0/0)
+6	Port VB-Cable C (0/0)
+7	Port VB-Cable D (0/0)
+8	Port Aggregate Device (0/0)
+9	Default Audio Device (1/2)	[Default Input device]
+10	MacBook Pro Microphone (1/0)
+11	MacBook Pro Speakers (0/2)
+12	Microsoft Teams Audio (2/2)
+13	VB-Cable (8/8)
+14	VB-Cable A (2/2)
+15	VB-Cable B (2/2)
+16	VB-Cable C (2/2)
+17	VB-Cable D (2/2)
+18	Aggregate Device (4/4)
+
+JSyn Pitch Detection: Variable delay 
+FFT Pitch Detection: Minimum Frequency (86,13Hz) Delay (0,012s) 
+Tarsos Pitch Detection: Minimum Frequency (86,13Hz) Delay (0,012s) 
+CQT Pitch Detection: Min Frequency (41,21Hz) Max Frequency (82,41Hz)  Delay (0,743s) FFT: 32768 samples  
+CQT Pitch Detection: Min Frequency (82,41Hz) Max Frequency (164,82Hz)  Delay (0,372s) FFT: 16384 samples  
+CQT Pitch Detection: Min Frequency (164,82Hz) Max Frequency (329,64Hz)  Delay (0,186s) FFT: 8192 samples  
+CQT Pitch Detection: Min Frequency (329,64Hz) Max Frequency (659,28Hz)  Delay (0,093s) FFT: 4096 samples  
+CQT Pitch Detection: Min Frequency (659,28Hz) Max Frequency (1318,56Hz)  Delay (0,046s) FFT: 2048 samples  
+CQT Pitch Detection: Min Frequency (1318,56Hz) Max Frequency (2637,02Hz)  Delay (0,023s) FFT: 1024 samples  
+[59] 247Hz: 38 
+[48] 131Hz: 61 
+[55] 196Hz: 108 [67] 392Hz: 87 
+[45] 110Hz: 119 
+[53] 175Hz: 105 [57] 220Hz: 127 [69] 440Hz: 69 
+[46] 117Hz: 77 
+[71] 494Hz: 79 
+[52] 165Hz: 79 [59] 247Hz: 127 
+[48] 131Hz: 97 
+[55] 196Hz: 100 [67] 392Hz: 82 
+[45] 110Hz: 33 
+[53] 175Hz: 79 [57] 220Hz: 127 [69] 440Hz: 71 
+[46] 117Hz: 127 
+[48] 131Hz: 55 [59] 247Hz: 32 
+
+
+[67] 392Hz: 63 
+[45] 110Hz: 43 [55] 196Hz: 127 
+[69] 440Hz: 71 
+[53] 175Hz: 127 [57] 220Hz: 127 
+[46] 117Hz: 78 
+[71] 494Hz: 74 
+[48] 131Hz: 54 [52] 165Hz: 77 [59] 247Hz: 127 
+[67] 392Hz: 52 
+[55] 196Hz: 109 [60] 262Hz: 31 
+[45] 110Hz: 36 
+[69] 440Hz: 79 
+[65] 349Hz: 30 
+[46] 117Hz: 98 [53] 175Hz: 87 [57] 220Hz: 127 
+[59] 247Hz: 38 
+[48] 131Hz: 64 
+[67] 392Hz: 92 
+[55] 196Hz: 127 
+[45] 110Hz: 127 
+[69] 440Hz: 74 
+[53] 175Hz: 125 [57] 220Hz: 127 
+[46] 117Hz: 86 
+[71] 494Hz: 73 
+[52] 165Hz: 80 [59] 247Hz: 127 
+[48] 131Hz: 90 
+[67] 392Hz: 57 
+[55] 196Hz: 115 
+[45] 110Hz: 41 [48] 131Hz: 39 
+[69] 440Hz: 79 
+[53] 175Hz: 86 [57] 220Hz: 127 [65] 349Hz: 30 
+[46] 117Hz: 121 
+[59] 247Hz: 43 
+[48] 131Hz: 65 
+[55] 196Hz: 35 [67] 392Hz: 90 
+[45] 110Hz: 126 
+[53] 175Hz: 40 [57] 220Hz: 69 [69] 440Hz: 75 
+[46] 117Hz: 67 
+[52] 165Hz: 70 [59] 247Hz: 127 [71] 494Hz: 65 
+[48] 131Hz: 92 
+[55] 196Hz: 36 [67] 392Hz: 83 
+[45] 110Hz: 31 
+[53] 175Hz: 72 [57] 220Hz: 127 [69] 440Hz: 73 
+[46] 117Hz: 119 
+[59] 247Hz: 33 
+[48] 131Hz: 65 
+[67] 392Hz: 86 
+[55] 196Hz: 127 
+[45] 110Hz: 126 
+[69] 440Hz: 41 
+[53] 175Hz: 127 [57] 220Hz: 127 
+[46] 117Hz: 79 
+[71] 494Hz: 77 
+[52] 165Hz: 76 [59] 247Hz: 127 
+[48] 131Hz: 94 
+[67] 392Hz: 82 
+[55] 196Hz: 110 [60] 262Hz: 31 
+[69] 440Hz: 83 
+[65] 349Hz: 30 
+[53] 175Hz: 87 [57] 220Hz: 127 
+[46] 117Hz: 119 

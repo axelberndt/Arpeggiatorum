@@ -1,0 +1,1589 @@
+< Auto-correlation Pitch: 439.75252124635796
+
+- 81 ->80
+- Auto-correlation Pitch: 427.3078753489299
+- 80 ->79
+- Auto-correlation Pitch: 403.06912923191214
+- 79 ->78
+- Auto-correlation Pitch: 379.9226585829823
+- 78 ->77
+- Auto-correlation Pitch: 358.5796136655458
+- 77 ->76
+- Auto-correlation Pitch: 339.27487726521673
+- 76 ->75
+- Auto-correlation Pitch: 320.0820723851339
+> 75
+> Auto-correlation Pitch: 316.19931745051207
+
+< -1
+< Auto-correlation Pitch: 304.71983503151137
+
+- 75 ->74
+- Auto-correlation Pitch: 302.2529960249629
+- 74 ->73
+- Auto-correlation Pitch: 284.9851229791234
+- 73 ->72
+- Auto-correlation Pitch: 268.82701971839305
+- 72 ->71
+- Auto-correlation Pitch: 253.97199438378544
+- 71 ->70
+- Auto-correlation Pitch: 239.3616109625948
+- 70 ->69
+- Auto-correlation Pitch: 226.10393429327888
+- 69 ->68
+- Auto-correlation Pitch: 213.59905990479646
+- 68 ->67
+- Auto-correlation Pitch: 201.6258075830688
+- 67 ->66
+- Auto-correlation Pitch: 189.9700719933798
+- 66 ->65
+- Auto-correlation Pitch: 179.58058490227768
+- 65 ->64
+- Auto-correlation Pitch: 169.5669109497268
+- 64 ->63
+- Auto-correlation Pitch: 160.07661969987976
+- 63 ->62
+- Auto-correlation Pitch: 150.78957575488047
+- 62 ->61
+- Auto-correlation Pitch: 142.57450611171478
+- 61 ->60
+- Auto-correlation Pitch: 134.51674939064026
+- 60 ->59
+- Auto-correlation Pitch: 126.97132228290543
+- 59 ->58
+- Auto-correlation Pitch: 119.80318851306002
+- 58 ->57
+- Auto-correlation Pitch: 113.13876853454438
+- 57 ->56
+- Auto-correlation Pitch: 106.7382269262744
+- 56 ->55
+- Auto-correlation Pitch: 100.82745692101702
+- 55 ->54
+- Auto-correlation Pitch: 95.11770820941115
+- 54 ->53
+- Auto-correlation Pitch: 89.73135775786801
+- 53 ->52
+- Auto-correlation Pitch: 84.74686359209574
+- 52 ->51
+- Auto-correlation Pitch: 79.9961984781345
+- 51 ->50
+- Auto-correlation Pitch: 75.50447546880642
+- 50 ->49
+- Auto-correlation Pitch: 71.312694997972
+- 49 ->48
+- Auto-correlation Pitch: 67.30235598235744
+- 48 ->47
+- Auto-correlation Pitch: 63.53966648978204
+- 47 ->46
+- Auto-correlation Pitch: 59.92705905290998
+- 46 ->45
+- Auto-correlation Pitch: 56.59312486052342
+- 45 ->44
+- Auto-correlation Pitch: 53.40916979470806
+- 44 ->43
+- Auto-correlation Pitch: 50.414574618749384
+- 43 ->42
+- Auto-correlation Pitch: 47.60101644104992
+- 42 ->41
+- Auto-correlation Pitch: 44.932317082948906
+- 41 ->42
+- Auto-correlation Pitch: 45.19087605007783
+- 42 ->43
+- Auto-correlation Pitch: 47.73772639474537
+- 43 ->44
+- Auto-correlation Pitch: 50.709051796857494
+- 44 ->45
+- Auto-correlation Pitch: 53.680377198969666
+- 45 ->46
+- Auto-correlation Pitch: 57.058590885318814
+- 46 ->47
+- Auto-correlation Pitch: 60.46277971767332
+- 47 ->48
+- Auto-correlation Pitch: 63.86696855002784
+- 48 ->49
+- Auto-correlation Pitch: 67.75747007271877
+- 49 ->48
+- Auto-correlation Pitch: 67.31237889381433
+- 48 ->49
+- Auto-correlation Pitch: 67.33154882396938
+- 49 ->50
+- Auto-correlation Pitch: 72.33505956363219
+- 50 ->51
+- Auto-correlation Pitch: 77.33857030329501
+- 51 ->52
+- Auto-correlation Pitch: 82.34208104295784
+- 52 ->53
+- Auto-correlation Pitch: 84.84383641278924
+- 53 ->54
+- Auto-correlation Pitch: 92.3491025222834
+- 54 ->55
+- Auto-correlation Pitch: 97.35261326194617
+- 55 ->56
+- Auto-correlation Pitch: 102.356124001609
+- 56 ->57
+- Auto-correlation Pitch: 107.35963474127189
+- 57 ->58
+- Auto-correlation Pitch: 114.86490085076623
+- 58 ->59
+- Auto-correlation Pitch: 122.37016696026058
+- 59 ->60
+- Auto-correlation Pitch: 127.37367769992348
+> 60
+> Auto-correlation Pitch: 134.5927054527981
+
+< -1
+< Auto-correlation Pitch: 138.37897529907437
+
+- 61 ->60
+- Auto-correlation Pitch: 134.62671685670844
+> 60
+> Auto-correlation Pitch: 131.56259289354142
+
+< -1
+< Auto-correlation Pitch: 131.36101771214086
+
+- 60 ->59
+- Auto-correlation Pitch: 126.87377889139793
+- 59 ->58
+- Auto-correlation Pitch: 119.79663880218844
+- 58 ->57
+- Auto-correlation Pitch: 113.1164984888453
+- 57 ->56
+- Auto-correlation Pitch: 106.83991416494555
+- 56 ->55
+- Auto-correlation Pitch: 100.86546898132237
+- 55 ->54
+- Auto-correlation Pitch: 95.14489729293591
+- 54 ->53
+- Auto-correlation Pitch: 89.81309972394945
+- 53 ->52
+- Auto-correlation Pitch: 84.70442283438743
+- 52 ->51
+- Auto-correlation Pitch: 79.96800400211089
+- 51 ->50
+- Auto-correlation Pitch: 75.55889163932048
+- 50 ->49
+- Auto-correlation Pitch: 71.28570642823446
+- 49 ->48
+- Auto-correlation Pitch: 67.30438855746212
+- 48 ->47
+- Auto-correlation Pitch: 63.53398481592116
+- 47 ->46
+- Auto-correlation Pitch: 59.94977538067436
+- 46 ->45
+- Auto-correlation Pitch: 56.60014616431845
+- 45 ->44
+- Auto-correlation Pitch: 53.419521760104665
+- 44 ->43
+- Auto-correlation Pitch: 50.43445207372741
+> 43
+> Auto-correlation Pitch: 49.36087888898963
+
+< -1
+< Auto-correlation Pitch: 49.36059895004845
+
+> 43
+> Auto-correlation Pitch: 49.35014383915812
+
+< -1
+< Auto-correlation Pitch: 49.34999139853415
+
+> 43
+> Auto-correlation Pitch: 49.31775686825972
+
+< -1
+< Auto-correlation Pitch: 49.31745302419391
+
+> 43
+> Auto-correlation Pitch: 49.30610510886649
+
+< -1
+< Auto-correlation Pitch: 49.30604224508034
+
+> 43
+> Auto-correlation Pitch: 49.29818427181167
+
+< -1
+< Auto-correlation Pitch: 49.29812763670522
+
+> 43
+> Auto-correlation Pitch: 49.291048248398724
+
+< -1
+< Auto-correlation Pitch: 49.290974570888146
+
+> 43
+> Auto-correlation Pitch: 49.26935671942974
+
+< -1
+< Auto-correlation Pitch: 49.26916268170932
+
+> 43
+> Auto-correlation Pitch: 49.26191579467281
+
+< -1
+< Auto-correlation Pitch: 49.26166673658258
+
+- 43 ->44
+- Auto-correlation Pitch: 50.528737287221986
+- 44 ->45
+- Auto-correlation Pitch: 53.87123648112512
+- 45 ->46
+- Auto-correlation Pitch: 56.736235790184956
+- 46 ->47
+- Auto-correlation Pitch: 60.07873498408816
+- 47 ->48
+- Auto-correlation Pitch: 63.87498027165148
+- 48 ->49
+- Auto-correlation Pitch: 67.56176606204495
+- 49 ->50
+- Auto-correlation Pitch: 71.70940007623766
+- 50 ->51
+- Auto-correlation Pitch: 75.74737233080226
+- 51 ->52
+- Auto-correlation Pitch: 80.31081514242263
+- 52 ->53
+- Auto-correlation Pitch: 84.8742579540431
+- 53 ->54
+- Auto-correlation Pitch: 89.93502912408503
+> 54
+> Auto-correlation Pitch: 93.21990967563298
+
+< -1
+< Auto-correlation Pitch: 93.11351732864983
+
+- 54 ->53
+- Auto-correlation Pitch: 89.85698636012242
+- 53 ->52
+- Auto-correlation Pitch: 84.7663842853622
+- 52 ->51
+- Auto-correlation Pitch: 79.99404237523004
+- 51 ->50
+- Auto-correlation Pitch: 75.55522364246106
+- 50 ->49
+- Auto-correlation Pitch: 71.27955756597125
+- 49 ->48
+- Auto-correlation Pitch: 67.31269858495835
+- 48 ->47
+- Auto-correlation Pitch: 63.5329276006492
+- 47 ->46
+- Auto-correlation Pitch: 59.96969067893786
+- 46 ->45
+- Auto-correlation Pitch: 56.607981927840974
+> 45
+> Auto-correlation Pitch: 55.44553591465389
+
+< -1
+< Auto-correlation Pitch: 68.83085059506456
+
+> 49
+> Auto-correlation Pitch: 69.37122818482757
+
+< -1
+< Auto-correlation Pitch: 69.38308408922771
+
+> 49
+> Auto-correlation Pitch: 69.8238138919854
+
+< -1
+< Auto-correlation Pitch: 70.47414883256573
+
+> 49
+> Auto-correlation Pitch: 70.48990707284699
+
+< -1
+< Auto-correlation Pitch: 70.90809382501787
+
+> 49
+> Auto-correlation Pitch: 70.92206232678568
+
+< -1
+< Auto-correlation Pitch: 71.45219736237443
+
+> 50
+> Auto-correlation Pitch: 72.30502318784329
+
+< -1
+< Auto-correlation Pitch: 72.27290709105678
+
+- 50 ->49
+- Auto-correlation Pitch: 71.28987525898282
+- 49 ->48
+- Auto-correlation Pitch: 67.29953783266541
+- 48 ->47
+- Auto-correlation Pitch: 63.53507226577602
+- 47 ->48
+- Auto-correlation Pitch: 63.64389743380192
+- 48 ->49
+- Auto-correlation Pitch: 67.3314313691351
+- 49 ->50
+- Auto-correlation Pitch: 71.55076786936121
+> 50
+> Auto-correlation Pitch: 73.70816485459
+
+< -1
+< Auto-correlation Pitch: 73.85395578151697
+
+- 50 ->49
+- Auto-correlation Pitch: 71.31809727258248
+- 49 ->48
+- Auto-correlation Pitch: 67.31684470878203
+- 48 ->49
+- Auto-correlation Pitch: 67.47657764536022
+- 49 ->50
+- Auto-correlation Pitch: 71.51847740667233
+- 50 ->51
+- Auto-correlation Pitch: 75.64661004566577
+- 51 ->52
+- Auto-correlation Pitch: 80.09719252635588
+> 52
+> Auto-correlation Pitch: 80.80014587282835
+
+< -1
+< Auto-correlation Pitch: 79.45189374349012
+
+- 51 ->50
+- Auto-correlation Pitch: 75.54460199626845
+- 50 ->49
+- Auto-correlation Pitch: 71.32187826146384
+- 49 ->48
+- Auto-correlation Pitch: 67.31204065125294
+> 48
+> Auto-correlation Pitch: 65.74369700910958
+
+< -1
+< Auto-correlation Pitch: 63.40487339190785
+
+- 47 ->46
+- Auto-correlation Pitch: 59.9754678468875
+> 46
+> Auto-correlation Pitch: 59.45588950510443
+
+< -1
+< Auto-correlation Pitch: 65.7276364193114
+
+- 48 ->47
+- Auto-correlation Pitch: 63.49881035389086
+- 47 ->46
+- Auto-correlation Pitch: 59.928575552622064
+- 46 ->45
+- Auto-correlation Pitch: 56.59582996219299
+- 45 ->44
+- Auto-correlation Pitch: 53.40323027509317
+- 44 ->43
+- Auto-correlation Pitch: 50.43298341747126
+- 43 ->42
+- Auto-correlation Pitch: 47.59729815066612
+- 42 ->41
+- Auto-correlation Pitch: 44.92907246554263
+- 41 ->42
+- Auto-correlation Pitch: 45.131727515899755
+- 42 ->43
+- Auto-correlation Pitch: 47.704906901077436
+- 43 ->44
+- Auto-correlation Pitch: 50.70694951711806
+- 44 ->45
+- Auto-correlation Pitch: 53.70899213315874
+- 45 ->46
+- Auto-correlation Pitch: 56.64066484136377
+- 46 ->47
+- Auto-correlation Pitch: 60.12026631684816
+- 47 ->48
+- Auto-correlation Pitch: 63.599867792332546
+- 48 ->49
+- Auto-correlation Pitch: 67.5765551928862
+- 49 ->48
+- Auto-correlation Pitch: 67.31560482474073
+- 48 ->49
+- Auto-correlation Pitch: 68.98312277834903
+- 49 ->50
+- Auto-correlation Pitch: 71.63895662555238
+- 50 ->51
+- Auto-correlation Pitch: 76.9506243199591
+- 51 ->52
+- Auto-correlation Pitch: 82.26229201436585
+- 52 ->53
+- Auto-correlation Pitch: 84.91812586156922
+- 53 ->54
+- Auto-correlation Pitch: 90.2297935559759
+- 54 ->55
+- Auto-correlation Pitch: 95.54146125038258
+- 55 ->56
+- Auto-correlation Pitch: 103.50896279199264
+- 56 ->57
+- Auto-correlation Pitch: 108.82063048639945
+- 57 ->58
+- Auto-correlation Pitch: 114.13229818080627
+- 58 ->59
+- Auto-correlation Pitch: 122.09979972241649
+- 59 ->60
+- Auto-correlation Pitch: 127.4114674168233
+- 60 ->61
+- Auto-correlation Pitch: 135.37896895843352
+> 61
+> Auto-correlation Pitch: 138.97806606185634
+
+< -1
+< Auto-correlation Pitch: 142.7286361458916
+
+- 62 ->61
+- Auto-correlation Pitch: 142.5481729621815
+> 61
+> Auto-correlation Pitch: 135.21704248546115
+
+< -1
+< Auto-correlation Pitch: 135.15294868607447
+
+- 61 ->60
+- Auto-correlation Pitch: 134.56694823453904
+- 60 ->59
+- Auto-correlation Pitch: 126.94210132589659
+- 59 ->58
+- Auto-correlation Pitch: 119.73906361056413
+- 58 ->57
+- Auto-correlation Pitch: 113.06923468479467
+- 57 ->56
+- Auto-correlation Pitch: 106.7902762516268
+- 56 ->55
+- Auto-correlation Pitch: 100.79598831092224
+- 55 ->54
+- Auto-correlation Pitch: 95.18753833704157
+- 54 ->53
+- Auto-correlation Pitch: 89.8224719227159
+- 53 ->52
+- Auto-correlation Pitch: 84.79040224457566
+- 52 ->51
+- Auto-correlation Pitch: 80.05158742773642
+- 51 ->50
+- Auto-correlation Pitch: 75.49164990762563
+- 50 ->49
+- Auto-correlation Pitch: 71.26885577270605
+- 49 ->48
+- Auto-correlation Pitch: 67.28295366656839
+- 48 ->47
+- Auto-correlation Pitch: 63.533502064455696
+- 47 ->46
+- Auto-correlation Pitch: 59.955293632828216
+- 46 ->45
+- Auto-correlation Pitch: 56.59598821712231
+- 45 ->44
+- Auto-correlation Pitch: 53.42805745317663
+- 44 ->43
+- Auto-correlation Pitch: 50.432709019513034
+> 43
+> Auto-correlation Pitch: 49.36127161831498
+
+< -1
+< Auto-correlation Pitch: 49.361147520418285
+
+> 43
+> Auto-correlation Pitch: 49.34563528333123
+
+< -1
+< Auto-correlation Pitch: 49.34533216763541
+
+> 43
+> Auto-correlation Pitch: 49.320883360895834
+
+< -1
+< Auto-correlation Pitch: 49.32069588163276
+
+> 43
+> Auto-correlation Pitch: 49.31369393872059
+
+< -1
+< Auto-correlation Pitch: 49.31339655276436
+
+> 43
+> Auto-correlation Pitch: 49.302289833790596
+
+< -1
+< Auto-correlation Pitch: 49.302207523479076
+
+> 43
+> Auto-correlation Pitch: 49.291918734539486
+
+< -1
+< Auto-correlation Pitch: 49.29173254133873
+
+> 43
+> Auto-correlation Pitch: 49.27876796010078
+
+< -1
+< Auto-correlation Pitch: 49.278668840547276
+
+> 43
+> Auto-correlation Pitch: 49.266278896359665
+
+< -1
+< Auto-correlation Pitch: 49.26597866326786
+
+- 43 ->44
+- Auto-correlation Pitch: 50.72552005249868
+- 44 ->45
+- Auto-correlation Pitch: 53.54353515971147
+- 45 ->46
+- Auto-correlation Pitch: 56.76412385366896
+- 46 ->47
+- Auto-correlation Pitch: 59.984712547626486
+- 47 ->48
+- Auto-correlation Pitch: 63.72960961411448
+- 48 ->49
+- Auto-correlation Pitch: 67.50336612616682
+- 49 ->50
+- Auto-correlation Pitch: 71.74884220222579
+- 50 ->51
+- Auto-correlation Pitch: 75.76206084952723
+- 51 ->52
+- Auto-correlation Pitch: 80.07079972899672
+- 52 ->53
+- Auto-correlation Pitch: 85.0477332180439
+- 53 ->54
+- Auto-correlation Pitch: 89.93449078528454
+> 54
+> Auto-correlation Pitch: 92.04549819025058
+
+< -1
+< Auto-correlation Pitch: 91.94244957359119
+
+- 54 ->53
+- Auto-correlation Pitch: 89.79186974765614
+- 53 ->52
+- Auto-correlation Pitch: 84.75211394853449
+- 52 ->51
+- Auto-correlation Pitch: 80.05472688976893
+- 51 ->50
+- Auto-correlation Pitch: 75.50327555729841
+- 50 ->49
+- Auto-correlation Pitch: 71.27137281662982
+- 49 ->48
+- Auto-correlation Pitch: 67.29692847756951
+- 48 ->47
+- Auto-correlation Pitch: 63.53756151830575
+- 47 ->46
+- Auto-correlation Pitch: 59.97599000841794
+- 46 ->45
+- Auto-correlation Pitch: 56.61137467542997
+> 45
+> Auto-correlation Pitch: 55.44543964327035
+
+< -1
+< Auto-correlation Pitch: 69.07608089968261
+
+> 49
+> Auto-correlation Pitch: 69.3787931974493
+
+< -1
+< Auto-correlation Pitch: 69.38243744766783
+
+> 49
+> Auto-correlation Pitch: 69.84483959112676
+
+< -1
+< Auto-correlation Pitch: 71.7870568977468
+
+> 50
+> Auto-correlation Pitch: 72.59953847643905
+
+< -1
+< Auto-correlation Pitch: 72.56677788474562
+
+- 50 ->49
+- Auto-correlation Pitch: 71.29130594111204
+- 49 ->48
+- Auto-correlation Pitch: 67.30472509944323
+- 48 ->47
+- Auto-correlation Pitch: 63.53527606900904
+- 47 ->48
+- Auto-correlation Pitch: 63.70384872416328
+- 48 ->49
+- Auto-correlation Pitch: 67.50682506944693
+- 49 ->50
+- Auto-correlation Pitch: 71.39648876792405
+> 50
+> Auto-correlation Pitch: 73.56314317374381
+
+< -1
+< Auto-correlation Pitch: 73.69341057495548
+
+- 50 ->49
+- Auto-correlation Pitch: 71.31002743604843
+- 49 ->48
+- Auto-correlation Pitch: 67.31582665428134
+- 48 ->49
+- Auto-correlation Pitch: 67.37209500441436
+- 49 ->50
+- Auto-correlation Pitch: 71.4235360169666
+- 50 ->51
+- Auto-correlation Pitch: 75.69901650232849
+- 51 ->52
+- Auto-correlation Pitch: 80.16198187013664
+> 52
+> Auto-correlation Pitch: 80.7284934131663
+
+< -1
+< Auto-correlation Pitch: 79.43695733018642
+
+- 51 ->50
+- Auto-correlation Pitch: 75.50457444536431
+- 50 ->49
+- Auto-correlation Pitch: 71.31843926365649
+- 49 ->48
+- Auto-correlation Pitch: 67.31701103187427
+> 48
+> Auto-correlation Pitch: 65.64474232378377
+
+< -1
+< Auto-correlation Pitch: 63.35821555977489
+
+- 47 ->46
+- Auto-correlation Pitch: 59.96116246024659
+> 46
+> Auto-correlation Pitch: 59.53031898126953
+
+< -1
+< Auto-correlation Pitch: 59.64504937516591
+
+- 46 ->47
+- Auto-correlation Pitch: 60.12392406273342
+- 47 ->48
+- Auto-correlation Pitch: 63.63567177156186
+> 48
+> Auto-correlation Pitch: 63.92998017329603
+
+< -1
+< Auto-correlation Pitch: 63.916529260079784
+
+- 48 ->47
+- Auto-correlation Pitch: 63.486100037159986
+- 47 ->46
+- Auto-correlation Pitch: 59.93496118808174
+- 46 ->45
+- Auto-correlation Pitch: 56.59384202638605
+- 45 ->44
+- Auto-correlation Pitch: 53.404398872004826
+- 44 ->43
+- Auto-correlation Pitch: 50.431125108876586
+- 43 ->42
+- Auto-correlation Pitch: 47.59889204256868
+- 42 ->41
+- Auto-correlation Pitch: 44.93263693247234
+- 41 ->42
+- Auto-correlation Pitch: 45.13333019879121
+- 42 ->43
+- Auto-correlation Pitch: 47.714743650998884
+- 43 ->44
+- Auto-correlation Pitch: 50.726392678574506
+- 44 ->45
+- Auto-correlation Pitch: 53.73804170615018
+- 45 ->46
+- Auto-correlation Pitch: 56.91793662218241
+- 46 ->47
+- Auto-correlation Pitch: 60.375554395661425
+- 47 ->48
+- Auto-correlation Pitch: 63.83317216914045
+- 48 ->49
+- Auto-correlation Pitch: 67.78473533883083
+- 49 ->48
+- Auto-correlation Pitch: 67.29916169821753
+- 48 ->49
+- Auto-correlation Pitch: 67.4450617258224
+- 49 ->50
+- Auto-correlation Pitch: 72.34615033569216
+- 50 ->51
+- Auto-correlation Pitch: 77.24723894556193
+- 51 ->52
+- Auto-correlation Pitch: 82.14832755543172
+- 52 ->53
+- Auto-correlation Pitch: 87.04941616530145
+- 53 ->54
+- Auto-correlation Pitch: 91.95050477517118
+- 54 ->55
+- Auto-correlation Pitch: 96.8515933850409
+- 55 ->56
+- Auto-correlation Pitch: 101.75268199491069
+- 56 ->57
+- Auto-correlation Pitch: 109.10431490971546
+- 57 ->58
+- Auto-correlation Pitch: 114.0054035195853
+- 58 ->59
+- Auto-correlation Pitch: 121.35703643439008
+- 59 ->60
+- Auto-correlation Pitch: 128.70866934919485
+- 60 ->61
+- Auto-correlation Pitch: 134.6770042953381
+- 61 ->62
+- Auto-correlation Pitch: 142.67779813765532
+> 62
+> Auto-correlation Pitch: 147.92831909667598
+
+< -1
+< Auto-correlation Pitch: 147.88817608960477
+
+- 62 ->61
+- Auto-correlation Pitch: 142.6325864544203
+> 61
+> Auto-correlation Pitch: 139.917292760198
+
+< -1
+< Auto-correlation Pitch: 139.84772492761948
+
+- 61 ->60
+- Auto-correlation Pitch: 134.4413105100876
+- 60 ->59
+- Auto-correlation Pitch: 126.9978550998682
+- 59 ->58
+- Auto-correlation Pitch: 119.76184020657023
+- 58 ->57
+- Auto-correlation Pitch: 113.07647527765056
+- 57 ->56
+- Auto-correlation Pitch: 106.67231272282942
+- 56 ->55
+- Auto-correlation Pitch: 100.80410788310346
+- 55 ->54
+- Auto-correlation Pitch: 95.09715091987287
+- 54 ->53
+- Auto-correlation Pitch: 89.77035744110142
+- 53 ->52
+- Auto-correlation Pitch: 84.77010617517051
+- 52 ->51
+- Auto-correlation Pitch: 80.04076192127476
+- 51 ->50
+- Auto-correlation Pitch: 75.53096731665624
+- 50 ->49
+- Auto-correlation Pitch: 71.299634917134
+- 49 ->48
+- Auto-correlation Pitch: 67.31261436722718
+- 48 ->47
+- Auto-correlation Pitch: 63.51725494922562
+- 47 ->46
+- Auto-correlation Pitch: 59.93984602289796
+- 46 ->45
+- Auto-correlation Pitch: 56.59916232559945
+- 45 ->44
+- Auto-correlation Pitch: 53.42182173564892
+- 44 ->43
+- Auto-correlation Pitch: 50.43252724757694
+> 43
+> Auto-correlation Pitch: 49.445678104491776
+
+< -1
+< Auto-correlation Pitch: 49.44551621476863
+
+> 43
+> Auto-correlation Pitch: 49.425279999375356
+
+< -1
+< Auto-correlation Pitch: 49.42458826988103
+
+> 43
+> Auto-correlation Pitch: 49.38441221100861
+
+< -1
+< Auto-correlation Pitch: 49.38422530896261
+
+> 43
+> Auto-correlation Pitch: 49.36086255321328
+
+< -1
+< Auto-correlation Pitch: 49.36075588473652
+
+> 43
+> Auto-correlation Pitch: 49.347422325141714
+
+< -1
+< Auto-correlation Pitch: 49.34733447513715
+
+> 43
+> Auto-correlation Pitch: 49.336353224566764
+
+< -1
+< Auto-correlation Pitch: 49.336215337717626
+
+> 43
+> Auto-correlation Pitch: 49.312259259512956
+
+< -1
+< Auto-correlation Pitch: 49.31218434831297
+
+> 43
+> Auto-correlation Pitch: 49.29245969648682
+
+< -1
+< Auto-correlation Pitch: 49.29228321432372
+
+> 43
+> Auto-correlation Pitch: 49.28569198918874
+
+< -1
+< Auto-correlation Pitch: 49.285613206812684
+
+> 43
+> Auto-correlation Pitch: 49.27576540980566
+
+< -1
+< Auto-correlation Pitch: 49.27559801291578
+
+- 43 ->44
+- Auto-correlation Pitch: 50.81201341691049
+- 44 ->45
+- Auto-correlation Pitch: 53.68766510888761
+- 45 ->46
+- Auto-correlation Pitch: 57.04259208286092
+- 46 ->47
+- Auto-correlation Pitch: 60.397519056834284
+- 47 ->48
+- Auto-correlation Pitch: 63.716384912932064
+- 48 ->49
+- Auto-correlation Pitch: 67.35633371271697
+- 49 ->50
+- Auto-correlation Pitch: 71.45127611247504
+- 50 ->51
+- Auto-correlation Pitch: 75.67663296967086
+- 51 ->52
+- Auto-correlation Pitch: 80.2602022432015
+- 52 ->53
+- Auto-correlation Pitch: 84.84377151673223
+- 53 ->54
+- Auto-correlation Pitch: 90.13650735487546
+> 54
+> Auto-correlation Pitch: 94.4426282866556
+
+< -1
+< Auto-correlation Pitch: 94.33199875798572
+
+- 54 ->53
+- Auto-correlation Pitch: 89.75497934663855
+- 53 ->52
+- Auto-correlation Pitch: 84.69944800227665
+- 52 ->51
+- Auto-correlation Pitch: 79.99965109230777
+- 51 ->50
+- Auto-correlation Pitch: 75.5367171478017
+- 50 ->49
+- Auto-correlation Pitch: 71.30139366484727
+- 49 ->48
+- Auto-correlation Pitch: 67.30777385012018
+- 48 ->47
+- Auto-correlation Pitch: 63.533822007399785
+- 47 ->46
+- Auto-correlation Pitch: 59.960906965038404
+- 46 ->45
+- Auto-correlation Pitch: 56.61022163727451
+- 45 ->46
+- Auto-correlation Pitch: 57.092735509889295
+- 46 ->47
+- Auto-correlation Pitch: 60.3221715004256
+- 47 ->48
+- Auto-correlation Pitch: 63.551607490961906
+- 48 ->49
+- Auto-correlation Pitch: 67.85752214501038
+> 49
+> Auto-correlation Pitch: 68.78810175657152
+
+< -1
+< Auto-correlation Pitch: 68.42460410286564
+
+> 49
+> Auto-correlation Pitch: 69.54097298119787
+
+< -1
+< Auto-correlation Pitch: 70.15426358485078
+
+> 49
+> Auto-correlation Pitch: 70.17119858079974
+
+< -1
+< Auto-correlation Pitch: 71.5499130881729
+
+> 50
+> Auto-correlation Pitch: 72.38579222691764
+
+< -1
+< Auto-correlation Pitch: 72.35365992929094
+
+- 50 ->49
+- Auto-correlation Pitch: 71.3254264052365
+- 49 ->48
+- Auto-correlation Pitch: 67.29615253228485
+- 48 ->47
+- Auto-correlation Pitch: 63.54272134241189
+- 47 ->48
+- Auto-correlation Pitch: 63.731516934761345
+- 48 ->49
+- Auto-correlation Pitch: 67.35819380151287
+- 49 ->50
+- Auto-correlation Pitch: 71.41035855679455
+> 50
+> Auto-correlation Pitch: 73.70441929030032
+
+< -1
+< Auto-correlation Pitch: 74.24369927482779
+
+> 50
+> Auto-correlation Pitch: 74.2552245054796
+
+< -1
+< Auto-correlation Pitch: 73.85893202516895
+
+- 50 ->49
+- Auto-correlation Pitch: 71.3176883729232
+- 49 ->48
+- Auto-correlation Pitch: 67.31780779828597
+- 48 ->49
+- Auto-correlation Pitch: 67.37141593028421
+- 49 ->50
+- Auto-correlation Pitch: 71.41814365967433
+- 50 ->51
+- Auto-correlation Pitch: 75.62814840875456
+- 51 ->52
+- Auto-correlation Pitch: 80.0642488886931
+> 52
+> Auto-correlation Pitch: 80.77137830668127
+
+< -1
+< Auto-correlation Pitch: 79.47605955082523
+
+- 51 ->50
+- Auto-correlation Pitch: 75.49758417571694
+- 50 ->49
+- Auto-correlation Pitch: 71.31909039841194
+- 49 ->48
+- Auto-correlation Pitch: 67.309628628557
+> 48
+> Auto-correlation Pitch: 65.72371185006735
+
+< -1
+< Auto-correlation Pitch: 63.426700569669904
+
+- 47 ->46
+- Auto-correlation Pitch: 59.95931735384473
+> 46
+> Auto-correlation Pitch: 59.59929023964288
+
+< -1
+< Auto-correlation Pitch: 62.571364678187045
+
+- 47 ->48
+- Auto-correlation Pitch: 63.545518395397316
+- 48 ->49
+- Auto-correlation Pitch: 67.4421332642384
+- 49 ->50
+- Auto-correlation Pitch: 71.3387481330795
+- 50 ->51
+- Auto-correlation Pitch: 75.72243986052581
+> 51
+> Auto-correlation Pitch: 75.88987253067123
+
+< -1
+< Auto-correlation Pitch: 75.86940923163131
+
+- 51 ->50
+- Auto-correlation Pitch: 75.49522319204432
+- 50 ->49
+- Auto-correlation Pitch: 71.32189749650145
+- 49 ->48
+- Auto-correlation Pitch: 67.25052369118535
+- 48 ->47
+- Auto-correlation Pitch: 63.509037526984116
+- 47 ->46
+- Auto-correlation Pitch: 59.95328934175187
+- 46 ->45
+- Auto-correlation Pitch: 56.60751841468478
+- 45 ->44
+- Auto-correlation Pitch: 53.43136428242281
+- 44 ->43
+- Auto-correlation Pitch: 50.42753072355531
+- 43 ->42
+- Auto-correlation Pitch: 47.594217447846
+- 42 ->41
+- Auto-correlation Pitch: 44.93203868469988
+- 41 ->42
+- Auto-correlation Pitch: 45.05055012717498
+- 42 ->43
+- Auto-correlation Pitch: 48.07542818544905
+- 43 ->44
+- Auto-correlation Pitch: 50.59615990067742
+- 44 ->45
+- Auto-correlation Pitch: 53.62103795895154
+- 45 ->46
+- Auto-correlation Pitch: 56.64591601722566
+> 46
+> Auto-correlation Pitch: 57.82841887818607
+
+< -1
+< Auto-correlation Pitch: 58.30685678880842
+
+- 46 ->47
+- Auto-correlation Pitch: 60.16197858949239
+- 47 ->48
+- Auto-correlation Pitch: 63.87222219086034
+- 48 ->49
+- Auto-correlation Pitch: 67.5824657922283
+- 49 ->50
+- Auto-correlation Pitch: 71.91108332715766
+- 50 ->49
+- Auto-correlation Pitch: 71.31037907289064
+> 49
+> Auto-correlation Pitch: 69.51476757807912
+
+< -1
+< Auto-correlation Pitch: 71.66600860484834
+
+- 50 ->51
+- Auto-correlation Pitch: 78.1587342202004
+- 51 ->52
+- Auto-correlation Pitch: 81.40509702787642
+- 52 ->53
+- Auto-correlation Pitch: 87.89782264322851
+- 53 ->54
+- Auto-correlation Pitch: 91.14418545090456
+- 54 ->55
+- Auto-correlation Pitch: 97.63691106625656
+- 55 ->56
+- Auto-correlation Pitch: 100.88327387393257
+- 56 ->57
+- Auto-correlation Pitch: 107.37599948928457
+- 57 ->58
+- Auto-correlation Pitch: 113.86872510463658
+- 58 ->59
+- Auto-correlation Pitch: 120.36145071998874
+- 59 ->60
+- Auto-correlation Pitch: 130.100539143017
+- 60 ->61
+- Auto-correlation Pitch: 136.59326475836914
+- 61 ->62
+- Auto-correlation Pitch: 143.0859903737213
+- 62 ->63
+- Auto-correlation Pitch: 152.82507879674955
+- 63 ->62
+- Auto-correlation Pitch: 151.0451083056811
+> 62
+> Auto-correlation Pitch: 144.3052612504133
+
+< -1
+< Auto-correlation Pitch: 144.12343397262384
+
+- 62 ->61
+- Auto-correlation Pitch: 142.6055714797727
+- 61 ->60
+- Auto-correlation Pitch: 134.59938613120298
+- 60 ->59
+- Auto-correlation Pitch: 126.93053990522051
+- 59 ->58
+- Auto-correlation Pitch: 119.93802069901545
+- 58 ->57
+- Auto-correlation Pitch: 113.01099412295159
+- 57 ->56
+- Auto-correlation Pitch: 106.82927188247187
+- 56 ->55
+- Auto-correlation Pitch: 100.76018063918312
+- 55 ->54
+- Auto-correlation Pitch: 95.07727761184151
+- 54 ->53
+- Auto-correlation Pitch: 89.77757511849157
+- 53 ->52
+- Auto-correlation Pitch: 84.72816991930634
+- 52 ->51
+- Auto-correlation Pitch: 80.0082823994031
+- 51 ->50
+- Auto-correlation Pitch: 75.55017825102874
+- 50 ->49
+- Auto-correlation Pitch: 71.29181437718296
+- 49 ->48
+- Auto-correlation Pitch: 67.30224547161724
+- 48 ->47
+- Auto-correlation Pitch: 63.54305900662236
+- 47 ->46
+- Auto-correlation Pitch: 59.94941081517209
+- 46 ->45
+- Auto-correlation Pitch: 56.598507528305504
+- 45 ->44
+- Auto-correlation Pitch: 53.4220622471525
+- 44 ->43
+- Auto-correlation Pitch: 50.43376517759954
+> 43
+> Auto-correlation Pitch: 49.43115358433802
+
+< -1
+< Auto-correlation Pitch: 49.43097430623315
+
+> 43
+> Auto-correlation Pitch: 49.40856454312505
+
+< -1
+< Auto-correlation Pitch: 49.40842274545629
+
+> 43
+> Auto-correlation Pitch: 49.371991271767804
+
+< -1
+< Auto-correlation Pitch: 49.37167260989921
+
+> 43
+> Auto-correlation Pitch: 49.359771281850215
+
+< -1
+< Auto-correlation Pitch: 49.35923745678291
+
+> 43
+> Auto-correlation Pitch: 49.33930025100835
+
+< -1
+< Auto-correlation Pitch: 49.339188867794604
+
+> 43
+> Auto-correlation Pitch: 49.32526596607611
+
+< -1
+< Auto-correlation Pitch: 49.32518417185686
+
+> 43
+> Auto-correlation Pitch: 49.30350555810388
+
+< -1
+< Auto-correlation Pitch: 49.30312706237185
+
+> 43
+> Auto-correlation Pitch: 49.28899106959742
+
+< -1
+< Auto-correlation Pitch: 49.28819311349614
+
+> 43
+> Auto-correlation Pitch: 49.18844860083612
+
+< -1
+< Auto-correlation Pitch: 49.252782912712526
+
+- 43 ->44
+- Auto-correlation Pitch: 50.723281469887546
+- 44 ->45
+- Auto-correlation Pitch: 53.664278584237586
+- 45 ->46
+- Auto-correlation Pitch: 56.899375410022685
+- 46 ->47
+- Auto-correlation Pitch: 60.28812911301378
+- 47 ->48
+- Auto-correlation Pitch: 63.65776135586843
+- 48 ->49
+- Auto-correlation Pitch: 67.50876963341668
+- 49 ->50
+- Auto-correlation Pitch: 71.47307282922334
+- 50 ->51
+- Auto-correlation Pitch: 75.57706821274857
+- 51 ->52
+- Auto-correlation Pitch: 80.0914631346264
+- 52 ->53
+- Auto-correlation Pitch: 84.91447553823023
+- 53 ->54
+- Auto-correlation Pitch: 89.91979315028553
+- 54 ->55
+- Auto-correlation Pitch: 95.2438029559531
+> 55
+> Auto-correlation Pitch: 97.48664889917072
+
+< -1
+< Auto-correlation Pitch: 97.45050393718809
+
+- 55 ->54
+- Auto-correlation Pitch: 95.13722637029994
+- 54 ->53
+- Auto-correlation Pitch: 89.84442217760291
+- 53 ->52
+- Auto-correlation Pitch: 84.72443959394249
+- 52 ->51
+- Auto-correlation Pitch: 79.97189654997246
+- 51 ->50
+- Auto-correlation Pitch: 75.52854891175038
+- 50 ->49
+- Auto-correlation Pitch: 71.26419471701212
+- 49 ->48
+- Auto-correlation Pitch: 67.27639913479486
+- 48 ->47
+- Auto-correlation Pitch: 63.51357707070299
+- 47 ->46
+- Auto-correlation Pitch: 59.96573405525727
+- 46 ->45
+- Auto-correlation Pitch: 56.61156815707653
+> 45
+> Auto-correlation Pitch: 55.40401642874783
+
+< -1
+< Auto-correlation Pitch: 67.43336217971199
+
+- 49 ->48
+- Auto-correlation Pitch: 67.31557196581525
+> 48
+> Auto-correlation Pitch: 66.98057207792402
+
+< -1
+< Auto-correlation Pitch: 66.8237653299569
+
+- 48 ->49
+- Auto-correlation Pitch: 67.34925152588436
+> 49
+> Auto-correlation Pitch: 68.08569752629438
+
+< -1
+< Auto-correlation Pitch: 68.09972110278451
+
+> 49
+> Auto-correlation Pitch: 68.62616230864177
+
+< -1
+< Auto-correlation Pitch: 71.12181709246649
+
+- 49 ->50
+- Auto-correlation Pitch: 71.33450897452087
+> 50
+> Auto-correlation Pitch: 72.02438102729663
+
+< -1
+< Auto-correlation Pitch: 71.99352708279231
+
+- 50 ->49
+- Auto-correlation Pitch: 71.30669144860921
+- 49 ->48
+- Auto-correlation Pitch: 67.30769693078123
+- 48 ->47
+- Auto-correlation Pitch: 63.53976562425514
+- 47 ->48
+- Auto-correlation Pitch: 63.65538362194041
+- 48 ->49
+- Auto-correlation Pitch: 67.35287131854213
+- 49 ->50
+- Auto-correlation Pitch: 71.35188944163001
+> 50
+> Auto-correlation Pitch: 73.73531642601901
+
+< -1
+< Auto-correlation Pitch: 73.92220219815755
+
+- 50 ->49
+- Auto-correlation Pitch: 71.32036202978517
+- 49 ->48
+- Auto-correlation Pitch: 67.32062278684928
+- 48 ->49
+- Auto-correlation Pitch: 67.4890440357163
+- 49 ->50
+- Auto-correlation Pitch: 71.54604858162071
+- 50 ->51
+- Auto-correlation Pitch: 75.60437400130073
+- 51 ->52
+- Auto-correlation Pitch: 80.06193090376092
+> 52
+> Auto-correlation Pitch: 80.73445260188777
+
+< -1
+< Auto-correlation Pitch: 79.433165146504
+
+- 51 ->50
+- Auto-correlation Pitch: 75.52401963597532
+- 50 ->49
+- Auto-correlation Pitch: 71.27332610791171
+- 49 ->48
+- Auto-correlation Pitch: 67.31706858754399
+> 48
+> Auto-correlation Pitch: 65.67780560937166
+
+< -1
+< Auto-correlation Pitch: 63.377852240559804
+
+- 47 ->46
+- Auto-correlation Pitch: 59.96971104980424
+> 46
+> Auto-correlation Pitch: 59.538770179721276
+
+< -1
+< Auto-correlation Pitch: 59.6571736738435
+
+- 46 ->47
+- Auto-correlation Pitch: 59.986644266183625
+- 47 ->48
+- Auto-correlation Pitch: 63.61082078192497
+> 48
+> Auto-correlation Pitch: 64.07928678040855
+
+< -1
+< Auto-correlation Pitch: 64.0346637407576
+
+- 48 ->47
+- Auto-correlation Pitch: 63.53798990812086
+- 47 ->46
+- Auto-correlation Pitch: 59.97126094589394
+- 46 ->45
+- Auto-correlation Pitch: 56.60265444462409
+- 45 ->44
+- Auto-correlation Pitch: 53.41273934863995
+- 44 ->43
+- Auto-correlation Pitch: 50.416000503710094
+- 43 ->42
+- Auto-correlation Pitch: 47.604149809886025
+- 42 ->41
+- Auto-correlation Pitch: 44.93177534509184
+- 41 ->42
+- Auto-correlation Pitch: 45.35316672643496
+- 42 ->43
+- Auto-correlation Pitch: 47.9425434331026
+- 43 ->44
+- Auto-correlation Pitch: 50.53192013977023
+- 44 ->45
+- Auto-correlation Pitch: 53.55285963088252
+- 45 ->46
+- Auto-correlation Pitch: 56.952652740143414
+- 46 ->47
+- Auto-correlation Pitch: 60.40297673302026
+- 47 ->48
+- Auto-correlation Pitch: 63.853300725897114
+- 48 ->49
+- Auto-correlation Pitch: 67.79652814632787
+- 49 ->48
+- Auto-correlation Pitch: 67.28042323161823
+- 48 ->49
+- Auto-correlation Pitch: 67.44787575438176
+- 49 ->50
+- Auto-correlation Pitch: 72.28199806864419
+- 50 ->51
+- Auto-correlation Pitch: 77.11612038290664
+- 51 ->52
+- Auto-correlation Pitch: 81.95024269716912
+- 52 ->53
+- Auto-correlation Pitch: 86.78436501143152
+- 53 ->54
+- Auto-correlation Pitch: 91.61848732569392
+- 54 ->55
+- Auto-correlation Pitch: 96.45260963995634
+- 55 ->56
+- Auto-correlation Pitch: 101.2867319542188
+- 56 ->57
+- Auto-correlation Pitch: 108.53791542561258
+- 57 ->58
+- Auto-correlation Pitch: 113.37203773987511
+- 58 ->59
+- Auto-correlation Pitch: 120.6232212112689
+- 59 ->60
+- Auto-correlation Pitch: 127.87440468266269
+- 60 ->61
+- Auto-correlation Pitch: 135.16670324905957
+- 61 ->62
+- Auto-correlation Pitch: 142.97935421662007
+> 62
+> Auto-correlation Pitch: 148.89518367522953
+
+< -1
+< Auto-correlation Pitch: 148.76192682557365
+
+- 62 ->61
+- Auto-correlation Pitch: 142.55498423652722
+> 61
+> Auto-correlation Pitch: 140.76296051147187
+
+< -1
+< Auto-correlation Pitch: 140.69278592174635
+
+- 61 ->60
+- Auto-correlation Pitch: 134.59762155701367
+- 60 ->59
+- Auto-correlation Pitch: 126.99314370529915
+- 59 ->58
+- Auto-correlation Pitch: 119.89805568354177
+- 58 ->57
+- Auto-correlation Pitch: 113.07790726515088
+- 57 ->56
+- Auto-correlation Pitch: 106.7789876426593
+- 56 ->55
+- Auto-correlation Pitch: 100.80096657662071
+- 55 ->54
+- Auto-correlation Pitch: 95.0877916919824
+- 54 ->53
+- Auto-correlation Pitch: 89.75288379155555
+- 53 ->52
+- Auto-correlation Pitch: 84.77875054944863
+- 52 ->51
+- Auto-correlation Pitch: 80.03840397538981
+- 51 ->50
+- Auto-correlation Pitch: 75.56310831416579
+- 50 ->49
+- Auto-correlation Pitch: 71.293327577717
+- 49 ->48
+- Auto-correlation Pitch: 67.30858340296226
+- 48 ->47
+- Auto-correlation Pitch: 63.53786245220018
+- 47 ->46
+- Auto-correlation Pitch: 59.952885774292376
+- 46 ->45
+- Auto-correlation Pitch: 56.58786836468893
+- 45 ->44
+- Auto-correlation Pitch: 53.42896924756579
+- 44 ->43
+- Auto-correlation Pitch: 50.431595765927746
+> 43
+> Auto-correlation Pitch: 49.44592414456915
+
+< -1
+< Auto-correlation Pitch: 49.445421906486516
+
+> 43
+> Auto-correlation Pitch: 49.42666440592223
+
+< -1
+< Auto-correlation Pitch: 49.426079790686224
+
+> 43
+> Auto-correlation Pitch: 49.37961873030423
+
+< -1
+< Auto-correlation Pitch: 49.37947857101977
+
+> 43
+> Auto-correlation Pitch: 49.361958660462236
+
+< -1
+< Auto-correlation Pitch: 49.36185381181249
+
+> 43
+> Auto-correlation Pitch: 49.348747730593985
+
+< -1
+< Auto-correlation Pitch: 49.34867151614441
+
+> 43
+> Auto-correlation Pitch: 49.33914470994724
+
+< -1
+< Auto-correlation Pitch: 49.338991392134965
+
+> 43
+> Auto-correlation Pitch: 49.3032410612318
+
+< -1
+< Auto-correlation Pitch: 49.303175311353904
+
+> 43
+> Auto-correlation Pitch: 49.28538352535317
+
+< -1
+< Auto-correlation Pitch: 49.28506697088591
+
+> 43
+> Auto-correlation Pitch: 49.273244349695716
+
+< -1
+< Auto-correlation Pitch: 49.27312777304806
+
+> 43
+> Auto-correlation Pitch: 49.25855569209139
+
+< -1
+< Auto-correlation Pitch: 49.25840906298697
+
+- 43 ->44
+- Auto-correlation Pitch: 50.796046227761146
+- 44 ->45
+- Auto-correlation Pitch: 53.67252953910636
+- 45 ->46
+- Auto-correlation Pitch: 57.02842673567578
+- 46 ->47
+- Auto-correlation Pitch: 60.38432393224525
+- 47 ->48
+- Auto-correlation Pitch: 63.70805540820797
+- 48 ->49
+- Auto-correlation Pitch: 67.36054986196842
+- 49 ->50
+- Auto-correlation Pitch: 71.46960612244898
+- 50 ->51
+- Auto-correlation Pitch: 75.70841578925737
+- 51 ->52
+- Auto-correlation Pitch: 80.30002942950497
+- 52 ->53
+- Auto-correlation Pitch: 84.89164306975266
+- 53 ->54
+- Auto-correlation Pitch: 90.16929980558221
+> 54
+> Auto-correlation Pitch: 94.46010965689719
+
+< -1
+< Auto-correlation Pitch: 94.34949303659867
+
+- 54 ->53
+- Auto-correlation Pitch: 89.77248888840636
+- 53 ->52
+- Auto-correlation Pitch: 84.71330927741286
+- 52 ->51
+- Auto-correlation Pitch: 80.01194326144478
+- 51 ->50
+- Auto-correlation Pitch: 75.54618570630396
+- 50 ->49
+- Auto-correlation Pitch: 71.30913871358202
+- 49 ->48
+- Auto-correlation Pitch: 67.3140223622725
+- 48 ->47
+- Auto-correlation Pitch: 63.518813211777506
+- 47 ->46
+- Auto-correlation Pitch: 59.97461245808598
+- 46 ->45
+- Auto-correlation Pitch: 56.60943170111014
+- 45 ->46
+- Auto-correlation Pitch: 56.91288603544477
+- 46 ->47
+- Auto-correlation Pitch: 60.31695021413473
+- 47 ->48
+- Auto-correlation Pitch: 63.72101439282468
+- 48 ->49
+- Auto-correlation Pitch: 67.69242260129636
+> 49
+> Auto-correlation Pitch: 69.36503068346059
+
+< -1
+< Auto-correlation Pitch: 68.92783908222111
+
+> 49
+> Auto-correlation Pitch: 69.8607791405615
+
+< -1
+< Auto-correlation Pitch: 71.73181269944843
+
+> 50
+> Auto-correlation Pitch: 72.53568089416301
+
+< -1
+< Auto-correlation Pitch: 72.50501621651742
+
+- 50 ->49
+- Auto-correlation Pitch: 71.28589874215466
+- 49 ->48
+- Auto-correlation Pitch: 67.30882322040193
+- 48 ->47
+- Auto-correlation Pitch: 63.540087667717664
+- 47 ->48
+- Auto-correlation Pitch: 63.655569892914954
+- 48 ->49
+- Auto-correlation Pitch: 67.36022701485284
+- 49 ->50
+- Auto-correlation Pitch: 71.3551814138385
+> 50
+> Auto-correlation Pitch: 73.72034551992975
+
+< -1
+< Auto-correlation Pitch: 73.87026823441778
+
+- 50 ->49
+- Auto-correlation Pitch: 71.3212921165981
+- 49 ->48
+- Auto-correlation Pitch: 67.31689004646492
+- 48 ->49
+- Auto-correlation Pitch: 67.45547332065036
+> 49
+> Auto-correlation Pitch: 69.05944676055717
+
+< -1
+< Auto-correlation Pitch: 68.52302580086054
+
+- 49 ->48
+- Auto-correlation Pitch: 67.28465562132351
+- 48 ->47
+- Auto-correlation Pitch: 63.528951988014455
+> 47
+> Auto-correlation Pitch: 61.727135642004214
+
