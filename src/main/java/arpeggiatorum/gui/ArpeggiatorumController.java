@@ -40,6 +40,8 @@ public class ArpeggiatorumController implements Initializable {
     public final XYChart.Series<String, Number> middleSeries = new XYChart.Series<>();
     public XYChart.Data<String, Number>[] middleData;
     public LineChart<String, Number> lineChart;
+    @FXML
+    public TabPane tabPaneControls;
     //First Column
     @FXML
     public Text textThreshold;
@@ -47,8 +49,8 @@ public class ArpeggiatorumController implements Initializable {
     public Text textRange;
     @FXML
     public Text textTempo;
-    @FXML
-    public Text textEnrichment;
+//    @FXML
+//    public Text textEnrichment;
     //Second Column
     @FXML
     public ComboBox<MidiDeviceChooserItem> comboMIDIIn;
@@ -367,11 +369,19 @@ public class ArpeggiatorumController implements Initializable {
 
         //int deviceOutputID = Tools.getDeviceID(comboAudioOut.getValue());
         // int deviceOutputChannels = Arpeggiatorum.synth.getAudioDeviceManager().getMaxOutputChannels(deviceOutputID);
-        Arpeggiatorum.synth.start(Arpeggiatorum.sampleRate,
-                deviceInputID,
-                deviceInputChannels, Arpeggiatorum.synth.getAudioDeviceManager().getDefaultOutputDeviceID(), 0);
+        try {
+            Arpeggiatorum.synth.start(Arpeggiatorum.sampleRate,
+                    deviceInputID,
+                    deviceInputChannels, Arpeggiatorum.synth.getAudioDeviceManager().getDefaultOutputDeviceID(), 0);
 //                deviceOutputID,
 //                deviceOutputChannels);
+        }
+        catch (Exception e) {
+            Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+            logger.log(Level.SEVERE, "Audio Exception.", e);
+            LogGUIController.logBuffer.append(e.getMessage());
+        }
+
         if (toggleButtonActivate.isSelected()) {
             toggleButtonActivate.fire();
         }
@@ -459,8 +469,10 @@ public class ArpeggiatorumController implements Initializable {
         createMidiInChooser();
         createMidiOutChooser();
         createAudioInChooser();
-        //createAudioOutChooser();
         createAudioChannelChooser();
+
+        tabPaneControls.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("tabpane.css").toExternalForm());
+        sliderEnrichment.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("filledslider.css").toExternalForm());
 
         comboMIDIChannel.getItems().addAll(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
         comboArpeggioChannel.getItems().addAll(-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
@@ -479,6 +491,8 @@ public class ArpeggiatorumController implements Initializable {
                 new int[]{0, 3, 7, 12, 15, 19, 24, 27, 31, 36, 39, 43, 48, 51, 55, 60}));
         comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Major Thirds",
                 new int[]{0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60}));
+        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Minor Thirds",
+                new int[]{0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 0, 0, 0}));
         comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Fourths",
                 new int[]{0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75}));
         comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Series of Overtones",
@@ -599,7 +613,7 @@ public class ArpeggiatorumController implements Initializable {
         });
 
         sliderEnrichment.valueProperty().addListener((observable, oldValue, newValue) -> {
-            textEnrichment.setText(String.format("%d %%", newValue.intValue()));
+            //textEnrichment.setText(String.format("%d %%", newValue.intValue()));
             Arpeggiatorum.getInstance().EnrichmentChange(newValue);
         });
     }
