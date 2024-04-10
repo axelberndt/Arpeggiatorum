@@ -65,6 +65,10 @@ public class ArpeggiatorumController implements Initializable {
     @FXML
     public Slider sliderThreshold;
     @FXML
+    public Slider sliderSharpness;
+    @FXML
+    public Slider sliderScale;
+    @FXML
     public Slider sliderTempo;
     @FXML
     public Slider sliderArticulation;
@@ -273,6 +277,9 @@ public class ArpeggiatorumController implements Initializable {
 
     @FXML
     public void buttonPanicClick(ActionEvent actionEvent) {
+        if (toggleButtonActivate.isSelected()) {
+            toggleButtonActivate.fire();
+        }
         Arpeggiatorum.getInstance().getArpeggiator().panic();
     }
 
@@ -367,14 +374,11 @@ public class ArpeggiatorumController implements Initializable {
         int deviceInputChannels = Arpeggiatorum.synth.getAudioDeviceManager().getMaxInputChannels(deviceInputID);
         updateAudioChannelChooser(deviceInputID);
 
-        //int deviceOutputID = Tools.getDeviceID(comboAudioOut.getValue());
-        // int deviceOutputChannels = Arpeggiatorum.synth.getAudioDeviceManager().getMaxOutputChannels(deviceOutputID);
         try {
             Arpeggiatorum.synth.start(Arpeggiatorum.sampleRate,
                     deviceInputID,
-                    deviceInputChannels, Arpeggiatorum.synth.getAudioDeviceManager().getDefaultOutputDeviceID(), 0);
-//                deviceOutputID,
-//                deviceOutputChannels);
+                    deviceInputChannels,
+                    Arpeggiatorum.synth.getAudioDeviceManager().getDefaultOutputDeviceID(), 0);
         }
         catch (Exception e) {
             Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
@@ -499,6 +503,8 @@ public class ArpeggiatorumController implements Initializable {
                 new int[]{0, 12, 19, 24, 28, 31, 34, 36, 38, 40, 42, 43, 44, 46, 47, 48}));
         comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Overtones Transposed Down",
                 new int[]{0, 12, 24, 7, 19, 4, 16, 10, 22, 2, 14, 6, 18, 8, 20, 11}));
+        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("User Preset",
+                new int[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}));
 
         for (Mic2MIDI processor : Arpeggiatorum.getInstance().getMic2Midi()) {
             comboMic2MIDI.getItems().add(processor);
@@ -593,14 +599,16 @@ public class ArpeggiatorumController implements Initializable {
             Arpeggiatorum.getInstance().ThresholdChange(newValue);
         });
 
+        sliderScale.valueProperty().addListener((observable, oldValue, newValue) -> Arpeggiatorum.getInstance().ScaleChange(newValue));
+
+        sliderSharpness.valueProperty().addListener((observable, oldValue, newValue) -> Arpeggiatorum.getInstance().SharpnessChange(newValue));
+
         sliderTempo.valueProperty().addListener((observable, oldValue, newValue) -> {
             textTempo.setText(String.format("Current Tempo: %d", newValue.intValue()));
             Arpeggiatorum.getInstance().TempoChange(newValue);
         });
 
-        sliderArticulation.valueProperty().addListener((observable, oldValue, newValue) -> {
-            Arpeggiatorum.getInstance().ArticulationChange(newValue);
-        });
+        sliderArticulation.valueProperty().addListener((observable, oldValue, newValue) -> Arpeggiatorum.getInstance().ArticulationChange(newValue));
 
         sliderRange.highValueProperty().addListener((observable, oldValue, newValue) -> {
             textRange.setText(String.format("[%d-%d]", ((int) sliderRange.getLowValue()), newValue.intValue()));

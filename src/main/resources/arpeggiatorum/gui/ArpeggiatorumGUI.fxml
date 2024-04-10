@@ -104,7 +104,6 @@
                     <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
                     <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
                     <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
-                    <RowConstraints minHeight="20.0" prefHeight="50.0" vgrow="ALWAYS"/>
                 </rowConstraints>
                 <!--                //First Column-->
                 <Text text="Audio Input"
@@ -125,7 +124,6 @@
                       fx:id="textScale"
                       GridPane.columnIndex="0" GridPane.rowIndex="4"
                       GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
-
 
 
                 <!--//Second Column-->
@@ -153,10 +151,7 @@
                               maxHeight="Infinity" maxWidth="Infinity"
                               textAlignment="CENTER"
                               onAction="#toggleButtonActivateClick"/>
-                <Button fx:id="buttonPanic" textAlignment="CENTER" text="PANIC!" onAction="#buttonPanicClick"
-                        GridPane.columnIndex="0"
-                        GridPane.columnSpan="4" GridPane.rowIndex="6"
-                        maxHeight="Infinity" maxWidth="Infinity"/>
+
 
                 <!--                //Third Column-->
                 <ComboBox fx:id="comboAudioChannel" GridPane.columnIndex="2" GridPane.columnSpan="1"
@@ -292,6 +287,10 @@
 
 
     <BorderPane fx:id="borderPane" SplitPane.resizableWithParent="true">
+        <top>
+            <Button fx:id="buttonPanic" textAlignment="CENTER" text="PANIC!" onAction="#buttonPanicClick"
+                    maxHeight="Infinity" maxWidth="Infinity" prefHeight="50"/>
+        </top>
         <!--        //Histogram here -->
     </BorderPane>
 </SplitPane>

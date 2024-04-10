@@ -14,7 +14,7 @@ public class CQTPitchDetector extends UnitGenerator {
     private final int offset = 0;
     private final ConstantQ CQT;
     private final int lowIndex;
-    private final float sharpness;
+    private double sharpness;
     public UnitInputPort input;
     /**
      * Provides arbitrary sized output.
@@ -24,6 +24,10 @@ public class CQTPitchDetector extends UnitGenerator {
     private int cursor;
     private boolean running;
     private final double[] pushData;
+
+    public void setSharpness(double value) {
+        this.sharpness=value;
+    }
 
     public CQTPitchDetector() {
         this(44100.0f, 41.20f, 2000.0f, 12, 0.01f, 0.55f, 1.0f);

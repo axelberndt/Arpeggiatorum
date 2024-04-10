@@ -52,7 +52,6 @@ public class Arpeggiatorum implements Receiver {
     private static float cqtSpread;
     private static int cqtMinVel;
     private static int cqtMaxVel;
-    private static float cqtSharpness;
     //Tarsos Properties
     private static int tarsosBuffer;
     private static double tarsosConfidence;
@@ -73,7 +72,7 @@ public class Arpeggiatorum implements Receiver {
 
         Tools.printAudioDevices(); // print a list of all available audio devices
 
-       synth.setRealTime(true);
+        synth.setRealTime(true);
         //this.synth.start();
         //Passing a value greater than 0 for input channels will cause an error. why?
         //this.synth.start(44100,AudioDeviceManager.USE_DEFAULT_DEVICE,2,AudioDeviceManager.USE_DEFAULT_DEVICE,0);
@@ -101,11 +100,10 @@ public class Arpeggiatorum implements Receiver {
         cqtIsPoly = Boolean.parseBoolean(configProp.getProperty("CQT Poly", "true"));
         cqtAutoTune = Boolean.parseBoolean(configProp.getProperty("CQT Auto-Tune", "false"));
         Mic2MIDI_CQT.clusterSize = Integer.parseInt(configProp.getProperty("CQT Auto-Tune Cluster Size", "3"));
-        cqtSharpness = Float.parseFloat(configProp.getProperty("CQT Sharpness", "1.0"));
-
         cqtMinVel = Integer.parseInt(configProp.getProperty("CQT Min Velocity", "30"));
         cqtMaxVel = Integer.parseInt(configProp.getProperty("CQT Max Velocity", "127"));
         Mic2MIDI_CQT.scalingFactor = Double.parseDouble(configProp.getProperty("CQT Scaling Factor", "1.0"));
+        Mic2MIDI_CQT.sharpness = Float.parseFloat(configProp.getProperty("CQT Sharpness", "1.0"));
         tarsosBuffer = Integer.parseInt(configProp.getProperty("Tarsos Buffer Size", "1024"));
         tarsosConfidence = Double.parseDouble(configProp.getProperty("Tarsos Confidence", "0.98"));
         fftBinSize = Integer.parseInt(configProp.getProperty("FFT Bin Size", "9"));
@@ -116,7 +114,7 @@ public class Arpeggiatorum implements Receiver {
         this.mic2Midi.add(new Mic2MIDI_JSyn(this.arpeggiator, sampleRate));
         this.mic2Midi.add(new Mic2MIDI_FFT(this.arpeggiator, sampleRate, fftBinSize, fftMaxFreq));
         this.mic2Midi.add(new Mic2MIDI_Tarsos(this.arpeggiator, sampleRate, tarsosBuffer, tarsosConfidence));
-        this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, sampleRate, cqtMin, cqtMax, cqtThreshold, cqtSpread, cqtIsPoly, cqtAutoTune, cqtMinVel, cqtMaxVel,cqtSharpness));
+        this.mic2Midi.add(new Mic2MIDI_CQT(this.arpeggiator, sampleRate, cqtMin, cqtMax, cqtThreshold, cqtSpread, cqtIsPoly, cqtAutoTune, cqtMinVel, cqtMaxVel));
         for (Mic2MIDI processor : mic2Midi) {
             synth.add(processor);
         }
@@ -162,12 +160,6 @@ public class Arpeggiatorum implements Receiver {
             }
         }
 
-//        for (int i = 0; i < (long) ArpeggiatorumGUI.controllerHandle.comboAudioOut.getItems().size(); i++) {
-//            if (ArpeggiatorumGUI.controllerHandle.comboAudioOut.getItems().get(i).equals(audioOutProp)) {
-//                ArpeggiatorumGUI.controllerHandle.comboAudioOut.getSelectionModel().select(i);
-//            }
-//        }
-
         for (int i = 0; i < (long) ArpeggiatorumGUI.controllerHandle.comboAudioIn.getItems().size(); i++) {
             if (ArpeggiatorumGUI.controllerHandle.comboAudioIn.getItems().get(i).equals(audioInProp)) {
                 ArpeggiatorumGUI.controllerHandle.comboAudioIn.getSelectionModel().select(i);
@@ -179,6 +171,8 @@ public class Arpeggiatorum implements Receiver {
         ArpeggiatorumGUI.controllerHandle.comboBassChannel.setValue(Integer.parseInt(configProp.getProperty("Bass", "0")));
         ArpeggiatorumGUI.controllerHandle.comboHeldChannel.setValue(Integer.parseInt(configProp.getProperty("Held", "2")));
         ArpeggiatorumGUI.controllerHandle.sliderThreshold.setValue(Double.parseDouble(configProp.getProperty("Threshold", "500")));
+        ArpeggiatorumGUI.controllerHandle.sliderScale.setValue(Float.parseFloat(configProp.getProperty("CQT Scaling Factor", "1.0")));
+        ArpeggiatorumGUI.controllerHandle.sliderSharpness.setValue(Float.parseFloat(configProp.getProperty("CQT Sharpness", "1.0")));
         ArpeggiatorumGUI.controllerHandle.sliderTempo.setValue(Double.parseDouble(configProp.getProperty("Tempo", "500")));
         ArpeggiatorumGUI.controllerHandle.sliderArticulation.setValue(Double.parseDouble(configProp.getProperty("Articulation", "100")));
         ArpeggiatorumGUI.controllerHandle.sliderRange.setLowValue(Double.parseDouble(configProp.getProperty("RangeMin", "0")));
@@ -229,7 +223,7 @@ public class Arpeggiatorum implements Receiver {
             prop.setProperty("CQT Min Velocity", String.valueOf(cqtMinVel));
             prop.setProperty("CQT Max Velocity", String.valueOf(cqtMaxVel));
             prop.setProperty("CQT Scaling Factor", String.valueOf(Mic2MIDI_CQT.scalingFactor));
-            prop.setProperty("CQT Sharpness", String.valueOf(cqtSharpness));
+            prop.setProperty("CQT Sharpness", String.valueOf(Mic2MIDI_CQT.sharpness));
 
             prop.setProperty("Tarsos Buffer Size", String.valueOf(tarsosBuffer));
             prop.setProperty("Tarsos Confidence Threshold", String.valueOf(tarsosConfidence));
@@ -335,7 +329,7 @@ public class Arpeggiatorum implements Receiver {
                     case EventMaker.CC_Effect_Ctrl_2_14b: // trigger arpeggio channel
                         Platform.runLater(() -> {
                             Integer choice = (sMsg.getData2() >= 64) ? Arpeggiator.ARPEGGIO_CHANNEL_PRESET : -1;
-                           ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(choice);
+                            ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(choice);
                         });
                         break;
                     case EventMaker.CC_Undefined_Ctrl_3_14b: // trigger held notes channel
@@ -433,14 +427,14 @@ public class Arpeggiatorum implements Receiver {
     public void Activate(boolean selected) {
         if (selected) {
             ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setStyle("-fx-background-color: Chartreuse;");
-           // ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setText("Active");
+            // ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setText("Active");
 
 
             ArpeggiatorumGUI.controllerHandle.comboMic2MIDI.getValue().start();
             ArpeggiatorumGUI.controllerHandle.comboMic2MIDI.getValue().setSignalToNoiseThreshold(ArpeggiatorumGUI.controllerHandle.sliderThreshold.getValue() / ArpeggiatorumGUI.controllerHandle.sliderThreshold.getMax());
         } else {
             ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setStyle("");
-           // ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setText("Activate");
+            // ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setText("Activate");
             for (Mic2MIDI processor : mic2Midi) {
                 processor.stop();
             }
@@ -495,5 +489,22 @@ public class Arpeggiatorum implements Receiver {
     public void ArticulationChange(Number value) {
         double articulation = (value.doubleValue() - 100) / 100.0;
         this.arpeggiator.setArticulation(articulation);
+    }
+
+    public void ScaleChange(Number value) {
+        for (Mic2MIDI processor : mic2Midi) {
+            if (processor instanceof Mic2MIDI_CQT) {
+                Mic2MIDI_CQT.scalingFactor= value.floatValue();
+                processor.setSignalToNoiseThreshold(ArpeggiatorumGUI.controllerHandle.sliderThreshold.getValue()/ ArpeggiatorumGUI.controllerHandle.sliderThreshold.getMax());
+            }
+        }
+    }
+
+    public void SharpnessChange(Number value) {
+        for (Mic2MIDI processor : mic2Midi) {
+            if (processor instanceof Mic2MIDI_CQT) {
+                ((Mic2MIDI_CQT) processor).updateDetectorsSharpness(value.doubleValue());
+            }
+        }
     }
 }

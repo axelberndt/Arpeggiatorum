@@ -61,9 +61,7 @@ public class ArpeggiatorumGUI extends Application {
         //primaryStage.setFullScreen(true);
         primaryStage.setMaximized(true);
 
-        primaryStage.setOnCloseRequest((event) -> {
-            Arpeggiatorum.SaveNClose(this);
-        });
+        primaryStage.setOnCloseRequest((event) -> Arpeggiatorum.SaveNClose(this));
 
 
         primaryStage.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
