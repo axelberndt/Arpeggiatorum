@@ -496,7 +496,7 @@ public class ArpeggiatorumController implements Initializable {
         comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Major Thirds",
                 new int[]{0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60}));
         comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Minor Thirds",
-                new int[]{0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 0, 0, 0}));
+                new int[]{0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45}));
         comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Fourths",
                 new int[]{0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75}));
         comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Series of Overtones",

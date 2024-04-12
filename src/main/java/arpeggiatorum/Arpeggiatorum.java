@@ -266,6 +266,23 @@ public class Arpeggiatorum implements Receiver {
         }
     }
 
+    public static void LoadPerformance(ArpeggiatorumGUI arpeggiatorumGUI) {
+        try {
+            FXMLLoader fxmlLoader;
+            fxmlLoader = new FXMLLoader(ArpeggiatorumGUI.class.getResource("PerformanceGUI.fxml"));
+//            fxmlLoader.setLocation(ArpeggiatorumGUI.class.getClassLoader().getResource("arpeggiatorum/gui/LogGUI.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            Stage stage = new Stage();
+            stage.setTitle("Performance Mode");
+            stage.setScene(scene);
+            stage.show();
+            stage.setMaximized(true);
+        } catch (IOException e) {
+            Logger logger = Logger.getLogger(arpeggiatorumGUI.getClass().getName());
+            logger.log(Level.SEVERE, "Failed to create new Window.", e);
+        }
+    }
+
     public Arpeggiator getArpeggiator() {
         return arpeggiator;
     }

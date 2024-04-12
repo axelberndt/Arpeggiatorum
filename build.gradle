@@ -3,6 +3,7 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
+
 //application {
 //    mainClass = 'arpeggiatorum.gui.ArpeggiatorumGUI'
 //}
@@ -39,6 +40,7 @@ repositories {
         name = "TarsosDSP repository"
         url = "https://mvn.0110.be/releases"
     }
+//    maven { url "https://repo1.maven.org/maven2" }
     flatDir {
         dirs("externals")
     }
@@ -58,6 +60,8 @@ dependencies {
     implementation 'be.tarsos.dsp:jvm:2.5'
     // https://mvnrepository.com/artifact/org.controlsfx/controlsfx
     implementation 'org.controlsfx:controlsfx:latest.release'
+   // implementation 'org.jfxtras:jfxtras-menu:latest.release'
+    implementation 'eu.hansolo:medusa:21.0.3'
 }
 
 test {

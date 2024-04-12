@@ -75,6 +75,10 @@ public class ArpeggiatorumGUI extends Application {
                     Arpeggiatorum.LoadLog(this);
                     break;
                 }
+                case KeyCode.P: {
+                    Arpeggiatorum.LoadPerformance(this);
+                    break;
+                }
                 default: {
                     LogGUIController.logBuffer.append("Unrecognized key.");
                 }
