@@ -6,8 +6,7 @@ package arpeggiatorum.gui;
 
 import arpeggiatorum.gui.cornerRadialMenu.RadialMenu;
 import arpeggiatorum.gui.cornerRadialMenu.RadialMenuItem;
-import eu.hansolo.medusa.Gauge;
-import eu.hansolo.medusa.GaugeBuilder;
+import arpeggiatorum.gui.rotaryKnob.RotaryKnob;
 import javafx.animation.*;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleLongProperty;
@@ -27,13 +26,11 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-
 public class PerformanceGUIController implements Initializable {
     @FXML
     public AnchorPane anchorPane;
-    public Gauge gaugeTempo;
 
-
+    public RotaryKnob rotaryTempo;
     public RadialMenu radialMenuPattern;
     public RadialMenu radialMenuEnrichment;
 
@@ -93,20 +90,10 @@ public class PerformanceGUIController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-        gaugeTempo = GaugeBuilder.create()
-                .minValue(100)
-                .maxValue(1000)
-                .value(500)
-                .skinType(Gauge.SkinType.BAR)
-                .barColor(Color.CHARTREUSE)
-                .valueColor(Color.WHITE)
-                .unitColor(Color.WHITE)
-                .unit("BPM")
-                .animated(true)
-                .build();
-        gaugeTempo.setTranslateX(50);
-        gaugeTempo.setTranslateY(100);
+        rotaryTempo = new RotaryKnob();
+        rotaryTempo.setTranslateX(1150);
+        rotaryTempo.setTranslateY(200);
+        rotaryTempo.setValue(1000);
 
         final EventHandler<ActionEvent> patternHandler = new EventHandler<>() {
             @Override
@@ -131,12 +118,12 @@ public class PerformanceGUIController implements Initializable {
                 textFadeTransition.play();
             }
         };
-        radialMenuPattern = createCenterRadialMenu("Pattern",ArpeggiatorumGUI.controllerHandle.comboPattern.getItems().stream().toList(),patternHandler);
+        radialMenuPattern = createCenterRadialMenu("Pattern", ArpeggiatorumGUI.controllerHandle.comboPattern.getItems().stream().toList(), patternHandler);
         radialMenuPattern.setTranslateX(500);
         radialMenuPattern.setTranslateY(400);
         radialMenuPattern.hideRadialMenu();
 
-        radialMenuEnrichment = createCenterRadialMenu("Enrichment",ArpeggiatorumGUI.controllerHandle.comboEnrichment.getItems().stream().toList(),patternHandler);
+        radialMenuEnrichment = createCenterRadialMenu("Enrichment", ArpeggiatorumGUI.controllerHandle.comboEnrichment.getItems().stream().toList(), patternHandler);
         radialMenuEnrichment.setTranslateX(1000);
         radialMenuEnrichment.setTranslateY(400);
         radialMenuEnrichment.hideRadialMenu();
@@ -145,7 +132,7 @@ public class PerformanceGUIController implements Initializable {
         actionPerformedLabel.setTranslateX(750);
         actionPerformedLabel.setTranslateY(100);
 
-        anchorPane.getChildren().addAll(radialMenuPattern,radialMenuEnrichment, actionPerformedLabel, gaugeTempo);
+        anchorPane.getChildren().addAll(radialMenuPattern, radialMenuEnrichment, actionPerformedLabel, rotaryTempo);
 
     }
 
@@ -167,7 +154,7 @@ public class PerformanceGUIController implements Initializable {
             radialMenu.addMenuItem(new RadialMenuItem(ITEM_SIZE, element.toString(), new Label(element.toString()), eventHandler));
         }
         //Settings for RadialMenu:
-        radialMenu.setMenuItemSize(360.0/menuItems.size());
+        radialMenu.setMenuItemSize(360.0 / menuItems.size());
         radialMenu.setInnerRadius(50.0);
         radialMenu.setGraphicsFitWidth(0.0);
         radialMenu.setRadius(200.0);

@@ -3,20 +3,11 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
-
-//application {
-//    mainClass = 'arpeggiatorum.gui.ArpeggiatorumGUI'
-//}
-dependencies {
-    /* uncomment for cross-platform jar: */
-    runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:win"
-    runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:linux"
-    runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:mac"
-}
 javafx {
     version = "21.0.2"
     modules = ['javafx.controls', 'javafx.fxml']
 }
+
 tasks.withType(Jar) {
 
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
@@ -50,21 +41,32 @@ repositories {
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation platform('org.junit:junit-bom:latest.release')
     testImplementation 'org.junit.jupiter:junit-jupiter'
-    implementation "com.github.philburk:jsyn:17.1.0"
+    implementation "com.github.philburk:jsyn:latest.release"
     //implementation "com.github.cemfi:meico:latest.release"
     implementation(":meico:0.9.0")
     implementation(":jportaudio:0.1.0")
-    implementation 'be.tarsos.dsp:core:2.5'
-    implementation 'be.tarsos.dsp:jvm:2.5'
+    implementation 'be.tarsos.dsp:core:latest.release'
+    implementation 'be.tarsos.dsp:jvm:latest.release'
     // https://mvnrepository.com/artifact/org.controlsfx/controlsfx
     implementation 'org.controlsfx:controlsfx:latest.release'
-   // implementation 'org.jfxtras:jfxtras-menu:latest.release'
-    implementation 'eu.hansolo:medusa:21.0.3'
+    // implementation 'org.jfxtras:jfxtras-menu:latest.release'
+    implementation 'eu.hansolo:medusa:latest.release'
+//    implementation ':scenebuilder-kit:21.0.0'
+    //implementation 'com.guigarage:css-helper:latest.release'
+
+    /* uncomment for cross-platform jar: */
+    runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:win"
+    runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:linux"
+    runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:mac"
 }
 
 test {
     useJUnitPlatform()
 }
+
+//application {
+//    mainClass = 'arpeggiatorum.gui.ArpeggiatorumGUI'
+//}
 mainClassName = 'arpeggiatorum.gui.ArpeggiatorumGUI'
