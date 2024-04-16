@@ -49,7 +49,7 @@ public class ArpeggiatorumGUI extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         fxmlLoader = new FXMLLoader(ArpeggiatorumGUI.class.getResource("ArpeggiatorumGUI.fxml"));
-//        fxmlLoader = new FXMLLoader(ArpeggiatorumGUI.class.getClassLoader().getResource("arpeggiatorum/gui/ArpeggiatorumGUI.fxml"));
+       // fxmlLoader = new FXMLLoader(ArpeggiatorumGUI.class.getClassLoader().getResource("arpeggiatorum/gui/ArpeggiatorumGUI.fxml"));
         scene = new Scene(fxmlLoader.load());
 
         controllerHandle = fxmlLoader.getController();

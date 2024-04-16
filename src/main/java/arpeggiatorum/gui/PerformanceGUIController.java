@@ -6,7 +6,8 @@ package arpeggiatorum.gui;
 
 import arpeggiatorum.gui.cornerRadialMenu.RadialMenu;
 import arpeggiatorum.gui.cornerRadialMenu.RadialMenuItem;
-import arpeggiatorum.gui.rotaryKnob.RotaryKnob;
+import arpeggiatorum.gui.rotaryControls.DJDisc;
+//import arpeggiatorum.gui.rotaryControls.RotaryKnob;
 import javafx.animation.*;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleLongProperty;
@@ -30,7 +31,8 @@ public class PerformanceGUIController implements Initializable {
     @FXML
     public AnchorPane anchorPane;
 
-    public RotaryKnob rotaryTempo;
+//    public RotaryKnob rotaryTempo;
+    public DJDisc rotaryTempo;
     public RadialMenu radialMenuPattern;
     public RadialMenu radialMenuEnrichment;
 
@@ -90,10 +92,10 @@ public class PerformanceGUIController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        rotaryTempo = new RotaryKnob();
-        rotaryTempo.setTranslateX(1150);
-        rotaryTempo.setTranslateY(200);
-        rotaryTempo.setValue(1000);
+//        rotaryTempo = new RotaryKnob();
+//        rotaryTempo.setTranslateX(1150);
+//        rotaryTempo.setTranslateY(200);
+//        rotaryTempo.setValue(1000);
 
         final EventHandler<ActionEvent> patternHandler = new EventHandler<>() {
             @Override
@@ -132,6 +134,9 @@ public class PerformanceGUIController implements Initializable {
         actionPerformedLabel.setTranslateX(750);
         actionPerformedLabel.setTranslateY(100);
 
+        rotaryTempo =new DJDisc(400,Color.CHARTREUSE,500,100,1000);
+        rotaryTempo.setTranslateX(100);
+        rotaryTempo.setTranslateY(500);
         anchorPane.getChildren().addAll(radialMenuPattern, radialMenuEnrichment, actionPerformedLabel, rotaryTempo);
 
     }
