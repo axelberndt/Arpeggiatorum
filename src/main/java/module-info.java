@@ -1,4 +1,4 @@
-module Arpeggiatorum.main {
+module arpeggiatorum {
     requires java.desktop;
     requires java.logging;
     requires jsyn;
@@ -10,9 +10,6 @@ module Arpeggiatorum.main {
     requires javafx.fxml;
     requires javafx.graphics;
 
-
-//    opens arpeggiatorum to javafx.fxml;
-//    exports arpeggiatorum;
-//    opens org.openjfx to javafx.fxml;
-//    exports org.openjfx;
+    opens arpeggiatorum to javafx.graphics;
+    exports arpeggiatorum to javafx.graphics;
 }

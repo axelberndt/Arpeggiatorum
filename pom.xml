@@ -15,6 +15,15 @@
     </properties>
 
     <repositories>
+        <!--        This does not work, the 2 local libraries need to be "installed" in the mvn repo with something like:
+        mvn  install:install-file -Dfile="externals\jportaudio-0.1.0.jar" -DgroupId="com.portaudio" -DartifactId=jportaudio -Dversion="0.1.0" -Dpackaging=jar -DcreateChecksum=true
+        mvn  install:install-file -Dfile="externals\meico.jar" -DgroupId="meico.meico" -DartifactId=meico -Dversion="0.9.0" -Dpackaging=jar -DcreateChecksum=true
+        -->
+        <!--        <repository>-->
+        <!--            <id>localrepository</id>-->
+        <!--            <name>Local Project Repository</name>-->
+        <!--            <url>file://${project.basedir}/externals</url>-->
+        <!--        </repository>-->
         <repository>
             <id>JitPack</id>
             <name>jitpack.io</name>
@@ -25,10 +34,7 @@
             <name>Tarsos DSP Repository</name>
             <url>https://mvn.0110.be/releases</url>
         </repository>
-        <repository>
-            <id>localrepository</id>
-            <url>file://${project.basedir}/externals/</url>
-        </repository>
+
     </repositories>
 
     <dependencies>
@@ -36,78 +42,349 @@
             <groupId>com.github.philburk</groupId>
             <artifactId>jsyn</artifactId>
             <version>RELEASE</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>meico</groupId>
+            <groupId>meico.meico</groupId>
             <artifactId>meico</artifactId>
             <version>0.9.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/externals/meico.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.portaudio</groupId>
             <artifactId>jportaudio</artifactId>
             <version>0.1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/externals/jportaudio-0.1.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>be.tarsos.dsp</groupId>
             <artifactId>core</artifactId>
             <version>RELEASE</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>be.tarsos.dsp</groupId>
             <artifactId>jvm</artifactId>
             <version>RELEASE</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.controlsfx</groupId>
             <artifactId>controlsfx</artifactId>
             <version>RELEASE</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>eu.hansolo</groupId>
             <artifactId>medusa</artifactId>
             <version>RELEASE</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>21.0.2</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
             <version>21.0.2</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-graphics</artifactId>
             <version>21.0.2</version>
             <classifier>win</classifier>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-graphics</artifactId>
             <version>21.0.2</version>
             <classifier>linux</classifier>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-graphics</artifactId>
             <version>21.0.2</version>
             <classifier>mac</classifier>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
+
+
+    <build>
+        <pluginManagement>
+            <plugins>
+<!--                <plugin>-->
+<!--                    <groupId>com.github.akman</groupId>-->
+<!--                    <artifactId>jpackage-maven-plugin</artifactId>-->
+<!--                    <version>0.1.5</version>-->
+<!--                    <dependencies>-->
+<!--                        &lt;!&ndash; need a newer version of asm to support java 21 &ndash;&gt;-->
+<!--                        <dependency>-->
+<!--                            <groupId>org.ow2.asm</groupId>-->
+<!--                            <artifactId>asm</artifactId>-->
+<!--                            <version>9.6</version>-->
+<!--                        </dependency>-->
+<!--                    </dependencies>-->
+<!--                    <configuration>-->
+<!--                        &lt;!&ndash;-->
+<!--                          Specifies the JDK home path which provides the tool needed.-->
+<!--                          If not specified the jpackage tool executable will be find in-->
+<!--                          the following order:-->
+
+<!--                            - user specified JDK home directory by toolchains-plugin-->
+<!--                            - JDK home directory specified by system variable JAVA_HOME-->
+<!--                            - system path specified by system variable PATH-->
+<!--                        &ndash;&gt;-->
+<!--                        <toolhome>${env.JPACKAGE_HOME}</toolhome>-->
+
+<!--                        &lt;!&ndash;-->
+<!--                          Specifies the location in which generated output files are placed.-->
+<!--                          Default value: ${project.build.directory}/jpackage-->
+<!--                        &ndash;&gt;-->
+<!--                        <dest>${project.build.directory}/jpackage</dest>-->
+
+<!--                        &lt;!&ndash;-->
+<!--                          Specifies the name of subdirectory relative to-->
+<!--                          the destination directory in which files of generated-->
+<!--                          application image are placed.-->
+<!--                        &ndash;&gt;-->
+<!--                        <name>Arpeggiatorum</name>-->
+
+<!--                        &lt;!&ndash;-->
+<!--                          Specifies version of the application and/or package.-->
+<!--                        &ndash;&gt;-->
+<!--                        <appversion>0.1.3</appversion>-->
+
+<!--                        &lt;!&ndash;-->
+<!--                          Specifies copyright for the application.-->
+<!--                        &ndash;&gt;-->
+<!--                        <copyright>Copyright</copyright>-->
+
+<!--                        &lt;!&ndash;-->
+<!--                          Specifies description of the application.-->
+<!--                        &ndash;&gt;-->
+<!--                        <description>Description</description>-->
+
+<!--                        &lt;!&ndash;-->
+<!--                          Specifies vendor of the application.-->
+<!--                        &ndash;&gt;-->
+<!--                        <vendor>KIO</vendor>-->
+
+<!--                        &lt;!&ndash;-->
+<!--                          Specifies the location of the icon of the application package.-->
+<!--                        &ndash;&gt;-->
+<!--                        &lt;!&ndash;                        <icon>${project.basedir}/config/jpackage/resources/appname.ico</icon>&ndash;&gt;-->
+
+<!--                        &lt;!&ndash;-->
+<!--                          Specifies the module path. The path where the jlink tool-->
+<!--                          discovers observable modules: modular JAR files, JMOD files,-->
+<!--                          exploded modules. If this option is not specified, then-->
+<!--                          the default module path is $ JAVA_HOME/jmods. This directory-->
+<!--                          contains the java.base module and the other standard and-->
+<!--                          JDK modules. If this option is specified but the java.base-->
+<!--                          module cannot be resolved from it, then the jlink command-->
+<!--                          appends $ JAVA_HOME/jmods to the module path.-->
+<!--                          Pass on &dash;-modulepath option to jlink.-->
+
+<!--                          pathelements - passed to jlink as is-->
+<!--                          filesets - sets of files (without directories)-->
+<!--                          dirsets - sets of directories (without files)-->
+<!--                          dependencysets - sets of dependencies with specified includes-->
+<!--                                           and excludes patterns (glob: or regex:)-->
+<!--                                           for file names and regex patterns only-->
+<!--                                           for module names, and excludes-->
+<!--                                           for automatic modules-->
+<!--                        &ndash;&gt;-->
+<!--                        <modulepath>-->
+<!--                            <dependencysets>-->
+<!--                                <dependencyset>-->
+<!--                                    <includeoutput>true</includeoutput>-->
+<!--                                    <excludeautomatic>true</excludeautomatic>-->
+<!--                                </dependencyset>-->
+<!--                            </dependencysets>-->
+<!--                        </modulepath>-->
+
+<!--                        &lt;!&ndash;-->
+<!--                          Specifies the modules names (names of root modules) to add to-->
+<!--                          the runtime image. Their transitive dependencies will add too.-->
+<!--                          This module list, along with the main module (if specified)-->
+<!--                          will be passed to jlink as the &dash;-add-module argument.-->
+<!--                          If not specified, either just the main module (if module-->
+<!--                          is specified), or the default set of modules (if mainjar-->
+<!--                          is specified) are used.-->
+<!--                        &ndash;&gt;-->
+<!--                        <addmodules>-->
+<!--                            <addmodule>arpeggiatorum</addmodule>-->
+<!--                        </addmodules>-->
+
+<!--                        &lt;!&ndash;-->
+<!--                          Specifies the main module (and optionally main class) of-->
+<!--                          the application. This module must be located on the module path.-->
+<!--                          When this option is specified, the main module will be linked-->
+<!--                          in the Java runtime image.-->
+<!--                          Either module or main-jar option can be specified-->
+<!--                          but not both.-->
+<!--                        &ndash;&gt;-->
+<!--                        <module>arpeggiatorum</module>-->
+<!--                        <mainclass>arpeggiatorum.Launcher</mainclass>-->
+<!--                        &lt;!&ndash;-->
+<!--                          Specifies the command line arguments to pass to the main class-->
+<!--                          if no command line arguments are given to the launcher.-->
+<!--                        &ndash;&gt;-->
+<!--                        <arguments>&#45;&#45;opt</arguments>-->
+
+<!--                        &lt;!&ndash;-->
+<!--                          Specifies the options to pass to the Java runtime.-->
+<!--                        &ndash;&gt;-->
+<!--                        <javaoptions>-Dfile.encoding=UTF-8 -Xms256m -Xmx512m</javaoptions>-->
+
+<!--                        &lt;!&ndash;-->
+<!--                          Specifies options are added to, or used to overwrite,-->
+<!--                          the original command line options to build additional-->
+<!--                          alternative launchers.-->
+<!--                        &ndash;&gt;-->
+<!--                        &lt;!&ndash;                        <addlaunchers>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                            <addlauncher>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                <name>ArpeggiatorumWIX</name>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                <module>arpeggiatorum</module>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                <arguments>&#45;&#45;help</arguments>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                <javaoptions>-Xms256m -Xmx512m</javaoptions>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                <appversion>0.1.3</appversion>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                &lt;!&ndash;                                <icon>${project.basedir}/config/jpackage/resources/appname-cli.ico</icon>&ndash;&gt;&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                <winconsole>true</winconsole>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                            </addlauncher>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                        </addlaunchers>&ndash;&gt;-->
+
+<!--                        &lt;!&ndash;-->
+<!--                          Specifies the location of a properties file that contains-->
+<!--                          list of key, value pairs. The keys "extension", "mime-type",-->
+<!--                          "icon", and "description" can be used to describe the association.-->
+<!--                        &ndash;&gt;-->
+<!--                        &lt;!&ndash;                        <fileassociations>${project.basedir}/config/jpackage/associations.properties</fileassociations>&ndash;&gt;-->
+
+<!--                        &lt;!&ndash;-->
+<!--                          Specifies the relative sub-path under the default installation-->
+<!--                          location of the application for Windows, or absolute path of the-->
+<!--                          installation directory of the application for Mac or Linux.-->
+<!--                        &ndash;&gt;-->
+<!--                        <installdir>KIO/Arpeggiatorum</installdir>-->
+
+<!--                        &lt;!&ndash;-->
+<!--                          Specifies the location of a license file.-->
+<!--                        &ndash;&gt;-->
+<!--                        &lt;!&ndash;                        <licensefile>${project.basedir}/config/jpackage/LICENSE</licensefile>&ndash;&gt;-->
+
+<!--                        &lt;!&ndash;-->
+<!--                          Specifies the location of a resources directory that override-->
+<!--                          jpackage resources. Icons, template files, and other resources-->
+<!--                          of jpackage can be overridden by adding replacement resources-->
+<!--                          to this directory.-->
+<!--                        &ndash;&gt;-->
+<!--                        &lt;!&ndash;                        <resourcedir>${project.basedir}/config/jpackage/resources</resourcedir>&ndash;&gt;-->
+
+<!--                        &lt;!&ndash;-->
+<!--                          Enable adding a dialog to choose a directory in which-->
+<!--                          the product is installed.-->
+<!--                          Default value: false-->
+<!--                        &ndash;&gt;-->
+<!--                        <windirchooser>true</windirchooser>-->
+
+<!--                        &lt;!&ndash;-->
+<!--                          Enable adding the application to the system menu.-->
+<!--                          Default value: false-->
+<!--                        &ndash;&gt;-->
+<!--                        <winmenu>true</winmenu>-->
+
+<!--                        &lt;!&ndash;-->
+<!--                          Start menu group this application is placed in.-->
+<!--                        &ndash;&gt;-->
+<!--                        <winmenugroup>KIO/Arpeggiatorum</winmenugroup>-->
+
+<!--                        &lt;!&ndash;-->
+<!--                          Enable requesting to perform an install on a per-user basis.-->
+<!--                          Default value: false-->
+<!--                        &ndash;&gt;-->
+<!--                        <winperuserinstall>true</winperuserinstall>-->
+
+<!--                        &lt;!&ndash;-->
+<!--                          Enable creating a desktop shortcut for the application.-->
+<!--                          Default value: false-->
+<!--                        &ndash;&gt;-->
+<!--                        <winshortcut>true</winshortcut>-->
+
+<!--                        &lt;!&ndash;-->
+<!--                          UUID associated with upgrades for this package.-->
+<!--                        &ndash;&gt;-->
+<!--                        <winupgradeuuid>8CF81762-0B19-46A6-875E-1F839A1700D0</winupgradeuuid>-->
+<!--                    </configuration>-->
+<!--                </plugin>-->
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+<!--            <plugin>-->
+<!--                <groupId>com.github.akman</groupId>-->
+<!--                <artifactId>jpackage-maven-plugin</artifactId>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>jpackage-installer</id>-->
+<!--                        <phase>verify</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>jpackage</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+
+            <!--JLink cannot currently be used as MEICO is a non modular package-->
+            <!--            <plugin>-->
+            <!--                <groupId>org.openjfx</groupId>-->
+            <!--                <artifactId>javafx-maven-plugin</artifactId>-->
+            <!--                <version>0.0.8</version>-->
+            <!--                <configuration>-->
+            <!--                    <compress>2</compress>-->
+            <!--                    <noHeaderFiles>true</noHeaderFiles>-->
+            <!--                    <stripDebug>true</stripDebug>-->
+            <!--                    <noManPages>true</noManPages>-->
+            <!--                    <launcher>Arpeggiatorum</launcher>-->
+            <!--                    <mainClass>arpeggiatorum.Launcher</mainClass>-->
+            <!--                    <jlinkImageName>Arpeggiatorum</jlinkImageName>-->
+            <!--                    <jlinkZipName>Arpeggiatorum </jlinkZipName>-->
+            <!--                </configuration>-->
+            <!--            </plugin>-->
+            <!--            &lt;!&ndash; any other plugins &ndash;&gt;-->
+            <!--            <plugin>-->
+            <!--                <artifactId>maven-dependency-plugin</artifactId>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <phase>install</phase>-->
+            <!--                        <goals>-->
+            <!--                            <goal>copy-dependencies</goal>-->
+            <!--                        </goals>-->
+            <!--                        <configuration>-->
+            <!--                            <outputDirectory>${project.build.directory}/externals</outputDirectory>-->
+            <!--                        </configuration>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
+
+            <!--            Building a FAT JAR is not a long term solution-->
+                        <plugin>
+                            <artifactId>maven-assembly-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <phase>package</phase>
+                                    <goals>
+                                        <goal>single</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                            <configuration>
+                                <archive>
+                                    <manifest>
+                                        <addClasspath>true</addClasspath>
+                                        <mainClass>arpeggiatorum.Launcher</mainClass>
+                                    </manifest>
+                                </archive>
+                                <descriptorRefs>
+                                    <descriptorRef>jar-with-dependencies</descriptorRef>
+                                </descriptorRefs>
+                            </configuration>
+                        </plugin>
+        </plugins>
+    </build>
 </project>
