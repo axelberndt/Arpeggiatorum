@@ -2,17 +2,25 @@ plugins {
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.1.0'
     id 'org.beryx.jlink' version '3.0.1'
+    id 'maven-publish'
 }
-
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'com.github.axelberndt'
+            artifactId = 'Arpeggiatorum'
+            version = '0.1.3-SNAPSHOT'
+            from components.java
+        }
+    }
+}
 javafx {
     version = "21.0.2"
     modules = ['javafx.controls', 'javafx.fxml']
 }
 
 tasks.withType(Jar) {
-
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
     jar {
         manifest {
             attributes 'Main-Class': 'arpeggiatorum.Launcher'
@@ -23,7 +31,7 @@ tasks.withType(Jar) {
     }
 }
 group = 'com.github.axelberndt'
-version = '0.1.2'
+version = '0.1.3'
 
 repositories {
     mavenCentral()
@@ -50,11 +58,11 @@ dependencies {
     implementation(":jportaudio:0.1.0")
     implementation 'be.tarsos.dsp:core:latest.release'
     implementation 'be.tarsos.dsp:jvm:latest.release'
-    // https://mvnrepository.com/artifact/org.controlsfx/controlsfx
+    //https://mvnrepository.com/artifact/org.controlsfx/controlsfx
     implementation 'org.controlsfx:controlsfx:latest.release'
-    // implementation 'org.jfxtras:jfxtras-menu:latest.release'
+    //implementation 'org.jfxtras:jfxtras-menu:latest.release'
     implementation 'eu.hansolo:medusa:latest.release'
-//    implementation ':scenebuilder-kit:21.0.0'
+    //implementation ':scenebuilder-kit:21.0.0'
     //implementation 'com.guigarage:css-helper:latest.release'
 
     /* uncomment for cross-platform jar: */
@@ -67,15 +75,17 @@ test {
     useJUnitPlatform()
 }
 
-//Switch to Modular version will be needed as JavaFX shouldn't be started from unnamed modules.
-//application {
-//    mainClass = 'arpeggiatorum.Launcher'
-//    mainModule='Arpeggiatorum'
-//}
-//jlink {
-//    launcher {
-//        name = 'Arpeggiatorum'
-//    }
-//}
+//Switch to modular version will be needed as JavaFX shouldn't be started from unnamed modules.
+//BUT: Gradle does not support dependencies on non-modularized JARs correctly.
+//Switch to Maven then?
+application {
+    mainClass = 'arpeggiatorum.Launcher'
+    mainModule = 'Arpeggiatorum'
+}
+jlink {
+    launcher {
+        name = 'Arpeggiatorum'
+    }
+}
 
 mainClassName = 'arpeggiatorum.gui.ArpeggiatorumGUI'
