@@ -374,21 +374,21 @@
 <!--            </plugin>-->
 
             <!--JLink cannot currently be used as MEICO, jsyn, and java.string.similarity are "automatic modules"-->
-<!--                        <plugin>-->
-<!--                            <groupId>org.openjfx</groupId>-->
-<!--                            <artifactId>javafx-maven-plugin</artifactId>-->
-<!--                            <version>0.0.8</version>-->
-<!--                            <configuration>-->
-<!--                                <compress>2</compress>-->
-<!--                                <noHeaderFiles>true</noHeaderFiles>-->
-<!--                                <stripDebug>true</stripDebug>-->
-<!--                                <noManPages>true</noManPages>-->
-<!--                                <launcher>Arpeggiatorum</launcher>-->
-<!--                                <mainClass>arpeggiatorum.Launcher</mainClass>-->
-<!--                                <jlinkImageName>Arpeggiatorum</jlinkImageName>-->
-<!--                                <jlinkZipName>Arpeggiatorum </jlinkZipName>-->
-<!--                            </configuration>-->
-<!--                        </plugin>-->
+                        <plugin>
+                            <groupId>org.openjfx</groupId>
+                            <artifactId>javafx-maven-plugin</artifactId>
+                            <version>0.0.8</version>
+                            <configuration>
+                                <compress>2</compress>
+                                <noHeaderFiles>true</noHeaderFiles>
+                                <stripDebug>true</stripDebug>
+                                <noManPages>true</noManPages>
+                                <launcher>Arpeggiatorum</launcher>
+                                <mainClass>arpeggiatorum.Launcher</mainClass>
+                                <jlinkImageName>Arpeggiatorum</jlinkImageName>
+                                <jlinkZipName>Arpeggiatorum </jlinkZipName>
+                            </configuration>
+                        </plugin>
                         <!-- any other plugins -->
                         <plugin>
                             <artifactId>maven-dependency-plugin</artifactId>
