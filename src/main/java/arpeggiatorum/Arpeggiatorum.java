@@ -3,6 +3,7 @@ package arpeggiatorum;
 import arpeggiatorum.gui.ArpeggiatorumGUI;
 import arpeggiatorum.gui.LogGUIController;
 import arpeggiatorum.microphoneControl.*;
+import arpeggiatorum.supplementary.EventMaker;
 import arpeggiatorum.supplementary.Tools;
 import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
@@ -10,7 +11,6 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import meico.midi.EventMaker;
 
 import javax.sound.midi.*;
 import java.io.FileInputStream;

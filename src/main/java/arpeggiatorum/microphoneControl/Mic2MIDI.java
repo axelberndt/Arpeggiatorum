@@ -2,10 +2,10 @@ package arpeggiatorum.microphoneControl;
 
 import arpeggiatorum.gui.ArpeggiatorumGUI;
 import arpeggiatorum.gui.LogGUIController;
+import arpeggiatorum.supplementary.EventMaker;
 import com.jsyn.unitgen.ChannelIn;
 import com.jsyn.unitgen.Circuit;
 import com.jsyn.unitgen.SchmidtTrigger;
-import meico.midi.EventMaker;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.Receiver;

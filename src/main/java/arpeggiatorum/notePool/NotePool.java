@@ -1,8 +1,8 @@
 package arpeggiatorum.notePool;
 
 import arpeggiatorum.gui.ArpeggiatorumGUI;
+import arpeggiatorum.supplementary.EventMaker;
 import arpeggiatorum.supplementary.SortedList;
-import meico.midi.EventMaker;
 
 import javax.sound.midi.ShortMessage;
 import java.util.ArrayList;

@@ -43,16 +43,21 @@
             <artifactId>jsyn</artifactId>
             <version>RELEASE</version>
         </dependency>
-        <dependency>
-            <groupId>meico.meico</groupId>
-            <artifactId>meico</artifactId>
-            <version>0.9.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.portaudio</groupId>
-            <artifactId>jportaudio</artifactId>
-            <version>0.1.0</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>info.debatty</groupId>-->
+<!--            <artifactId>java-string-similarity</artifactId>-->
+<!--            <version>RELEASE</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>meico.meico</groupId>-->
+<!--            <artifactId>meico</artifactId>-->
+<!--            <version>0.9.0</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.portaudio</groupId>-->
+<!--            <artifactId>jportaudio</artifactId>-->
+<!--            <version>0.1.0</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>be.tarsos.dsp</groupId>
             <artifactId>core</artifactId>
@@ -73,34 +78,71 @@
             <artifactId>medusa</artifactId>
             <version>RELEASE</version>
         </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>21.0.2</version>
-        </dependency>
+
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>21.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-graphics</artifactId>
             <version>21.0.2</version>
             <classifier>win</classifier>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
-            <artifactId>javafx-graphics</artifactId>
+            <artifactId>javafx-fxml</artifactId>
             <version>21.0.2</version>
             <classifier>linux</classifier>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
-            <artifactId>javafx-graphics</artifactId>
+            <artifactId>javafx-fxml</artifactId>
             <version>21.0.2</version>
             <classifier>mac</classifier>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>21.0.2</version>
+            <classifier>win</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>21.0.2</version>
+            <classifier>linux</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>21.0.2</version>
+            <classifier>mac</classifier>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.openjfx</groupId>-->
+<!--            <artifactId>javafx-base</artifactId>-->
+<!--            <version>21.0.2</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.openjfx</groupId>-->
+<!--            <artifactId>javafx-swing</artifactId>-->
+<!--            <version>21.0.2</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.openjfx</groupId>-->
+<!--            <artifactId>javafx-graphics</artifactId>-->
+<!--            <version>21.0.2</version>-->
+<!--            <classifier>win</classifier>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.openjfx</groupId>-->
+<!--            <artifactId>javafx-graphics</artifactId>-->
+<!--            <version>21.0.2</version>-->
+<!--            <classifier>linux</classifier>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.openjfx</groupId>-->
+<!--            <artifactId>javafx-graphics</artifactId>-->
+<!--            <version>21.0.2</version>-->
+<!--            <classifier>mac</classifier>-->
+<!--        </dependency>-->
     </dependencies>
 
 
@@ -193,7 +235,7 @@
 <!--                            <dependencysets>-->
 <!--                                <dependencyset>-->
 <!--                                    <includeoutput>true</includeoutput>-->
-<!--                                    <excludeautomatic>true</excludeautomatic>-->
+<!--                                    <excludeautomatic>false</excludeautomatic>-->
 <!--                                </dependencyset>-->
 <!--                            </dependencysets>-->
 <!--                        </modulepath>-->
@@ -219,8 +261,8 @@
 <!--                          Either module or main-jar option can be specified-->
 <!--                          but not both.-->
 <!--                        &ndash;&gt;-->
-<!--                        <module>arpeggiatorum</module>-->
-<!--                        <mainclass>arpeggiatorum.Launcher</mainclass>-->
+<!--                        <module>arpeggiatorum/Launcher</module>-->
+<!--&lt;!&ndash;                        <mainclass>arpeggiatorum.Launcher</mainclass>&ndash;&gt;-->
 <!--                        &lt;!&ndash;-->
 <!--                          Specifies the command line arguments to pass to the main class-->
 <!--                          if no command line arguments are given to the launcher.-->
@@ -237,17 +279,17 @@
 <!--                          the original command line options to build additional-->
 <!--                          alternative launchers.-->
 <!--                        &ndash;&gt;-->
-<!--                        &lt;!&ndash;                        <addlaunchers>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                            <addlauncher>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                                <name>ArpeggiatorumWIX</name>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                                <module>arpeggiatorum</module>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                                <arguments>&#45;&#45;help</arguments>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                                <javaoptions>-Xms256m -Xmx512m</javaoptions>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                                <appversion>0.1.3</appversion>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                                &lt;!&ndash;                                <icon>${project.basedir}/config/jpackage/resources/appname-cli.ico</icon>&ndash;&gt;&ndash;&gt;-->
-<!--                        &lt;!&ndash;                                <winconsole>true</winconsole>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                            </addlauncher>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                        </addlaunchers>&ndash;&gt;-->
+<!--                                                <addlaunchers>-->
+<!--                                                    <addlauncher>-->
+<!--                                                        <name>ArpeggiatorumWIX</name>-->
+<!--                                                        <module>arpeggiatorum</module>-->
+<!--                                                        <arguments>-help</arguments>-->
+<!--                                                        <javaoptions>-Xms256m -Xmx512m</javaoptions>-->
+<!--                                                        <appversion>0.1.3</appversion>-->
+<!--                                                        &lt;!&ndash;                                <icon>${project.basedir}/config/jpackage/resources/appname-cli.ico</icon>&ndash;&gt;-->
+<!--                                                        <winconsole>true</winconsole>-->
+<!--                                                    </addlauncher>-->
+<!--                                                </addlaunchers>-->
 
 <!--                        &lt;!&ndash;-->
 <!--                          Specifies the location of a properties file that contains-->
@@ -316,6 +358,7 @@
         </pluginManagement>
 
         <plugins>
+
 <!--            <plugin>-->
 <!--                <groupId>com.github.akman</groupId>-->
 <!--                <artifactId>jpackage-maven-plugin</artifactId>-->
@@ -330,37 +373,37 @@
 <!--                </executions>-->
 <!--            </plugin>-->
 
-            <!--JLink cannot currently be used as MEICO is a non modular package-->
-            <!--            <plugin>-->
-            <!--                <groupId>org.openjfx</groupId>-->
-            <!--                <artifactId>javafx-maven-plugin</artifactId>-->
-            <!--                <version>0.0.8</version>-->
-            <!--                <configuration>-->
-            <!--                    <compress>2</compress>-->
-            <!--                    <noHeaderFiles>true</noHeaderFiles>-->
-            <!--                    <stripDebug>true</stripDebug>-->
-            <!--                    <noManPages>true</noManPages>-->
-            <!--                    <launcher>Arpeggiatorum</launcher>-->
-            <!--                    <mainClass>arpeggiatorum.Launcher</mainClass>-->
-            <!--                    <jlinkImageName>Arpeggiatorum</jlinkImageName>-->
-            <!--                    <jlinkZipName>Arpeggiatorum </jlinkZipName>-->
-            <!--                </configuration>-->
-            <!--            </plugin>-->
-            <!--            &lt;!&ndash; any other plugins &ndash;&gt;-->
-            <!--            <plugin>-->
-            <!--                <artifactId>maven-dependency-plugin</artifactId>-->
-            <!--                <executions>-->
-            <!--                    <execution>-->
-            <!--                        <phase>install</phase>-->
-            <!--                        <goals>-->
-            <!--                            <goal>copy-dependencies</goal>-->
-            <!--                        </goals>-->
-            <!--                        <configuration>-->
-            <!--                            <outputDirectory>${project.build.directory}/externals</outputDirectory>-->
-            <!--                        </configuration>-->
-            <!--                    </execution>-->
-            <!--                </executions>-->
-            <!--            </plugin>-->
+            <!--JLink cannot currently be used as MEICO, jsyn, and java.string.similarity are "automatic modules"-->
+<!--                        <plugin>-->
+<!--                            <groupId>org.openjfx</groupId>-->
+<!--                            <artifactId>javafx-maven-plugin</artifactId>-->
+<!--                            <version>0.0.8</version>-->
+<!--                            <configuration>-->
+<!--                                <compress>2</compress>-->
+<!--                                <noHeaderFiles>true</noHeaderFiles>-->
+<!--                                <stripDebug>true</stripDebug>-->
+<!--                                <noManPages>true</noManPages>-->
+<!--                                <launcher>Arpeggiatorum</launcher>-->
+<!--                                <mainClass>arpeggiatorum.Launcher</mainClass>-->
+<!--                                <jlinkImageName>Arpeggiatorum</jlinkImageName>-->
+<!--                                <jlinkZipName>Arpeggiatorum </jlinkZipName>-->
+<!--                            </configuration>-->
+<!--                        </plugin>-->
+                        <!-- any other plugins -->
+                        <plugin>
+                            <artifactId>maven-dependency-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <phase>install</phase>
+                                    <goals>
+                                        <goal>copy-dependencies</goal>
+                                    </goals>
+                                    <configuration>
+                                        <outputDirectory>${project.build.directory}/externals</outputDirectory>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>
 
             <!--            Building a FAT JAR is not a long term solution-->
                         <plugin>

@@ -2,12 +2,12 @@ package arpeggiatorum;
 
 import arpeggiatorum.gui.ArpeggiatorumGUI;
 import arpeggiatorum.gui.LogGUIController;
-import arpeggiatorum.notePool.NotePool;
 import arpeggiatorum.notePool.NoteItem;
+import arpeggiatorum.notePool.NotePool;
+import arpeggiatorum.supplementary.EventMaker;
 import com.jsyn.Synthesizer;
 import com.softsynth.shared.time.ScheduledCommand;
 import com.softsynth.shared.time.TimeStamp;
-import meico.midi.EventMaker;
 
 import javax.sound.midi.*;
 import java.util.logging.Level;

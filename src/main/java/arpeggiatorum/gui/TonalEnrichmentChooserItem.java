@@ -1,6 +1,8 @@
 package arpeggiatorum.gui;
 
-import meico.supplementary.KeyValue;
+//import meico.supplementary.KeyValue;
+
+import arpeggiatorum.supplementary.KeyValue;
 
 /**
  * This class represents a preset item in the tonal enrichment ComboBox.

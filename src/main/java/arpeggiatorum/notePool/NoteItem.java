@@ -2,8 +2,8 @@ package arpeggiatorum.notePool;
 
 import arpeggiatorum.gui.ArpeggiatorumGUI;
 import arpeggiatorum.gui.LogGUIController;
-import meico.midi.EventMaker;
-import meico.supplementary.KeyValue;
+import arpeggiatorum.supplementary.EventMaker;
+import arpeggiatorum.supplementary.KeyValue;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.ShortMessage;
