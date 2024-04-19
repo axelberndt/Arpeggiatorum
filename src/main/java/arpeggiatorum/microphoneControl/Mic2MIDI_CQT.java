@@ -18,7 +18,7 @@ import java.util.Arrays;
 public class Mic2MIDI_CQT extends Mic2MIDI {
     public static double minFreq;
     public static double scalingFactor;
-    public static float sharpness;
+    public static double sharpness;
     public static boolean autoTune;
     public static int clusterSize;
     public final UnitVariableInputPort[] CQTPorts;
@@ -43,6 +43,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
     private int currentVelocity;
 
     public void updateDetectorsSharpness(double value){
+        sharpness=value;
         for (CQTPitchDetector detector : cqtPitchDetectors) {
             detector.setSharpness(value);
         }
@@ -72,7 +73,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
         cqtPitchDetectors = new CQTPitchDetector[bandNum];
         CQTPorts = new UnitVariableInputPort[bandNum];
         for (int i = 0; i < bandNum; i++) {
-            cqtPitchDetectors[i] = new CQTPitchDetector((float) sampleRate, bands.get(i).floatValue(), bands.get(i + 1).floatValue(), binsPerOctave, threshold, spread, sharpness);
+            cqtPitchDetectors[i] = new CQTPitchDetector((float) sampleRate, bands.get(i).floatValue(), bands.get(i + 1).floatValue(), binsPerOctave, threshold, spread, (float) sharpness);
             cqtPitchDetectors[i].input.connect(0, this.channelIn.output, 0);
             this.add(cqtPitchDetectors[i]);
             addPort(this.CQTPorts[i] = new UnitVariableInputPort("CQTBins"));
