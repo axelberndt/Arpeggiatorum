@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * @author Axel Berndt
  */
 public class Arpeggiator implements Receiver, Transmitter {
-    public static final String version = "0.1.2";
+    public static final String version = "0.1.3";
     public static final int ARPEGGIO_CHANNEL_PRESET = 1;
     public static final int HELD_NOTES_CHANNEL_PRESET = 2;
     public static final int BASS_CHANNEL_PRESET = 0;

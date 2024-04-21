@@ -33,9 +33,19 @@ javafx {
 //    }
 //}
 
-group = 'com.github.axelberndt'
-version = '0.1.3'
-mainClassName = 'arpeggiatorum.Launcher'
+//Switch to modular version will be needed as JavaFX shouldn't be started from unnamed modules.
+//BUT: Gradle does not support dependencies on non-modularized JARs correctly.
+//Switch to Maven then?
+//application {
+//    mainClass = 'arpeggiatorum.Launcher'
+//    mainModule = 'Arpeggiatorum'
+//}
+application {
+    group = 'com.github.axelberndt'
+    version = '0.1.3'
+//    mainClassName = 'arpeggiatorum.Launcher'
+    mainClass.set("arpeggiatorum.Launcher")
+}
 
 repositories {
     mavenCentral()
@@ -80,17 +90,12 @@ test {
     useJUnitPlatform()
 }
 
-//Switch to modular version will be needed as JavaFX shouldn't be started from unnamed modules.
-//BUT: Gradle does not support dependencies on non-modularized JARs correctly.
-//Switch to Maven then?
-//application {
-//    mainClass = 'arpeggiatorum.Launcher'
-//    mainModule = 'Arpeggiatorum'
-//}
+
 jlink {
     options = ['--strip-debug', '--compress', 'zip-6', '--no-header-files', '--no-man-pages']
     launcher {
         name = 'Arpeggiatorum'
+       //application.mainModule='arpeggiatorum'
     }
     forceMerge('jsyn')
     jpackage {

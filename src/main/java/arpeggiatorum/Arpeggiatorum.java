@@ -192,7 +192,7 @@ public class Arpeggiatorum implements Receiver {
             Properties prop = new Properties();
             // Set the properties values
             prop.setProperty("Name", "ArpeggiatorumGUI");
-            prop.setProperty("Version", "0.1.2");
+            prop.setProperty("Version", "0.1.3");
 
             prop.setProperty("Channel", ArpeggiatorumGUI.controllerHandle.comboMIDIChannel.getValue().toString());
             prop.setProperty("Arpeggio", ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getValue().toString());
