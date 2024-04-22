@@ -78,7 +78,10 @@ dependencies {
     //implementation 'org.jfxtras:jfxtras-menu:latest.release'
     //implementation 'eu.hansolo:medusa:latest.release'
     implementation 'eu.hansolo:touchslider:latest.release'
+    //Depends on non modular packages...
+    //implementation 'eu.hansolo:regulators:17.0.0'
     //implementation 'eu.hansolo.fx.regulators:regulators:latest.release'
+
     //implementation ':scenebuilder-kit:21.0.0'
     //implementation 'com.guigarage:css-helper:latest.release'
     //implementation 'info.debatty:java-string-similarity:latest.release'

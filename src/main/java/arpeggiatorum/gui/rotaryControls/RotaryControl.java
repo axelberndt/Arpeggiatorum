@@ -145,7 +145,7 @@ public class RotaryControl extends StackPane {
         // setStyle("-fx-background-color:rgb(255,255,255,0.6)");
 
         this.arcColor = arcColor;
-        canvas.setEffect(new DropShadow(15, Color.BLACK));
+        //canvas.setEffect(new DropShadow(15, Color.BLACK));
 
         // imageView
         replaceImage(null);
@@ -153,9 +153,9 @@ public class RotaryControl extends StackPane {
         // valueField
         labelValue.setText(minimumValue + "");
         labelValue.setAlignment(Pos.CENTER);
-        labelValue.setMaxWidth(150);
+        labelValue.setMaxWidth(perimeter/3.0);
         labelValue.setId("value-field-normal");
-        labelValue.setStyle("-fx-font-size: 36");
+        labelValue.setStyle("-fx-font-size: 28; -fx-text-fill: white;-fx-font-weight: bold;");
         labelValue.setCursor(Cursor.CROSSHAIR);
         labelValue.setOnMouseClicked(c -> {
             ArpeggiatorumGUI.controllerHandle.buttonTapTempo.fire();

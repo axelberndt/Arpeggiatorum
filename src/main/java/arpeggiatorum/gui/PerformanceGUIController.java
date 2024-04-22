@@ -4,6 +4,7 @@
 
 package arpeggiatorum.gui;
 
+import arpeggiatorum.Arpeggiatorum;
 import arpeggiatorum.gui.cornerRadialMenu.RadialMenu;
 import arpeggiatorum.gui.cornerRadialMenu.RadialMenuItem;
 import arpeggiatorum.gui.rotaryControls.RotaryControl;
@@ -28,6 +29,7 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.util.Duration;
+import org.controlsfx.control.ToggleSwitch;
 
 import java.net.URL;
 import java.util.List;
@@ -40,19 +42,19 @@ public class PerformanceGUIController implements Initializable {
     public VBox vBox;
 
     public RotaryControl rotaryTempo;
-   // public Regulator regulatorTempo;
+    //public Regulator regulatorTempo;
 
     public RadialMenu radialMenuPattern;
     public RadialMenu radialMenuEnrichment;
 
-    public ToggleButton toggleAudio;
-    public ToggleButton toggleHeld;
-    public ToggleButton toggleArpeggio;
-    public ToggleButton toggleBass;
+    public ToggleSwitch toggleAudio;
+    public ToggleSwitch toggleHeld;
+    public ToggleSwitch toggleArpeggio;
+    public ToggleSwitch toggleBass;
 
     public TouchSlider sliderArticulation;
 
-    public Button togglePanic;
+    public Button buttonPanic;
 
     public Button[] buttonEnrichmentArray = new Button[16];
 
@@ -113,14 +115,26 @@ public class PerformanceGUIController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         actionPerformedLabel.setStyle("-fx-font-size: 36; -fx-text-fill: WHITE;");
-        String buttonStyle = "fx-text-fill: WHITE;-fx-background-color: Gainsboro;-fx-pref-width: 200;-fx-pref-height: 200; fx-border-color: Black; -fx-stroke-width: 2";
+        String buttonStyle = "fx-text-fill: WHITE;-fx-background-color: Gainsboro;-fx-pref-width: 100;-fx-pref-height: 100; fx-border-color: Black; -fx-stroke-width: 2";
 
-        toggleAudio = new ToggleButton("Activate Audio");
-        toggleAudio.setStyle(buttonStyle);
+        buttonPanic = new Button("PANIC");
+        buttonPanic.setStyle(buttonStyle);
+        buttonPanic.setTranslateX(1400);
+        buttonPanic.setTranslateY(600);
+
+        toggleAudio = new ToggleSwitch("Activate Audio");
+        // toggleAudio.setStyle(buttonStyle);
+        toggleAudio.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                Arpeggiatorum.getInstance().Activate(true);
+            } else {
+                Arpeggiatorum.getInstance().Activate(false);
+            }
+        });
         toggleAudio.setTranslateX(0);
         toggleAudio.setTranslateY(0);
 
-        sliderArticulation= TouchSliderBuilder.create()
+        sliderArticulation = TouchSliderBuilder.create()
                 .prefSize(600, 200)
                 .name("Articulation")
                 .orientation(Orientation.HORIZONTAL)
@@ -140,18 +154,36 @@ public class PerformanceGUIController implements Initializable {
         sliderArticulation.setTranslateX(300);
         sliderArticulation.setTranslateY(0);
 
-        toggleHeld=new ToggleButton("Held");
-        toggleHeld.setStyle(buttonStyle);
+        toggleHeld = new ToggleSwitch("Held");
+        toggleHeld.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+//                Arpeggiatorum.getInstance().Activate(true);
+            } else {
+                ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getSelectionModel().select(0);
+            }
+        });
         toggleHeld.setTranslateX(1000);
         toggleHeld.setTranslateY(0);
 
-        toggleArpeggio = new ToggleButton("Arpeggio");
-        toggleArpeggio.setStyle(buttonStyle);
+        toggleArpeggio = new ToggleSwitch("Arpeggio");
+        toggleArpeggio.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                //
+            } else {
+                ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(0);
+            }
+        });
         toggleArpeggio.setTranslateX(1200);
         toggleArpeggio.setTranslateY(0);
 
-        toggleBass = new ToggleButton("Bass");
-        toggleBass.setStyle(buttonStyle);
+        toggleBass = new ToggleSwitch("Bass");
+        toggleBass.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+//                Arpeggiatorum.getInstance().Activate(true);
+            } else {
+                ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().select(0);
+            }
+        });
         toggleBass.setTranslateX(1400);
         toggleBass.setTranslateY(0);
 
@@ -178,26 +210,28 @@ public class PerformanceGUIController implements Initializable {
         };
 
         radialMenuPattern = createCenterRadialMenu("Pattern", ArpeggiatorumGUI.controllerHandle.comboPattern.getItems().stream().toList(), patternHandler);
-        radialMenuPattern.setTranslateX(500);
-        radialMenuPattern.setTranslateY(400);
+        radialMenuPattern.setTranslateX(1300);
+        radialMenuPattern.setTranslateY(500);
         radialMenuPattern.hideRadialMenu();
 
         radialMenuEnrichment = createCenterRadialMenu("Enrichment", ArpeggiatorumGUI.controllerHandle.comboEnrichment.getItems().stream().toList(), enrichmentHandler);
-        radialMenuEnrichment.setTranslateX(1000);
-        radialMenuEnrichment.setTranslateY(400);
+        radialMenuEnrichment.setTranslateX(300);
+        radialMenuEnrichment.setTranslateY(500);
         radialMenuEnrichment.hideRadialMenu();
 
         //Debug Label
-        actionPerformedLabel.setTranslateX(500);
-        actionPerformedLabel.setTranslateY(50);
+        actionPerformedLabel.setTranslateX(1000);
+        actionPerformedLabel.setTranslateY(200);
 
-        rotaryTempo = new RotaryControl(300, Color.CHARTREUSE, (int) ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue(), (int) ArpeggiatorumGUI.controllerHandle.sliderTempo.getMin(), (int) ArpeggiatorumGUI.controllerHandle.sliderTempo.getMax());
-        rotaryTempo.setTranslateX(100);
-        rotaryTempo.setTranslateY(500);
+        rotaryTempo = new RotaryControl(150, Color.CHARTREUSE, (int) ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue(), (int) ArpeggiatorumGUI.controllerHandle.sliderTempo.getMin(), (int) ArpeggiatorumGUI.controllerHandle.sliderTempo.getMax());
+        rotaryTempo.setTranslateX(800);
+        rotaryTempo.setTranslateY(600);
+
         rotaryTempo.updateValueDirectly((int) ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue());
 
         anchorPane.getChildren().addAll(toggleAudio, sliderArticulation, toggleHeld, toggleArpeggio, toggleBass,
-                radialMenuPattern, radialMenuEnrichment, actionPerformedLabel, rotaryTempo);
+                radialMenuPattern, radialMenuEnrichment, actionPerformedLabel,
+                rotaryTempo, buttonPanic);
 
     }
 
