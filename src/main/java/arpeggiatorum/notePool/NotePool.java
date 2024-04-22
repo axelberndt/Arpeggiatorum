@@ -390,5 +390,14 @@ public class NotePool {
         public String toString() {
             return this.name;
         }
+
+        public static Pattern fromString(String text) {
+            for (Pattern b : Pattern.values()) {
+                if (b.name.equalsIgnoreCase(text)) {
+                    return b;
+                }
+            }
+            return null;
+        }
     }
 }

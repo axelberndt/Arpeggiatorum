@@ -11,6 +11,9 @@ module arpeggiatorum {
 
     requires org.controlsfx.controls;
 
+    requires eu.hansolo.fx.touchslider;
+   // requires eu.hansolo.fx.regulators;
+
     requires javafx.fxml;
     //requires javafx.base;
     //requires javafx.controls;

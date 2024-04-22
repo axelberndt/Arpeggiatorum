@@ -1,5 +1,6 @@
 package arpeggiatorum.gui.rotaryControls;
 
+import arpeggiatorum.gui.ArpeggiatorumGUI;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -24,7 +25,7 @@ import javafx.util.Duration;
  *
  * @author GOXR3PLUS
  */
-public class DJDisc extends StackPane {
+public class RotaryControl extends StackPane {
 
     /** The listeners. */
 
@@ -32,6 +33,7 @@ public class DJDisc extends StackPane {
      * The arc color.
      */
     private Color arcColor;
+
 
     /**
      * The Orientation will be Reversed or Normal.
@@ -128,7 +130,7 @@ public class DJDisc extends StackPane {
      * @param maximumValue The maximum value of the disc
      *                     [[SuppressWarningsSpartan]]
      */
-    public DJDisc(int perimeter, Color arcColor, int value, int minimumValue, int maximumValue) {
+    public RotaryControl(int perimeter, Color arcColor, int value, int minimumValue, int maximumValue) {
         this.minimumValue = minimumValue;
         this.maximumValue = maximumValue;
         this.currentValue = new SimpleIntegerProperty(value);
@@ -151,9 +153,14 @@ public class DJDisc extends StackPane {
         // valueField
         labelValue.setText(minimumValue + "");
         labelValue.setAlignment(Pos.CENTER);
-        labelValue.setMaxWidth(Double.MAX_VALUE);
+        labelValue.setMaxWidth(150);
         labelValue.setId("value-field-normal");
         labelValue.setStyle("-fx-font-size: 36");
+        labelValue.setCursor(Cursor.CROSSHAIR);
+        labelValue.setOnMouseClicked(c -> {
+            ArpeggiatorumGUI.controllerHandle.buttonTapTempo.fire();
+        });
+
 //        valueField.setOnMouseClicked(c -> {
 //            if (operationMode == OperationMode.NORMAL) {
 //                operationMode = OperationMode.REVERSED;
@@ -187,7 +194,7 @@ public class DJDisc extends StackPane {
         fade.setToValue(0.2);
         fade.setAutoReverse(true);
         fade.setCycleCount(Animation.INDEFINITE);
-        // fade.play()
+//        fade.play();
 
         // rotation transform starting at 0 degrees, rotating about pivot point
         rotationTransf = new Rotate(0, perimeter / 2.00 - 10, perimeter / 2.00 - 10);
@@ -204,7 +211,7 @@ public class DJDisc extends StackPane {
         rotationAnimation.getKeyFrames()
                 .add(new KeyFrame(Duration.millis(10000), new KeyValue(rotationTransf.angleProperty(), 360)));
         rotationAnimation.setCycleCount(Animation.INDEFINITE);
-        // rotationAnimation.play()
+        rotationAnimation.play();
 
         // When no album image exists
 //        noAlbumImageFontIcon.setIconColor(arcColor);
@@ -217,7 +224,7 @@ public class DJDisc extends StackPane {
 
         getChildren().addAll(canvas, imageView, labelValue);
         // MouseListeners
-        // canvas.setOnMousePressed(m -> canvas.setCursor(Cursor.CLOSED_HAND))
+        canvas.setOnMousePressed(m -> canvas.setCursor(Cursor.CLOSED_HAND));
         canvas.setOnMouseDragged(this::onMouseDragged);
         // setOnScroll(this::onScroll);
         resizeDisc(perimeter);
@@ -501,13 +508,15 @@ public class DJDisc extends StackPane {
             else if (value == maximumValue)
                 angle = 360;
             else// calculate
-                angle = -(((maximumValue - value) * 360) / (maximumValue - minimumValue));
+                angle = ((((maximumValue - value) * 360) / (maximumValue - minimumValue)) - 360);
         } else
             angle = 0;
 
         // Update the Value?
-        if (updateValue)
+        if (updateValue) {
             calculateValue(value);
+            Platform.runLater(this::repaint);
+        }
     }
 
     private int calculateValueByAngle(int angle) {
@@ -544,7 +553,8 @@ public class DJDisc extends StackPane {
      * @param current
      */
     public void updateValueDirectly(int current) {
-        calculateValue(current);
+        //calculateValue(current);
+        calculateAngleByValue(current, true);
 //        if (!this.labelValue.isHover()) { // Is being hovered
 //            if (operationMode == OperationMode.REVERSED)
 //                this.value = value + "." + (9 - Integer.parseInt(millisecondsFormatted.replace(".", "")));
@@ -661,7 +671,7 @@ public class DJDisc extends StackPane {
                 angle = -(360 - angle); // make it minus cause i turn it
                 // on the right
             }
-            System.out.println(angle);
+            //System.out.println(angle);
             int newValue = calculateValueByAngle(angle);
             if (newValue != current) {
                 // System.out.println(-angle)
