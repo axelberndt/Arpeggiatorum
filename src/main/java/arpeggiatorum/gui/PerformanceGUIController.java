@@ -11,6 +11,8 @@ import arpeggiatorum.gui.rotaryControls.RotaryControl;
 import arpeggiatorum.notePool.NotePool;
 import eu.hansolo.fx.touchslider.TouchSlider;
 import eu.hansolo.fx.touchslider.TouchSliderBuilder;
+import eu.hansolo.regulators.Regulator;
+import eu.hansolo.regulators.RegulatorBuilder;
 import javafx.animation.*;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleLongProperty;
@@ -30,6 +32,7 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.util.Duration;
 import org.controlsfx.control.ToggleSwitch;
+import org.kordamp.ikonli.fontawesome.FontAwesome;
 
 import java.net.URL;
 import java.util.List;
@@ -41,8 +44,8 @@ public class PerformanceGUIController implements Initializable {
     @FXML
     public VBox vBox;
 
-    public RotaryControl rotaryTempo;
-    //public Regulator regulatorTempo;
+//    public RotaryControl rotaryTempo;
+    public Regulator regulatorTempo;
 
     public RadialMenu radialMenuPattern;
     public RadialMenu radialMenuEnrichment;
@@ -223,15 +226,32 @@ public class PerformanceGUIController implements Initializable {
         actionPerformedLabel.setTranslateX(1000);
         actionPerformedLabel.setTranslateY(200);
 
-        rotaryTempo = new RotaryControl(150, Color.CHARTREUSE, (int) ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue(), (int) ArpeggiatorumGUI.controllerHandle.sliderTempo.getMin(), (int) ArpeggiatorumGUI.controllerHandle.sliderTempo.getMax());
-        rotaryTempo.setTranslateX(800);
-        rotaryTempo.setTranslateY(600);
+//        rotaryTempo = new RotaryControl(150, Color.CHARTREUSE, (int) ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue(), (int) ArpeggiatorumGUI.controllerHandle.sliderTempo.getMin(), (int) ArpeggiatorumGUI.controllerHandle.sliderTempo.getMax());
+//        rotaryTempo.setTranslateX(800);
+//        rotaryTempo.setTranslateY(600);
+//
+//        rotaryTempo.updateValueDirectly((int) ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue());
 
-        rotaryTempo.updateValueDirectly((int) ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue());
+        regulatorTempo= RegulatorBuilder.create()
+                .prefSize(200, 200)
+                .minValue(ArpeggiatorumGUI.controllerHandle.sliderTempo.getMin())
+                .maxValue(ArpeggiatorumGUI.controllerHandle.sliderTempo.getMax())
+                .targetValue(ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue())
+                .unit("BPM")
+                .barColor(Color.CHARTREUSE)
+                .textColor(Color.WHITE)
+                //.symbolColor(Color.BLACK)
+                .icon(FontAwesome.MUSIC)
+                .iconColor(Color.WHITE)
+                .color(Color.GAINSBORO)
+                .onTargetSet(e -> ArpeggiatorumGUI.controllerHandle.sliderTempo.adjustValue( regulatorTempo.getTargetValue()))
+                .build();
+        regulatorTempo.setTranslateX(800);
+        regulatorTempo.setTranslateY(600);
 
         anchorPane.getChildren().addAll(toggleAudio, sliderArticulation, toggleHeld, toggleArpeggio, toggleBass,
                 radialMenuPattern, radialMenuEnrichment, actionPerformedLabel,
-                rotaryTempo, buttonPanic);
+                regulatorTempo, buttonPanic);
 
     }
 

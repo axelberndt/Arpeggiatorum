@@ -79,8 +79,14 @@ dependencies {
     //implementation 'eu.hansolo:medusa:latest.release'
     implementation 'eu.hansolo:touchslider:latest.release'
     //Depends on non modular packages...
-    //implementation 'eu.hansolo:regulators:17.0.0'
-    //implementation 'eu.hansolo.fx.regulators:regulators:latest.release'
+    implementation 'eu.hansolo:regulators:17.0.0'
+
+    implementation 'org.kordamp.ikonli:ikonli-core:11.5.0'
+    implementation 'org.kordamp.ikonli:ikonli-javafx:11.5.0'
+    implementation 'org.kordamp.ikonli:ikonli-material-pack:11.5.0'
+    implementation 'org.kordamp.ikonli:ikonli-materialdesign-pack:11.5.0'
+    implementation 'org.kordamp.ikonli:ikonli-fontawesome-pack:11.5.0'
+    implementation 'org.kordamp.ikonli:ikonli-weathericons-pack:11.5.0'
 
     //implementation ':scenebuilder-kit:21.0.0'
     //implementation 'com.guigarage:css-helper:latest.release'
