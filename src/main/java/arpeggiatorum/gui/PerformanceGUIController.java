@@ -194,7 +194,7 @@ public class PerformanceGUIController implements Initializable {
         rotaryTempo = new RotaryControl(300, Color.CHARTREUSE, (int) ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue(), (int) ArpeggiatorumGUI.controllerHandle.sliderTempo.getMin(), (int) ArpeggiatorumGUI.controllerHandle.sliderTempo.getMax());
         rotaryTempo.setTranslateX(100);
         rotaryTempo.setTranslateY(500);
-        //rotaryTempo.updateValueDirectly((int) ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue());
+        rotaryTempo.updateValueDirectly((int) ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue());
 
         anchorPane.getChildren().addAll(toggleAudio, sliderArticulation, toggleHeld, toggleArpeggio, toggleBass,
                 radialMenuPattern, radialMenuEnrichment, actionPerformedLabel, rotaryTempo);
