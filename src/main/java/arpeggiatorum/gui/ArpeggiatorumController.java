@@ -476,7 +476,6 @@ public class ArpeggiatorumController implements Initializable {
         createAudioChannelChooser();
 
         tabPaneControls.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("tabpane.css").toExternalForm());
-        sliderEnrichment.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("filledslider.css").toExternalForm());
 
         comboMIDIChannel.getItems().addAll(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
         comboArpeggioChannel.getItems().addAll(-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);

@@ -7,7 +7,6 @@ package arpeggiatorum.gui;
 import arpeggiatorum.Arpeggiatorum;
 import arpeggiatorum.gui.cornerRadialMenu.RadialMenu;
 import arpeggiatorum.gui.cornerRadialMenu.RadialMenuItem;
-import arpeggiatorum.gui.rotaryControls.RotaryControl;
 import arpeggiatorum.notePool.NotePool;
 import eu.hansolo.fx.touchslider.TouchSlider;
 import eu.hansolo.fx.touchslider.TouchSliderBuilder;
@@ -44,7 +43,6 @@ public class PerformanceGUIController implements Initializable {
     @FXML
     public VBox vBox;
 
-//    public RotaryControl rotaryTempo;
     public Regulator regulatorTempo;
 
     public RadialMenu radialMenuPattern;
@@ -126,7 +124,6 @@ public class PerformanceGUIController implements Initializable {
         buttonPanic.setTranslateY(600);
 
         toggleAudio = new ToggleSwitch("Activate Audio");
-        // toggleAudio.setStyle(buttonStyle);
         toggleAudio.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 Arpeggiatorum.getInstance().Activate(true);
@@ -158,9 +155,10 @@ public class PerformanceGUIController implements Initializable {
         sliderArticulation.setTranslateY(0);
 
         toggleHeld = new ToggleSwitch("Held");
+        int heldValue = ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getSelectionModel().getSelectedIndex();
         toggleHeld.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
-//                Arpeggiatorum.getInstance().Activate(true);
+                ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getSelectionModel().select(heldValue);
             } else {
                 ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getSelectionModel().select(0);
             }
@@ -169,9 +167,10 @@ public class PerformanceGUIController implements Initializable {
         toggleHeld.setTranslateY(0);
 
         toggleArpeggio = new ToggleSwitch("Arpeggio");
+        int arpeggioValue= ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().getSelectedIndex();
         toggleArpeggio.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
-                //
+                ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(arpeggioValue);
             } else {
                 ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(0);
             }
@@ -180,9 +179,10 @@ public class PerformanceGUIController implements Initializable {
         toggleArpeggio.setTranslateY(0);
 
         toggleBass = new ToggleSwitch("Bass");
+        int bassValue=ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().getSelectedIndex();
         toggleBass.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
-//                Arpeggiatorum.getInstance().Activate(true);
+                ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().select(bassValue);
             } else {
                 ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().select(0);
             }
@@ -232,7 +232,7 @@ public class PerformanceGUIController implements Initializable {
 //
 //        rotaryTempo.updateValueDirectly((int) ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue());
 
-        regulatorTempo= RegulatorBuilder.create()
+        regulatorTempo = RegulatorBuilder.create()
                 .prefSize(200, 200)
                 .minValue(ArpeggiatorumGUI.controllerHandle.sliderTempo.getMin())
                 .maxValue(ArpeggiatorumGUI.controllerHandle.sliderTempo.getMax())
@@ -240,11 +240,10 @@ public class PerformanceGUIController implements Initializable {
                 .unit("BPM")
                 .barColor(Color.CHARTREUSE)
                 .textColor(Color.WHITE)
-                //.symbolColor(Color.BLACK)
                 .icon(FontAwesome.MUSIC)
                 .iconColor(Color.WHITE)
                 .color(Color.GAINSBORO)
-                .onTargetSet(e -> ArpeggiatorumGUI.controllerHandle.sliderTempo.adjustValue( regulatorTempo.getTargetValue()))
+                .onTargetSet(e -> ArpeggiatorumGUI.controllerHandle.sliderTempo.adjustValue(regulatorTempo.getTargetValue()))
                 .build();
         regulatorTempo.setTranslateX(800);
         regulatorTempo.setTranslateY(600);

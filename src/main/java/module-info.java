@@ -5,10 +5,6 @@ module arpeggiatorum {
     requires jsyn;
     requires TarsosDSP.core;
 
-    //requires meico;
-    //requires java.string.similarity;
-    //requires jcip.annotations;
-
     requires org.controlsfx.controls;
 
     requires eu.hansolo.fx.touchslider;
