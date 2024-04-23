@@ -38,7 +38,7 @@ repositories {
         dirs("externals")
     }
     // Look for artifacts here if not found at the above location
-    //    maven { url "https://repo1.maven.org/maven2" }
+    //maven { url "https://repo1.maven.org/maven2" }
     //artifactUrls "https://github.com/cemfi/meico/releases/latest"
 
 }
@@ -49,13 +49,14 @@ dependencies {
     //Latest official version crashes with more ASIO drivers
     //implementation 'com.github.philburk:jsyn:latest.release'
     implementation(":jsyn:17.1.0")
+
     implementation 'be.tarsos.dsp:core:latest.release'
     implementation 'be.tarsos.dsp:jvm:latest.release'
+
     implementation 'org.controlsfx:controlsfx:latest.release'
 
     implementation 'eu.hansolo:touchslider:latest.release'
     implementation 'eu.hansolo:regulators:17.0.0'
-
     //Dependencies for Regulators
     implementation 'org.kordamp.ikonli:ikonli-core:11.5.0'
     implementation 'org.kordamp.ikonli:ikonli-javafx:11.5.0'
@@ -74,7 +75,7 @@ jlink {
     launcher {
         name = 'Arpeggiatorum'
         //This parameter is expected, but causes problems
-       //application.mainModule='arpeggiatorum'
+        //application.mainModule='arpeggiatorum'
     }
     forceMerge('jsyn')
     jpackage {

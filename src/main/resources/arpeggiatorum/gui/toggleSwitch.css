@@ -32,6 +32,7 @@
     -fx-font: 28 px;
     -fx-text-fill: WHITE;
     -fx-alignment: CENTER;
+    -fx-wrap-text: TRUE;
 }
 
 /*-thumb-move-animation-time*/

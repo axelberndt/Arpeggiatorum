@@ -21,6 +21,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
@@ -35,6 +36,7 @@ import org.controlsfx.control.ToggleSwitch;
 import org.kordamp.ikonli.fontawesome.FontAwesome;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -57,9 +59,11 @@ public class PerformanceGUIController implements Initializable {
     public TouchSlider sliderArticulation;
 
     public Button buttonPanic;
+    public Button buttonConfirmPanic;
     public Button buttonTap;
 
-    public Button[] buttonEnrichmentArray = new Button[16];
+    @FXML
+    public Button[] buttonEnrichmentArray;
 
     protected Label actionPerformedLabel = new Label();
 
@@ -118,12 +122,53 @@ public class PerformanceGUIController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         actionPerformedLabel.setStyle("-fx-font-size: 36; -fx-text-fill: WHITE;");
-        String buttonStyle = "-fx-text-fill: RED;-fx-font-size: 28;-fx-pref-width: 200;-fx-pref-height: 200;-fx-border-color: Black; -fx-stroke-width: 2";
+        String buttonPanicStyle = "-fx-text-fill: RED;-fx-font-size: 28;-fx-pref-width: 200;-fx-pref-height: 200;";
+        String buttonTempoStyle = "-fx-text-fill: BLACK;-fx-font-size: 14;-fx-pref-width: 100;-fx-pref-height: 100;";
+        String buttonEnrichmentStyle = "-fx-text-fill: BLACK;-fx-font-size: 14;-fx-pref-width: 75;-fx-pref-height: 75;";
 
-        buttonPanic = new Button("PANIC");
-        buttonPanic.setStyle(buttonStyle);
+        buttonPanic = new Button("PANIC!");
+        buttonPanic.setStyle(buttonPanicStyle);
         buttonPanic.setTranslateX(1500);
         buttonPanic.setTranslateY(700);
+        buttonPanic.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                buttonConfirmPanic.setVisible(true);
+                FadeTransition buttonFadeTransition = new FadeTransition(Duration.millis(400), buttonConfirmPanic);
+                buttonFadeTransition.setDelay(Duration.seconds(1));
+                buttonFadeTransition.setFromValue(1);
+                buttonFadeTransition.setToValue(0);
+                buttonFadeTransition.setOnFinished(e -> {
+                    buttonConfirmPanic.setVisible(false);
+                    buttonConfirmPanic.setOpacity(1.0);
+                });
+                buttonFadeTransition.play();
+            }
+        });
+
+        buttonConfirmPanic = new Button("Confirm Panic");
+        buttonConfirmPanic.setStyle(buttonPanicStyle + "-fx-wrap-text: TRUE;-fx-text-alignment: CENTER;");
+        buttonConfirmPanic.setTranslateX(1300);
+        buttonConfirmPanic.setTranslateY(700);
+        buttonConfirmPanic.setVisible(false);
+        buttonConfirmPanic.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if (ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.isSelected()) {
+                    ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.fire();
+                }
+                Arpeggiatorum.getInstance().getArpeggiator().panic();
+            }
+        });
+
+        buttonEnrichmentArray = new Button[16];
+        for (int i = 0; i < buttonEnrichmentArray.length; i++) {
+            buttonEnrichmentArray[i] = new Button();
+            buttonEnrichmentArray[i].setText(String.valueOf(i));
+            buttonEnrichmentArray[i].setStyle(buttonEnrichmentStyle);
+            buttonEnrichmentArray[i].setTranslateX((i * 75));
+            buttonEnrichmentArray[i].setTranslateY(800);
+        }
 
         toggleAudio = new ToggleSwitch("Audio IN");
         toggleAudio.selectedProperty().addListener((observable, oldValue, newValue) -> {
@@ -159,7 +204,7 @@ public class PerformanceGUIController implements Initializable {
 
         toggleHeld = new ToggleSwitch("Held");
         int heldValue = ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getSelectionModel().getSelectedIndex();
-        if (heldValue!=0){
+        if (heldValue != 0) {
             toggleHeld.setSelected(true);
         }
         toggleHeld.selectedProperty().addListener((observable, oldValue, newValue) -> {
@@ -175,7 +220,7 @@ public class PerformanceGUIController implements Initializable {
 
         toggleArpeggio = new ToggleSwitch("Arpeggio");
         int arpeggioValue = ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().getSelectedIndex();
-        if (arpeggioValue!=0){
+        if (arpeggioValue != 0) {
             toggleArpeggio.setSelected(true);
         }
         toggleArpeggio.selectedProperty().addListener((observable, oldValue, newValue) -> {
@@ -191,7 +236,7 @@ public class PerformanceGUIController implements Initializable {
 
         toggleBass = new ToggleSwitch("Bass");
         int bassValue = ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().getSelectedIndex();
-        if (bassValue!=0){
+        if (bassValue != 0) {
             toggleBass.setSelected(true);
         }
         toggleBass.selectedProperty().addListener((observable, oldValue, newValue) -> {
@@ -258,7 +303,7 @@ public class PerformanceGUIController implements Initializable {
         regulatorTempo.setTranslateY(300);
 
         buttonTap = new Button("Tap Tempo");
-        buttonTap.setStyle("-fx-text-fill: BLACK;-fx-font-size: 14;-fx-pref-width: 100;-fx-pref-height: 100;-fx-border-color: Black; -fx-stroke-width: 2");
+        buttonTap.setStyle(buttonTempoStyle);
         buttonTap.setTranslateX(800);
         buttonTap.setTranslateY(500);
         buttonTap.setOnAction(new EventHandler<ActionEvent>() {
@@ -270,7 +315,9 @@ public class PerformanceGUIController implements Initializable {
         });
         anchorPane.getChildren().addAll(toggleAudio, sliderArticulation, toggleHeld, toggleArpeggio, toggleBass,
                 radialMenuPattern, radialMenuEnrichment, actionPerformedLabel,
-                regulatorTempo, buttonTap, buttonPanic);
+                regulatorTempo, buttonTap,
+                buttonConfirmPanic, buttonPanic);
+        anchorPane.getChildren().addAll(buttonEnrichmentArray);
 
     }
 
