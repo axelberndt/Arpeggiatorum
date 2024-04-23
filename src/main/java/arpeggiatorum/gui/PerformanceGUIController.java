@@ -16,6 +16,7 @@ import javafx.animation.*;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -56,6 +57,7 @@ public class PerformanceGUIController implements Initializable {
     public TouchSlider sliderArticulation;
 
     public Button buttonPanic;
+    public Button buttonTap;
 
     public Button[] buttonEnrichmentArray = new Button[16];
 
@@ -116,14 +118,14 @@ public class PerformanceGUIController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         actionPerformedLabel.setStyle("-fx-font-size: 36; -fx-text-fill: WHITE;");
-        String buttonStyle = "fx-text-fill: WHITE;-fx-background-color: Gainsboro;-fx-pref-width: 100;-fx-pref-height: 100; fx-border-color: Black; -fx-stroke-width: 2";
+        String buttonStyle = "-fx-text-fill: RED;-fx-font-size: 28;-fx-pref-width: 200;-fx-pref-height: 200;-fx-border-color: Black; -fx-stroke-width: 2";
 
         buttonPanic = new Button("PANIC");
         buttonPanic.setStyle(buttonStyle);
-        buttonPanic.setTranslateX(1400);
-        buttonPanic.setTranslateY(600);
+        buttonPanic.setTranslateX(1500);
+        buttonPanic.setTranslateY(700);
 
-        toggleAudio = new ToggleSwitch("Activate Audio");
+        toggleAudio = new ToggleSwitch("Audio IN");
         toggleAudio.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 Arpeggiatorum.getInstance().Activate(true);
@@ -133,6 +135,7 @@ public class PerformanceGUIController implements Initializable {
         });
         toggleAudio.setTranslateX(0);
         toggleAudio.setTranslateY(0);
+        toggleAudio.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("toggleSwitch.css").toExternalForm());
 
         sliderArticulation = TouchSliderBuilder.create()
                 .prefSize(600, 200)
@@ -156,6 +159,9 @@ public class PerformanceGUIController implements Initializable {
 
         toggleHeld = new ToggleSwitch("Held");
         int heldValue = ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getSelectionModel().getSelectedIndex();
+        if (heldValue!=0){
+            toggleHeld.setSelected(true);
+        }
         toggleHeld.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getSelectionModel().select(heldValue);
@@ -165,9 +171,13 @@ public class PerformanceGUIController implements Initializable {
         });
         toggleHeld.setTranslateX(1000);
         toggleHeld.setTranslateY(0);
+        toggleHeld.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("toggleSwitch.css").toExternalForm());
 
         toggleArpeggio = new ToggleSwitch("Arpeggio");
-        int arpeggioValue= ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().getSelectedIndex();
+        int arpeggioValue = ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().getSelectedIndex();
+        if (arpeggioValue!=0){
+            toggleArpeggio.setSelected(true);
+        }
         toggleArpeggio.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(arpeggioValue);
@@ -175,11 +185,15 @@ public class PerformanceGUIController implements Initializable {
                 ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(0);
             }
         });
-        toggleArpeggio.setTranslateX(1200);
+        toggleArpeggio.setTranslateX(1250);
         toggleArpeggio.setTranslateY(0);
+        toggleArpeggio.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("toggleSwitch.css").toExternalForm());
 
         toggleBass = new ToggleSwitch("Bass");
-        int bassValue=ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().getSelectedIndex();
+        int bassValue = ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().getSelectedIndex();
+        if (bassValue!=0){
+            toggleBass.setSelected(true);
+        }
         toggleBass.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().select(bassValue);
@@ -187,8 +201,9 @@ public class PerformanceGUIController implements Initializable {
                 ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().select(0);
             }
         });
-        toggleBass.setTranslateX(1400);
+        toggleBass.setTranslateX(1500);
         toggleBass.setTranslateY(0);
+        toggleBass.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("toggleSwitch.css").toExternalForm());
 
         final EventHandler<ActionEvent> patternHandler = new EventHandler<>() {
             @Override
@@ -213,24 +228,18 @@ public class PerformanceGUIController implements Initializable {
         };
 
         radialMenuPattern = createCenterRadialMenu("Pattern", ArpeggiatorumGUI.controllerHandle.comboPattern.getItems().stream().toList(), patternHandler);
-        radialMenuPattern.setTranslateX(1300);
-        radialMenuPattern.setTranslateY(500);
+        radialMenuPattern.setTranslateX(1400);
+        radialMenuPattern.setTranslateY(450);
         radialMenuPattern.hideRadialMenu();
 
         radialMenuEnrichment = createCenterRadialMenu("Enrichment", ArpeggiatorumGUI.controllerHandle.comboEnrichment.getItems().stream().toList(), enrichmentHandler);
-        radialMenuEnrichment.setTranslateX(300);
-        radialMenuEnrichment.setTranslateY(500);
+        radialMenuEnrichment.setTranslateX(250);
+        radialMenuEnrichment.setTranslateY(450);
         radialMenuEnrichment.hideRadialMenu();
 
         //Debug Label
-        actionPerformedLabel.setTranslateX(1000);
-        actionPerformedLabel.setTranslateY(200);
-
-//        rotaryTempo = new RotaryControl(150, Color.CHARTREUSE, (int) ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue(), (int) ArpeggiatorumGUI.controllerHandle.sliderTempo.getMin(), (int) ArpeggiatorumGUI.controllerHandle.sliderTempo.getMax());
-//        rotaryTempo.setTranslateX(800);
-//        rotaryTempo.setTranslateY(600);
-//
-//        rotaryTempo.updateValueDirectly((int) ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue());
+        actionPerformedLabel.setTranslateX(800);
+        actionPerformedLabel.setTranslateY(250);
 
         regulatorTempo = RegulatorBuilder.create()
                 .prefSize(200, 200)
@@ -245,12 +254,23 @@ public class PerformanceGUIController implements Initializable {
                 .color(Color.GAINSBORO)
                 .onTargetSet(e -> ArpeggiatorumGUI.controllerHandle.sliderTempo.adjustValue(regulatorTempo.getTargetValue()))
                 .build();
-        regulatorTempo.setTranslateX(800);
-        regulatorTempo.setTranslateY(600);
+        regulatorTempo.setTranslateX(700);
+        regulatorTempo.setTranslateY(300);
 
+        buttonTap = new Button("Tap Tempo");
+        buttonTap.setStyle("-fx-text-fill: BLACK;-fx-font-size: 14;-fx-pref-width: 100;-fx-pref-height: 100;-fx-border-color: Black; -fx-stroke-width: 2");
+        buttonTap.setTranslateX(800);
+        buttonTap.setTranslateY(500);
+        buttonTap.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Arpeggiatorum.getInstance().tapTempo();
+                regulatorTempo.setTargetValue(ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue());
+            }
+        });
         anchorPane.getChildren().addAll(toggleAudio, sliderArticulation, toggleHeld, toggleArpeggio, toggleBass,
                 radialMenuPattern, radialMenuEnrichment, actionPerformedLabel,
-                regulatorTempo, buttonPanic);
+                regulatorTempo, buttonTap, buttonPanic);
 
     }
 

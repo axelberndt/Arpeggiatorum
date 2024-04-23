@@ -1,0 +1,37 @@
+.toggle-switch {
+    -fx-pref-width          : 200;
+    -fx-pref-height         : 200;
+    -fx-min-width           : 80;
+    -fx-min-height          : 80;
+    -fx-max-width           : 200;
+    -fx-max-height          : 200;
+    -fx-background-color  : DarkGray;
+    -thumb-move-animation-time: 100;
+    -toggle-display: left;
+}
+
+/*When Active*/
+.toggle-switch:selected .thumb-area {
+    -fx-background-color: Chartreuse;
+}
+.toggle-switch:selected .thumb {
+
+}
+/*When Inactive*/
+.toggle-switch .thumb-area {
+    -fx-background-color: Gainsboro;
+    -fx-background-radius: 5;
+    -fx-padding: 5 40 5 40; /* describes length: 50+50 = 100 width, 5+5=10 height */
+}
+
+.toggle-switch .thumb {
+    -fx-background-radius: 20;
+    -fx-padding: 20;
+}
+.label {
+    -fx-font: 28 px;
+    -fx-text-fill: WHITE;
+    -fx-alignment: CENTER;
+}
+
+/*-thumb-move-animation-time*/
