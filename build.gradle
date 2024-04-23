@@ -55,10 +55,11 @@ dependencies {
 
     implementation('org.controlsfx:controlsfx:latest.release')
 
-    implementation('eu.hansolo:touchslider:17.0.0')
-            {
-                exclude group: 'org.openjfx'
-            }
+//    implementation('eu.hansolo:touchslider:17.0.0')
+   // implementation(":TouchSlider:21.0.0")
+//            {
+//                exclude group: 'org.openjfx'
+//            }
     implementation('eu.hansolo:regulators:17.0.0')
             {
                 exclude group: 'org.openjfx'

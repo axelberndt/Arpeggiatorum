@@ -2,14 +2,13 @@ module arpeggiatorum {
     requires java.desktop;
     requires java.logging;
 
-    requires jsyn;
-    requires TarsosDSP.core;
+    requires transitive jsyn;
+    requires transitive TarsosDSP.core;
 
-    requires org.controlsfx.controls;
+    requires transitive org.controlsfx.controls;
 
-    requires eu.hansolo.fx.touchslider;
-
-    requires eu.hansolo.regulators;
+    //requires transitive eu.hansolo.fx.touchslider;
+    requires transitive eu.hansolo.regulators;
 
     // 3rd party
     requires transitive org.kordamp.iconli.core;

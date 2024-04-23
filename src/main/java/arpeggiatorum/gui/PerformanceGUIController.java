@@ -7,24 +7,21 @@ package arpeggiatorum.gui;
 import arpeggiatorum.Arpeggiatorum;
 import arpeggiatorum.gui.cornerRadialMenu.RadialMenu;
 import arpeggiatorum.gui.cornerRadialMenu.RadialMenuItem;
+import arpeggiatorum.gui.touchSlider.TouchSlider;
+import arpeggiatorum.gui.touchSlider.TouchSliderBuilder;
 import arpeggiatorum.notePool.NotePool;
-import eu.hansolo.fx.touchslider.TouchSlider;
-import eu.hansolo.fx.touchslider.TouchSliderBuilder;
 import eu.hansolo.regulators.Regulator;
 import eu.hansolo.regulators.RegulatorBuilder;
 import javafx.animation.*;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -36,7 +33,6 @@ import org.controlsfx.control.ToggleSwitch;
 import org.kordamp.ikonli.fontawesome.FontAwesome;
 
 import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -313,7 +309,9 @@ public class PerformanceGUIController implements Initializable {
                 regulatorTempo.setTargetValue(ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue());
             }
         });
-        anchorPane.getChildren().addAll(toggleAudio, sliderArticulation, toggleHeld, toggleArpeggio, toggleBass,
+        anchorPane.getChildren().addAll(toggleAudio,
+                sliderArticulation,
+                toggleHeld, toggleArpeggio, toggleBass,
                 radialMenuPattern, radialMenuEnrichment, actionPerformedLabel,
                 regulatorTempo, buttonTap,
                 buttonConfirmPanic, buttonPanic);
