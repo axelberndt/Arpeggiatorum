@@ -53,10 +53,16 @@ dependencies {
     implementation 'be.tarsos.dsp:core:latest.release'
     implementation 'be.tarsos.dsp:jvm:latest.release'
 
-    implementation 'org.controlsfx:controlsfx:latest.release'
+    implementation('org.controlsfx:controlsfx:latest.release')
 
-    implementation 'eu.hansolo:touchslider:latest.release'
-    implementation 'eu.hansolo:regulators:17.0.0'
+    implementation('eu.hansolo:touchslider:17.0.0')
+            {
+                exclude group: 'org.openjfx'
+            }
+    implementation('eu.hansolo:regulators:17.0.0')
+            {
+                exclude group: 'org.openjfx'
+            }
     //Dependencies for Regulators
     implementation 'org.kordamp.ikonli:ikonli-core:11.5.0'
     implementation 'org.kordamp.ikonli:ikonli-javafx:11.5.0'

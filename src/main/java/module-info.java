@@ -8,6 +8,7 @@ module arpeggiatorum {
     requires org.controlsfx.controls;
 
     requires eu.hansolo.fx.touchslider;
+
     requires eu.hansolo.regulators;
 
     // 3rd party
