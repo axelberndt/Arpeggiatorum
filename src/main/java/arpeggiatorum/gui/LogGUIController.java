@@ -1,6 +1,8 @@
 package arpeggiatorum.gui;
 
 import arpeggiatorum.supplementary.ObservableStringBuffer;
+import javafx.application.ConditionalFeature;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -21,6 +23,17 @@ public class LogGUIController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         logTextArea.textProperty().bind(logBuffer);
+
+        //Discover if we have touch support
+        if (Platform.isSupported(ConditionalFeature.INPUT_MULTITOUCH)) {
+            logBuffer.append("Multitouch\r\n");
+        }
+        if (Platform.isSupported(ConditionalFeature.INPUT_TOUCH)) {
+            logBuffer.append("Touch\r\n");
+        }
+        if (Platform.isSupported(ConditionalFeature.INPUT_POINTER)) {
+            logBuffer.append("Mouse\r\n");
+        }
 
         logBuffer.addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> {
             // from stackoverflow.com/a/30264399/1032167

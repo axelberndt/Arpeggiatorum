@@ -270,7 +270,7 @@ public class Arpeggiatorum implements Receiver {
         try {
             FXMLLoader fxmlLoader;
             fxmlLoader = new FXMLLoader(ArpeggiatorumGUI.class.getResource("PerformanceGUI.fxml"));
-//            fxmlLoader.setLocation(ArpeggiatorumGUI.class.getClassLoader().getResource("arpeggiatorum/gui/LogGUI.fxml"));
+            //fxmlLoader.setLocation(ArpeggiatorumGUI.class.getClassLoader().getResource("arpeggiatorum/gui/LogGUI.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
             Stage stage = new Stage();
             stage.setTitle("Performance Mode");
@@ -511,8 +511,8 @@ public class Arpeggiatorum implements Receiver {
     public void ScaleChange(Number value) {
         for (Mic2MIDI processor : mic2Midi) {
             if (processor instanceof Mic2MIDI_CQT) {
-                Mic2MIDI_CQT.scalingFactor= value.floatValue();
-                processor.setSignalToNoiseThreshold(ArpeggiatorumGUI.controllerHandle.sliderThreshold.getValue()/ ArpeggiatorumGUI.controllerHandle.sliderThreshold.getMax());
+                Mic2MIDI_CQT.scalingFactor = value.floatValue();
+                processor.setSignalToNoiseThreshold(ArpeggiatorumGUI.controllerHandle.sliderThreshold.getValue() / ArpeggiatorumGUI.controllerHandle.sliderThreshold.getMax());
             }
         }
     }

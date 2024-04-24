@@ -13,6 +13,8 @@ import arpeggiatorum.notePool.NotePool;
 import eu.hansolo.regulators.Regulator;
 import eu.hansolo.regulators.RegulatorBuilder;
 import javafx.animation.*;
+import javafx.application.ConditionalFeature;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.event.ActionEvent;
@@ -20,13 +22,17 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
+import javafx.scene.control.Cell;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
+import javafx.stage.Screen;
 import javafx.util.Duration;
 import org.controlsfx.control.ToggleSwitch;
 import org.kordamp.ikonli.fontawesome.FontAwesome;
@@ -107,6 +113,14 @@ public class PerformanceGUIController implements Initializable {
     @FXML // URL location of the FXML file that was given to the FXMLLoader
     private URL location;
 
+    String buttonPanicStyle = "-fx-text-fill: RED;-fx-font-size: 28;-fx-pref-width: 200;-fx-pref-height: 200;";
+    String buttonTempoStyle = "-fx-text-fill: BLACK;-fx-font-size: 14;-fx-pref-width: 100;-fx-pref-height: 100;";
+    String buttonEnrichmentStyleUnchecked = "-fx-text-fill: BLACK;-fx-font-size: 14;-fx-pref-width: 75;-fx-pref-height: 75;";
+    String buttonEnrichmentStyleChecked = "-fx-text-fill: BLACK;-fx-font-size: 14;-fx-pref-width: 75;-fx-pref-height: 75;-fx-background-color: Chartreuse;";
+
+    int pixelHeight;
+    int pixelWidth;
+
     @FXML // This method is called by the FXMLLoader when initialization is complete
     /*
       @param url
@@ -114,16 +128,17 @@ public class PerformanceGUIController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        actionPerformedLabel.setStyle("-fx-font-size: 36; -fx-text-fill: WHITE;");
-        String buttonPanicStyle = "-fx-text-fill: RED;-fx-font-size: 28;-fx-pref-width: 200;-fx-pref-height: 200;";
-        String buttonTempoStyle = "-fx-text-fill: BLACK;-fx-font-size: 14;-fx-pref-width: 100;-fx-pref-height: 100;";
-        String buttonEnrichmentStyleUnchecked = "-fx-text-fill: BLACK;-fx-font-size: 14;-fx-pref-width: 75;-fx-pref-height: 75;";
-        String buttonEnrichmentStyleChecked = "-fx-text-fill: BLACK;-fx-font-size: 14;-fx-pref-width: 75;-fx-pref-height: 75;-fx-background-color: Chartreuse;";
+
+        //This gets us the usable size of the window
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+        pixelHeight = (int) screenBounds.getHeight();
+        pixelWidth = (int) screenBounds.getWidth();
+
 
         buttonPanic = new Button("PANIC!");
         buttonPanic.setStyle(buttonPanicStyle);
-        buttonPanic.setTranslateX(1500);
-        buttonPanic.setTranslateY(700);
+        buttonPanic.setTranslateX(pixelWidth - 200);
+        buttonPanic.setTranslateY(pixelHeight - 200);
         buttonPanic.setOnAction(event -> {
             buttonConfirmPanic.setVisible(true);
             FadeTransition buttonFadeTransition = new FadeTransition(Duration.millis(400), buttonConfirmPanic);
@@ -137,10 +152,11 @@ public class PerformanceGUIController implements Initializable {
             buttonFadeTransition.play();
         });
 
+
         buttonConfirmPanic = new Button("Confirm Panic");
         buttonConfirmPanic.setStyle(buttonPanicStyle + "-fx-wrap-text: TRUE;-fx-text-alignment: CENTER;");
-        buttonConfirmPanic.setTranslateX(1300);
-        buttonConfirmPanic.setTranslateY(700);
+        buttonConfirmPanic.setTranslateX(buttonPanic.getTranslateX() - 200);
+        buttonConfirmPanic.setTranslateY(buttonPanic.getTranslateY());
         buttonConfirmPanic.setVisible(false);
         buttonConfirmPanic.setOnAction(event -> {
             if (ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.isSelected()) {
@@ -154,25 +170,32 @@ public class PerformanceGUIController implements Initializable {
             buttonEnrichmentArray[i] = new Button();
             buttonEnrichmentArray[i].setText(String.valueOf(ArpeggiatorumGUI.controllerHandle.comboEnrichment.getValue().getValue()[i]));
             buttonEnrichmentArray[i].setStyle(buttonEnrichmentStyleUnchecked);
-            buttonEnrichmentArray[i].setTranslateX((i * 76));
-            buttonEnrichmentArray[i].setTranslateY(800);
+            buttonEnrichmentArray[i].setTranslateX((i * 75));
+            buttonEnrichmentArray[i].setTranslateY(pixelHeight - 75);
             buttonEnrichmentArray[i].setOnAction(event -> {
-                Boolean changeColor=true;
+                Boolean changeColor = true;
                 for (int j = 0; j < buttonEnrichmentArray.length; j++) {
                     if (changeColor) {
                         buttonEnrichmentArray[j].setStyle(buttonEnrichmentStyleChecked);
-                    }else {
+                    } else {
                         buttonEnrichmentArray[j].setStyle(buttonEnrichmentStyleUnchecked);
                     }
-                    if (event.getSource()==buttonEnrichmentArray[j]) {
-                        changeColor=false;
-                        ArpeggiatorumGUI.controllerHandle.sliderEnrichment.adjustValue((j/15.0)*100.0);
+                    if (event.getSource() == buttonEnrichmentArray[j]) {
+                        changeColor = false;
+                        ArpeggiatorumGUI.controllerHandle.sliderEnrichment.adjustValue((j / 15.0) * 100.0);
                     }
                 }
+            });
+            buttonEnrichmentArray[i].setOnTouchPressed(event -> {
+                //But touch isn't working
+                System.out.println("TOUCH");
 
             });
+            //Workaround for touch, but not great
+            // buttonEnrichmentArray[i].setOnMouseEntered(this::handleEnrichmentArray);
+
         }
-        buttonEnrichmentArray[(int) Math.ceil(15.0*(ArpeggiatorumGUI.controllerHandle.sliderEnrichment.getValue()/100.0))].fire();
+        buttonEnrichmentArray[(int) Math.ceil(15.0 * (ArpeggiatorumGUI.controllerHandle.sliderEnrichment.getValue() / 100.0))].fire();
 
         toggleAudio = new ToggleSwitch("Audio IN");
         toggleAudio.selectedProperty().addListener((observable, oldValue, newValue) -> Arpeggiatorum.getInstance().Activate(newValue));
@@ -288,7 +311,7 @@ public class PerformanceGUIController implements Initializable {
         actionPerformedLabel.setTranslateY(250);
 
         regulatorTempo = RegulatorBuilder.create()
-                .prefSize(200, 200)
+                .prefSize(300, 300)
                 .minValue(ArpeggiatorumGUI.controllerHandle.sliderTempo.getMin())
                 .maxValue(ArpeggiatorumGUI.controllerHandle.sliderTempo.getMax())
                 .targetValue(ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue())
@@ -319,6 +342,11 @@ public class PerformanceGUIController implements Initializable {
                 buttonConfirmPanic, buttonPanic);
         anchorPane.getChildren().addAll(buttonEnrichmentArray);
 
+        //Here we might be able to get the actual size
+        Platform.runLater(() -> {
+            //This does not include scaling
+            System.out.println(buttonPanic.getBoundsInLocal().getWidth());
+        });
     }
 
     private void radialAction(RadialMenuItem item) {
@@ -342,7 +370,8 @@ public class PerformanceGUIController implements Initializable {
         textFadeTransition.play();
     }
 
-    public RadialMenu createCenterRadialMenu(String menuName, List menuItems, EventHandler<ActionEvent> eventHandler) {
+    public RadialMenu createCenterRadialMenu(String menuName, List
+            menuItems, EventHandler<ActionEvent> eventHandler) {
         LinearGradient background = new LinearGradient(0, 0, 1, 1, true, CycleMethod.NO_CYCLE,
                 new Stop(0, bgLg1Color), new Stop(0.8, bgLg2Color));
         LinearGradient backgroundMouseOn = new LinearGradient(0, 0, 1, 1, true, CycleMethod.NO_CYCLE,
@@ -369,5 +398,20 @@ public class PerformanceGUIController implements Initializable {
         radialMenu.setStrokeWidth(1.5);
 
         return radialMenu;
+    }
+
+    private void handleEnrichmentArray(MouseEvent event) {
+        Boolean changeColor = true;
+        for (int j = 0; j < buttonEnrichmentArray.length; j++) {
+            if (changeColor) {
+                buttonEnrichmentArray[j].setStyle(buttonEnrichmentStyleChecked);
+            } else {
+                buttonEnrichmentArray[j].setStyle(buttonEnrichmentStyleUnchecked);
+            }
+            if (event.getSource() == buttonEnrichmentArray[j]) {
+                changeColor = false;
+                ArpeggiatorumGUI.controllerHandle.sliderEnrichment.adjustValue((j / 15.0) * 100.0);
+            }
+        }
     }
 }
