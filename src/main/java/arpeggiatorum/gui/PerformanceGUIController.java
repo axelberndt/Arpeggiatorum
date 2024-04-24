@@ -23,7 +23,6 @@ import javafx.geometry.Orientation;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
@@ -39,8 +38,6 @@ import java.util.ResourceBundle;
 public class PerformanceGUIController implements Initializable {
     @FXML
     public AnchorPane anchorPane;
-    @FXML
-    public VBox vBox;
 
     public Regulator regulatorTempo;
 
@@ -111,8 +108,8 @@ public class PerformanceGUIController implements Initializable {
     private URL location;
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
-    /**
-     * @param url
+    /*
+      @param url
      * @param resourceBundle
      */
     @Override
@@ -120,26 +117,24 @@ public class PerformanceGUIController implements Initializable {
         actionPerformedLabel.setStyle("-fx-font-size: 36; -fx-text-fill: WHITE;");
         String buttonPanicStyle = "-fx-text-fill: RED;-fx-font-size: 28;-fx-pref-width: 200;-fx-pref-height: 200;";
         String buttonTempoStyle = "-fx-text-fill: BLACK;-fx-font-size: 14;-fx-pref-width: 100;-fx-pref-height: 100;";
-        String buttonEnrichmentStyle = "-fx-text-fill: BLACK;-fx-font-size: 14;-fx-pref-width: 75;-fx-pref-height: 75;";
+        String buttonEnrichmentStyleUnchecked = "-fx-text-fill: BLACK;-fx-font-size: 14;-fx-pref-width: 75;-fx-pref-height: 75;";
+        String buttonEnrichmentStyleChecked = "-fx-text-fill: BLACK;-fx-font-size: 14;-fx-pref-width: 75;-fx-pref-height: 75;-fx-background-color: Chartreuse;";
 
         buttonPanic = new Button("PANIC!");
         buttonPanic.setStyle(buttonPanicStyle);
         buttonPanic.setTranslateX(1500);
         buttonPanic.setTranslateY(700);
-        buttonPanic.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                buttonConfirmPanic.setVisible(true);
-                FadeTransition buttonFadeTransition = new FadeTransition(Duration.millis(400), buttonConfirmPanic);
-                buttonFadeTransition.setDelay(Duration.seconds(1));
-                buttonFadeTransition.setFromValue(1);
-                buttonFadeTransition.setToValue(0);
-                buttonFadeTransition.setOnFinished(e -> {
-                    buttonConfirmPanic.setVisible(false);
-                    buttonConfirmPanic.setOpacity(1.0);
-                });
-                buttonFadeTransition.play();
-            }
+        buttonPanic.setOnAction(event -> {
+            buttonConfirmPanic.setVisible(true);
+            FadeTransition buttonFadeTransition = new FadeTransition(Duration.millis(400), buttonConfirmPanic);
+            buttonFadeTransition.setDelay(Duration.seconds(1));
+            buttonFadeTransition.setFromValue(1);
+            buttonFadeTransition.setToValue(0);
+            buttonFadeTransition.setOnFinished(e -> {
+                buttonConfirmPanic.setVisible(false);
+                buttonConfirmPanic.setOpacity(1.0);
+            });
+            buttonFadeTransition.play();
         });
 
         buttonConfirmPanic = new Button("Confirm Panic");
@@ -147,33 +142,40 @@ public class PerformanceGUIController implements Initializable {
         buttonConfirmPanic.setTranslateX(1300);
         buttonConfirmPanic.setTranslateY(700);
         buttonConfirmPanic.setVisible(false);
-        buttonConfirmPanic.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                if (ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.isSelected()) {
-                    ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.fire();
-                }
-                Arpeggiatorum.getInstance().getArpeggiator().panic();
+        buttonConfirmPanic.setOnAction(event -> {
+            if (ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.isSelected()) {
+                ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.fire();
             }
+            Arpeggiatorum.getInstance().getArpeggiator().panic();
         });
 
         buttonEnrichmentArray = new Button[16];
         for (int i = 0; i < buttonEnrichmentArray.length; i++) {
             buttonEnrichmentArray[i] = new Button();
-            buttonEnrichmentArray[i].setText(String.valueOf(i));
-            buttonEnrichmentArray[i].setStyle(buttonEnrichmentStyle);
-            buttonEnrichmentArray[i].setTranslateX((i * 75));
+            buttonEnrichmentArray[i].setText(String.valueOf(ArpeggiatorumGUI.controllerHandle.comboEnrichment.getValue().getValue()[i]));
+            buttonEnrichmentArray[i].setStyle(buttonEnrichmentStyleUnchecked);
+            buttonEnrichmentArray[i].setTranslateX((i * 76));
             buttonEnrichmentArray[i].setTranslateY(800);
+            buttonEnrichmentArray[i].setOnAction(event -> {
+                Boolean changeColor=true;
+                for (int j = 0; j < buttonEnrichmentArray.length; j++) {
+                    if (changeColor) {
+                        buttonEnrichmentArray[j].setStyle(buttonEnrichmentStyleChecked);
+                    }else {
+                        buttonEnrichmentArray[j].setStyle(buttonEnrichmentStyleUnchecked);
+                    }
+                    if (event.getSource()==buttonEnrichmentArray[j]) {
+                        changeColor=false;
+                        ArpeggiatorumGUI.controllerHandle.sliderEnrichment.adjustValue((j/15.0)*100.0);
+                    }
+                }
+
+            });
         }
+        buttonEnrichmentArray[(int) Math.ceil(15.0*(ArpeggiatorumGUI.controllerHandle.sliderEnrichment.getValue()/100.0))].fire();
 
         toggleAudio = new ToggleSwitch("Audio IN");
-        toggleAudio.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
-                Arpeggiatorum.getInstance().Activate(true);
-            } else {
-                Arpeggiatorum.getInstance().Activate(false);
-            }
-        });
+        toggleAudio.selectedProperty().addListener((observable, oldValue, newValue) -> Arpeggiatorum.getInstance().Activate(newValue));
         toggleAudio.setTranslateX(0);
         toggleAudio.setTranslateY(0);
         toggleAudio.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("toggleSwitch.css").toExternalForm());
@@ -260,9 +262,12 @@ public class PerformanceGUIController implements Initializable {
             public synchronized void handle(final ActionEvent paramT) {
                 final RadialMenuItem item = (RadialMenuItem) paramT.getSource();
                 for (TonalEnrichmentChooserItem element : ArpeggiatorumGUI.controllerHandle.comboEnrichment.getItems()) {
-                    if (element.toString() == item.getText()) {
+                    if (element.toString().equals(item.getText())) {
                         ArpeggiatorumGUI.controllerHandle.comboEnrichment.setValue(element);
                     }
+                }
+                for (int i = 0; i < buttonEnrichmentArray.length; i++) {
+                    buttonEnrichmentArray[i].setText(String.valueOf(ArpeggiatorumGUI.controllerHandle.comboEnrichment.getValue().getValue()[i]));
                 }
                 radialAction(item);
             }
@@ -300,14 +305,11 @@ public class PerformanceGUIController implements Initializable {
 
         buttonTap = new Button("Tap Tempo");
         buttonTap.setStyle(buttonTempoStyle);
-        buttonTap.setTranslateX(800);
-        buttonTap.setTranslateY(500);
-        buttonTap.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Arpeggiatorum.getInstance().tapTempo();
-                regulatorTempo.setTargetValue(ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue());
-            }
+        buttonTap.setTranslateX(750);
+        buttonTap.setTranslateY(550);
+        buttonTap.setOnAction(event -> {
+            Arpeggiatorum.getInstance().tapTempo();
+            regulatorTempo.setTargetValue(ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue());
         });
         anchorPane.getChildren().addAll(toggleAudio,
                 sliderArticulation,
