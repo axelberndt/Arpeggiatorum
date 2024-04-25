@@ -273,6 +273,7 @@ public class Arpeggiatorum implements Receiver {
             //fxmlLoader.setLocation(ArpeggiatorumGUI.class.getClassLoader().getResource("arpeggiatorum/gui/LogGUI.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
             Stage stage = new Stage();
+
             stage.setTitle("Performance Mode");
             stage.setScene(scene);
             stage.show();
