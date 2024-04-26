@@ -61,7 +61,8 @@ public class PerformanceGUIController implements Initializable {
     @FXML
     public Button[] buttonEnrichmentArray;
 
-    protected Label actionPerformedLabel = new Label();
+    protected Label actionPerformedLabelPattern = new Label();
+    protected Label actionPerformedLabelEnrichment = new Label();
 
     protected boolean show;
     protected double lastOffsetValue;
@@ -85,8 +86,8 @@ public class PerformanceGUIController implements Initializable {
 
 
     //Colors
-    Color bgLg1Color = Color.CHARTREUSE.deriveColor(1, 1, 1, 0.2);
-    Color bgLg2Color = Color.CHARTREUSE.deriveColor(1, 1, 1, 0.5);
+    Color bgLg1Color = Color.DARKGREEN.deriveColor(1, 1, 1, 0.2);
+    Color bgLg2Color = Color.DARKGREEN.deriveColor(1, 1, 1, 0.5);
     Color bgMoLg1Color = Color.CHARTREUSE.deriveColor(1, 1, 1, 0.3);
     Color bgMoLg2Color = Color.CHARTREUSE.deriveColor(1, 1, 1, 0.6);
     Color strokeColor = Color.CHARTREUSE;
@@ -117,6 +118,7 @@ public class PerformanceGUIController implements Initializable {
     String buttonTempoStyle = "-fx-text-fill: BLACK;-fx-font-size: 14;-fx-pref-width: " + buttonSizeMedium + ";-fx-pref-height: " + buttonSizeMedium + ";";
     String buttonEnrichmentStyleUnchecked = "-fx-text-fill: WHITE;-fx-font-size: 14;-fx-pref-width: " + buttonSizeSmall + ";-fx-pref-height: " + buttonSizeSmall + ";-fx-background-color: DarkGray;";
     String buttonEnrichmentStyleChecked = "-fx-text-fill: WHITE;-fx-font-size: 14;-fx-pref-width: " + buttonSizeSmall + ";-fx-pref-height: " + buttonSizeSmall + ";-fx-background-color: DARKGREEN;";
+    String labelActionStyle = "-fx-font: 28 px; -fx-text-fill: WHITE; -fx-alignment: CENTER; -fx-wrap-text: TRUE;";
 
     int pixelHeight;
     int pixelWidth;
@@ -271,7 +273,8 @@ public class PerformanceGUIController implements Initializable {
             public synchronized void handle(final ActionEvent paramT) {
                 final RadialMenuItem item = (RadialMenuItem) paramT.getSource();
                 ArpeggiatorumGUI.controllerHandle.comboPattern.setValue(NotePool.Pattern.fromString(item.getText()));
-                radialAction(item);
+                actionPerformedLabelPattern.setText(ArpeggiatorumGUI.controllerHandle.comboPattern.getSelectionModel().getSelectedItem().toString());
+
             }
         };
 
@@ -287,7 +290,7 @@ public class PerformanceGUIController implements Initializable {
                 for (int i = 0; i < buttonEnrichmentArray.length; i++) {
                     buttonEnrichmentArray[i].setText(String.valueOf(ArpeggiatorumGUI.controllerHandle.comboEnrichment.getValue().getValue()[i]));
                 }
-                radialAction(item);
+                actionPerformedLabelEnrichment.setText(ArpeggiatorumGUI.controllerHandle.comboEnrichment.getSelectionModel().getSelectedItem().toString());
             }
         };
 
@@ -297,19 +300,22 @@ public class PerformanceGUIController implements Initializable {
         radialMenuEnrichment.setTranslateY(pixelHeight * 0.5);
         radialMenuEnrichment.hideRadialMenu();
 
+        actionPerformedLabelEnrichment.setTranslateX(pixelWidth * 0.2);
+        actionPerformedLabelEnrichment.setTranslateY(pixelHeight * 0.8);
+        actionPerformedLabelEnrichment.setStyle(labelActionStyle);
+        actionPerformedLabelEnrichment.setText(ArpeggiatorumGUI.controllerHandle.comboEnrichment.getSelectionModel().getSelectedItem().toString());
+
         radialMenuPattern = createCenterRadialMenu("Pattern", ArpeggiatorumGUI.controllerHandle.comboPattern.getItems().stream().toList(), patternHandler);
         radialMenuPattern.setTranslateX(pixelWidth * 0.8);
         radialMenuPattern.setTranslateY(pixelHeight * 0.5);
         radialMenuPattern.hideRadialMenu();
 
 
-        //Debug Label
-        actionPerformedLabel.setTranslateX(pixelWidth * 0.5);
-        actionPerformedLabel.setTranslateY(pixelHeight * 0.25);
-        actionPerformedLabel.setStyle("    -fx-font: 28 px;" +
-                "    -fx-text-fill: WHITE;" +
-                "    -fx-alignment: CENTER;" +
-                "    -fx-wrap-text: TRUE;");
+        actionPerformedLabelPattern.setTranslateX(pixelWidth * 0.8);
+        actionPerformedLabelPattern.setTranslateY(pixelHeight * 0.8);
+        actionPerformedLabelPattern.setStyle(labelActionStyle);
+        actionPerformedLabelPattern.setText(ArpeggiatorumGUI.controllerHandle.comboPattern.getSelectionModel().getSelectedItem().toString());
+
 
         regulatorTempo = RegulatorBuilder.create()
                 .prefSize(buttonSizeLarge * 2.0, buttonSizeLarge * 2.0)
@@ -338,7 +344,8 @@ public class PerformanceGUIController implements Initializable {
         anchorPane.getChildren().addAll(toggleAudio,
                 sliderArticulation,
                 toggleHeld, toggleArpeggio, toggleBass,
-                radialMenuPattern, radialMenuEnrichment, actionPerformedLabel,
+                radialMenuPattern, radialMenuEnrichment,
+                actionPerformedLabelPattern, actionPerformedLabelEnrichment,
                 regulatorTempo,
                 //buttonTap,
                 buttonConfirmPanic, buttonPanic);
@@ -349,19 +356,19 @@ public class PerformanceGUIController implements Initializable {
         if (textFadeTransition != null
                 && textFadeTransition.getStatus() != Animation.Status.STOPPED) {
             textFadeTransition.stop();
-            actionPerformedLabel.setOpacity(1.0);
+            actionPerformedLabelPattern.setOpacity(1.0);
         }
 
-        actionPerformedLabel.setText(item.getText());
-        actionPerformedLabel.setVisible(true);
+        actionPerformedLabelPattern.setText(item.getText());
+        actionPerformedLabelPattern.setVisible(true);
 
-        FadeTransition textFadeTransition = new FadeTransition(Duration.millis(400), actionPerformedLabel);
+        FadeTransition textFadeTransition = new FadeTransition(Duration.millis(400), actionPerformedLabelPattern);
         textFadeTransition.setDelay(Duration.seconds(1));
         textFadeTransition.setFromValue(1);
         textFadeTransition.setToValue(0);
         textFadeTransition.setOnFinished(e -> {
-            actionPerformedLabel.setVisible(false);
-            actionPerformedLabel.setOpacity(1.0);
+            actionPerformedLabelPattern.setVisible(false);
+            actionPerformedLabelPattern.setOpacity(1.0);
         });
         textFadeTransition.play();
     }
@@ -373,22 +380,32 @@ public class PerformanceGUIController implements Initializable {
         LinearGradient backgroundMouseOn = new LinearGradient(0, 0, 1, 1, true, CycleMethod.NO_CYCLE,
                 new Stop(0, bgMoLg1Color), new Stop(0.8, bgMoLg2Color));
 
+        Label centerLabel = new Label(menuName);
+        centerLabel.setStyle("-fx-text-fill: WHITE;-fx-font-size: 24;");
+        //Some magic
+        centerLabel.setTranslateX(-50);
+        centerLabel.setTranslateY(-15);
         RadialMenu radialMenu = new RadialMenu(INITIAL_ANGLE, ITEM_SIZE, MENU_SIZE, OFFSET,
                 background, backgroundMouseOn, strokeColor, strokeMouseOnColor,
-                false, RadialMenu.CenterVisibility.ALWAYS, new Label(menuName));
+                false, RadialMenu.CenterVisibility.ALWAYS, centerLabel);
         radialMenu.setStrokeWidth(STROKE_WIDTH);
         radialMenu.setOutlineStrokeWidth(STROKE_WIDTH);
         radialMenu.setOutlineStrokeFill(outlineColor);
         radialMenu.setOutlineStrokeMouseOnFill(outlineMouseOnColor);
         //Populate with items
         for (Object element : menuItems) {
-            radialMenu.addMenuItem(new RadialMenuItem(ITEM_SIZE, element.toString(), new Label(element.toString()), eventHandler));
+            Label itemLabel = new Label(element.toString());
+            itemLabel.setStyle("-fx-text-fill: WHITE;-fx-font-size: 20;");
+            //Some magic
+            itemLabel.setTranslateX(-50);
+            itemLabel.setTranslateY(-15);
+            radialMenu.addMenuItem(new RadialMenuItem(ITEM_SIZE, element.toString(), itemLabel, eventHandler));
         }
         //Settings for RadialMenu:
         radialMenu.setMenuItemSize(360.0 / menuItems.size());
-        radialMenu.setInnerRadius(buttonSizeSmall);
+        radialMenu.setInnerRadius(buttonSizeSmall * 1.0);
         radialMenu.setGraphicsFitWidth(0.0);
-        radialMenu.setRadius(buttonSizeLarge);
+        radialMenu.setRadius(buttonSizeLarge * 1.25);
         radialMenu.setOffset(1.0);
         radialMenu.setInitialAngle(0.0);
         radialMenu.setStrokeWidth(1.5);
