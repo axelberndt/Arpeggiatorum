@@ -5,28 +5,32 @@
     -fx-min-height          : 80;
     -fx-max-width           : 300;
     -fx-max-height          : 300;
-    -fx-background-color  : DarkGray;
+    -fx-background-color  : Transparent;
     -thumb-move-animation-time: 100;
     -toggle-display: left;
 }
 
 /*When Active*/
 .toggle-switch:selected .thumb-area {
-    -fx-background-color: Chartreuse;
+    -fx-background-color: Transparent;
 }
 .toggle-switch:selected .thumb {
+    -fx-background-color: Chartreuse;
 
 }
 /*When Inactive*/
 .toggle-switch .thumb-area {
-    -fx-background-color: Gainsboro;
+    -fx-background-color: transparent;
     -fx-background-radius: 5;
-    -fx-padding: 5 40 5 40; /* describes length: 50+50 = 100 width, 5+5=10 height */
+    -fx-padding: 5 100; /* describes length: 50+50 = 100 width, 5+5=10 height */
 }
 
 .toggle-switch .thumb {
-    -fx-background-radius: 20;
-    -fx-padding: 20;
+    -fx-background-radius: 50 0 0 50;
+    -fx-padding: 100 150;
+    -fx-blend-mode: LIGHTEN;
+
+
 }
 .label {
     -fx-font: 28 px;

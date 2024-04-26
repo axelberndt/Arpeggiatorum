@@ -17,13 +17,17 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TouchEvent;
+import javafx.scene.input.TouchPoint;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -125,6 +129,8 @@ public class PerformanceGUIController implements Initializable {
     int visualVerticalBuffer = 24;
     int visualHorizontalBuffer = 5;
 
+    private EventHandler<TouchEvent> touchEnrichmentHandler;
+
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
     /*
@@ -138,24 +144,26 @@ public class PerformanceGUIController implements Initializable {
         pixelHeight = (int) screenBounds.getHeight();
         pixelWidth = (int) screenBounds.getWidth();
         //How to get window title height instead of using a magic number? (visualVertricalBuffer)
-
-        anchorPane.setOnTouchPressed(touchEvent -> {
-            System.out.println(touchEvent);
-            touchEvent.consume();
-        });
-        anchorPane.setOnTouchMoved(touchEvent -> {
-            if (touchEvent.getTarget() instanceof Button) {
-                //call that button action
-            }
-            touchEvent.consume();
-        });
+//
+//        anchorPane.setOnTouchPressed(touchEvent -> {
+//            System.out.println(touchEvent);
+//            touchEvent.consume();
+//        });
+//        anchorPane.setOnTouchMoved(touchEvent -> {
+//            if (touchEvent.getTarget() instanceof Button) {
+//                //call that button action
+//            }
+//            touchEvent.consume();
+//        });
 
         buttonPanic = new Button("PANIC");
         buttonPanic.setStyle(buttonPanicStyle);
         buttonPanic.setTranslateX(pixelWidth - (buttonSizeLarge));
         buttonPanic.setTranslateY(pixelHeight - (buttonSizeLarge + visualVerticalBuffer));
         buttonPanic.setOnAction(this::buttonPanicHandle);
-
+        buttonPanic.addEventHandler(TouchEvent.TOUCH_PRESSED, touchEvent -> {
+            buttonPanic.fire();
+        });
 
         buttonConfirmPanic = new Button("Confirm Panic");
         buttonConfirmPanic.setStyle(buttonPanicStyle + "-fx-wrap-text: TRUE;-fx-text-alignment: CENTER;");
@@ -168,6 +176,10 @@ public class PerformanceGUIController implements Initializable {
             }
             Arpeggiatorum.getInstance().getArpeggiator().panic();
         });
+        buttonConfirmPanic.addEventHandler(TouchEvent.TOUCH_PRESSED, touchEvent -> {
+            buttonConfirmPanic.fire();
+        });
+
 
         buttonEnrichmentArray = new Button[16];
         for (int i = 0; i < buttonEnrichmentArray.length; i++) {
@@ -190,14 +202,38 @@ public class PerformanceGUIController implements Initializable {
                     }
                 }
             });
+            touchEnrichmentHandler = e -> {
+                EventType<? extends TouchEvent> type = e.getEventType();
+                TouchPoint point = e.getTouchPoint();
+                double x = point.getX();
+                double y = point.getY();
+                if (TouchEvent.TOUCH_MOVED.equals(type)) {
+
+                } else if (TouchEvent.TOUCH_RELEASED.equals(type)) {
+
+                }
+            };
+            buttonEnrichmentArray[i].addEventHandler(TouchEvent.ANY, touchEnrichmentHandler);
         }
         buttonEnrichmentArray[(int) Math.ceil(15.0 * (ArpeggiatorumGUI.controllerHandle.sliderEnrichment.getValue() / 100.0))].fire();
 
-        toggleAudio = new ToggleSwitch("Audio IN");
-        toggleAudio.selectedProperty().addListener((observable, oldValue, newValue) -> Arpeggiatorum.getInstance().Activate(newValue));
+        toggleAudio = new ToggleSwitch();
+        toggleAudio.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            Arpeggiatorum.getInstance().Activate(newValue);
+        });
         toggleAudio.setTranslateX(0);
-        toggleAudio.setTranslateY(0);
+        toggleAudio.setTranslateY(-buttonSizeLarge*0.25);
+        toggleAudio.setRotate(-90);
         toggleAudio.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("toggleSwitch.css").toExternalForm());
+//        toggleAudio.addEventHandler(TouchEvent.TOUCH_PRESSED, touchEvent -> {
+//            toggleAudio.fire();
+//        });
+        Label labelAudio = new Label("Audio IN");
+        labelAudio.setStyle(labelActionStyle);
+        labelAudio.setTranslateX(0);
+        labelAudio.setTranslateY(0);
+        //labelAudio.toBack();
+
 
         sliderArticulation = TouchSliderBuilder.create()
                 .prefSize(buttonSizeLarge * 3, buttonSizeLarge)
@@ -220,7 +256,7 @@ public class PerformanceGUIController implements Initializable {
         sliderArticulation.setTranslateY(0);
 
 
-        toggleHeld = new ToggleSwitch("Held");
+        toggleHeld = new ToggleSwitch();
         int heldValue = ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getSelectionModel().getSelectedIndex();
         if (heldValue != 0) {
             toggleHeld.setSelected(true);
@@ -235,8 +271,10 @@ public class PerformanceGUIController implements Initializable {
         toggleHeld.setTranslateX(pixelWidth - ((buttonSizeLarge * 3) + (visualHorizontalBuffer * 2)));
         toggleHeld.setTranslateY(0);
         toggleHeld.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("toggleSwitch.css").toExternalForm());
+        toggleHeld.setRotate(-90);
 
-        toggleArpeggio = new ToggleSwitch("Arpeggio");
+
+        toggleArpeggio = new ToggleSwitch();
         int arpeggioValue = ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().getSelectedIndex();
         if (arpeggioValue != 0) {
             toggleArpeggio.setSelected(true);
@@ -250,9 +288,12 @@ public class PerformanceGUIController implements Initializable {
         });
         toggleArpeggio.setTranslateX(pixelWidth - ((buttonSizeLarge * 2) + (visualHorizontalBuffer * 1)));
         toggleArpeggio.setTranslateY(0);
+        toggleArpeggio.setRotate(-90);
+
         toggleArpeggio.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("toggleSwitch.css").toExternalForm());
 
-        toggleBass = new ToggleSwitch("Bass");
+
+        toggleBass = new ToggleSwitch();
         int bassValue = ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().getSelectedIndex();
         if (bassValue != 0) {
             toggleBass.setSelected(true);
@@ -266,7 +307,9 @@ public class PerformanceGUIController implements Initializable {
         });
         toggleBass.setTranslateX(pixelWidth - buttonSizeLarge);
         toggleBass.setTranslateY(0);
+        toggleBass.setRotate(-90);
         toggleBass.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("toggleSwitch.css").toExternalForm());
+
 
         final EventHandler<ActionEvent> patternHandler = new EventHandler<>() {
             @Override
@@ -341,14 +384,15 @@ public class PerformanceGUIController implements Initializable {
             Arpeggiatorum.getInstance().tapTempo();
             regulatorTempo.setTargetValue(ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue());
         });
-        anchorPane.getChildren().addAll(toggleAudio,
+        anchorPane.getChildren().addAll(labelAudio, toggleAudio,
                 sliderArticulation,
                 toggleHeld, toggleArpeggio, toggleBass,
                 radialMenuPattern, radialMenuEnrichment,
                 actionPerformedLabelPattern, actionPerformedLabelEnrichment,
                 regulatorTempo,
                 //buttonTap,
-                buttonConfirmPanic, buttonPanic);
+                buttonConfirmPanic, buttonPanic
+        );
         anchorPane.getChildren().addAll(buttonEnrichmentArray);
     }
 

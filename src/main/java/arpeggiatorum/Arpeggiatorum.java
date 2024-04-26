@@ -446,8 +446,6 @@ public class Arpeggiatorum implements Receiver {
         if (selected) {
             ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setStyle("-fx-background-color: Chartreuse;");
             // ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setText("Active");
-
-
             ArpeggiatorumGUI.controllerHandle.comboMic2MIDI.getValue().start();
             ArpeggiatorumGUI.controllerHandle.comboMic2MIDI.getValue().setSignalToNoiseThreshold(ArpeggiatorumGUI.controllerHandle.sliderThreshold.getValue() / ArpeggiatorumGUI.controllerHandle.sliderThreshold.getMax());
         } else {
