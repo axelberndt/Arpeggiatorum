@@ -111,8 +111,8 @@ public class PerformanceGUIController implements Initializable {
     private URL location;
 
     int buttonSizeLarge = 200;
-    int buttonSizeMedium = (int) (buttonSizeLarge*0.5);
-    int buttonSizeSmall = (int) (buttonSizeMedium*0.75);
+    int buttonSizeMedium = (int) (buttonSizeLarge * 0.5);
+    int buttonSizeSmall = (int) (buttonSizeMedium * 0.75);
     String buttonPanicStyle = "-fx-text-fill: RED;-fx-font-size: 28;-fx-pref-width: " + buttonSizeLarge + ";-fx-pref-height: " + buttonSizeLarge + ";";
     String buttonTempoStyle = "-fx-text-fill: BLACK;-fx-font-size: 14;-fx-pref-width: " + buttonSizeMedium + ";-fx-pref-height: " + buttonSizeMedium + ";";
     String buttonEnrichmentStyleUnchecked = "-fx-text-fill: WHITE;-fx-font-size: 14;-fx-pref-width: " + buttonSizeSmall + ";-fx-pref-height: " + buttonSizeSmall + ";-fx-background-color: DarkGray;";
@@ -137,22 +137,22 @@ public class PerformanceGUIController implements Initializable {
         pixelWidth = (int) screenBounds.getWidth();
         //How to get window title height instead of using a magic number? (visualVertricalBuffer)
 
+        anchorPane.setOnTouchPressed(touchEvent -> {
+            System.out.println(touchEvent);
+            touchEvent.consume();
+        });
+        anchorPane.setOnTouchMoved(touchEvent -> {
+            if (touchEvent.getTarget() instanceof Button) {
+                //call that button action
+            }
+            touchEvent.consume();
+        });
+
         buttonPanic = new Button("PANIC");
         buttonPanic.setStyle(buttonPanicStyle);
         buttonPanic.setTranslateX(pixelWidth - (buttonSizeLarge));
         buttonPanic.setTranslateY(pixelHeight - (buttonSizeLarge + visualVerticalBuffer));
-        buttonPanic.setOnAction(event -> {
-            buttonConfirmPanic.setVisible(true);
-            FadeTransition buttonFadeTransition = new FadeTransition(Duration.millis(400), buttonConfirmPanic);
-            buttonFadeTransition.setDelay(Duration.seconds(1));
-            buttonFadeTransition.setFromValue(1);
-            buttonFadeTransition.setToValue(0);
-            buttonFadeTransition.setOnFinished(e -> {
-                buttonConfirmPanic.setVisible(false);
-                buttonConfirmPanic.setOpacity(1.0);
-            });
-            buttonFadeTransition.play();
-        });
+        buttonPanic.setOnAction(this::buttonPanicHandle);
 
 
         buttonConfirmPanic = new Button("Confirm Panic");
@@ -188,14 +188,6 @@ public class PerformanceGUIController implements Initializable {
                     }
                 }
             });
-            buttonEnrichmentArray[i].setOnTouchPressed(event -> {
-                //But touch isn't working
-                System.out.println("TOUCH");
-
-            });
-            //Workaround for touch, but not great
-            // buttonEnrichmentArray[i].setOnMouseEntered(this::handleEnrichmentArray);
-
         }
         buttonEnrichmentArray[(int) Math.ceil(15.0 * (ArpeggiatorumGUI.controllerHandle.sliderEnrichment.getValue() / 100.0))].fire();
 
@@ -222,8 +214,9 @@ public class PerformanceGUIController implements Initializable {
                 .nameVisible(true)
                 .onTouchSliderEvent(e -> ArpeggiatorumGUI.controllerHandle.sliderArticulation.adjustValue(e.getValue()))
                 .build();
-        sliderArticulation.setTranslateX(buttonSizeLarge * 1.5);
+        sliderArticulation.setTranslateX(buttonSizeLarge * 1.25);
         sliderArticulation.setTranslateY(0);
+
 
         toggleHeld = new ToggleSwitch("Held");
         int heldValue = ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getSelectionModel().getSelectedIndex();
@@ -310,7 +303,6 @@ public class PerformanceGUIController implements Initializable {
         radialMenuPattern.hideRadialMenu();
 
 
-
         //Debug Label
         actionPerformedLabel.setTranslateX(pixelWidth * 0.5);
         actionPerformedLabel.setTranslateY(pixelHeight * 0.25);
@@ -337,8 +329,8 @@ public class PerformanceGUIController implements Initializable {
 
         buttonTap = new Button("Tap Tempo");
         buttonTap.setStyle(buttonTempoStyle);
-        buttonTap.setTranslateX(pixelWidth *0.5);
-        buttonTap.setTranslateY(pixelHeight *0.5);
+        buttonTap.setTranslateX(pixelWidth * 0.5);
+        buttonTap.setTranslateY(pixelHeight * 0.5);
         buttonTap.setOnAction(event -> {
             Arpeggiatorum.getInstance().tapTempo();
             regulatorTempo.setTargetValue(ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue());
@@ -417,5 +409,18 @@ public class PerformanceGUIController implements Initializable {
                 ArpeggiatorumGUI.controllerHandle.sliderEnrichment.adjustValue((j / 15.0) * 100.0);
             }
         }
+    }
+
+    private void buttonPanicHandle(ActionEvent event) {
+        buttonConfirmPanic.setVisible(true);
+        FadeTransition buttonFadeTransition = new FadeTransition(Duration.millis(400), buttonConfirmPanic);
+        buttonFadeTransition.setDelay(Duration.seconds(1));
+        buttonFadeTransition.setFromValue(1);
+        buttonFadeTransition.setToValue(0);
+        buttonFadeTransition.setOnFinished(e -> {
+            buttonConfirmPanic.setVisible(false);
+            buttonConfirmPanic.setOpacity(1.0);
+        });
+        buttonFadeTransition.play();
     }
 }
