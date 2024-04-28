@@ -599,7 +599,7 @@ public class RadialMenu extends Group implements EventHandler<Event>,
 
         final List<Animation> anim = new ArrayList<>();
 
-        final FadeTransition fadeItemGroup = new FadeTransition(Duration.millis(300), itemGroup);
+        final FadeTransition fadeItemGroup = new FadeTransition(Duration.millis(1), itemGroup);
         fadeItemGroup.setFromValue(1);
         fadeItemGroup.setToValue(0);
         fadeItemGroup.setOnFinished(event -> {
@@ -609,7 +609,7 @@ public class RadialMenu extends Group implements EventHandler<Event>,
         anim.add(fadeItemGroup);
 
         if (centerVisibility.get() == CenterVisibility.WITH_MENU) {
-            final FadeTransition fadeCenter = new FadeTransition(Duration.millis(300), centerGroup);
+            final FadeTransition fadeCenter = new FadeTransition(Duration.millis(1), centerGroup);
             fadeCenter.setFromValue(1);
             fadeCenter.setToValue(0);
             fadeCenter.setOnFinished(event -> {
@@ -623,23 +623,23 @@ public class RadialMenu extends Group implements EventHandler<Event>,
 
     public void showRadialMenu() {
         final List<Animation> animationList = new ArrayList<>();
-        final FadeTransition fade = new FadeTransition(Duration.millis(400), itemGroup);
+        final FadeTransition fade = new FadeTransition(Duration.millis(1), itemGroup);
         fade.setFromValue(0);
         fade.setToValue(1.0);
         animationList.add(fade);
 
         final Animation offsetAnimation = new Timeline(
             new KeyFrame(Duration.ZERO, new KeyValue(offsetProperty(), 0)), 
-            new KeyFrame(Duration.millis(300), new KeyValue(offsetProperty(), lastOffsetValue)));
+            new KeyFrame(Duration.millis(1), new KeyValue(offsetProperty(), lastOffsetValue)));
         animationList.add(offsetAnimation);
 
         final Animation angle = new Timeline(
             new KeyFrame(Duration.ZERO, new KeyValue(initialAngleProperty(), lastInitialAngleValue + 20)), 
-            new KeyFrame(Duration.millis(300), new KeyValue(initialAngleProperty(),lastInitialAngleValue)));
+            new KeyFrame(Duration.millis(1), new KeyValue(initialAngleProperty(),lastInitialAngleValue)));
         animationList.add(angle);
 
         if (centerVisibility.get() == CenterVisibility.WITH_MENU) {
-            final FadeTransition fadeCenter = new FadeTransition(Duration.millis(300), centerGroup);
+            final FadeTransition fadeCenter = new FadeTransition(Duration.millis(1), centerGroup);
             fadeCenter.setFromValue(0);
             fadeCenter.setToValue(1);
             animationList.add(fadeCenter);

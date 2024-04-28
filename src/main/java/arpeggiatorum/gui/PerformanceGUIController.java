@@ -120,9 +120,11 @@ public class PerformanceGUIController implements Initializable {
     int buttonSizeSmall = (int) (buttonSizeMedium * 0.75);
     String buttonPanicStyle = "-fx-text-fill: RED;-fx-font-size: 28;-fx-pref-width: " + buttonSizeLarge + ";-fx-pref-height: " + buttonSizeLarge + ";";
     String buttonTempoStyle = "-fx-text-fill: BLACK;-fx-font-size: 14;-fx-pref-width: " + buttonSizeMedium + ";-fx-pref-height: " + buttonSizeMedium + ";";
-    String buttonEnrichmentStyleUnchecked = "-fx-text-fill: WHITE;-fx-font-size: 14;-fx-pref-width: " + buttonSizeSmall + ";-fx-pref-height: " + buttonSizeSmall + ";-fx-background-color: DarkGray;";
+    String buttonEnrichmentStyleUnchecked = "-fx-text-fill: WHITE;-fx-font-size: 14;-fx-pref-width: " + buttonSizeSmall + ";-fx-pref-height: " + buttonSizeSmall + ";-fx-background-color: Gainsboro;";
     String buttonEnrichmentStyleChecked = "-fx-text-fill: WHITE;-fx-font-size: 14;-fx-pref-width: " + buttonSizeSmall + ";-fx-pref-height: " + buttonSizeSmall + ";-fx-background-color: DARKGREEN;";
     String labelActionStyle = "-fx-font: 28 px; -fx-text-fill: WHITE; -fx-alignment: CENTER; -fx-wrap-text: TRUE;";
+
+    Label labelAudio, labelHeld, labelArpeggio, labelBass;
 
     int pixelHeight;
     int pixelWidth;
@@ -222,13 +224,13 @@ public class PerformanceGUIController implements Initializable {
             Arpeggiatorum.getInstance().Activate(newValue);
         });
         toggleAudio.setTranslateX(0);
-        toggleAudio.setTranslateY(-buttonSizeLarge*0.25);
+        toggleAudio.setTranslateY(-buttonSizeLarge * 0.25);
         toggleAudio.setRotate(-90);
         toggleAudio.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("toggleSwitch.css").toExternalForm());
 //        toggleAudio.addEventHandler(TouchEvent.TOUCH_PRESSED, touchEvent -> {
 //            toggleAudio.fire();
 //        });
-        Label labelAudio = new Label("Audio IN");
+        labelAudio = new Label("Audio IN");
         labelAudio.setStyle(labelActionStyle);
         labelAudio.setTranslateX(0);
         labelAudio.setTranslateY(0);
@@ -269,10 +271,13 @@ public class PerformanceGUIController implements Initializable {
             }
         });
         toggleHeld.setTranslateX(pixelWidth - ((buttonSizeLarge * 3) + (visualHorizontalBuffer * 2)));
-        toggleHeld.setTranslateY(0);
+        toggleHeld.setTranslateY(-buttonSizeLarge * 0.25);
         toggleHeld.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("toggleSwitch.css").toExternalForm());
         toggleHeld.setRotate(-90);
-
+        labelHeld = new Label("Held");
+        labelHeld.setStyle(labelActionStyle);
+        labelHeld.setTranslateX(toggleHeld.getTranslateX());
+        labelHeld.setTranslateY(0);
 
         toggleArpeggio = new ToggleSwitch();
         int arpeggioValue = ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().getSelectedIndex();
@@ -287,11 +292,14 @@ public class PerformanceGUIController implements Initializable {
             }
         });
         toggleArpeggio.setTranslateX(pixelWidth - ((buttonSizeLarge * 2) + (visualHorizontalBuffer * 1)));
-        toggleArpeggio.setTranslateY(0);
+        toggleArpeggio.setTranslateY(-buttonSizeLarge * 0.25);
         toggleArpeggio.setRotate(-90);
-
         toggleArpeggio.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("toggleSwitch.css").toExternalForm());
 
+        labelArpeggio = new Label("Arpeggio");
+        labelArpeggio.setStyle(labelActionStyle);
+        labelArpeggio.setTranslateX(toggleArpeggio.getTranslateX());
+        labelArpeggio.setTranslateY(0);
 
         toggleBass = new ToggleSwitch();
         int bassValue = ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().getSelectedIndex();
@@ -306,10 +314,14 @@ public class PerformanceGUIController implements Initializable {
             }
         });
         toggleBass.setTranslateX(pixelWidth - buttonSizeLarge);
-        toggleBass.setTranslateY(0);
+        toggleBass.setTranslateY(-buttonSizeLarge * 0.25);
         toggleBass.setRotate(-90);
         toggleBass.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("toggleSwitch.css").toExternalForm());
 
+        labelBass = new Label("Bass");
+        labelBass.setStyle(labelActionStyle);
+        labelBass.setTranslateX(toggleBass.getTranslateX());
+        labelBass.setTranslateY(0);
 
         final EventHandler<ActionEvent> patternHandler = new EventHandler<>() {
             @Override
@@ -386,36 +398,37 @@ public class PerformanceGUIController implements Initializable {
         });
         anchorPane.getChildren().addAll(labelAudio, toggleAudio,
                 sliderArticulation,
-                toggleHeld, toggleArpeggio, toggleBass,
+                labelHeld, toggleHeld,
+                labelArpeggio, toggleArpeggio,
+                labelBass, toggleBass,
                 radialMenuPattern, radialMenuEnrichment,
                 actionPerformedLabelPattern, actionPerformedLabelEnrichment,
                 regulatorTempo,
-                //buttonTap,
                 buttonConfirmPanic, buttonPanic
         );
         anchorPane.getChildren().addAll(buttonEnrichmentArray);
     }
 
-    private void radialAction(RadialMenuItem item) {
-        if (textFadeTransition != null
-                && textFadeTransition.getStatus() != Animation.Status.STOPPED) {
-            textFadeTransition.stop();
-            actionPerformedLabelPattern.setOpacity(1.0);
-        }
-
-        actionPerformedLabelPattern.setText(item.getText());
-        actionPerformedLabelPattern.setVisible(true);
-
-        FadeTransition textFadeTransition = new FadeTransition(Duration.millis(400), actionPerformedLabelPattern);
-        textFadeTransition.setDelay(Duration.seconds(1));
-        textFadeTransition.setFromValue(1);
-        textFadeTransition.setToValue(0);
-        textFadeTransition.setOnFinished(e -> {
-            actionPerformedLabelPattern.setVisible(false);
-            actionPerformedLabelPattern.setOpacity(1.0);
-        });
-        textFadeTransition.play();
-    }
+//    private void radialAction(RadialMenuItem item) {
+//        if (textFadeTransition != null
+//                && textFadeTransition.getStatus() != Animation.Status.STOPPED) {
+//            textFadeTransition.stop();
+//            actionPerformedLabelPattern.setOpacity(1.0);
+//        }
+//
+//        actionPerformedLabelPattern.setText(item.getText());
+//        actionPerformedLabelPattern.setVisible(true);
+//
+//        FadeTransition textFadeTransition = new FadeTransition(Duration.millis(400), actionPerformedLabelPattern);
+//        textFadeTransition.setDelay(Duration.seconds(1));
+//        textFadeTransition.setFromValue(1);
+//        textFadeTransition.setToValue(0);
+//        textFadeTransition.setOnFinished(e -> {
+//            actionPerformedLabelPattern.setVisible(false);
+//            actionPerformedLabelPattern.setOpacity(1.0);
+//        });
+//        textFadeTransition.play();
+//    }
 
     public RadialMenu createCenterRadialMenu(String menuName, List
             menuItems, EventHandler<ActionEvent> eventHandler) {
@@ -457,20 +470,20 @@ public class PerformanceGUIController implements Initializable {
         return radialMenu;
     }
 
-    private void handleEnrichmentArray(MouseEvent event) {
-        Boolean changeColor = true;
-        for (int j = 0; j < buttonEnrichmentArray.length; j++) {
-            if (changeColor) {
-                buttonEnrichmentArray[j].setStyle(buttonEnrichmentStyleChecked);
-            } else {
-                buttonEnrichmentArray[j].setStyle(buttonEnrichmentStyleUnchecked);
-            }
-            if (event.getSource() == buttonEnrichmentArray[j]) {
-                changeColor = false;
-                ArpeggiatorumGUI.controllerHandle.sliderEnrichment.adjustValue((j / 15.0) * 100.0);
-            }
-        }
-    }
+//    private void handleEnrichmentArray(MouseEvent event) {
+//        Boolean changeColor = true;
+//        for (int j = 0; j < buttonEnrichmentArray.length; j++) {
+//            if (changeColor) {
+//                buttonEnrichmentArray[j].setStyle(buttonEnrichmentStyleChecked);
+//            } else {
+//                buttonEnrichmentArray[j].setStyle(buttonEnrichmentStyleUnchecked);
+//            }
+//            if (event.getSource() == buttonEnrichmentArray[j]) {
+//                changeColor = false;
+//                ArpeggiatorumGUI.controllerHandle.sliderEnrichment.adjustValue((j / 15.0) * 100.0);
+//            }
+//        }
+//    }
 
     private void buttonPanicHandle(ActionEvent event) {
         buttonConfirmPanic.setVisible(true);

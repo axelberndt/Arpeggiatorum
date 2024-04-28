@@ -16,8 +16,8 @@
 }
 .toggle-switch:selected .thumb {
     -fx-background-color: Chartreuse;
-
 }
+
 /*When Inactive*/
 .toggle-switch .thumb-area {
     -fx-background-color: transparent;
@@ -29,9 +29,8 @@
     -fx-background-radius: 50 0 0 50;
     -fx-padding: 100 150;
     -fx-blend-mode: LIGHTEN;
-
-
 }
+
 .label {
     -fx-font: 28 px;
     -fx-text-fill: WHITE;
