@@ -10,6 +10,8 @@ import com.jsyn.Synthesizer;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import javax.sound.midi.*;
@@ -183,6 +185,7 @@ public class Arpeggiatorum implements Receiver {
         ArpeggiatorumGUI.controllerHandle.comboMic2MIDI.getSelectionModel().select(Integer.parseInt(configProp.getProperty("Pitch Detector", "0")));
         if (Boolean.parseBoolean(configProp.getProperty("CQT Auto-Tune", "false"))) {
             ArpeggiatorumGUI.controllerHandle.toggleButtonAutoTune.fire();
+
         }
     }
 
@@ -253,13 +256,37 @@ public class Arpeggiatorum implements Receiver {
         try {
             FXMLLoader fxmlLoader;
             fxmlLoader = new FXMLLoader(ArpeggiatorumGUI.class.getResource("LogGUI.fxml"));
-//            fxmlLoader.setLocation(ArpeggiatorumGUI.class.getClassLoader().getResource("arpeggiatorum/gui/LogGUI.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
-            Stage stage = new Stage();
-            stage.setTitle("Log Messages");
-            stage.setScene(scene);
-            stage.show();
-            stage.setMaximized(true);
+            Scene sceneLog = new Scene(fxmlLoader.load());
+            Stage stageLog = new Stage();
+            ArpeggiatorumGUI.controllerHandleLog = fxmlLoader.getController();
+
+            stageLog.setTitle("Log Messages");
+            stageLog.setScene(sceneLog);
+            stageLog.show();
+            stageLog.setMaximized(true);
+            stageLog.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
+                switch (event.getCode()) {
+                    case KeyCode.ESCAPE:
+                    case KeyCode.Q: {
+                        // Close current window
+                        stageLog.close();
+                        break;
+                    }
+                    case KeyCode.L: {
+                        //Close and reopen
+                        stageLog.close();
+                        Arpeggiatorum.LoadLog(ArpeggiatorumGUI.getInstance());
+                        break;
+                    }
+                    case KeyCode.P: {
+                        Arpeggiatorum.LoadPerformance(ArpeggiatorumGUI.getInstance());
+                        break;
+                    }
+                    default: {
+                        LogGUIController.logBuffer.append("Unrecognized key.");
+                    }
+                }
+            });
         } catch (IOException e) {
             Logger logger = Logger.getLogger(arpeggiatorumGUI.getClass().getName());
             logger.log(Level.SEVERE, "Failed to create new Window.", e);
@@ -270,14 +297,46 @@ public class Arpeggiatorum implements Receiver {
         try {
             FXMLLoader fxmlLoader;
             fxmlLoader = new FXMLLoader(ArpeggiatorumGUI.class.getResource("PerformanceGUI.fxml"));
-            //fxmlLoader.setLocation(ArpeggiatorumGUI.class.getClassLoader().getResource("arpeggiatorum/gui/LogGUI.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
-            Stage stage = new Stage();
 
-            stage.setTitle("Performance Mode");
-            stage.setScene(scene);
-            stage.show();
-            stage.setMaximized(true);
+            //fxmlLoader.setLocation(ArpeggiatorumGUI.class.getClassLoader().getResource("arpeggiatorum/gui/LogGUI.fxml"));
+            Scene scenePerformance = new Scene(fxmlLoader.load());
+            Stage stagePerformance = new Stage();
+            ArpeggiatorumGUI.controllerHandlePerformance = fxmlLoader.getController();
+
+            stagePerformance.setTitle("Performance Mode");
+            stagePerformance.setScene(scenePerformance);
+            stagePerformance.show();
+            stagePerformance.setMaximized(true);
+            stagePerformance.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
+                switch (event.getCode()) {
+                    case KeyCode.ESCAPE:
+                    case KeyCode.Q: {
+                       // Close current window
+                        ArpeggiatorumGUI.controllerHandlePerformance.toggleArpeggio.setSelected(true);
+                        ArpeggiatorumGUI.controllerHandlePerformance.toggleBass.setSelected(true);
+                        ArpeggiatorumGUI.controllerHandlePerformance.toggleHeld.setSelected(true);
+                        stagePerformance.close();
+                        break;
+                    }
+                    case KeyCode.L: {
+                        Arpeggiatorum.LoadLog(ArpeggiatorumGUI.getInstance());
+                        break;
+                    }
+                    case KeyCode.P: {
+                        // Close current window
+                        ArpeggiatorumGUI.controllerHandlePerformance.toggleArpeggio.setSelected(true);
+                        ArpeggiatorumGUI.controllerHandlePerformance.toggleBass.setSelected(true);
+                        ArpeggiatorumGUI.controllerHandlePerformance.toggleHeld.setSelected(true);
+                        stagePerformance.close();
+                        //and reopen
+                        Arpeggiatorum.LoadPerformance(ArpeggiatorumGUI.getInstance());
+                        break;
+                    }
+                    default: {
+                        LogGUIController.logBuffer.append("Unrecognized key.");
+                    }
+                }
+            });
         } catch (IOException e) {
             Logger logger = Logger.getLogger(arpeggiatorumGUI.getClass().getName());
             logger.log(Level.SEVERE, "Failed to create new Window.", e);

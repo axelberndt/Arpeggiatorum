@@ -11,7 +11,9 @@ import javafx.stage.Stage;
 
 
 public class ArpeggiatorumGUI extends Application {
-    public static ArpeggiatorumController controllerHandle;
+    public static ArpeggiatorumGUIController controllerHandle;
+    public static PerformanceGUIController controllerHandlePerformance;
+    public static LogGUIController controllerHandleLog;
     private static FXMLLoader fxmlLoader;
     private static Scene scene;
     private static volatile ArpeggiatorumGUI instance;
@@ -51,7 +53,6 @@ public class ArpeggiatorumGUI extends Application {
         fxmlLoader = new FXMLLoader(ArpeggiatorumGUI.class.getResource("ArpeggiatorumGUI.fxml"));
         // fxmlLoader = new FXMLLoader(ArpeggiatorumGUI.class.getClassLoader().getResource("arpeggiatorum/gui/ArpeggiatorumGUI.fxml"));
         scene = new Scene(fxmlLoader.load());
-
         controllerHandle = fxmlLoader.getController();
         //GUI Definition
         primaryStage.setTitle("ArpeggiatorumGUI v" + Arpeggiator.version);

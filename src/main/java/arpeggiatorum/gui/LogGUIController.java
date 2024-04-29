@@ -23,16 +23,16 @@ public class LogGUIController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         logTextArea.textProperty().bind(logBuffer);
-
+        logBuffer.append("Available Input methods:\r\n");
         //Discover if we have touch support
         if (Platform.isSupported(ConditionalFeature.INPUT_MULTITOUCH)) {
-            logBuffer.append("Multitouch\r\n");
+            logBuffer.append("- Multitouch\r\n");
         }
         if (Platform.isSupported(ConditionalFeature.INPUT_TOUCH)) {
-            logBuffer.append("Touch\r\n");
+            logBuffer.append("- Touch\r\n");
         }
         if (Platform.isSupported(ConditionalFeature.INPUT_POINTER)) {
-            logBuffer.append("Mouse\r\n");
+            logBuffer.append("- Mouse\r\n");
         }
 
         logBuffer.addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> {

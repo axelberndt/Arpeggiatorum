@@ -28,7 +28,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ArpeggiatorumController implements Initializable {
+public class ArpeggiatorumGUIController implements Initializable {
 
     //GUI Controls
 
