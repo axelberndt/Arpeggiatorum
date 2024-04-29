@@ -307,15 +307,15 @@ public class Arpeggiatorum implements Receiver {
             stagePerformance.setScene(scenePerformance);
             stagePerformance.show();
             stagePerformance.setMaximized(true);
+            stagePerformance.setOnCloseRequest((event) -> {
+                closePerformance(stagePerformance);
+            });
             stagePerformance.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
                 switch (event.getCode()) {
                     case KeyCode.ESCAPE:
                     case KeyCode.Q: {
-                       // Close current window
-                        ArpeggiatorumGUI.controllerHandlePerformance.toggleArpeggio.setSelected(true);
-                        ArpeggiatorumGUI.controllerHandlePerformance.toggleBass.setSelected(true);
-                        ArpeggiatorumGUI.controllerHandlePerformance.toggleHeld.setSelected(true);
-                        stagePerformance.close();
+                        // Close current window
+                        closePerformance(stagePerformance);
                         break;
                     }
                     case KeyCode.L: {
@@ -324,10 +324,7 @@ public class Arpeggiatorum implements Receiver {
                     }
                     case KeyCode.P: {
                         // Close current window
-                        ArpeggiatorumGUI.controllerHandlePerformance.toggleArpeggio.setSelected(true);
-                        ArpeggiatorumGUI.controllerHandlePerformance.toggleBass.setSelected(true);
-                        ArpeggiatorumGUI.controllerHandlePerformance.toggleHeld.setSelected(true);
-                        stagePerformance.close();
+                        closePerformance(stagePerformance);
                         //and reopen
                         Arpeggiatorum.LoadPerformance(ArpeggiatorumGUI.getInstance());
                         break;
@@ -341,6 +338,13 @@ public class Arpeggiatorum implements Receiver {
             Logger logger = Logger.getLogger(arpeggiatorumGUI.getClass().getName());
             logger.log(Level.SEVERE, "Failed to create new Window.", e);
         }
+    }
+
+    private static void closePerformance(Stage stagePerformance) {
+        ArpeggiatorumGUI.controllerHandlePerformance.toggleArpeggio.setSelected(true);
+        ArpeggiatorumGUI.controllerHandlePerformance.toggleBass.setSelected(true);
+        ArpeggiatorumGUI.controllerHandlePerformance.toggleHeld.setSelected(true);
+        stagePerformance.close();
     }
 
     public Arpeggiator getArpeggiator() {

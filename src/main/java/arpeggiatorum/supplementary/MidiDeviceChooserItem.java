@@ -1,9 +1,7 @@
-package arpeggiatorum.gui;
+package arpeggiatorum.supplementary;
 
 
 //import meico.supplementary.KeyValue;
-
-import arpeggiatorum.supplementary.KeyValue;
 
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiSystem;

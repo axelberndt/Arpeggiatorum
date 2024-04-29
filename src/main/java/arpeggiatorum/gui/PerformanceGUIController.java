@@ -11,6 +11,7 @@ import arpeggiatorum.gui.touchSlider.TouchSlider;
 import arpeggiatorum.gui.touchSlider.TouchSliderBuilder;
 import arpeggiatorum.notePool.NotePool;
 
+import arpeggiatorum.supplementary.TonalEnrichmentChooserItem;
 import eu.hansolo.regulators.Regulator;
 import eu.hansolo.regulators.RegulatorBuilder;
 
@@ -66,7 +67,7 @@ public class PerformanceGUIController implements Initializable {
     public Button buttonTap;
 
     @FXML
-    public Button[] buttonEnrichmentArray;
+    public EnrichmentButton[] buttonEnrichmentArray;
 
 
     protected boolean show;
@@ -158,28 +159,15 @@ public class PerformanceGUIController implements Initializable {
         });
 
 
-        buttonEnrichmentArray = new Button[16];
+        buttonEnrichmentArray = new EnrichmentButton[16];
         for (int i = 0; i < buttonEnrichmentArray.length; i++) {
-            buttonEnrichmentArray[i] = new Button();
+            buttonEnrichmentArray[i] = new EnrichmentButton();
             buttonEnrichmentArray[i].setText(String.valueOf(ArpeggiatorumGUI.controllerHandle.comboEnrichment.getValue().getValue()[i]));
             buttonEnrichmentArray[i].setStyle(buttonEnrichmentStyleUnchecked);
             buttonEnrichmentArray[i].setTranslateX((i * buttonSizeSmall));
             buttonEnrichmentArray[i].setTranslateY(pixelHeight - (buttonSizeSmall + visualVerticalBuffer));
-            buttonEnrichmentArray[i].setOnAction(event -> {
-                Boolean changeColor = true;
-                for (int j = 0; j < buttonEnrichmentArray.length; j++) {
-                    if (changeColor) {
-                        buttonEnrichmentArray[j].setStyle(buttonEnrichmentStyleChecked);
-                    } else {
-                        buttonEnrichmentArray[j].setStyle(buttonEnrichmentStyleUnchecked);
-                    }
-                    if (event.getSource() == buttonEnrichmentArray[j]) {
-                        changeColor = false;
-                        ArpeggiatorumGUI.controllerHandle.sliderEnrichment.adjustValue((j / 15.0) * 100.0);
-                    }
-                }
-            });
-            buttonEnrichmentArray[i].addEventHandler(TouchEvent.ANY, this::touchEnrichmentHandler);
+            buttonEnrichmentArray[i].setOnAction(this::buttonEnrichmentHandle);
+            buttonEnrichmentArray[i].addEventHandler(TouchEvent.ANY, this::touchEnrichmentHandle);
         }
         buttonEnrichmentArray[(int) Math.ceil(15.0 * (ArpeggiatorumGUI.controllerHandle.sliderEnrichment.getValue() / 100.0))].fire();
 
@@ -433,21 +421,36 @@ public class PerformanceGUIController implements Initializable {
         if (toggleAudio.isSelected()) {
             toggleAudio.setSelected(false);
         }
-        if(ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.isSelected()){
+        if (ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.isSelected()) {
             ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.fire();
         }
         Arpeggiatorum.getInstance().getArpeggiator().panic();
     }
 
-    private synchronized void touchEnrichmentHandler(TouchEvent touchEvent) {
+    private synchronized void touchEnrichmentHandle(TouchEvent touchEvent) {
         EventType<? extends TouchEvent> type = touchEvent.getEventType();
         TouchPoint point = touchEvent.getTouchPoint();
         double x = point.getX();
         double y = point.getY();
-        if (TouchEvent.TOUCH_MOVED.equals(type)) {
 
-        } else if (TouchEvent.TOUCH_RELEASED.equals(type)) {
+        if (touchEvent.getTouchPoint().getPickResult().getIntersectedNode().getClass().equals(EnrichmentButton.class)) {
+            ((Button) touchEvent.getTouchPoint().getPickResult().getIntersectedNode()).fire();
+        }
 
+    }
+
+    private void buttonEnrichmentHandle(ActionEvent actionEvent) {
+        Boolean changeColor = true;
+        for (int j = 0; j < buttonEnrichmentArray.length; j++) {
+            if (changeColor) {
+                buttonEnrichmentArray[j].setStyle(buttonEnrichmentStyleChecked);
+            } else {
+                buttonEnrichmentArray[j].setStyle(buttonEnrichmentStyleUnchecked);
+            }
+            if (actionEvent.getSource() == buttonEnrichmentArray[j]) {
+                changeColor = false;
+                ArpeggiatorumGUI.controllerHandle.sliderEnrichment.adjustValue((j / 15.0) * 100.0);
+            }
         }
     }
 

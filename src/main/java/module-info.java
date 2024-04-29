@@ -26,4 +26,6 @@ module arpeggiatorum {
 
     opens arpeggiatorum.gui to javafx.graphics, javafx.fxml;
     exports arpeggiatorum.gui to javafx.graphics, javafx.fxml;
+    exports arpeggiatorum.supplementary to javafx.fxml, javafx.graphics;
+    opens arpeggiatorum.supplementary to javafx.fxml, javafx.graphics;
 }

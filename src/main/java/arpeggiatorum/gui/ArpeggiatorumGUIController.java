@@ -4,6 +4,8 @@ import arpeggiatorum.Arpeggiatorum;
 import arpeggiatorum.microphoneControl.Mic2MIDI;
 import arpeggiatorum.microphoneControl.Mic2MIDI_CQT;
 import arpeggiatorum.notePool.NotePool;
+import arpeggiatorum.supplementary.MidiDeviceChooserItem;
+import arpeggiatorum.supplementary.TonalEnrichmentChooserItem;
 import arpeggiatorum.supplementary.Tools;
 import com.jsyn.Synthesizer;
 import com.jsyn.devices.AudioDeviceFactory;
