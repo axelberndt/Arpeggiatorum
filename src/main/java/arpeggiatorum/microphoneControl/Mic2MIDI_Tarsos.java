@@ -34,7 +34,7 @@ public class Mic2MIDI_Tarsos extends Mic2MIDI {
         addPort(this.pitch = new UnitVariableInputPort("Pitch"));
 
         //Problems with internal representation?
-        TarsosPitchDetector tarsosPitchDetector = new TarsosPitchDetector((float) sampleRate * 2, bufferSize * 2, PitchEstimationAlgorithm.FFT_YIN);
+        TarsosPitchDetector tarsosPitchDetector = new TarsosPitchDetector((float) sampleRate * 2, this.bufferSize * 2, PitchEstimationAlgorithm.FFT_YIN);
         tarsosPitchDetector.input.connect(0, this.channelIn.output, 0);
         tarsosPitchDetector.frequency.connect(this.pitch);
         tarsosPitchDetector.confidence.connect(this.confidence);

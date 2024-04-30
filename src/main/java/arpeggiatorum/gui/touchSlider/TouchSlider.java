@@ -17,8 +17,6 @@
 package arpeggiatorum.gui.touchSlider;
 
 
-import javafx.application.ConditionalFeature;
-import javafx.application.Platform;
 import javafx.beans.DefaultProperty;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.BooleanPropertyBase;

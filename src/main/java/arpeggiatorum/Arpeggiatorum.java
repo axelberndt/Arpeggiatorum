@@ -307,9 +307,8 @@ public class Arpeggiatorum implements Receiver {
             stagePerformance.setScene(scenePerformance);
             stagePerformance.show();
             stagePerformance.setMaximized(true);
-            stagePerformance.setOnCloseRequest((event) -> {
-                closePerformance(stagePerformance);
-            });
+            stagePerformance.setOnCloseRequest((event) -> closePerformance(stagePerformance));
+
             stagePerformance.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
                 switch (event.getCode()) {
                     case KeyCode.ESCAPE:

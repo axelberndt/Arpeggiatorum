@@ -26,8 +26,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/**
- * @author Birdasaur
+/*
+  @author Birdasaur
  * heavily adapted From Mr. LoNee's awesome RadialMenu example. Source for original 
  * prototype can be found in JFXtras-labs project.
  * https://github.com/JFXtras/jfxtras-labs
@@ -59,7 +59,7 @@ import java.util.List;
  * @author Davide Andrea Mauro
  * adapted from Birdasaur andd Mr. LoNee's awesome RadialMenu example. Source for original
  * prototype can be found in JFXtras-labs project.
- * https://github.com/JFXtras/jfxtras-labs
+ * <a href="https://github.com/JFXtras/jfxtras-labs">...</a>
  */
 public class RadialMenu extends Group implements EventHandler<Event>,
         ChangeListener<Object> {
@@ -362,18 +362,12 @@ public class RadialMenu extends Group implements EventHandler<Event>,
         getChildren().add(itemGroup);
         
         itemFitWidth = new SimpleDoubleProperty(innerRadius);
-        itemFitWidth.addListener((ov,t,t1) -> {
-             setGraphicsFitWidth(ov.getValue().doubleValue());
-        });
+        itemFitWidth.addListener((ov,t,t1) -> setGraphicsFitWidth(ov.getValue().doubleValue()));
         menuItemSize = new SimpleDoubleProperty(innerRadius);
-        menuItemSize.addListener((ov,t,t1) -> {
-            setMenuItemSize(ov.getValue().doubleValue());
-        });
+        menuItemSize.addListener((ov,t,t1) -> setMenuItemSize(ov.getValue().doubleValue()));
         
         this.initialAngle = new SimpleDoubleProperty(initialAngle);
-        this.initialAngle.addListener((ov,t,t1) -> {
-            setInitialAngle(ov.getValue().doubleValue());
-        });
+        this.initialAngle.addListener((ov,t,t1) -> setInitialAngle(ov.getValue().doubleValue()));
 
         this.innerRadius = new SimpleDoubleProperty(innerRadius);
         this.strokeFill = new SimpleObjectProperty<>(strokeFill);
@@ -437,23 +431,21 @@ public class RadialMenu extends Group implements EventHandler<Event>,
             event.consume();
         });
         getChildren().add(centerGroup);
-        this.centerGraphic = new SimpleObjectProperty<Node>(centerGraphic);
+        this.centerGraphic = new SimpleObjectProperty<>(centerGraphic);
         setCenterGraphic(centerGraphic);
         saveStateBeforeAnimation();
     }
     
     public void setGraphicsFitWidth(double fitWidth) {
         Node centerNode = getCenterGraphic();
-        if(centerNode instanceof ImageView) {
-            ImageView civ = (ImageView)centerNode;
+        if(centerNode instanceof ImageView civ) {
             civ.setFitWidth(fitWidth);
             civ.setTranslateX(-fitWidth / 2.0);
             civ.setTranslateY(-fitWidth / 2.0);
         }
         items.stream().forEach(item -> {
             Node node = item.getGraphic();
-            if(node instanceof ImageView) {
-                ImageView iv = (ImageView)node;
+            if(node instanceof ImageView iv) {
                 iv.setFitWidth(fitWidth);
             }
         });        
@@ -602,9 +594,7 @@ public class RadialMenu extends Group implements EventHandler<Event>,
         final FadeTransition fadeItemGroup = new FadeTransition(Duration.millis(1), itemGroup);
         fadeItemGroup.setFromValue(1);
         fadeItemGroup.setToValue(0);
-        fadeItemGroup.setOnFinished(event -> {
-            itemGroup.setVisible(false);
-        });
+        fadeItemGroup.setOnFinished(event -> itemGroup.setVisible(false));
 
         anim.add(fadeItemGroup);
 
@@ -612,9 +602,7 @@ public class RadialMenu extends Group implements EventHandler<Event>,
             final FadeTransition fadeCenter = new FadeTransition(Duration.millis(1), centerGroup);
             fadeCenter.setFromValue(1);
             fadeCenter.setToValue(0);
-            fadeCenter.setOnFinished(event -> {
-                centerGroup.setVisible(false);
-            });
+            fadeCenter.setOnFinished(event -> centerGroup.setVisible(false));
             anim.add(fadeCenter);
         }
         final ParallelTransition transition = new ParallelTransition(anim.toArray(new Animation[]{}));

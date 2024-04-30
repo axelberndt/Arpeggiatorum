@@ -144,9 +144,7 @@ public class PerformanceGUIController implements Initializable {
         buttonPanic.setTranslateX(pixelWidth - (buttonSizeLarge));
         buttonPanic.setTranslateY(pixelHeight - (buttonSizeLarge + visualVerticalBuffer));
         buttonPanic.setOnAction(this::buttonPanicHandle);
-        buttonPanic.addEventHandler(TouchEvent.TOUCH_PRESSED, touchEvent -> {
-            buttonPanic.fire();
-        });
+        buttonPanic.addEventHandler(TouchEvent.TOUCH_PRESSED, touchEvent -> buttonPanic.fire());
 
         buttonConfirmPanic = new Button("Confirm Panic");
         buttonConfirmPanic.setStyle(buttonPanicStyle + "-fx-wrap-text: TRUE;-fx-text-alignment: CENTER;");
@@ -154,9 +152,7 @@ public class PerformanceGUIController implements Initializable {
         buttonConfirmPanic.setTranslateY(buttonPanic.getTranslateY());
         buttonConfirmPanic.setVisible(false);
         buttonConfirmPanic.setOnAction(this::buttonConfirmPanicHandle);
-        buttonConfirmPanic.addEventHandler(TouchEvent.TOUCH_PRESSED, touchEvent -> {
-            buttonConfirmPanic.fire();
-        });
+        buttonConfirmPanic.addEventHandler(TouchEvent.TOUCH_PRESSED, touchEvent -> buttonConfirmPanic.fire());
 
 
         buttonEnrichmentArray = new EnrichmentButton[16];
@@ -176,9 +172,7 @@ public class PerformanceGUIController implements Initializable {
         if (audioValue) {
             toggleAudio.setSelected(true);
         }
-        toggleAudio.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            Arpeggiatorum.getInstance().Activate(newValue);
-        });
+        toggleAudio.selectedProperty().addListener((observable, oldValue, newValue) -> Arpeggiatorum.getInstance().Activate(newValue));
         toggleAudio.setTranslateX(0);
         toggleAudio.setTranslateY(-buttonSizeLarge * 0.25);
         toggleAudio.setRotate(-90);

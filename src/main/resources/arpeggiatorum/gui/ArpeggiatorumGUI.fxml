@@ -117,11 +117,9 @@
                       GridPane.columnIndex="0" GridPane.rowIndex="2"
                       GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
                 <Text text="CQT Sharpness"
-                      fx:id="textSharpness"
                       GridPane.columnIndex="0" GridPane.rowIndex="3"
                       GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
                 <Text text="CQT Scaling Factor"
-                      fx:id="textScale"
                       GridPane.columnIndex="0" GridPane.rowIndex="4"
                       GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
 
@@ -248,7 +246,7 @@
                 <Slider fx:id="sliderEnrichment" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5"
                         maxHeight="Infinity" maxWidth="Infinity"
                         showTickMarks="true"
-                        showTickLabels="false" majorTickUnit="10" minorTickCount="1"/>
+                        majorTickUnit="10" minorTickCount="1"/>
 
 
                 <!--            //Third Column-->

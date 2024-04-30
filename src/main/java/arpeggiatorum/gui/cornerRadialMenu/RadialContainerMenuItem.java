@@ -1,9 +1,9 @@
 /**
  * RadialContainerMenuItem.java
- *
+ * <p>
  * Copyright (c) 2011-2015, JFXtras
  * All rights reserved.
- * 
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *     * Neither the name of the organization nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,10 +26,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/**
- * Adapted From Mr. LoNee's awesome RadialMenu example. Source for original 
- * prototype can be found in JFXtras-labs project.
- * https://github.com/JFXtras/jfxtras-labs
+/*
+  Adapted From Mr. LoNee's awesome RadialMenu example. Source for original
+  prototype can be found in JFXtras-labs project.
+  https://github.com/JFXtras/jfxtras-labs
  */
 package arpeggiatorum.gui.cornerRadialMenu;
 
@@ -54,7 +54,7 @@ public class RadialContainerMenuItem extends RadialMenuItem {
     private final Group childAnimGroup = new Group();
     private FadeTransition fadeIn = null;
     private FadeTransition fadeOut = null;
-    protected List<RadialMenuItem> items = new ArrayList<RadialMenuItem>();
+    protected List<RadialMenuItem> items = new ArrayList<>();
     protected Polyline arrow = new Polyline(-5.0, -5.0, 5.0, 0.0, -5.0, 5.0, -5.0, -5.0);
 
     public RadialContainerMenuItem(final double menuSize, final Node graphic) {
@@ -72,17 +72,17 @@ public class RadialContainerMenuItem extends RadialMenuItem {
 		arrow.setFill(Color.GRAY);
 		arrow.setStroke(null);
 	childAnimGroup.setVisible(false);
-	visibleProperty().addListener(new ChangeListener<Boolean>() {
+	visibleProperty().addListener(new ChangeListener<>() {
 
-	    @Override
-	    public void changed(final ObservableValue<? extends Boolean> arg0,
-		    final Boolean arg1, final Boolean arg2) {
-		if (!arg0.getValue()) {
-		    childAnimGroup.setVisible(false);
-		    setSelected(false);
-		}
-	    }
-	});
+        @Override
+        public void changed(final ObservableValue<? extends Boolean> arg0,
+                            final Boolean arg1, final Boolean arg2) {
+            if (!arg0.getValue()) {
+                childAnimGroup.setVisible(false);
+                setSelected(false);
+            }
+        }
+    });
 	getChildren().add(childAnimGroup);
 	fadeIn = new FadeTransition(Duration.millis(400), childAnimGroup);
 	fadeIn.setFromValue(0.0);
@@ -90,13 +90,13 @@ public class RadialContainerMenuItem extends RadialMenuItem {
 	fadeOut = new FadeTransition(Duration.millis(400), childAnimGroup);
 	fadeOut.setFromValue(0.0);
 	fadeOut.setToValue(1.0);
-	fadeOut.setOnFinished(new EventHandler<ActionEvent>() {
+	fadeOut.setOnFinished(new EventHandler<>() {
 
-		    @Override
-		    public void handle(final ActionEvent arg0) {
-			childAnimGroup.setVisible(false);
-		    }
-		});
+        @Override
+        public void handle(final ActionEvent arg0) {
+            childAnimGroup.setVisible(false);
+        }
+    });
 	getChildren().add(arrow);
     }
 
@@ -151,9 +151,7 @@ public class RadialContainerMenuItem extends RadialMenuItem {
                 : null);
 	}
 	if (arrow != null) {
-	    arrow.setFill(backgroundVisible.get() ? (mouseOn
-		    && strokeColor.get() != null ? strokeColor.get()
-		    : strokeColor.get()) : null);
+	    arrow.setFill(backgroundVisible.get() ? (strokeColor.get()) : null);
 	    arrow.setStroke(strokeVisible.get() ? strokeColor.get() : null);
 	    if (!clockwise.get()) {
 		arrow.setRotate(-(startAngle.get() + menuSize.get() / 2.0));
