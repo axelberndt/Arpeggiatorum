@@ -51,7 +51,7 @@ public class Regulator extends Region implements RegulatorControl {
     private static final double MINIMUM_HEIGHT = 50;
     private static final double MAXIMUM_WIDTH = 1024;
     private static final double MAXIMUM_HEIGHT = 1024;
-    private static final double BAR_START_ANGLE = -180;
+    private static final double BAR_START_ANGLE = 270;
     private static final double ANGLE_RANGE = 360;
     private final RegulatorEvent TARGET_SET_EVENT = new RegulatorEvent(RegulatorEvent.TARGET_SET);
     private double size;
@@ -661,7 +661,7 @@ public class Regulator extends Region implements RegulatorControl {
             barArc.setCenterY(size * 0.5);
             barArc.setRadiusX(size * 0.46);
             barArc.setRadiusY(size * 0.46);
-            barArc.setStrokeWidth(size * 0.04);
+            barArc.setStrokeWidth(size * 0.06);
             drawBar(targetValue.get());
 
             double shadowRadius = clamp(1.0, 2.0, size * 0.004);
@@ -695,7 +695,7 @@ public class Regulator extends Region implements RegulatorControl {
             indicatorHighlight.setRadius(size * 0.008);
             indicatorHighlight.setOffsetY(-size * 0.004);
 
-            indicator.setRadius(size * 0.032);
+            indicator.setRadius(size * 0.075);
             indicator.setCenterX(center);
             indicator.setCenterY(size * 0.148);
 
