@@ -97,6 +97,12 @@ public class RadialMenu extends Group implements EventHandler<Event>,
         ALWAYS, WITH_MENU, NEVER
     }
     public static double DEFAULT_STROKE_WIDTH = 1.0;
+
+    public List<RadialMenuItem> getItems() {
+        return items;
+    }
+
+
     protected List<RadialMenuItem> items = new ArrayList<RadialMenuItem>();
     protected DoubleProperty innerRadius;
     protected DoubleProperty radius;

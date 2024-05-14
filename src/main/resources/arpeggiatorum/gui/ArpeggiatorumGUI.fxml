@@ -72,7 +72,7 @@
                 <Text text="Arpeggio Channel"
                       GridPane.columnIndex="3" GridPane.rowIndex="1"
                       GridPane.columnSpan="1" GridPane.halignment="LEFT"/>
-                <Text text="Held Notes Channel"
+                <Text text="Sustained Channel"
                       GridPane.columnIndex="3" GridPane.rowIndex="2"
                       GridPane.columnSpan="1" GridPane.halignment="LEFT"/>
                 <Text text="Bass Channel"

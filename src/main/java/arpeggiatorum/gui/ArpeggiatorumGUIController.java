@@ -484,27 +484,27 @@ public class ArpeggiatorumGUIController implements Initializable {
         comboHeldChannel.getItems().addAll(-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
         comboBassChannel.getItems().addAll(-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
 
-        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Empty",
+        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("-",
                 new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
-        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Octaves",
+        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Oct",
                 new int[]{0, 12, 24, 36, 48, 60, 72, 84, 96, 108, 120, 0, 0, 0, 0, 0}));
-        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Octaves and Fifths",
+        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Oct+5th",
                 new int[]{0, 7, 12, 19, 24, 31, 36, 43, 48, 55, 60, 67, 72, 79, 84, 91}));
-        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Major Triad",
+        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Maj Triad",
                 new int[]{0, 4, 7, 12, 16, 19, 24, 28, 31, 36, 40, 43, 48, 52, 55, 60}));
-        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Minor Triad",
+        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("min Triad",
                 new int[]{0, 3, 7, 12, 15, 19, 24, 27, 31, 36, 39, 43, 48, 51, 55, 60}));
-        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Major Thirds",
+        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Maj 3rd",
                 new int[]{0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60}));
-        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Minor Thirds",
+        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("min 3rd",
                 new int[]{0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45}));
-        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Fourths",
+        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("4th",
                 new int[]{0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75}));
-        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Series of Overtones",
+        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Overtones",
                 new int[]{0, 12, 19, 24, 28, 31, 34, 36, 38, 40, 42, 43, 44, 46, 47, 48}));
-        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Overtones Transposed Down",
+        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Overtones \r\n in 2 Oct",
                 new int[]{0, 12, 24, 7, 19, 4, 16, 10, 22, 2, 14, 6, 18, 8, 20, 11}));
-        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("User Preset",
+        comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("User",
                 new int[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}));
 
         for (Mic2MIDI processor : Arpeggiatorum.getInstance().getMic2Midi()) {

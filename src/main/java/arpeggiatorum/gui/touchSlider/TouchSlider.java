@@ -55,8 +55,8 @@ public class TouchSlider extends Region {
     private static final double PREFERRED_HEIGHT = 250;
     private static final double MINIMUM_WIDTH = 50;
     private static final double MINIMUM_HEIGHT = 50;
-    private static final double MAXIMUM_WIDTH = 1024;
-    private static final double MAXIMUM_HEIGHT = 1024;
+    private static final double MAXIMUM_WIDTH = 2048;
+    private static final double MAXIMUM_HEIGHT = 2048;
     private static final StyleablePropertyFactory<TouchSlider> FACTORY = new StyleablePropertyFactory<>(Region.getClassCssMetaData());
     private static final CssMetaData<TouchSlider, Orientation> ORIENTATION = FACTORY.createEnumCssMetaData(Orientation.class, "-orientation", s -> s.orientation, Orientation.HORIZONTAL, false);
     private static final CssMetaData<TouchSlider, Color> BAR_BACKGROUND_COLOR = FACTORY.createColorCssMetaData("-bar-background-color", s -> s.barBackgroundColor, Color.color(Color.BLUE.getRed(), Color.BLUE.getGreen(), Color.BLUE.getBlue(), 0.3), false);

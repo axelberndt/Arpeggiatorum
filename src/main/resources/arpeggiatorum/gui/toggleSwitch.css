@@ -3,8 +3,8 @@
     -fx-pref-height         : 200;
     -fx-min-width           : 80;
     -fx-min-height          : 80;
-    -fx-max-width           : 300;
-    -fx-max-height          : 300;
+    -fx-max-width           : 1024;
+    -fx-max-height          : 1024;
     -fx-background-color  : Transparent;
     -thumb-move-animation-time: 100;
     -toggle-display: left;

@@ -373,8 +373,8 @@ public class NotePool {
         down("Down"),
         up_down("Up-Down"),
         down_up("Down-Up"),
-        random_no_repetitions("Random (No Repetitions)"),
-        random_with_repetitions("Random (with Repetitions)");
+        random_no_repetitions("Random no reps"),
+        random_with_repetitions("Random with reps");
 
         private final String name;
 

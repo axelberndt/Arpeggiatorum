@@ -342,7 +342,7 @@ public class Arpeggiatorum implements Receiver {
     private static void closePerformance(Stage stagePerformance) {
         ArpeggiatorumGUI.controllerHandlePerformance.toggleArpeggio.setSelected(true);
         ArpeggiatorumGUI.controllerHandlePerformance.toggleBass.setSelected(true);
-        ArpeggiatorumGUI.controllerHandlePerformance.toggleHeld.setSelected(true);
+        ArpeggiatorumGUI.controllerHandlePerformance.toggleSustained.setSelected(true);
         stagePerformance.close();
     }
 

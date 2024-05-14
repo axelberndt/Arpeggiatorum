@@ -62,10 +62,11 @@ dependencies {
 //            {
 //                exclude group: 'org.openjfx'
 //            }
-    implementation('eu.hansolo:regulators:17.0.0')
-            {
-                exclude group: 'org.openjfx'
-            }
+    
+//    implementation('eu.hansolo:regulators:17.0.0')
+//            {
+//                exclude group: 'org.openjfx'
+//            }
     //Dependencies for Regulators
     implementation 'org.kordamp.ikonli:ikonli-core:11.5.0'
     implementation 'org.kordamp.ikonli:ikonli-javafx:11.5.0'
