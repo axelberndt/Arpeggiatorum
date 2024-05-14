@@ -145,7 +145,7 @@ public class PerformanceGUIController implements Initializable {
         pixelWidth = (int) screenBounds.getWidth();
 
         buttonSizeLarge = pixelWidth / 8;
-        toggleSizeLarge = pixelWidth / 5;
+        toggleSizeLarge = 400;
         buttonSizeMedium = (int) (buttonSizeLarge * 0.5);
         buttonSizeSmall = (int) (buttonSizeMedium * 0.75);
         button16 = pixelWidth / 16;
@@ -193,10 +193,10 @@ public class PerformanceGUIController implements Initializable {
         toggleAudio.selectedProperty().addListener((observable, oldValue, newValue) -> Arpeggiatorum.getInstance().Activate(newValue));
         //Check if touchevents can be handled directly
         //toggleAudio.addEventHandler(TouchEvent.ANY,this::);
-        toggleAudio.setTranslateX(pixelWidth - (2*buttonSizeLarge + visualHorizontalBuffer));
+        toggleAudio.setTranslateX(pixelWidth - (2*buttonSizeLarge+ 2*visualHorizontalBuffer));
         toggleAudio.setTranslateY(-buttonSizeLarge * 0.25);
         toggleAudio.setRotate(-90);
-        toggleAudio.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("toggleSwitch.css").toExternalForm());
+        toggleAudio.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("toggleSwitchSmall.css").toExternalForm());
 
         labelAudio = new Label("Audio In");
         labelAudio.setStyle(labelActionStyle);

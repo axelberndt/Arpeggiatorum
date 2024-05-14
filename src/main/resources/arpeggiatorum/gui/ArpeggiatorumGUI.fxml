@@ -10,7 +10,6 @@
            maxWidth="Infinity"
            fx:controller="arpeggiatorum.gui.ArpeggiatorumGUIController"
            dividerPositions="0.7">
-
     <TabPane xmlns:fx="http://javafx.com/fxml" fx:id="tabPaneControls"
              maxHeight="Infinity" maxWidth="Infinity">
         <Tab text="MIDI" closable="false">
