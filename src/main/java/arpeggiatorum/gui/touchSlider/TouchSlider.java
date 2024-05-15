@@ -1014,18 +1014,23 @@ public class TouchSlider extends Region {
             }
 
             if (isValueVisible()) {
-                double textGap = clamp(5, Double.MAX_VALUE, width * 0.95);
+              //  double textGap = clamp(5, Double.MAX_VALUE, width * 0.95);
+                double textGap=width/2.0;
+
                 ctx.setFill(getValueTextColor());
-                ctx.setTextAlign(TextAlignment.RIGHT);
-                ctx.setFont(Font.font(barHeight * 0.4));
+                ctx.setTextAlign(TextAlignment.CENTER);
+                ctx.setFont(Font.font(24));
                 ctx.fillText(String.format(Locale.US, getFormatString(), (getMinValue() + getRange() * value)), textGap, barY + barHeight * 0.5, width * 0.5);
             }
 
             if (isNameVisible()) {
-                double textGap = clamp(5, Double.MAX_VALUE, width * 0.05);
+                //double textGap = clamp(5, Double.MAX_VALUE, width * 0.05);
+                double textGap=width/2.0;
                 ctx.setFill(getNameTextColor());
-                ctx.setTextAlign(TextAlignment.LEFT);
-                ctx.setFont(Font.font(barHeight * 0.4));
+                ctx.setTextAlign(TextAlignment.CENTER);
+//                ctx.setFont(Font.font(barHeight * 0.5));
+                ctx.setFont(Font.font(24));
+
                 ctx.fillText(getName(), textGap, barY + barHeight * 0.5);
             }
 
@@ -1080,10 +1085,13 @@ public class TouchSlider extends Region {
             }
 
             if (isValueVisible()) {
-                double textGap = clamp(5, Double.MAX_VALUE, height * 0.05);
+                //double textGap = clamp(5, Double.MAX_VALUE, height * 0.05);
+                double textGap=width/2.0;
+
                 ctx.setFill(getValueTextColor());
-                ctx.setTextAlign(TextAlignment.RIGHT);
-                ctx.setFont(Font.font(barWidth * 0.4));
+                ctx.setTextAlign(TextAlignment.CENTER);
+              //  ctx.setFont(Font.font(barWidth * 0.5));
+                ctx.setFont(Font.font(24));
                 ctx.save();
                 ctx.translate((barX + barWidth * 0.5), textGap);
                 ctx.rotate(-90);
@@ -1093,10 +1101,12 @@ public class TouchSlider extends Region {
             }
 
             if (isNameVisible()) {
-                double textGap = clamp(5, Double.MAX_VALUE, height * 0.95);
+               // double textGap = clamp(5, Double.MAX_VALUE, height * 0.95);
+                double textGap=width/2.0;
+
                 ctx.setFill(getNameTextColor());
-                ctx.setTextAlign(TextAlignment.LEFT);
-                ctx.setFont(Font.font(barWidth * 0.4));
+                ctx.setTextAlign(TextAlignment.CENTER);
+                ctx.setFont(Font.font(24));
                 ctx.save();
                 ctx.translate((barX + barWidth * 0.5), textGap);
                 ctx.rotate(270);

@@ -346,10 +346,10 @@ public class Regulator extends Region implements RegulatorControl {
         barArc.setStroke(barColor.get());
 
         double center = PREFERRED_WIDTH * 0.5;
-        ring = Shape.subtract(new Circle(center, center, PREFERRED_WIDTH * 0.42),
-                new Circle(center, center, PREFERRED_WIDTH * 0.3));
-        ring.setFill(color.get());
-        ring.setEffect(dropShadow);
+//        ring = Shape.subtract(new Circle(center, center, PREFERRED_WIDTH * 0.42),
+//                new Circle(center, center, PREFERRED_WIDTH * 0.3));
+//        ring.setFill(color.get());
+//        ring.setEffect(dropShadow);
 
         mainCircle = new Circle();
         mainCircle.setFill(color.get().darker().darker());
@@ -385,9 +385,15 @@ public class Regulator extends Region implements RegulatorControl {
         icon = new FontIcon();
         icon.setTextOrigin(VPos.CENTER);
 
-        iconPane = new StackPane(symbol, icon);
+        //iconPane = new StackPane(symbol, icon);
 
-        pane = new Pane(barArc, ring, mainCircle, text, indicatorGroup, iconPane);
+        pane = new Pane(barArc,
+               // ring,
+                mainCircle,
+                text,
+                indicatorGroup
+                //iconPane
+                );
         pane.setPrefSize(PREFERRED_HEIGHT, PREFERRED_HEIGHT);
         pane.setBackground(new Background(new BackgroundFill(color.get().darker(), new CornerRadii(1024), Insets.EMPTY)));
         pane.setEffect(highlight);
@@ -400,15 +406,27 @@ public class Regulator extends Region implements RegulatorControl {
         heightProperty().addListener(o -> resize());
         disabledProperty().addListener(o -> setOpacity(isDisabled() ? 0.4 : 1.0));
         targetValueProperty().addListener(o -> rotate(targetValue.get()));
-        ring.addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
+        mainCircle.addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
             if (isDisabled()) return;
             touchRotate(e.getSceneX(), e.getSceneY());
         });
-        ring.addEventHandler(MouseEvent.MOUSE_DRAGGED, e -> {
+        mainCircle.addEventHandler(MouseEvent.MOUSE_DRAGGED, e -> {
             if (isDisabled()) return;
             touchRotate(e.getSceneX(), e.getSceneY());
         });
-        ring.addEventHandler(MouseEvent.MOUSE_RELEASED, e -> {
+        mainCircle.addEventHandler(MouseEvent.MOUSE_RELEASED, e -> {
+            if (isDisabled()) return;
+            fireEvent(TARGET_SET_EVENT);
+        });
+        pane.addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
+            if (isDisabled()) return;
+            touchRotate(e.getSceneX(), e.getSceneY());
+        });
+        pane.addEventHandler(MouseEvent.MOUSE_DRAGGED, e -> {
+            if (isDisabled()) return;
+            touchRotate(e.getSceneX(), e.getSceneY());
+        });
+        pane.addEventHandler(MouseEvent.MOUSE_RELEASED, e -> {
             if (isDisabled()) return;
             fireEvent(TARGET_SET_EVENT);
         });
@@ -624,7 +642,7 @@ public class Regulator extends Region implements RegulatorControl {
 //        } else if (angle <= 320 && angle > ANGLE_RANGE) {
 //            angle = ANGLE_RANGE;
 //        }
-        double angle = (theta +270) % 360;
+        double angle = (theta + 270) % 360;
 //        if (angle > 320 && angle < 360) {
 //            angle = 0;
 //        } else if (angle <= 320 && angle > ANGLE_RANGE) {
@@ -659,9 +677,9 @@ public class Regulator extends Region implements RegulatorControl {
 
             barArc.setCenterX(size * 0.5);
             barArc.setCenterY(size * 0.5);
-            barArc.setRadiusX(size * 0.46);
-            barArc.setRadiusY(size * 0.46);
-            barArc.setStrokeWidth(size * 0.06);
+            barArc.setRadiusX(size * 0.4);
+            barArc.setRadiusY(size * 0.4);
+            barArc.setStrokeWidth(size * 0.2);
             drawBar(targetValue.get());
 
             double shadowRadius = clamp(1.0, 2.0, size * 0.004);
@@ -674,10 +692,10 @@ public class Regulator extends Region implements RegulatorControl {
 
             double center = size * 0.5;
             scaleFactor = size / PREFERRED_WIDTH;
-            ring.setCache(false);
-            ring.getTransforms().setAll(new Scale(scaleFactor, scaleFactor, 0, 0));
-            ring.setCache(true);
-            ring.setCacheHint(CacheHint.SPEED);
+//            ring.setCache(false);
+//            ring.getTransforms().setAll(new Scale(scaleFactor, scaleFactor, 0, 0));
+//            ring.setCache(true);
+//            ring.setCacheHint(CacheHint.SPEED);
 
             mainCircle.setCache(false);
             mainCircle.setRadius(size * 0.3);
@@ -695,17 +713,17 @@ public class Regulator extends Region implements RegulatorControl {
             indicatorHighlight.setRadius(size * 0.008);
             indicatorHighlight.setOffsetY(-size * 0.004);
 
-            indicator.setRadius(size * 0.075);
+            indicator.setRadius(size * 0.1);
             indicator.setCenterX(center);
-            indicator.setCenterY(size * 0.148);
+            indicator.setCenterY(size * 0.1);
 
             indicatorRotate.setPivotX(center);
             indicatorRotate.setPivotY(center);
 
             icon.setIconSize((int) (size * 0.112));
 
-            iconPane.setPrefSize(size * 0.112, size * 0.112);
-            iconPane.relocate((size - iconPane.getPrefWidth()) * 0.5, size * 0.62);
+            //iconPane.setPrefSize(size * 0.112, size * 0.112);
+          //  iconPane.relocate((size - iconPane.getPrefWidth()) * 0.5, size * 0.62);
 
             redraw();
         }
@@ -714,7 +732,7 @@ public class Regulator extends Region implements RegulatorControl {
     private void redraw() {
         pane.setBackground(new Background(new BackgroundFill(color.get().darker(), new CornerRadii(1024), Insets.EMPTY)));
         mainCircle.setFill(color.get().darker());
-        ring.setFill(color.get().darker());
+       // ring.setFill(color.get().darker());
         indicator.setFill(isSelected() ? indicatorColor.get() : color.get());
         indicator.setStroke(isSelected() ? indicatorColor.get() : color.get());
         symbol.setBackground(new Background(new BackgroundFill(symbolColor.get(), CornerRadii.EMPTY, Insets.EMPTY)));

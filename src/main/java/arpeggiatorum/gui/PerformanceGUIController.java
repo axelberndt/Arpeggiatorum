@@ -130,7 +130,7 @@ public class PerformanceGUIController implements Initializable {
     int pixelHeight;
     int pixelWidth;
     int visualVerticalBuffer = 24;
-    int visualHorizontalBuffer = 0;
+    int visualHorizontalBuffer = 24;
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
     /*
@@ -150,16 +150,16 @@ public class PerformanceGUIController implements Initializable {
         buttonSizeSmall = (int) (buttonSizeMedium * 0.75);
         button16 = pixelWidth / 16;
 
-        buttonPanicStyle = "-fx-text-fill: WHITE;-fx-font-size: 28;-fx-pref-width: " + buttonSizeLarge + ";-fx-pref-height: " + buttonSizeLarge + ";";
+        buttonPanicStyle = "-fx-text-fill: WHITE;-fx-font-size: 28;-fx-pref-width: " + pixelWidth / 9 + ";-fx-pref-height: " + pixelWidth / 9 + ";";
         buttonTempoStyle = "-fx-text-fill: BLACK;-fx-font-size: 14;-fx-pref-width: " + buttonSizeMedium + ";-fx-pref-height: " + buttonSizeMedium + ";";
-        buttonEnrichmentStyleUnchecked = "-fx-text-fill: WHITE;-fx-font-size: 14;-fx-pref-width: " + button16 + ";-fx-pref-height: " + button16 + ";-fx-background-color: Gainsboro;";
-        buttonEnrichmentStyleChecked = "-fx-text-fill: WHITE;-fx-font-size: 14;-fx-pref-width: " + button16 + ";-fx-pref-height: " + button16 + ";-fx-background-color: DARKSEAGREEN;";
+        buttonEnrichmentStyleUnchecked = "-fx-text-fill: WHITE;-fx-font-size: 24;-fx-pref-width: " + button16 + ";-fx-pref-height: " + button16 + ";-fx-background-color: Gainsboro;";
+        buttonEnrichmentStyleChecked = "-fx-text-fill: WHITE;-fx-font-size: 24;-fx-pref-width: " + button16 + ";-fx-pref-height: " + button16 + ";-fx-background-color: DARKSEAGREEN;";
         labelActionStyle = "-fx-font: 28 px; -fx-text-fill: WHITE; -fx-alignment: CENTER; -fx-wrap-text: TRUE;";
 
 
         buttonPanic = new Button("PANIC");
         buttonPanic.setStyle(buttonPanicStyle);
-        buttonPanic.setTranslateX(pixelWidth - (buttonSizeLarge));
+        buttonPanic.setTranslateX(pixelWidth - (pixelWidth / 9));
         buttonPanic.setTranslateY(0);
         buttonPanic.setOnAction(this::buttonPanicHandle);
         buttonPanic.addEventHandler(TouchEvent.TOUCH_PRESSED, touchEvent -> buttonPanic.fire());
@@ -193,13 +193,14 @@ public class PerformanceGUIController implements Initializable {
         toggleAudio.selectedProperty().addListener((observable, oldValue, newValue) -> Arpeggiatorum.getInstance().Activate(newValue));
         //Check if touchevents can be handled directly
         //toggleAudio.addEventHandler(TouchEvent.ANY,this::);
-        toggleAudio.setTranslateX(pixelWidth - (2*buttonSizeLarge+ 2*visualHorizontalBuffer));
-        toggleAudio.setTranslateY(-buttonSizeLarge * 0.25);
+        toggleAudio.setTranslateX((toggleSizeLarge * 3) + (visualHorizontalBuffer * 3));
+        toggleAudio.setTranslateY(-buttonSizeLarge * 0.5);
         toggleAudio.setRotate(-90);
         toggleAudio.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("toggleSwitchSmall.css").toExternalForm());
 
         labelAudio = new Label("Audio In");
         labelAudio.setStyle(labelActionStyle);
+        labelAudio.setPrefWidth(toggleSizeLarge*0.5);
         labelAudio.setTranslateX(toggleAudio.getTranslateX());
         labelAudio.setTranslateY(0);
 
@@ -239,12 +240,13 @@ public class PerformanceGUIController implements Initializable {
         });
 //        toggleSustained.setTranslateX(pixelWidth - ((buttonSizeLarge * 3) + (visualHorizontalBuffer * 2)));
         toggleSustained.setTranslateX(0);
-        toggleSustained.setTranslateY(-buttonSizeLarge * 0.25);
+        toggleSustained.setTranslateY(-buttonSizeLarge * 0.5);
         toggleSustained.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("toggleSwitch.css").toExternalForm());
         toggleSustained.setRotate(-90);
 
         labelSustained = new Label("Sustained");
         labelSustained.setStyle(labelActionStyle);
+        labelSustained.setPrefWidth(toggleSizeLarge*1);
         labelSustained.setTranslateX(toggleSustained.getTranslateX());
         labelSustained.setTranslateY(0);
 
@@ -261,14 +263,15 @@ public class PerformanceGUIController implements Initializable {
             }
         });
 //        toggleArpeggio.setTranslateX(pixelWidth - ((buttonSizeLarge * 2) + (visualHorizontalBuffer * 1)));
-        toggleArpeggio.setTranslateX(toggleSizeLarge + visualHorizontalBuffer * 1);
-        toggleArpeggio.setTranslateY(-buttonSizeLarge * 0.25);
+        toggleArpeggio.setTranslateX(toggleSizeLarge+ (visualHorizontalBuffer * 1));
+        toggleArpeggio.setTranslateY(-buttonSizeLarge * 0.5);
         toggleArpeggio.setRotate(-90);
         toggleArpeggio.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("toggleSwitch.css").toExternalForm());
 
         labelArpeggio = new Label("Arpeggio");
         labelArpeggio.setStyle(labelActionStyle);
         labelArpeggio.setTranslateX(toggleArpeggio.getTranslateX());
+        labelArpeggio.setPrefWidth(toggleSizeLarge*1);
         labelArpeggio.setTranslateY(0);
 
         toggleBass = new ToggleSwitch();
@@ -284,12 +287,14 @@ public class PerformanceGUIController implements Initializable {
             }
         });
         toggleBass.setTranslateX((toggleSizeLarge * 2) + (visualHorizontalBuffer * 2));
-        toggleBass.setTranslateY(-buttonSizeLarge * 0.25);
+        toggleBass.setTranslateY(-buttonSizeLarge * 0.5);
         toggleBass.setRotate(-90);
+
         toggleBass.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("toggleSwitch.css").toExternalForm());
 
         labelBass = new Label("Bass");
         labelBass.setStyle(labelActionStyle);
+        labelBass.setPrefWidth(toggleSizeLarge*1);
         labelBass.setTranslateX(toggleBass.getTranslateX());
         labelBass.setTranslateY(0);
 
@@ -331,7 +336,7 @@ public class PerformanceGUIController implements Initializable {
 
         radialMenuEnrichment = createCenterRadialMenu("   Enrichment", ArpeggiatorumGUI.controllerHandle.comboEnrichment.getItems().stream().toList(), enrichmentHandler, bgLg1Color, bgLg2Color, bgMoLg1Color, bgMoLg2Color);
         radialMenuEnrichment.setTranslateX(pixelWidth * 0.2);
-        radialMenuEnrichment.setTranslateY(pixelHeight * 0.5);
+        radialMenuEnrichment.setTranslateY(pixelHeight * 0.5-visualVerticalBuffer);
         radialMenuEnrichment.hideRadialMenu();
 
         //actionPerformedLabelEnrichment.setTranslateX(pixelWidth * 0.25);
@@ -341,7 +346,7 @@ public class PerformanceGUIController implements Initializable {
 
         radialMenuPattern = createCenterRadialMenu("      Pattern", ArpeggiatorumGUI.controllerHandle.comboPattern.getItems().stream().toList(), patternHandler, bgHg1Color, bgHg2Color, bgMoLg1Color, bgMoLg2Color);
         radialMenuPattern.setTranslateX(pixelWidth * 0.8);
-        radialMenuPattern.setTranslateY(pixelHeight * 0.5);
+        radialMenuPattern.setTranslateY(pixelHeight * 0.5-visualVerticalBuffer);
         radialMenuPattern.hideRadialMenu();
 
 
@@ -421,7 +426,7 @@ public class PerformanceGUIController implements Initializable {
         radialMenu.setMenuItemSize(360.0 / menuItems.size());
         radialMenu.setInnerRadius(buttonSizeSmall * 1.0);
         radialMenu.setGraphicsFitWidth(0.0);
-        radialMenu.setRadius(buttonSizeLarge * 1.25);
+        radialMenu.setRadius(buttonSizeLarge * 1.1);
         radialMenu.setOffset(1.0);
         radialMenu.setInitialAngle(0.0);
         radialMenu.setStrokeWidth(1.5);
