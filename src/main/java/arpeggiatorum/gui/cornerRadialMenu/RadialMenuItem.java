@@ -6,14 +6,14 @@
  * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the organization nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the organization nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
  * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -43,6 +43,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.effect.Effect;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TouchEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.*;
@@ -91,7 +92,7 @@ public class RadialMenuItem extends Group implements ChangeListener<Object> {
     protected double translateX;
     protected double translateY;
     protected boolean mouseOn = false;
-    protected BooleanProperty mouseOnProperty = new SimpleBooleanProperty(mouseOn);    
+    protected BooleanProperty mouseOnProperty = new SimpleBooleanProperty(mouseOn);
     protected Path path;
     protected Path outlinePath; //For creating sharply contrasting outline effects
     protected Node graphic;
@@ -101,89 +102,91 @@ public class RadialMenuItem extends Group implements ChangeListener<Object> {
         menuSize = new SimpleDoubleProperty(45);
         menuSize.addListener(this);
         innerRadius.addListener(this);
-	radius.addListener(this);
-	offset.addListener(this);
-	backgroundVisible.addListener(this);
-	strokeVisible.addListener(this);
-	clockwise.addListener(this);
-	backgroundColor.addListener(this);
-	strokeColor.addListener(this);
-	strokeWidth.addListener(this);
-	effect.addListener(this);
-	backgroundMouseOnColor.addListener(this);
-	strokeMouseOnColor.addListener(this);
-	startAngle.addListener(this);
-        
+        radius.addListener(this);
+        offset.addListener(this);
+        backgroundVisible.addListener(this);
+        strokeVisible.addListener(this);
+        clockwise.addListener(this);
+        backgroundColor.addListener(this);
+        strokeColor.addListener(this);
+        strokeWidth.addListener(this);
+        effect.addListener(this);
+        backgroundMouseOnColor.addListener(this);
+        strokeMouseOnColor.addListener(this);
+        startAngle.addListener(this);
+
         //TRON effects
         outlineStrokeVisible.addListener(this);
         outlineStrokeColor.addListener(this);
         outlineStrokeMouseOnColor.addListener(this);
         outlineStrokeWidth.addListener(this);
-        outlineEffect.addListener(this);        
-        
-	path = new Path();
-	moveTo = new MoveTo();
-	arcToInner = new ArcTo();
-	arcTo = new ArcTo();
-	lineTo = new LineTo();
-	lineTo2 = new LineTo();
+        outlineEffect.addListener(this);
 
-	path.getElements().add(moveTo);
-	path.getElements().add(arcToInner);
-	path.getElements().add(lineTo);
-	path.getElements().add(arcTo);
-	path.getElements().add(lineTo2);
+        path = new Path();
+        moveTo = new MoveTo();
+        arcToInner = new ArcTo();
+        arcTo = new ArcTo();
+        lineTo = new LineTo();
+        lineTo2 = new LineTo();
+
+        path.getElements().add(moveTo);
+        path.getElements().add(arcToInner);
+        path.getElements().add(lineTo);
+        path.getElements().add(arcTo);
+        path.getElements().add(lineTo2);
 
         outlinePath = new Path();
         outlinePath.getElements().add(moveTo);
-	outlinePath.getElements().add(arcToInner);
-	outlinePath.getElements().add(lineTo);
-	outlinePath.getElements().add(arcTo);
-	outlinePath.getElements().add(lineTo2);
+        outlinePath.getElements().add(arcToInner);
+        outlinePath.getElements().add(lineTo);
+        outlinePath.getElements().add(arcTo);
+        outlinePath.getElements().add(lineTo2);
 
-	getChildren().addAll(path, outlinePath);
+        getChildren().addAll(path, outlinePath);
 
-	setOnMouseEntered(event -> {
+        setOnMouseEntered(event -> {
             mouseOn = true;
-            mouseOnProperty.set(mouseOn);                
+            mouseOnProperty.set(mouseOn);
             redraw();
-	});
+        });
 
-	setOnMouseExited(event -> {
+
+        setOnMouseExited(event -> {
             mouseOn = false;
-            mouseOnProperty.set(mouseOn);                
+            mouseOnProperty.set(mouseOn);
             redraw();
-	});
+        });
     }
 
     public RadialMenuItem(final double menuSize, final Node graphic) {
-	this();
+        this();
         this.menuSize.set(menuSize);
-	this.graphic = graphic;
-	if (graphic != null)
-	    getChildren().add(graphic);
-	redraw();
+        this.graphic = graphic;
+        if (graphic != null)
+            getChildren().add(graphic);
+        redraw();
     }
 
     public RadialMenuItem(final double menuSize, final Node graphic,
-	    final EventHandler<ActionEvent> actionHandler) {
-	this(menuSize, graphic);
-	addEventHandler(MouseEvent.MOUSE_CLICKED, event -> actionHandler.handle(new ActionEvent(event.getSource(), event.getTarget())));
-	redraw();
+                          final EventHandler<ActionEvent> actionHandler) {
+        this(menuSize, graphic);
+        addEventHandler(MouseEvent.MOUSE_CLICKED, event -> actionHandler.handle(new ActionEvent(event.getSource(), event.getTarget())));
+        redraw();
     }
 
     public RadialMenuItem(final double menuSize, final String text, final Node graphic) {
-	this(menuSize, graphic);
-	this.text = text;
-	redraw();
+        this(menuSize, graphic);
+        this.text = text;
+        redraw();
     }
 
     public RadialMenuItem(final double menuSize, final String text,
-	    final Node graphic, final EventHandler<ActionEvent> actionHandler) {
-	this(menuSize, graphic, actionHandler);
-	this.text = text;
-	redraw();
+                          final Node graphic, final EventHandler<ActionEvent> actionHandler) {
+        this(menuSize, graphic, actionHandler);
+        this.text = text;
+        redraw();
     }
+
     //<editor-fold defaultstate="collapsed" desc="Properties">
     public double getMenuSize() {
         return menuSize.get();
@@ -195,250 +198,251 @@ public class RadialMenuItem extends Group implements ChangeListener<Object> {
 
     public DoubleProperty menuSizeProperty() {
         return menuSize;
-    } 
+    }
 
     DoubleProperty innerRadiusProperty() {
-	return innerRadius;
+        return innerRadius;
     }
 
     DoubleProperty radiusProperty() {
-	return radius;
+        return radius;
     }
 
     DoubleProperty offsetProperty() {
-	return offset;
+        return offset;
     }
 
     ObjectProperty<Paint> backgroundMouseOnColorProperty() {
-	return backgroundMouseOnColor;
+        return backgroundMouseOnColor;
     }
 
     ObjectProperty<Paint> backgroundColorProperty() {
-	return backgroundColor;
+        return backgroundColor;
     }
 
     public BooleanProperty clockwiseProperty() {
-	return clockwise;
+        return clockwise;
     }
 
     ObjectProperty<Paint> strokeMouseOnColorProperty() {
-	return strokeMouseOnColor;
+        return strokeMouseOnColor;
     }
 
     ObjectProperty<Paint> strokeColorProperty() {
-	return strokeColor;
+        return strokeColor;
     }
-    
+
     DoubleProperty strokeWidthProperty() {
-	return strokeWidth;
+        return strokeWidth;
     }
-    
+
     ObjectProperty<Effect> effect() {
-	return effect;
-    }    
+        return effect;
+    }
 
     ObjectProperty<Paint> outlineStrokeMouseOnColorProperty() {
-	return outlineStrokeMouseOnColor;
+        return outlineStrokeMouseOnColor;
     }
 
     ObjectProperty<Paint> outlineStrokeColorProperty() {
-	return outlineStrokeColor;
+        return outlineStrokeColor;
     }
-    
+
     DoubleProperty outlineStrokeWidthProperty() {
-	return outlineStrokeWidth;
+        return outlineStrokeWidth;
     }
-    
+
     ObjectProperty<Effect> outlineEffectProperty() {
-	return outlineEffect;
-    }    
-    
+        return outlineEffect;
+    }
+
     public BooleanProperty strokeVisibleProperty() {
-	return strokeVisible;
+        return strokeVisible;
     }
 
     public BooleanProperty backgroundVisibleProperty() {
-	return backgroundVisible;
+        return backgroundVisible;
     }
 
     public BooleanProperty outlineStrokeVisibleProperty() {
-	return outlineStrokeVisible;
+        return outlineStrokeVisible;
     }
 
     public Node getGraphic() {
-	return graphic;
+        return graphic;
     }
 
     public void setStartAngle(final double angle) {
-	startAngle.set(angle);
+        startAngle.set(angle);
     }
 
     public DoubleProperty startAngleProperty() {
-	return startAngle;
+        return startAngle;
     }
 
     public void setGraphic(final Node graphic) {
-	if (graphic != null) {
-	    getChildren().remove(this.graphic);
-	}
-	this.graphic = graphic;
-	if (this.graphic != null) {
-	    getChildren().add(graphic);
-	}
-	redraw();
+        if (graphic != null) {
+            getChildren().remove(this.graphic);
+        }
+        this.graphic = graphic;
+        if (this.graphic != null) {
+            getChildren().add(graphic);
+        }
+        redraw();
     }
 
     public void setText(final String text) {
-	this.text = text;
-	redraw();
+        this.text = text;
+        redraw();
     }
 
     public String getText() {
-	return text;
+        return text;
     }
+
     //</editor-fold>
     protected void redraw() {
-	path.setFill(backgroundVisible.get() ? (mouseOn
-            && backgroundMouseOnColor.get() != null ? backgroundMouseOnColor
-            .get() : backgroundColor.get())
-            : Color.TRANSPARENT);
-	path.setStroke(strokeVisible.get() ? (mouseOn
-            && strokeMouseOnColor.get() != null ? strokeMouseOnColor
-            .get() : strokeColor.get())
-            : Color.TRANSPARENT);
-        
+        path.setFill(backgroundVisible.get() ? (mouseOn
+                && backgroundMouseOnColor.get() != null ? backgroundMouseOnColor
+                .get() : backgroundColor.get())
+                : Color.TRANSPARENT);
+        path.setStroke(strokeVisible.get() ? (mouseOn
+                && strokeMouseOnColor.get() != null ? strokeMouseOnColor
+                .get() : strokeColor.get())
+                : Color.TRANSPARENT);
+
         path.setStrokeWidth(strokeWidth.get());
         path.setEffect(effect.get());
-	path.setFillRule(FillRule.EVEN_ODD);
+        path.setFillRule(FillRule.EVEN_ODD);
 
         outlinePath.setFill(Color.TRANSPARENT);
-	outlinePath.setStroke(outlineStrokeVisible.get() ? (mouseOn
-            && outlineStrokeMouseOnColor.get() != null ? outlineStrokeMouseOnColor.get() 
-            : outlineStrokeColor.get()) : Color.TRANSPARENT);
+        outlinePath.setStroke(outlineStrokeVisible.get() ? (mouseOn
+                && outlineStrokeMouseOnColor.get() != null ? outlineStrokeMouseOnColor.get()
+                : outlineStrokeColor.get()) : Color.TRANSPARENT);
         outlinePath.setStrokeWidth(outlineStrokeWidth.get());
         outlinePath.setEffect(outlineEffect.get());
-        
+
         computeCoordinates();
-	update();
+        update();
     }
 
     protected void update() {
-	final double innerRadiusValue = innerRadius.get();
-	final double radiusValue = radius.get();
+        final double innerRadiusValue = innerRadius.get();
+        final double radiusValue = radius.get();
 
-	moveTo.setX(innerStartX + translateX);
-	moveTo.setY(innerStartY + translateY);
+        moveTo.setX(innerStartX + translateX);
+        moveTo.setY(innerStartY + translateY);
 
-	arcToInner.setX(innerEndX + translateX);
-	arcToInner.setY(innerEndY + translateY);
-	arcToInner.setSweepFlag(innerSweep);
-	arcToInner.setRadiusX(innerRadiusValue);
-	arcToInner.setRadiusY(innerRadiusValue);
+        arcToInner.setX(innerEndX + translateX);
+        arcToInner.setY(innerEndY + translateY);
+        arcToInner.setSweepFlag(innerSweep);
+        arcToInner.setRadiusX(innerRadiusValue);
+        arcToInner.setRadiusY(innerRadiusValue);
 
-	lineTo.setX(startX + translateX);
-	lineTo.setY(startY + translateY);
+        lineTo.setX(startX + translateX);
+        lineTo.setY(startY + translateY);
 
-	arcTo.setX(endX + translateX);
-	arcTo.setY(endY + translateY);
-	arcTo.setSweepFlag(sweep);
+        arcTo.setX(endX + translateX);
+        arcTo.setY(endY + translateY);
+        arcTo.setSweepFlag(sweep);
 
-	arcTo.setRadiusX(radiusValue);
-	arcTo.setRadiusY(radiusValue);
+        arcTo.setRadiusX(radiusValue);
+        arcTo.setRadiusY(radiusValue);
 
-	lineTo2.setX(innerStartX + translateX);
-	lineTo2.setY(innerStartY + translateY);
+        lineTo2.setX(innerStartX + translateX);
+        lineTo2.setY(innerStartY + translateY);
 
-	if (graphic != null) {
-	    graphic.setTranslateX(graphicX + translateX);
-	    graphic.setTranslateY(graphicY + translateY);
-	}
+        if (graphic != null) {
+            graphic.setTranslateX(graphicX + translateX);
+            graphic.setTranslateY(graphicY + translateY);
+        }
     }
 
     protected void computeCoordinates() {
-	final double innerRadiusValue = innerRadius.get();
-	final double startAngleValue = startAngle.get();
+        final double innerRadiusValue = innerRadius.get();
+        final double startAngleValue = startAngle.get();
 
-	final double graphicAngle = startAngleValue + (menuSize.get() / 2.0);
-	final double radiusValue = radius.get();
+        final double graphicAngle = startAngleValue + (menuSize.get() / 2.0);
+        final double radiusValue = radius.get();
 
-	final double graphicRadius = innerRadiusValue
-		+ (radiusValue - innerRadiusValue) / 2.0;
+        final double graphicRadius = innerRadiusValue
+                + (radiusValue - innerRadiusValue) / 2.0;
 
-	final double offsetValue = offset.get();
+        final double offsetValue = offset.get();
 
-	if (!clockwise.get()) {
-	    innerStartX = innerRadiusValue
-		    * Math.cos(Math.toRadians(startAngleValue));
-	    innerStartY = -innerRadiusValue
-		    * Math.sin(Math.toRadians(startAngleValue));
-	    innerEndX = innerRadiusValue
-		    * Math.cos(Math.toRadians(startAngleValue + menuSize.get()));
-	    innerEndY = -innerRadiusValue
-		    * Math.sin(Math.toRadians(startAngleValue + menuSize.get()));
-	    innerSweep = false;
+        if (!clockwise.get()) {
+            innerStartX = innerRadiusValue
+                    * Math.cos(Math.toRadians(startAngleValue));
+            innerStartY = -innerRadiusValue
+                    * Math.sin(Math.toRadians(startAngleValue));
+            innerEndX = innerRadiusValue
+                    * Math.cos(Math.toRadians(startAngleValue + menuSize.get()));
+            innerEndY = -innerRadiusValue
+                    * Math.sin(Math.toRadians(startAngleValue + menuSize.get()));
+            innerSweep = false;
 
-	    startX = radiusValue * Math.cos(Math.toRadians(startAngleValue + menuSize.get()));
-	    startY = -radiusValue * Math.sin(Math.toRadians(startAngleValue + menuSize.get()));
-	    endX = radiusValue * Math.cos(Math.toRadians(startAngleValue));
-	    endY = -radiusValue * Math.sin(Math.toRadians(startAngleValue));
+            startX = radiusValue * Math.cos(Math.toRadians(startAngleValue + menuSize.get()));
+            startY = -radiusValue * Math.sin(Math.toRadians(startAngleValue + menuSize.get()));
+            endX = radiusValue * Math.cos(Math.toRadians(startAngleValue));
+            endY = -radiusValue * Math.sin(Math.toRadians(startAngleValue));
 
-	    sweep = true;
+            sweep = true;
 
-	    if (graphic != null) {
-		graphicX = graphicRadius
-			* Math.cos(Math.toRadians(graphicAngle))
-			- graphic.getBoundsInParent().getWidth() / 2.0;
-		graphicY = -graphicRadius
-			* Math.sin(Math.toRadians(graphicAngle))
-			- graphic.getBoundsInParent().getHeight() / 2.0;
+            if (graphic != null) {
+                graphicX = graphicRadius
+                        * Math.cos(Math.toRadians(graphicAngle))
+                        - graphic.getBoundsInParent().getWidth() / 2.0;
+                graphicY = -graphicRadius
+                        * Math.sin(Math.toRadians(graphicAngle))
+                        - graphic.getBoundsInParent().getHeight() / 2.0;
 
-	    }
-	    translateX = offsetValue
-		    * Math.cos(Math.toRadians(startAngleValue + (menuSize.get() / 2.0)));
-	    translateY = -offsetValue
-		    * Math.sin(Math.toRadians(startAngleValue + (menuSize.get() / 2.0)));
+            }
+            translateX = offsetValue
+                    * Math.cos(Math.toRadians(startAngleValue + (menuSize.get() / 2.0)));
+            translateY = -offsetValue
+                    * Math.sin(Math.toRadians(startAngleValue + (menuSize.get() / 2.0)));
 
-	} else if (clockwise.get()) {
-	    innerStartX = innerRadiusValue
-		    * Math.cos(Math.toRadians(startAngleValue));
-	    innerStartY = innerRadiusValue
-		    * Math.sin(Math.toRadians(startAngleValue));
-	    innerEndX = innerRadiusValue
-		    * Math.cos(Math.toRadians(startAngleValue + menuSize.get()));
-	    innerEndY = innerRadiusValue
-		    * Math.sin(Math.toRadians(startAngleValue + menuSize.get()));
+        } else if (clockwise.get()) {
+            innerStartX = innerRadiusValue
+                    * Math.cos(Math.toRadians(startAngleValue));
+            innerStartY = innerRadiusValue
+                    * Math.sin(Math.toRadians(startAngleValue));
+            innerEndX = innerRadiusValue
+                    * Math.cos(Math.toRadians(startAngleValue + menuSize.get()));
+            innerEndY = innerRadiusValue
+                    * Math.sin(Math.toRadians(startAngleValue + menuSize.get()));
 
-	    innerSweep = true;
+            innerSweep = true;
 
-	    startX = radiusValue
-		    * Math.cos(Math.toRadians(startAngleValue + menuSize.get()));
-	    startY = radiusValue
-		    * Math.sin(Math.toRadians(startAngleValue + menuSize.get()));
-	    endX = radiusValue * Math.cos(Math.toRadians(startAngleValue));
-	    endY = radiusValue * Math.sin(Math.toRadians(startAngleValue));
+            startX = radiusValue
+                    * Math.cos(Math.toRadians(startAngleValue + menuSize.get()));
+            startY = radiusValue
+                    * Math.sin(Math.toRadians(startAngleValue + menuSize.get()));
+            endX = radiusValue * Math.cos(Math.toRadians(startAngleValue));
+            endY = radiusValue * Math.sin(Math.toRadians(startAngleValue));
 
-	    sweep = false;
+            sweep = false;
 
-	    if (graphic != null) {
-		graphicX = graphicRadius
-			* Math.cos(Math.toRadians(graphicAngle))
-			- graphic.getBoundsInParent().getWidth() / 2.0;
-		graphicY = graphicRadius
-			* Math.sin(Math.toRadians(graphicAngle))
-			- graphic.getBoundsInParent().getHeight() / 2.0;
-	    }
+            if (graphic != null) {
+                graphicX = graphicRadius
+                        * Math.cos(Math.toRadians(graphicAngle))
+                        - graphic.getBoundsInParent().getWidth() / 2.0;
+                graphicY = graphicRadius
+                        * Math.sin(Math.toRadians(graphicAngle))
+                        - graphic.getBoundsInParent().getHeight() / 2.0;
+            }
 
-	    translateX = offsetValue
-		    * Math.cos(Math.toRadians(startAngleValue + (menuSize.get() / 2.0)));
-	    translateY = offsetValue
-		    * Math.sin(Math.toRadians(startAngleValue + (menuSize.get() / 2.0)));
-	}
+            translateX = offsetValue
+                    * Math.cos(Math.toRadians(startAngleValue + (menuSize.get() / 2.0)));
+            translateY = offsetValue
+                    * Math.sin(Math.toRadians(startAngleValue + (menuSize.get() / 2.0)));
+        }
     }
-    
+
     @Override
     public void changed(final ObservableValue<? extends Object> arg0,
-	    final Object arg1, final Object arg2) {
-	redraw();
+                        final Object arg1, final Object arg2) {
+        redraw();
     }
 
     void setSelected(final boolean selected) {
@@ -446,6 +450,6 @@ public class RadialMenuItem extends Group implements ChangeListener<Object> {
     }
 
     boolean isSelected() {
-	return false;
+        return false;
     }
 }

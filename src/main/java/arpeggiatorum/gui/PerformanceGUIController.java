@@ -200,7 +200,7 @@ public class PerformanceGUIController implements Initializable {
 
         labelAudio = new Label("Audio In");
         labelAudio.setStyle(labelActionStyle);
-        labelAudio.setPrefWidth(toggleSizeLarge*0.5);
+        labelAudio.setPrefWidth(toggleSizeLarge * 0.5);
         labelAudio.setTranslateX(toggleAudio.getTranslateX());
         labelAudio.setTranslateY(0);
 
@@ -238,7 +238,8 @@ public class PerformanceGUIController implements Initializable {
                 ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getSelectionModel().select(0);
             }
         });
-//        toggleSustained.setTranslateX(pixelWidth - ((buttonSizeLarge * 3) + (visualHorizontalBuffer * 2)));
+
+        //toggleSustained.setTranslateX(pixelWidth - ((buttonSizeLarge * 3) + (visualHorizontalBuffer * 2)));
         toggleSustained.setTranslateX(0);
         toggleSustained.setTranslateY(-buttonSizeLarge * 0.5);
         toggleSustained.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("toggleSwitch.css").toExternalForm());
@@ -246,7 +247,7 @@ public class PerformanceGUIController implements Initializable {
 
         labelSustained = new Label("Sustained");
         labelSustained.setStyle(labelActionStyle);
-        labelSustained.setPrefWidth(toggleSizeLarge*1);
+        labelSustained.setPrefWidth(toggleSizeLarge * 1);
         labelSustained.setTranslateX(toggleSustained.getTranslateX());
         labelSustained.setTranslateY(0);
 
@@ -263,7 +264,7 @@ public class PerformanceGUIController implements Initializable {
             }
         });
 //        toggleArpeggio.setTranslateX(pixelWidth - ((buttonSizeLarge * 2) + (visualHorizontalBuffer * 1)));
-        toggleArpeggio.setTranslateX(toggleSizeLarge+ (visualHorizontalBuffer * 1));
+        toggleArpeggio.setTranslateX(toggleSizeLarge + (visualHorizontalBuffer * 1));
         toggleArpeggio.setTranslateY(-buttonSizeLarge * 0.5);
         toggleArpeggio.setRotate(-90);
         toggleArpeggio.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("toggleSwitch.css").toExternalForm());
@@ -271,7 +272,7 @@ public class PerformanceGUIController implements Initializable {
         labelArpeggio = new Label("Arpeggio");
         labelArpeggio.setStyle(labelActionStyle);
         labelArpeggio.setTranslateX(toggleArpeggio.getTranslateX());
-        labelArpeggio.setPrefWidth(toggleSizeLarge*1);
+        labelArpeggio.setPrefWidth(toggleSizeLarge * 1);
         labelArpeggio.setTranslateY(0);
 
         toggleBass = new ToggleSwitch();
@@ -294,7 +295,7 @@ public class PerformanceGUIController implements Initializable {
 
         labelBass = new Label("Bass");
         labelBass.setStyle(labelActionStyle);
-        labelBass.setPrefWidth(toggleSizeLarge*1);
+        labelBass.setPrefWidth(toggleSizeLarge * 1);
         labelBass.setTranslateX(toggleBass.getTranslateX());
         labelBass.setTranslateY(0);
 
@@ -336,7 +337,7 @@ public class PerformanceGUIController implements Initializable {
 
         radialMenuEnrichment = createCenterRadialMenu("   Enrichment", ArpeggiatorumGUI.controllerHandle.comboEnrichment.getItems().stream().toList(), enrichmentHandler, bgLg1Color, bgLg2Color, bgMoLg1Color, bgMoLg2Color);
         radialMenuEnrichment.setTranslateX(pixelWidth * 0.2);
-        radialMenuEnrichment.setTranslateY(pixelHeight * 0.5-visualVerticalBuffer);
+        radialMenuEnrichment.setTranslateY(pixelHeight * 0.5 - visualVerticalBuffer);
         radialMenuEnrichment.hideRadialMenu();
 
         //actionPerformedLabelEnrichment.setTranslateX(pixelWidth * 0.25);
@@ -346,7 +347,7 @@ public class PerformanceGUIController implements Initializable {
 
         radialMenuPattern = createCenterRadialMenu("      Pattern", ArpeggiatorumGUI.controllerHandle.comboPattern.getItems().stream().toList(), patternHandler, bgHg1Color, bgHg2Color, bgMoLg1Color, bgMoLg2Color);
         radialMenuPattern.setTranslateX(pixelWidth * 0.8);
-        radialMenuPattern.setTranslateY(pixelHeight * 0.5-visualVerticalBuffer);
+        radialMenuPattern.setTranslateY(pixelHeight * 0.5 - visualVerticalBuffer);
         radialMenuPattern.hideRadialMenu();
 
 

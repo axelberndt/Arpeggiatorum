@@ -84,18 +84,27 @@ public class RadialMenu extends Group implements EventHandler<Event>,
                 event.consume();
             }
         }
-        if(event instanceof TouchEvent) {
-            //if(((TouchEvent)event).)
-            {
-
-            }
-
+        if (event instanceof TouchEvent) {
+//            if (((TouchEvent) event).getEventType() == TouchEvent.TOUCH_MOVED) {
+//                final RadialMenuItem item = (RadialMenuItem) event.getSource();
+//                item.setSelected(!item.isSelected());
+//                for (final RadialMenuItem it : items) {
+//                    if (it != item) {
+//                        it.setSelected(false);
+//                    }
+//                }
+//                if (!item.isSelected()) {
+//                    hideRadialMenu();
+//                }
+                event.consume();
+            //}
         }
     }
 
     public enum CenterVisibility {
         ALWAYS, WITH_MENU, NEVER
     }
+
     public static double DEFAULT_STROKE_WIDTH = 1.0;
 
     public List<RadialMenuItem> getItems() {
@@ -123,7 +132,7 @@ public class RadialMenu extends Group implements EventHandler<Event>,
     protected DoubleProperty outlineStrokeWidth;
     protected BooleanProperty outlineStrokeVisible;
     protected ObjectProperty<Effect> outlineEffect;
-    
+
     protected BooleanProperty clockwise;
     protected BooleanProperty backgroundVisible;
     protected ObjectProperty<CenterVisibility> centerVisibility;
@@ -136,8 +145,8 @@ public class RadialMenu extends Group implements EventHandler<Event>,
     private double lastInitialAngleValue;
     private double lastOffsetValue;
     private boolean allowRedraw = true;
-    
-    
+
+
     public Paint getBackgroundFill() {
         return backgroundFill.get();
     }
@@ -261,8 +270,8 @@ public class RadialMenu extends Group implements EventHandler<Event>,
 
     public ObjectProperty<Effect> outlineEffectProperty() {
         return outlineEffect;
-    }    
-    
+    }
+
     public Node getCenterGraphic() {
         return centerGraphic.get();
     }
@@ -288,6 +297,7 @@ public class RadialMenu extends Group implements EventHandler<Event>,
     public DoubleProperty initialAngleProperty() {
         return initialAngle;
     }
+
     public double getItemFitWidth() {
         return itemFitWidth.get();
     }
@@ -295,6 +305,7 @@ public class RadialMenu extends Group implements EventHandler<Event>,
     public DoubleProperty itemFitWidthProperty() {
         return itemFitWidth;
     }
+
     public double getMenuItemSize() {
         return menuItemSize.get();
     }
@@ -366,36 +377,36 @@ public class RadialMenu extends Group implements EventHandler<Event>,
 
         itemGroup = new Group();
         getChildren().add(itemGroup);
-        
+
         itemFitWidth = new SimpleDoubleProperty(innerRadius);
-        itemFitWidth.addListener((ov,t,t1) -> setGraphicsFitWidth(ov.getValue().doubleValue()));
+        itemFitWidth.addListener((ov, t, t1) -> setGraphicsFitWidth(ov.getValue().doubleValue()));
         menuItemSize = new SimpleDoubleProperty(innerRadius);
-        menuItemSize.addListener((ov,t,t1) -> setMenuItemSize(ov.getValue().doubleValue()));
-        
+        menuItemSize.addListener((ov, t, t1) -> setMenuItemSize(ov.getValue().doubleValue()));
+
         this.initialAngle = new SimpleDoubleProperty(initialAngle);
-        this.initialAngle.addListener((ov,t,t1) -> setInitialAngle(ov.getValue().doubleValue()));
+        this.initialAngle.addListener((ov, t, t1) -> setInitialAngle(ov.getValue().doubleValue()));
 
         this.innerRadius = new SimpleDoubleProperty(innerRadius);
         this.strokeFill = new SimpleObjectProperty<>(strokeFill);
         this.strokeFill.addListener(this);
         strokeWidth = new SimpleDoubleProperty(DEFAULT_STROKE_WIDTH);
-        strokeWidth.addListener(this);        
+        strokeWidth.addListener(this);
         this.strokeMouseOnFill = new SimpleObjectProperty<>(strokeMouseOnFill);
         this.strokeMouseOnFill.addListener(this);
         strokeVisible = new SimpleBooleanProperty(true);
         strokeVisible.addListener(this);
-        
+
         outlineStrokeFill = new SimpleObjectProperty<>(strokeFill);
         outlineStrokeFill.addListener(this);
         outlineStrokeWidth = new SimpleDoubleProperty(DEFAULT_STROKE_WIDTH);
-        outlineStrokeWidth.addListener(this);        
+        outlineStrokeWidth.addListener(this);
         outlineStrokeMouseOnFill = new SimpleObjectProperty<>(strokeMouseOnFill);
         outlineStrokeMouseOnFill.addListener(this);
         outlineStrokeVisible = new SimpleBooleanProperty(true);
-        outlineStrokeVisible.addListener(this);   
+        outlineStrokeVisible.addListener(this);
         outlineEffect = new SimpleObjectProperty<>(null);
         outlineEffect.addListener(this);
-        
+
         this.radius = new SimpleDoubleProperty(radius);
         this.offset = new SimpleDoubleProperty(offset);
         this.clockwise = new SimpleBooleanProperty(clockwise);
@@ -425,8 +436,20 @@ public class RadialMenu extends Group implements EventHandler<Event>,
             mouseOnProperty.set(mouseOn);
             redraw();
         });
+
+        //Modify for touch support??
+//        centerGroup.setOnTouchPressed(touchEvent -> {
+//            final boolean visible = itemGroup.isVisible();
+//            if (visible) {
+//                hideRadialMenu();
+//            } else {
+//                showRadialMenu();
+//            }
+//            touchEvent.consume();
+//        });
+
         centerGroup.setOnMouseClicked(event -> {
-            if(!event.isControlDown()) {
+            if (!event.isControlDown()) {
                 final boolean visible = itemGroup.isVisible();
                 if (visible) {
                     hideRadialMenu();
@@ -441,24 +464,26 @@ public class RadialMenu extends Group implements EventHandler<Event>,
         setCenterGraphic(centerGraphic);
         saveStateBeforeAnimation();
     }
-    
+
     public void setGraphicsFitWidth(double fitWidth) {
         Node centerNode = getCenterGraphic();
-        if(centerNode instanceof ImageView civ) {
+        if (centerNode instanceof ImageView civ) {
             civ.setFitWidth(fitWidth);
             civ.setTranslateX(-fitWidth / 2.0);
             civ.setTranslateY(-fitWidth / 2.0);
         }
         items.stream().forEach(item -> {
             Node node = item.getGraphic();
-            if(node instanceof ImageView iv) {
+            if (node instanceof ImageView iv) {
                 iv.setFitWidth(fitWidth);
             }
-        });        
+        });
     }
+
     public void setMenuItemSize(double menuItemSize) {
         items.stream().forEach(item -> item.setMenuSize(menuItemSize));
     }
+
     public void setOnMenuItemMouseClicked(
             final EventHandler<? super MouseEvent> paramEventHandler) {
         for (final RadialMenuItem item : items) {
@@ -623,13 +648,13 @@ public class RadialMenu extends Group implements EventHandler<Event>,
         animationList.add(fade);
 
         final Animation offsetAnimation = new Timeline(
-            new KeyFrame(Duration.ZERO, new KeyValue(offsetProperty(), 0)), 
-            new KeyFrame(Duration.millis(1), new KeyValue(offsetProperty(), lastOffsetValue)));
+                new KeyFrame(Duration.ZERO, new KeyValue(offsetProperty(), 0)),
+                new KeyFrame(Duration.millis(1), new KeyValue(offsetProperty(), lastOffsetValue)));
         animationList.add(offsetAnimation);
 
         final Animation angle = new Timeline(
-            new KeyFrame(Duration.ZERO, new KeyValue(initialAngleProperty(), lastInitialAngleValue + 20)), 
-            new KeyFrame(Duration.millis(1), new KeyValue(initialAngleProperty(),lastInitialAngleValue)));
+                new KeyFrame(Duration.ZERO, new KeyValue(initialAngleProperty(), lastInitialAngleValue + 20)),
+                new KeyFrame(Duration.millis(1), new KeyValue(initialAngleProperty(), lastInitialAngleValue)));
         animationList.add(angle);
 
         if (centerVisibility.get() == CenterVisibility.WITH_MENU) {
@@ -652,9 +677,10 @@ public class RadialMenu extends Group implements EventHandler<Event>,
     @Override
     public void changed(final ObservableValue<? extends Object> arg0,
                         final Object arg1, final Object arg2) {
-        if(isAllowRedraw())
+        if (isAllowRedraw())
             redraw();
     }
+
     public void requestDraw() {
         redraw();
     }
@@ -669,13 +695,13 @@ public class RadialMenu extends Group implements EventHandler<Event>,
         }
 
         centerStrokeShape.setFill(backgroundVisible.get() ? (mouseOn
-                        && backgroundMouseOnFill.get() != null ? backgroundMouseOnFill
-                        .get() : backgroundFill.get())
-                        : Color.TRANSPARENT);
+                && backgroundMouseOnFill.get() != null ? backgroundMouseOnFill
+                .get() : backgroundFill.get())
+                : Color.TRANSPARENT);
         centerStrokeShape.setStroke(strokeVisible.get() ? (mouseOn
-                        && strokeMouseOnFill.get() != null ? strokeMouseOnFill
-                        .get() : strokeFill.get())
-                        : Color.TRANSPARENT);
+                && strokeMouseOnFill.get() != null ? strokeMouseOnFill
+                .get() : strokeFill.get())
+                : Color.TRANSPARENT);
         centerStrokeShape.setStrokeWidth(strokeWidth.get());
     }
 
