@@ -411,25 +411,40 @@ public class Arpeggiatorum implements Receiver {
                     case EventMaker.CC_Effect_Ctrl_2_14b: // trigger arpeggio channel
                         Platform.runLater(() -> {
                             Integer choice = (sMsg.getData2() >= 64) ? Arpeggiator.ARPEGGIO_CHANNEL_PRESET : -1;
+                            boolean bChoice=(sMsg.getData2() >= 64) ? true : false;
                             ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(choice);
+                            if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
+                                ArpeggiatorumGUI.controllerHandlePerformance.toggleArpeggio.setSelected(bChoice);
+                            }
                         });
                         break;
                     case EventMaker.CC_Undefined_Ctrl_3_14b: // trigger held notes channel
                         Platform.runLater(() -> {
                             Integer choice = (sMsg.getData2() >= 64) ? Arpeggiator.HELD_NOTES_CHANNEL_PRESET : -1;
+                            boolean bChoice=(sMsg.getData2() >= 64) ? true : false;
                             ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getSelectionModel().select(choice);
+                            if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
+                                ArpeggiatorumGUI.controllerHandlePerformance.toggleSustained.setSelected(bChoice);
+                            }
                         });
                         break;
                     case EventMaker.CC_Undefined_Ctrl_4_14b: // trigger bass channel
                         Platform.runLater(() -> {
                             Integer choice = (sMsg.getData2() >= 64) ? Arpeggiator.BASS_CHANNEL_PRESET : -1;
+                            boolean bChoice=(sMsg.getData2() >= 64) ? true : false;
                             ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().select(choice);
+                            if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
+                                ArpeggiatorumGUI.controllerHandlePerformance.toggleBass.setSelected(bChoice);
+                            }
                         });
                         break;
                     case EventMaker.CC_Undefined_Ctrl_5_14b: // toggle Audio In
                         Platform.runLater(() -> {
                             Boolean choice = (sMsg.getData2() >= 64) ? true : false;
                             Arpeggiatorum.getInstance().Activate(choice);
+                            if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
+                                ArpeggiatorumGUI.controllerHandlePerformance.toggleAudio.setSelected(choice);
+                            }
                         });
                         break;
                     case EventMaker.CC_Undefined_Ctrl_6_14b: // toggle autotune
@@ -440,8 +455,8 @@ public class Arpeggiatorum implements Receiver {
                         break;
                     case EventMaker.CC_Undefined_Ctrl_7_14b: // set threshold
                         Platform.runLater(() -> {
-                            double sliderValue = sMsg.getData2()/127.00;
-                            ArpeggiatorumGUI.controllerHandle.sliderThreshold.setValue(sliderValue*ArpeggiatorumGUI.controllerHandle.sliderThreshold.getMax());
+                            double sliderValue = sMsg.getData2() / 127.00;
+                            ArpeggiatorumGUI.controllerHandle.sliderThreshold.setValue(sliderValue * ArpeggiatorumGUI.controllerHandle.sliderThreshold.getMax());
                         });
                         break;
                     default:
@@ -573,7 +588,7 @@ public class Arpeggiatorum implements Receiver {
 
     public void TempoChange(Number value) {
         this.arpeggiator.setTempo(value.doubleValue());
-        if(ArpeggiatorumGUI.controllerHandlePerformance!=null){
+        if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
             ArpeggiatorumGUI.controllerHandlePerformance.regulatorTempo.setTargetValue(value.doubleValue());
         }
     }

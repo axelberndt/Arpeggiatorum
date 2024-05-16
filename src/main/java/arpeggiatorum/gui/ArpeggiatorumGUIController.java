@@ -12,7 +12,10 @@ import com.jsyn.Synthesizer;
 import com.jsyn.devices.AudioDeviceFactory;
 import com.jsyn.devices.AudioDeviceManager;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.*;
@@ -142,6 +145,7 @@ public class ArpeggiatorumGUIController implements Initializable {
     public TextField e15;
     @FXML
     public TextField e16;
+    public Tab tabPerformance;
 
 
     /**
@@ -406,7 +410,7 @@ public class ArpeggiatorumGUIController implements Initializable {
     @FXML
     public void comboPatternChanged(ActionEvent actionEvent) {
         Arpeggiatorum.getInstance().getArpeggiator().setPattern(comboPattern.getValue());
-        if(ArpeggiatorumGUI.controllerHandlePerformance!=null){
+        if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
             for (RadialMenuItem item : ArpeggiatorumGUI.controllerHandlePerformance.radialMenuPattern.getItems()) {
                 item.setStyle("-fx-font-weight: normal;");
                 if (item.getText().equals(ArpeggiatorumGUI.controllerHandle.comboPattern.getSelectionModel().getSelectedItem().toString())) {
@@ -439,7 +443,7 @@ public class ArpeggiatorumGUIController implements Initializable {
         e15.setText(String.valueOf((intervals.length >= 15) ? intervals[14] : 0));
         e16.setText(String.valueOf((intervals.length >= 16) ? intervals[15] : 0));
         Arpeggiatorum.getInstance().getArpeggiator().setTonalEnrichment(intervals);
-        if(ArpeggiatorumGUI.controllerHandlePerformance!=null){
+        if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
             for (RadialMenuItem item : ArpeggiatorumGUI.controllerHandlePerformance.radialMenuEnrichment.getItems()) {
                 item.setStyle("-fx-font-weight: normal;");
                 if (item.getText().equals(ArpeggiatorumGUI.controllerHandle.comboEnrichment.getSelectionModel().getSelectedItem().toString())) {
@@ -497,6 +501,16 @@ public class ArpeggiatorumGUIController implements Initializable {
         createAudioChannelChooser();
 
         tabPaneControls.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("tabpane.css").toExternalForm());
+
+        tabPaneControls.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
+            @Override
+            public void changed(ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) {
+                if (newTab == tabPerformance) {
+                    Arpeggiatorum.LoadPerformance(ArpeggiatorumGUI.getInstance());
+
+                }
+            }
+        });
 
         comboMIDIChannel.getItems().addAll(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
         comboArpeggioChannel.getItems().addAll(-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
@@ -630,7 +644,7 @@ public class ArpeggiatorumGUIController implements Initializable {
 
         sliderArticulation.valueProperty().addListener((observable, oldValue, newValue) -> {
             Arpeggiatorum.getInstance().ArticulationChange(newValue);
-            if(ArpeggiatorumGUI.controllerHandlePerformance!=null) {
+            if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
                 ArpeggiatorumGUI.controllerHandlePerformance.sliderArticulation.setSliderValue(newValue.doubleValue());
 
             }
@@ -650,11 +664,13 @@ public class ArpeggiatorumGUIController implements Initializable {
         sliderEnrichment.valueProperty().addListener((observable, oldValue, newValue) -> {
             //textEnrichment.setText(String.format("%d %%", newValue.intValue()));
             Arpeggiatorum.getInstance().EnrichmentChange(newValue);
-            if(ArpeggiatorumGUI.controllerHandlePerformance!=null){
+            if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
                 ArpeggiatorumGUI.controllerHandlePerformance.buttonEnrichmentArray[(int) Math.ceil(15.0 * (newValue.doubleValue() / 100.0))].fire();
             }
         });
     }
+
+
     //Sliders
     //They don't have event handlers...
 
