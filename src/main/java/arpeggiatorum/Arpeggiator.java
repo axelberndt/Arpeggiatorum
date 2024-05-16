@@ -374,6 +374,16 @@ public class Arpeggiator implements Receiver, Transmitter {
                     case EventMaker.CC_Undefined_Ctrl_4_14b:        // trigger bass channel
                         this.sendToReceiver(message, timeStamp);
                         break;
+
+                    case EventMaker.CC_Undefined_Ctrl_5_14b:        // Trigger audio in
+                        this.sendToReceiver(message, timeStamp);
+                        break;
+                    case EventMaker.CC_Undefined_Ctrl_6_14b:        // Trigger autotune
+                        this.sendToReceiver(message, timeStamp);
+                        break;
+                    case EventMaker.CC_Undefined_Ctrl_7_14b:        // Set Threshold
+                        this.sendToReceiver(message, timeStamp);
+                        break;
                     default:
                         break;
                 }

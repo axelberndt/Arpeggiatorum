@@ -1,6 +1,7 @@
 package arpeggiatorum.gui;
 
 import arpeggiatorum.Arpeggiatorum;
+import arpeggiatorum.gui.cornerRadialMenu.RadialMenuItem;
 import arpeggiatorum.microphoneControl.Mic2MIDI;
 import arpeggiatorum.microphoneControl.Mic2MIDI_CQT;
 import arpeggiatorum.notePool.NotePool;
@@ -51,7 +52,7 @@ public class ArpeggiatorumGUIController implements Initializable {
     public Text textRange;
     @FXML
     public Text textTempo;
-//    @FXML
+    //    @FXML
 //    public Text textEnrichment;
     //Second Column
     @FXML
@@ -381,8 +382,7 @@ public class ArpeggiatorumGUIController implements Initializable {
                     deviceInputID,
                     deviceInputChannels,
                     Arpeggiatorum.synth.getAudioDeviceManager().getDefaultOutputDeviceID(), 0);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
             logger.log(Level.SEVERE, "Audio Exception.", e);
             LogGUIController.logBuffer.append(e.getMessage());
@@ -406,6 +406,14 @@ public class ArpeggiatorumGUIController implements Initializable {
     @FXML
     public void comboPatternChanged(ActionEvent actionEvent) {
         Arpeggiatorum.getInstance().getArpeggiator().setPattern(comboPattern.getValue());
+        if(ArpeggiatorumGUI.controllerHandlePerformance!=null){
+            for (RadialMenuItem item : ArpeggiatorumGUI.controllerHandlePerformance.radialMenuPattern.getItems()) {
+                item.setStyle("-fx-font-weight: normal;");
+                if (item.getText().equals(ArpeggiatorumGUI.controllerHandle.comboPattern.getSelectionModel().getSelectedItem().toString())) {
+                    item.setStyle("-fx-font-weight: BOLD;");
+                }
+            }
+        }
     }
 
     @FXML
@@ -431,6 +439,17 @@ public class ArpeggiatorumGUIController implements Initializable {
         e15.setText(String.valueOf((intervals.length >= 15) ? intervals[14] : 0));
         e16.setText(String.valueOf((intervals.length >= 16) ? intervals[15] : 0));
         Arpeggiatorum.getInstance().getArpeggiator().setTonalEnrichment(intervals);
+        if(ArpeggiatorumGUI.controllerHandlePerformance!=null){
+            for (RadialMenuItem item : ArpeggiatorumGUI.controllerHandlePerformance.radialMenuEnrichment.getItems()) {
+                item.setStyle("-fx-font-weight: normal;");
+                if (item.getText().equals(ArpeggiatorumGUI.controllerHandle.comboEnrichment.getSelectionModel().getSelectedItem().toString())) {
+                    item.setStyle("-fx-font-weight: BOLD;");
+                }
+            }
+            for (int i = 0; i < intervals.length; i++) {
+                ArpeggiatorumGUI.controllerHandlePerformance.buttonEnrichmentArray[i].setText(String.valueOf(intervals[i]));
+            }
+        }
     }
 
     public void updateHist(double[] newData) {
@@ -505,7 +524,7 @@ public class ArpeggiatorumGUIController implements Initializable {
         comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("Overtones \r\n in 2 Oct",
                 new int[]{0, 12, 24, 7, 19, 4, 16, 10, 22, 2, 14, 6, 18, 8, 20, 11}));
         comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("User",
-                new int[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}));
+                new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
 
         for (Mic2MIDI processor : Arpeggiatorum.getInstance().getMic2Midi()) {
             comboMic2MIDI.getItems().add(processor);
@@ -609,7 +628,14 @@ public class ArpeggiatorumGUIController implements Initializable {
             Arpeggiatorum.getInstance().TempoChange(newValue);
         });
 
-        sliderArticulation.valueProperty().addListener((observable, oldValue, newValue) -> Arpeggiatorum.getInstance().ArticulationChange(newValue));
+        sliderArticulation.valueProperty().addListener((observable, oldValue, newValue) -> {
+            Arpeggiatorum.getInstance().ArticulationChange(newValue);
+            if(ArpeggiatorumGUI.controllerHandlePerformance!=null) {
+                ArpeggiatorumGUI.controllerHandlePerformance.sliderArticulation.setSliderValue(newValue.doubleValue());
+
+            }
+
+        });
 
         sliderRange.highValueProperty().addListener((observable, oldValue, newValue) -> {
             textRange.setText(String.format("[%d-%d]", ((int) sliderRange.getLowValue()), newValue.intValue()));
@@ -624,6 +650,9 @@ public class ArpeggiatorumGUIController implements Initializable {
         sliderEnrichment.valueProperty().addListener((observable, oldValue, newValue) -> {
             //textEnrichment.setText(String.format("%d %%", newValue.intValue()));
             Arpeggiatorum.getInstance().EnrichmentChange(newValue);
+            if(ArpeggiatorumGUI.controllerHandlePerformance!=null){
+                ArpeggiatorumGUI.controllerHandlePerformance.buttonEnrichmentArray[(int) Math.ceil(15.0 * (newValue.doubleValue() / 100.0))].fire();
+            }
         });
     }
     //Sliders

@@ -1,5 +1,5 @@
 *{
-    -preferred-actual-dims: 400;
+    -preferred-actual-dims: 360;
 }
 
 .toggle-switch {
@@ -31,7 +31,7 @@
 
 .toggle-switch .thumb {
     -fx-background-radius: 50 0 0 50;
-    -fx-padding: 200 150;
+    -fx-padding: 180 150;
     -fx-blend-mode: LIGHTEN;
 }
 

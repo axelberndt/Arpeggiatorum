@@ -2,6 +2,7 @@ package arpeggiatorum;
 
 import arpeggiatorum.gui.ArpeggiatorumGUI;
 import arpeggiatorum.gui.LogGUIController;
+import arpeggiatorum.gui.cornerRadialMenu.RadialMenuItem;
 import arpeggiatorum.microphoneControl.*;
 import arpeggiatorum.supplementary.EventMaker;
 import arpeggiatorum.supplementary.Tools;
@@ -404,6 +405,7 @@ public class Arpeggiatorum implements Receiver {
                             int sliderValue = sMsg.getData2();
                             int choice = (sliderValue * (--numberOfOptions) / 127);
                             ArpeggiatorumGUI.controllerHandle.comboPattern.getSelectionModel().select(choice);
+
                         });
                         break;
                     case EventMaker.CC_Effect_Ctrl_2_14b: // trigger arpeggio channel
@@ -422,6 +424,24 @@ public class Arpeggiatorum implements Receiver {
                         Platform.runLater(() -> {
                             Integer choice = (sMsg.getData2() >= 64) ? Arpeggiator.BASS_CHANNEL_PRESET : -1;
                             ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().select(choice);
+                        });
+                        break;
+                    case EventMaker.CC_Undefined_Ctrl_5_14b: // toggle Audio In
+                        Platform.runLater(() -> {
+                            Boolean choice = (sMsg.getData2() >= 64) ? true : false;
+                            Arpeggiatorum.getInstance().Activate(choice);
+                        });
+                        break;
+                    case EventMaker.CC_Undefined_Ctrl_6_14b: // toggle autotune
+                        Platform.runLater(() -> {
+                            Boolean choice = (sMsg.getData2() >= 64) ? true : false;
+                            Arpeggiatorum.getInstance().AutoTune(choice);
+                        });
+                        break;
+                    case EventMaker.CC_Undefined_Ctrl_7_14b: // set threshold
+                        Platform.runLater(() -> {
+                            double sliderValue = sMsg.getData2()/127.00;
+                            ArpeggiatorumGUI.controllerHandle.sliderThreshold.setValue(sliderValue*ArpeggiatorumGUI.controllerHandle.sliderThreshold.getMax());
                         });
                         break;
                     default:
@@ -498,9 +518,10 @@ public class Arpeggiatorum implements Receiver {
 
             cqtAutoTune = false;
         }
-        if (ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.isSelected()) {
-            ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.fire();
-        }
+//        if (ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.isSelected()) {
+//            ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.fire();
+//        }
+        Arpeggiatorum.getInstance().Activate(false);
         Mic2MIDI_CQT.autoTune = cqtAutoTune;
     }
 
@@ -552,7 +573,9 @@ public class Arpeggiatorum implements Receiver {
 
     public void TempoChange(Number value) {
         this.arpeggiator.setTempo(value.doubleValue());
-
+        if(ArpeggiatorumGUI.controllerHandlePerformance!=null){
+            ArpeggiatorumGUI.controllerHandlePerformance.regulatorTempo.setTargetValue(value.doubleValue());
+        }
     }
 
     public void RangeChange(Number lowValue, Number hiValue) {
@@ -562,6 +585,7 @@ public class Arpeggiatorum implements Receiver {
     public void EnrichmentChange(Number value) {
         float tonalEnrichmentAmount = value.floatValue() / 100.0f;
         this.arpeggiator.setTonalEnrichmentAmount(tonalEnrichmentAmount);
+
     }
 
     public void ArticulationChange(Number value) {
