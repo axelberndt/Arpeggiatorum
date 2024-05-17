@@ -16,7 +16,7 @@ public class ArpeggiatorumGUI extends Application {
     public static LogGUIController controllerHandleLog;
 
     private static FXMLLoader fxmlLoader;
-    private static Scene scene;
+    private static Scene sceneGUI;
     private static volatile ArpeggiatorumGUI instance;
 
     //Singleton pattern
@@ -53,13 +53,13 @@ public class ArpeggiatorumGUI extends Application {
     public void start(Stage primaryStage) throws Exception {
         fxmlLoader = new FXMLLoader(ArpeggiatorumGUI.class.getResource("ArpeggiatorumGUI.fxml"));
         // fxmlLoader = new FXMLLoader(ArpeggiatorumGUI.class.getClassLoader().getResource("arpeggiatorum/gui/ArpeggiatorumGUI.fxml"));
-        scene = new Scene(fxmlLoader.load());
+        sceneGUI = new Scene(fxmlLoader.load());
         controllerHandle = fxmlLoader.getController();
 
 
         //GUI Definition
         primaryStage.setTitle("ArpeggiatorumGUI v" + Arpeggiator.version);
-        primaryStage.setScene(scene);
+        primaryStage.setScene(sceneGUI);
         primaryStage.show();
         //IntelliJ fails to debug fullscreen apps (crashes when switching to IDE)
         //primaryStage.setFullScreen(true);

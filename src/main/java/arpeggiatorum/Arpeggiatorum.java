@@ -63,6 +63,13 @@ public class Arpeggiatorum implements Receiver {
     private final Arpeggiator arpeggiator;
     private final ArrayList<Mic2MIDI> mic2Midi;
 
+
+    public static Scene sceneLog;
+    public static Stage stageLog;
+
+    public static Scene scenePerformance;
+    public static Stage stagePerformance;
+
     public Arpeggiatorum() {
         super();
         synchronized (Arpeggiatorum.class) {
@@ -254,11 +261,16 @@ public class Arpeggiatorum implements Receiver {
     }
 
     public static void LoadLog(ArpeggiatorumGUI arpeggiatorumGUI) {
-        try {
+            try {
+                if (sceneLog!=null){
+                    stageLog.setAlwaysOnTop(true);
+                    stageLog.setAlwaysOnTop(false);
+                    return;
+                }
             FXMLLoader fxmlLoader;
             fxmlLoader = new FXMLLoader(ArpeggiatorumGUI.class.getResource("LogGUI.fxml"));
-            Scene sceneLog = new Scene(fxmlLoader.load());
-            Stage stageLog = new Stage();
+            sceneLog = new Scene(fxmlLoader.load());
+            stageLog = new Stage();
             ArpeggiatorumGUI.controllerHandleLog = fxmlLoader.getController();
 
             stageLog.setTitle("Log Messages");
@@ -296,12 +308,17 @@ public class Arpeggiatorum implements Receiver {
 
     public static void LoadPerformance(ArpeggiatorumGUI arpeggiatorumGUI) {
         try {
+            if (scenePerformance!=null){
+                stagePerformance.setAlwaysOnTop(true);
+                stagePerformance.setAlwaysOnTop(false);
+                return;
+            }
             FXMLLoader fxmlLoader;
             fxmlLoader = new FXMLLoader(ArpeggiatorumGUI.class.getResource("PerformanceGUI.fxml"));
 
             //fxmlLoader.setLocation(ArpeggiatorumGUI.class.getClassLoader().getResource("arpeggiatorum/gui/LogGUI.fxml"));
-            Scene scenePerformance = new Scene(fxmlLoader.load());
-            Stage stagePerformance = new Stage();
+            scenePerformance = new Scene(fxmlLoader.load());
+            stagePerformance = new Stage();
             ArpeggiatorumGUI.controllerHandlePerformance = fxmlLoader.getController();
 
             stagePerformance.setTitle("Performance Mode");

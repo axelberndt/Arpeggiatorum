@@ -507,7 +507,7 @@ public class ArpeggiatorumGUIController implements Initializable {
             public void changed(ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) {
                 if (newTab == tabPerformance) {
                     Arpeggiatorum.LoadPerformance(ArpeggiatorumGUI.getInstance());
-
+                    tabPaneControls.getSelectionModel().selectFirst();
                 }
             }
         });
