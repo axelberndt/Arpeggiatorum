@@ -704,8 +704,12 @@ public class Regulator extends Region implements RegulatorControl {
             mainCircle.setCache(true);
             mainCircle.setCacheHint(CacheHint.SPEED);
 
-            text.setFont(Fonts.robotoMedium(size * 0.216));
-            text.relocate((size - text.getLayoutBounds().getWidth()) * 0.5, size * 0.33);
+           // text.setFont(Fonts.robotoMedium(size * 0.216));
+//            text.relocate((size - text.getLayoutBounds().getWidth()) * 0.5, size * 0.33);
+            text.setStyle("    -fx-font-size: 19pt;\n" +
+                    "    -fx-font-family: \"Roboto Light\";");
+            text.relocate(size - (text.getLayoutBounds().getWidth() * 0.5), (size - text.getLayoutBounds().getHeight()) * 0.5);
+
 
             indicatorGlow.setRadius(size * 0.02);
             indicatorInnerShadow.setRadius(size * 0.008);
@@ -730,11 +734,11 @@ public class Regulator extends Region implements RegulatorControl {
     }
 
     private void redraw() {
-        pane.setBackground(new Background(new BackgroundFill(color.get().darker(), new CornerRadii(1024), Insets.EMPTY)));
-        mainCircle.setFill(color.get().darker());
-       // ring.setFill(color.get().darker());
-        indicator.setFill(isSelected() ? indicatorColor.get() : color.get());
-        indicator.setStroke(isSelected() ? indicatorColor.get() : color.get());
+        pane.setBackground(new Background(new BackgroundFill(color.get(), new CornerRadii(1024), Insets.EMPTY)));
+        mainCircle.setFill(color.get());
+//        ring.setFill(color.get().darker());
+        indicator.setFill(isSelected() ? indicatorColor.get() : indicatorColor.get());
+        indicator.setStroke(isSelected() ? indicatorColor.get() : indicatorColor.get());
         symbol.setBackground(new Background(new BackgroundFill(symbolColor.get(), CornerRadii.EMPTY, Insets.EMPTY)));
         icon.setFill(iconColor.get());
         text.setFill(textColor.get());

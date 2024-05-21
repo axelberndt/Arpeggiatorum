@@ -2,7 +2,6 @@ package arpeggiatorum;
 
 import arpeggiatorum.gui.ArpeggiatorumGUI;
 import arpeggiatorum.gui.LogGUIController;
-import arpeggiatorum.gui.cornerRadialMenu.RadialMenuItem;
 import arpeggiatorum.microphoneControl.*;
 import arpeggiatorum.supplementary.EventMaker;
 import arpeggiatorum.supplementary.Tools;
@@ -262,11 +261,11 @@ public class Arpeggiatorum implements Receiver {
 
     public static void LoadLog(ArpeggiatorumGUI arpeggiatorumGUI) {
             try {
-                if (sceneLog!=null){
-                    stageLog.setAlwaysOnTop(true);
-                    stageLog.setAlwaysOnTop(false);
-                    return;
-                }
+//                if (sceneLog!=null){
+//                    stageLog.setAlwaysOnTop(true);
+//                    stageLog.setAlwaysOnTop(false);
+//                    return;
+//                }
             FXMLLoader fxmlLoader;
             fxmlLoader = new FXMLLoader(ArpeggiatorumGUI.class.getResource("LogGUI.fxml"));
             sceneLog = new Scene(fxmlLoader.load());
@@ -308,16 +307,18 @@ public class Arpeggiatorum implements Receiver {
 
     public static void LoadPerformance(ArpeggiatorumGUI arpeggiatorumGUI) {
         try {
-            if (scenePerformance!=null){
-                stagePerformance.setAlwaysOnTop(true);
-                stagePerformance.setAlwaysOnTop(false);
-                return;
-            }
+//            if (scenePerformance!=null){
+//                stagePerformance.setAlwaysOnTop(true);
+//                stagePerformance.setAlwaysOnTop(false);
+//                return;
+//            }
             FXMLLoader fxmlLoader;
             fxmlLoader = new FXMLLoader(ArpeggiatorumGUI.class.getResource("PerformanceGUI.fxml"));
 
             //fxmlLoader.setLocation(ArpeggiatorumGUI.class.getClassLoader().getResource("arpeggiatorum/gui/LogGUI.fxml"));
             scenePerformance = new Scene(fxmlLoader.load());
+            scenePerformance.getStylesheets().add(ArpeggiatorumGUI.class.getResource("application.css").toExternalForm());
+
             stagePerformance = new Stage();
             ArpeggiatorumGUI.controllerHandlePerformance = fxmlLoader.getController();
 
@@ -325,14 +326,14 @@ public class Arpeggiatorum implements Receiver {
             stagePerformance.setScene(scenePerformance);
             stagePerformance.show();
             stagePerformance.setMaximized(true);
-            stagePerformance.setOnCloseRequest((event) -> closePerformance(stagePerformance));
+            stagePerformance.setOnCloseRequest((event) -> ClosePerformance(stagePerformance));
 
             stagePerformance.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
                 switch (event.getCode()) {
                     case KeyCode.ESCAPE:
                     case KeyCode.Q: {
                         // Close current window
-                        closePerformance(stagePerformance);
+                        ClosePerformance(stagePerformance);
                         break;
                     }
                     case KeyCode.L: {
@@ -341,7 +342,7 @@ public class Arpeggiatorum implements Receiver {
                     }
                     case KeyCode.P: {
                         // Close current window
-                        closePerformance(stagePerformance);
+                         ClosePerformance(stagePerformance);
                         //and reopen
                         Arpeggiatorum.LoadPerformance(ArpeggiatorumGUI.getInstance());
                         break;
@@ -357,7 +358,7 @@ public class Arpeggiatorum implements Receiver {
         }
     }
 
-    private static void closePerformance(Stage stagePerformance) {
+    public static void ClosePerformance(Stage stagePerformance) {
         ArpeggiatorumGUI.controllerHandlePerformance.toggleArpeggio.setSelected(true);
         ArpeggiatorumGUI.controllerHandlePerformance.toggleBass.setSelected(true);
         ArpeggiatorumGUI.controllerHandlePerformance.toggleSustained.setSelected(true);

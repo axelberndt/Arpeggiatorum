@@ -86,12 +86,12 @@ public class PerformanceGUIController implements Initializable {
     double CORNER_INITIAL_ANGLE = 240.0;
     double CORNER_STROKE_WIDTH = 0.5;
     //Colors
-    Color bgLg1Color = Color.DARKSEAGREEN.deriveColor(1, 1, 1, 0.9);
-    Color bgLg2Color = Color.DARKSEAGREEN.deriveColor(1, 1, 1, 0.9);
-    Color bgHg1Color = Color.DARKKHAKI.deriveColor(1, 1, 1, 0.6);
-    Color bgHg2Color = Color.DARKKHAKI.deriveColor(1, 1, 1, 0.6);
-    Color bgMoLg1Color = Color.CHARTREUSE.deriveColor(1, 1, 1, 0.6);
-    Color bgMoLg2Color = Color.CHARTREUSE.deriveColor(1, 1, 1, 0.6);
+    Color bgLg1Color = Color.DARKKHAKI.deriveColor(1, 1, 1, 1);
+    Color bgLg2Color = Color.DARKKHAKI.deriveColor(1, 1, 1, 1);
+    Color bgHg1Color = Color.DARKKHAKI.deriveColor(1, 1, 1, 1);
+    Color bgHg2Color = Color.DARKKHAKI.deriveColor(1, 1, 1, 1);
+    Color bgMoLg1Color = Color.LEMONCHIFFON.deriveColor(1, 1, 1, 1);
+    Color bgMoLg2Color = Color.LEMONCHIFFON.deriveColor(1, 1, 1, 1);
     Color strokeColor = Color.BLACK;
     Color strokeMouseOnColor = Color.BLACK;
     Color outlineColor = Color.BLACK;
@@ -111,6 +111,7 @@ public class PerformanceGUIController implements Initializable {
     private URL location;
 
     int buttonSizeLarge = 200;
+    int buttonSizeML;
     int buttonSizeMedium;
     int buttonSizeSmall;
     int button16;
@@ -147,28 +148,29 @@ public class PerformanceGUIController implements Initializable {
         buttonSizePanic = pixelWidth / 9;
         toggleSizeLarge = 360;
         toggleSizeSmall = 180;
+        buttonSizeML = (int) (buttonSizeLarge * 0.75);
         buttonSizeMedium = (int) (buttonSizeLarge * 0.5);
         buttonSizeSmall = (int) (buttonSizeMedium * 0.75);
         button16 = pixelWidth / 16;
 
-        buttonPanicStyle = "-fx-text-fill: WHITE;-fx-font-size: 28;-fx-pref-width: " + buttonSizePanic + ";-fx-pref-height: " + buttonSizePanic + ";";
-        buttonTempoStyle = "-fx-text-fill: BLACK;-fx-font-size: 14;-fx-pref-width: " + buttonSizeMedium + ";-fx-pref-height: " + buttonSizeMedium + ";";
-        buttonEnrichmentStyleUnchecked = "-fx-text-fill: WHITE;-fx-font-size: 24;-fx-pref-width: " + button16 + ";-fx-pref-height: " + button16 + ";-fx-background-color: Gainsboro;";
-        buttonEnrichmentStyleChecked = "-fx-text-fill: WHITE;-fx-font-size: 24;-fx-pref-width: " + button16 + ";-fx-pref-height: " + button16 + ";-fx-background-color: DARKSEAGREEN;";
-        labelActionStyle = "-fx-font: 28 px; -fx-text-fill: WHITE; -fx-alignment: CENTER; -fx-wrap-text: TRUE;";
+        buttonPanicStyle = "-fx-text-fill: WHITE; -fx-background-color: dimgrey;-fx-background-radius: 20%; -fx-pref-width: " + buttonSizeML + ";-fx-pref-height: " + buttonSizeML + ";";
+        buttonTempoStyle = "-fx-text-fill: BLACK;-fx-pref-width: " + buttonSizeMedium + ";-fx-pref-height: " + buttonSizeMedium + ";";
+        buttonEnrichmentStyleUnchecked = "-fx-text-fill: WHITE; -fx-background-radius: 20%; -fx-pref-width: " + button16 + ";-fx-pref-height: " + button16 + ";-fx-background-color: dimgrey;";
+        buttonEnrichmentStyleChecked = "-fx-text-fill: BLACK; -fx-background-radius: 20%; -fx-pref-width: " + button16 + ";-fx-pref-height: " + button16 + ";-fx-background-color: lemonchiffon;";
+        labelActionStyle = "-fx-text-fill: BLACK; -fx-alignment: CENTER; -fx-wrap-text: TRUE;";
 
 
-        buttonPanic = new Button("PANIC");
+        buttonPanic = new Button("Panic");
         buttonPanic.setStyle(buttonPanicStyle);
-        buttonPanic.setTranslateX(pixelWidth - (buttonSizePanic));
+        buttonPanic.setTranslateX(pixelWidth - (buttonSizeML));
         buttonPanic.setTranslateY(0);
         buttonPanic.setOnAction(this::buttonPanicHandle);
         buttonPanic.addEventHandler(TouchEvent.TOUCH_PRESSED, touchEvent -> buttonPanic.fire());
 
-        buttonConfirmPanic = new Button("Confirm Panic");
-        buttonConfirmPanic.setStyle(buttonPanicStyle + "-fx-wrap-text: TRUE;-fx-text-alignment: CENTER;");
+        buttonConfirmPanic = new Button("Trigger");
+        buttonConfirmPanic.setStyle(buttonPanicStyle + "-fx-background-color: orangered; -fx-wrap-text: TRUE;-fx-text-alignment: CENTER;");
         buttonConfirmPanic.setTranslateX(buttonPanic.getTranslateX());
-        buttonConfirmPanic.setTranslateY(buttonPanic.getTranslateY() + buttonSizeLarge);
+        buttonConfirmPanic.setTranslateY(buttonPanic.getTranslateY() + buttonSizeML);
         buttonConfirmPanic.setVisible(false);
         buttonConfirmPanic.setOnAction(this::buttonConfirmPanicHandle);
         buttonConfirmPanic.addEventHandler(TouchEvent.TOUCH_PRESSED, touchEvent -> buttonConfirmPanic.fire());
@@ -214,9 +216,9 @@ public class PerformanceGUIController implements Initializable {
                 .range(100)
                 .sliderValue(ArpeggiatorumGUI.controllerHandle.sliderArticulation.getValue())
                 .formatString("%.0f")
-                .barBackgroundColor(Color.GAINSBORO)
-                .barColor(Color.DARKGREEN)
-                .thumbColor(Color.CHARTREUSE)
+                .barBackgroundColor(Color.DIMGREY)
+                .barColor(Color.DODGERBLUE)
+                .thumbColor(Color.DEEPSKYBLUE)
                 .valueTextColor(Color.WHITE)
                 .nameTextColor(Color.WHITE)
                 .valueVisible(false)
@@ -301,14 +303,11 @@ public class PerformanceGUIController implements Initializable {
         labelBass.setTranslateY(0);
 
 
-
-
-
-
-        radialMenuEnrichment = createCenterRadialMenu("   Enrichment", ArpeggiatorumGUI.controllerHandle.comboEnrichment.getItems().stream().toList(), enrichmentHandler, bgLg1Color, bgLg2Color, bgMoLg1Color, bgMoLg2Color);
+        radialMenuEnrichment = createCenterRadialMenu("Tonal\r\nEnrichment", ArpeggiatorumGUI.controllerHandle.comboEnrichment.getItems().stream().toList(), enrichmentHandler, bgLg1Color, bgLg2Color, bgMoLg1Color, bgMoLg2Color);
         radialMenuEnrichment.setTranslateX(pixelWidth * 0.2);
         radialMenuEnrichment.setTranslateY(pixelHeight * 0.5 - visualVerticalBuffer);
-        radialMenuEnrichment.hideRadialMenu();
+//        radialMenuEnrichment.hideRadialMenu();
+        radialMenuEnrichment.showRadialMenu();
         for (RadialMenuItem item : radialMenuEnrichment.getItems()) {
             if (item.getText().equals(ArpeggiatorumGUI.controllerHandle.comboEnrichment.getSelectionModel().getSelectedItem().toString())) {
                 item.setStyle("-fx-font-weight: BOLD;");
@@ -320,13 +319,15 @@ public class PerformanceGUIController implements Initializable {
         //actionPerformedLabelEnrichment.setStyle(labelActionStyle);
         //actionPerformedLabelEnrichment.setText(ArpeggiatorumGUI.controllerHandle.comboEnrichment.getSelectionModel().getSelectedItem().toString());
 
-        radialMenuPattern = createCenterRadialMenu("      Pattern", ArpeggiatorumGUI.controllerHandle.comboPattern.getItems().stream().toList(), patternHandler, bgHg1Color, bgHg2Color, bgMoLg1Color, bgMoLg2Color);
+        radialMenuPattern = createCenterRadialMenu("\r\n   Pattern", ArpeggiatorumGUI.controllerHandle.comboPattern.getItems().stream().toList(), patternHandler, bgHg1Color, bgHg2Color, bgMoLg1Color, bgMoLg2Color);
         radialMenuPattern.setTranslateX(pixelWidth * 0.8);
         radialMenuPattern.setTranslateY(pixelHeight * 0.5 - visualVerticalBuffer);
-        radialMenuPattern.hideRadialMenu();
+       // radialMenuPattern.hideRadialMenu();
+        radialMenuPattern.showRadialMenu();
         for (RadialMenuItem item : radialMenuPattern.getItems()) {
             if (item.getText().equals(ArpeggiatorumGUI.controllerHandle.comboPattern.getSelectionModel().getSelectedItem().toString())) {
                 item.setStyle("-fx-font-weight: BOLD;");
+
             }
         }
 
@@ -337,20 +338,21 @@ public class PerformanceGUIController implements Initializable {
 
 
         regulatorTempo = RegulatorBuilder.create()
-                .prefSize(buttonSizeLarge * 2.0, buttonSizeLarge * 2.0)
+                .prefSize(buttonSizeLarge * 2.2, buttonSizeLarge * 2.2)
                 .minValue(ArpeggiatorumGUI.controllerHandle.sliderTempo.getMin())
                 .maxValue(ArpeggiatorumGUI.controllerHandle.sliderTempo.getMax())
                 .targetValue(ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue())
                 .unit(" bpm")
-                .barColor(Color.CHARTREUSE)
+                .barColor(Color.DODGERBLUE)
                 .textColor(Color.WHITE)
                 //.icon(FontAwesome.MUSIC)
                 //.iconColor(Color.WHITE)
-                .color(Color.GAINSBORO)
+                .color(Color.DIMGREY)
+                .indicatorColor(Color.DEEPSKYBLUE)
                 .onTargetSet(e -> ArpeggiatorumGUI.controllerHandle.sliderTempo.adjustValue(regulatorTempo.getTargetValue()))
                 .build();
         regulatorTempo.setTranslateX((pixelWidth * 0.5) - (regulatorTempo.getPrefWidth() * 0.5));
-        regulatorTempo.setTranslateY((pixelHeight * 0.5) - (regulatorTempo.getPrefHeight() * 0.5));
+        regulatorTempo.setTranslateY((pixelHeight * 0.5) - (regulatorTempo.getPrefHeight() * 0.5)-visualVerticalBuffer);
 
         buttonTap = new Button("Tap Tempo");
         buttonTap.setStyle(buttonTempoStyle);
@@ -361,15 +363,20 @@ public class PerformanceGUIController implements Initializable {
             regulatorTempo.setTargetValue(ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue());
         });
         anchorPane.getChildren().addAll(buttonEnrichmentArray);
-        anchorPane.getChildren().addAll(labelAudio, toggleAudio,
+        anchorPane.getChildren().addAll(toggleAudio,
                 sliderArticulation,
-                labelSustained, toggleSustained,
-                labelArpeggio, toggleArpeggio,
-                labelBass, toggleBass,
+                toggleSustained,
+                toggleArpeggio,
+                toggleBass,
                 radialMenuPattern, radialMenuEnrichment,
                 // actionPerformedLabelPattern, actionPerformedLabelEnrichment,
                 regulatorTempo,
                 buttonConfirmPanic, buttonPanic
+        );
+        anchorPane.getChildren().addAll(labelAudio,
+                labelSustained,
+                labelArpeggio,
+                labelBass
         );
     }
 
@@ -388,10 +395,10 @@ public class PerformanceGUIController implements Initializable {
                 new Stop(0, color3), new Stop(0.8, color4));
 
         Label centerLabel = new Label(menuName);
-        centerLabel.setStyle("-fx-text-fill: WHITE;-fx-font-size: 24; -fx-text-alignment: CENTER;");
+        centerLabel.setStyle("-fx-text-fill: WHITE; -fx-text-alignment: CENTER;");
         //Some magic
-        centerLabel.setTranslateX(-80);
-        centerLabel.setTranslateY(-20);
+        centerLabel.setTranslateX(-45);
+        centerLabel.setTranslateY(-35);
         RadialMenu radialMenu = new RadialMenu(INITIAL_ANGLE, ITEM_SIZE, MENU_SIZE, OFFSET,
                 background, backgroundMouseOn, strokeColor, strokeMouseOnColor,
                 false, RadialMenu.CenterVisibility.ALWAYS, centerLabel);
@@ -402,7 +409,7 @@ public class PerformanceGUIController implements Initializable {
         //Populate with items
         for (Object element : menuItems) {
             Label itemLabel = new Label(element.toString());
-            itemLabel.setStyle("-fx-text-fill: WHITE;-fx-font-size: 20;-fx-text-alignment: CENTER;");
+            itemLabel.setStyle("-fx-text-fill: BLACK;-fx-text-alignment: CENTER;");
             //Some magic
             itemLabel.setTranslateX(-50);
             itemLabel.setTranslateY(-15);
@@ -411,7 +418,7 @@ public class PerformanceGUIController implements Initializable {
         //Settings for RadialMenu:
         radialMenu.setMenuItemSize(360.0 / menuItems.size());
         radialMenu.setInnerRadius(buttonSizeSmall * 1.0);
-        radialMenu.setGraphicsFitWidth(0.0);
+        radialMenu.setGraphicsFitWidth(0);
         radialMenu.setRadius(buttonSizeLarge * 1.1);
         radialMenu.setOffset(1.0);
         radialMenu.setInitialAngle(0.0);
@@ -471,7 +478,7 @@ public class PerformanceGUIController implements Initializable {
         }
     }
 
-  public  final EventHandler<ActionEvent> patternHandler = new EventHandler<>() {
+    public final EventHandler<ActionEvent> patternHandler = new EventHandler<>() {
         @Override
         public synchronized void handle(final ActionEvent paramT) {
             for (RadialMenuItem item : radialMenuPattern.getItems()) {
@@ -485,7 +492,7 @@ public class PerformanceGUIController implements Initializable {
 
         }
     };
-  public  final EventHandler<ActionEvent> enrichmentHandler = new EventHandler<>() {
+    public final EventHandler<ActionEvent> enrichmentHandler = new EventHandler<>() {
         @Override
         public synchronized void handle(final ActionEvent paramT) {
             for (RadialMenuItem item : radialMenuEnrichment.getItems()) {

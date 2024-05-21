@@ -19,7 +19,7 @@
     -fx-background-color: Transparent;
 }
 .toggle-switch:selected .thumb {
-    -fx-background-color: Chartreuse;
+    -fx-background-color: Plum;
 }
 
 /*When Inactive*/
@@ -31,8 +31,10 @@
 
 .toggle-switch .thumb {
     -fx-background-radius: 50 0 0 50;
-    -fx-padding: 90 150;
-    -fx-blend-mode: LIGHTEN;
+    -fx-padding: 90 135;
+    -fx-blend-mode: ADD;
+    -fx-background-color: mediumorchid;
+
 }
 
 .label {

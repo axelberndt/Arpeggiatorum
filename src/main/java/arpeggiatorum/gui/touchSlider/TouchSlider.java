@@ -975,7 +975,8 @@ public class TouchSlider extends Region {
         if (Orientation.HORIZONTAL.equals(getOrientation())) {
             double barHeight = height * 0.75;
             double barY = (height - barHeight) * 0.5;
-            double arcSize = clamp(3, 10, barHeight * 0.1);
+            //double arcSize = clamp(3, 10, barHeight * 0.1);
+            double arcSize=20.0f;
             double thumbHeight = barHeight * 1.2;
 
             if (getFilledBarBackground()) {

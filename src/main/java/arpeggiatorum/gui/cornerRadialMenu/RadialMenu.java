@@ -79,7 +79,7 @@ public class RadialMenu extends Group implements EventHandler<Event>,
                     }
                 }
                 if (!item.isSelected()) {
-                    hideRadialMenu();
+                    //hideRadialMenu();
                 }
                 event.consume();
             }
@@ -452,7 +452,7 @@ public class RadialMenu extends Group implements EventHandler<Event>,
             if (!event.isControlDown()) {
                 final boolean visible = itemGroup.isVisible();
                 if (visible) {
-                    hideRadialMenu();
+                   // hideRadialMenu();
                 } else {
                     showRadialMenu();
                 }
@@ -694,9 +694,12 @@ public class RadialMenu extends Group implements EventHandler<Event>,
             centerGroup.visibleProperty().set(itemGroup.isVisible());
         }
 
+//        centerStrokeShape.setFill(backgroundVisible.get() ? (mouseOn
+//                && backgroundMouseOnFill.get() != null ? backgroundMouseOnFill
+//                .get() : backgroundFill.get())
+//                : Color.TRANSPARENT);
         centerStrokeShape.setFill(backgroundVisible.get() ? (mouseOn
-                && backgroundMouseOnFill.get() != null ? backgroundMouseOnFill
-                .get() : backgroundFill.get())
+                && backgroundMouseOnFill.get() != null ? Color.DIMGREY : Color.DIMGREY)
                 : Color.TRANSPARENT);
         centerStrokeShape.setStroke(strokeVisible.get() ? (mouseOn
                 && strokeMouseOnFill.get() != null ? strokeMouseOnFill
