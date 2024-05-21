@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 
@@ -55,7 +56,6 @@ public class ArpeggiatorumGUI extends Application {
         // fxmlLoader = new FXMLLoader(ArpeggiatorumGUI.class.getClassLoader().getResource("arpeggiatorum/gui/ArpeggiatorumGUI.fxml"));
         sceneGUI = new Scene(fxmlLoader.load());
         controllerHandle = fxmlLoader.getController();
-
 
         //GUI Definition
         primaryStage.setTitle("ArpeggiatorumGUI v" + Arpeggiator.version);

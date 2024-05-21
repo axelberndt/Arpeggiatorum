@@ -325,7 +325,8 @@ public class Arpeggiatorum implements Receiver {
             stagePerformance.setTitle("Performance Mode");
             stagePerformance.setScene(scenePerformance);
             stagePerformance.show();
-            stagePerformance.setMaximized(true);
+            //stagePerformance.setMaximized(true);
+            stagePerformance.setFullScreen(true);
             stagePerformance.setOnCloseRequest((event) -> ClosePerformance(stagePerformance));
 
             stagePerformance.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
