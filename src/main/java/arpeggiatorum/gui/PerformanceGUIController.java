@@ -309,7 +309,7 @@ public class PerformanceGUIController implements Initializable {
 
 
         radialMenuEnrichment = createCenterRadialMenu("Tonal\r\nEnrichment", ArpeggiatorumGUI.controllerHandle.comboEnrichment.getItems().stream().toList(), enrichmentHandler, bgLg1Color, bgLg2Color, bgMoLg1Color, bgMoLg2Color);
-        radialMenuEnrichment.setTranslateX(pixelWidth * 0.175);
+        radialMenuEnrichment.setTranslateX(pixelWidth * 0.17);
         radialMenuEnrichment.setTranslateY(pixelHeight * 0.5 - visualVerticalBuffer);
 //        radialMenuEnrichment.hideRadialMenu();
         radialMenuEnrichment.showRadialMenu();
@@ -325,7 +325,7 @@ public class PerformanceGUIController implements Initializable {
         //actionPerformedLabelEnrichment.setText(ArpeggiatorumGUI.controllerHandle.comboEnrichment.getSelectionModel().getSelectedItem().toString());
 
         radialMenuPattern = createCenterRadialMenu("   Pattern", ArpeggiatorumGUI.controllerHandle.comboPattern.getItems().stream().toList(), patternHandler, bgHg1Color, bgHg2Color, bgMoLg1Color, bgMoLg2Color);
-        radialMenuPattern.setTranslateX(pixelWidth * 0.825);
+        radialMenuPattern.setTranslateX(pixelWidth * 0.83);
         radialMenuPattern.setTranslateY(pixelHeight * 0.5 - visualVerticalBuffer);
        // radialMenuPattern.hideRadialMenu();
         radialMenuPattern.showRadialMenu();
@@ -343,7 +343,7 @@ public class PerformanceGUIController implements Initializable {
 
 
         regulatorTempo = RegulatorBuilder.create()
-                .prefSize(buttonSizeLarge * 2.4, buttonSizeLarge * 2.4)
+                .prefSize(buttonSizeLarge * 2.6, buttonSizeLarge * 2.6)
                 .minValue(ArpeggiatorumGUI.controllerHandle.sliderTempo.getMin())
                 .maxValue(ArpeggiatorumGUI.controllerHandle.sliderTempo.getMax())
                 .targetValue(ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue())
@@ -424,7 +424,7 @@ public class PerformanceGUIController implements Initializable {
         radialMenu.setMenuItemSize(360.0 / menuItems.size());
         radialMenu.setInnerRadius(buttonSizeSmall * 1.0);
         radialMenu.setGraphicsFitWidth(0);
-        radialMenu.setRadius(buttonSizeLarge * 1.20);
+        radialMenu.setRadius(buttonSizeLarge * 1.30);
         radialMenu.setOffset(1.0);
         radialMenu.setInitialAngle(0.0);
         radialMenu.setStrokeWidth(1.5);
