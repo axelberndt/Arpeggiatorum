@@ -420,7 +420,7 @@ public class ArpeggiatorumGUIController implements Initializable {
                 item.setMouseOn(false);
                 item.setBackgroundColorProperty(PerformanceGUIController.bgHg1Color);
                 if (item.getText().equals(ArpeggiatorumGUI.controllerHandle.comboPattern.getSelectionModel().getSelectedItem().toString())) {
-                    item.setStyle("-fx-font-weight: BOLD;");
+//                    item.setStyle("-fx-font-weight: BOLD;");
                     item.setMouseOn(true);
                     item.setBackgroundColorProperty(PerformanceGUIController.bgMoLg1Color);
                 }
@@ -457,7 +457,7 @@ public class ArpeggiatorumGUIController implements Initializable {
                 item.setMouseOn(false);
                 item.setBackgroundColorProperty(PerformanceGUIController.bgHg1Color);
                 if (item.getText().equals(ArpeggiatorumGUI.controllerHandle.comboEnrichment.getSelectionModel().getSelectedItem().toString())) {
-                    item.setStyle("-fx-font-weight: BOLD;");
+//                    item.setStyle("-fx-font-weight: BOLD;");
                     item.setMouseOn(true);
                     item.setBackgroundColorProperty(PerformanceGUIController.bgMoLg1Color);
                 }

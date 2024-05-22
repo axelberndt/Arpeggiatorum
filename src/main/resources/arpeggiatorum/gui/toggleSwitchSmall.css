@@ -1,15 +1,19 @@
-*{
+* {
     -preferred-actual-dims: 200;
+    -thumb-padding-top: 100;
+    -thumb-padding-right: 135;
+    -thumb-padding-bottom: 100;
+    -thumb-padding-left: 135;
 }
 
 .toggle-switch {
-    -fx-pref-width          : -preferred-actual-dims;
-    -fx-pref-height         : -preferred-actual-dims;
-    -fx-min-width           : 80;
-    -fx-min-height          : 80;
-    -fx-max-width           : 1024;
-    -fx-max-height          : 1024;
-    -fx-background-color  : Transparent;
+    -fx-pref-width: -preferred-actual-dims;
+    -fx-pref-height: -preferred-actual-dims;
+    -fx-min-width: 80;
+    -fx-min-height: 80;
+    -fx-max-width: 1024;
+    -fx-max-height: 1024;
+    -fx-background-color: Transparent;
     -thumb-move-animation-time: 50;
     -toggle-display: left;
 }
@@ -18,6 +22,7 @@
 .toggle-switch:selected .thumb-area {
     -fx-background-color: transparent;
 }
+
 .toggle-switch:selected .thumb {
     -fx-background-color: plum;
 }
@@ -31,14 +36,14 @@
 
 .toggle-switch .thumb {
     -fx-background-radius: 50 0 0 50;
-    -fx-padding: 100 135;
+    /*-fx-padding: -thumb-padding-top -thumb-padding-top -thumb-padding-top -thumb-padding-top;*/
+    -fx-padding: 100 135 100 135;
     /*-fx-blend-mode: ;*/
     -fx-background-color: mediumorchid;
-
 }
 
 .label {
-    -fx-font: 28 px;
+    -fx-font: 28px;
     -fx-text-fill: WHITE;
     -fx-alignment: CENTER;
     -fx-wrap-text: TRUE;

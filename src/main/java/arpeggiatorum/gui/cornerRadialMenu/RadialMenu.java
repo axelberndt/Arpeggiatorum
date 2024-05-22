@@ -448,17 +448,17 @@ public class RadialMenu extends Group implements EventHandler<Event>,
 //            touchEvent.consume();
 //        });
 
-//        centerGroup.setOnMouseClicked(event -> {
-//            if (!event.isControlDown()) {
-//                final boolean visible = itemGroup.isVisible();
-//                if (visible) {
-//                   // hideRadialMenu();
-//                } else {
-//                    showRadialMenu();
-//                }
-//            }
-//            event.consume();
-//        });
+        centerGroup.setOnMouseClicked(event -> {
+            if (!event.isControlDown()) {
+                final boolean visible = itemGroup.isVisible();
+                if (visible) {
+                    hideRadialMenu();
+                } else {
+                    showRadialMenu();
+                }
+            }
+            event.consume();
+        });
         getChildren().add(centerGroup);
         this.centerGraphic = new SimpleObjectProperty<>(centerGraphic);
         setCenterGraphic(centerGraphic);
