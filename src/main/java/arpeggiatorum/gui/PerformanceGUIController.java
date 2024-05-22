@@ -66,14 +66,14 @@ public class PerformanceGUIController implements Initializable {
     public EnrichmentButton[] buttonEnrichmentArray;
 
     //Colors
-    public Color bgLg1Color = Color.DARKKHAKI.deriveColor(1, 1, 1, 1);
-    public Color bgLg2Color = Color.DARKKHAKI.deriveColor(1, 1, 1, 1);
-    public Color bgHg1Color = Color.DARKKHAKI.deriveColor(1, 1, 1, 1);
-    public Color bgHg2Color = Color.DARKKHAKI.deriveColor(1, 1, 1, 1);
-    public Color bgMoLg1Color = Color.LEMONCHIFFON.deriveColor(1, 1, 1, 1);
-    public Color bgMoLg2Color = Color.LEMONCHIFFON.deriveColor(1, 1, 1, 1);
-    public Color strokeColor = Color.BLACK;
-    public Color strokeMouseOnColor = Color.BLACK;
+    public static Color bgLg1Color = Color.DARKKHAKI.deriveColor(1, 1, 1, 1);
+    public static Color bgLg2Color = Color.DARKKHAKI.deriveColor(1, 1, 1, 1);
+    public static Color bgHg1Color = Color.DARKKHAKI.deriveColor(1, 1, 1, 1);
+    public static Color bgHg2Color = Color.DARKKHAKI.deriveColor(1, 1, 1, 1);
+    public static Color bgMoLg1Color = Color.LEMONCHIFFON.deriveColor(1, 1, 1, 1);
+    public static Color bgMoLg2Color = Color.LEMONCHIFFON.deriveColor(1, 1, 1, 1);
+    public static Color strokeColor = Color.BLACK;
+    public static Color strokeMouseOnColor = Color.BLACK;
 
 
     @FXML // ResourceBundle that was given to the FXMLLoader

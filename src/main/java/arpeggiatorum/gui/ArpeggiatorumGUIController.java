@@ -417,8 +417,12 @@ public class ArpeggiatorumGUIController implements Initializable {
         if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
             for (RadialMenuItem item : ArpeggiatorumGUI.controllerHandlePerformance.radialMenuPattern.getItems()) {
                 item.setStyle("-fx-font-weight: normal;");
+                item.setMouseOn(false);
+                item.setBackgroundColorProperty(PerformanceGUIController.bgHg1Color);
                 if (item.getText().equals(ArpeggiatorumGUI.controllerHandle.comboPattern.getSelectionModel().getSelectedItem().toString())) {
                     item.setStyle("-fx-font-weight: BOLD;");
+                    item.setMouseOn(true);
+                    item.setBackgroundColorProperty(PerformanceGUIController.bgMoLg1Color);
                 }
             }
         }
@@ -450,8 +454,12 @@ public class ArpeggiatorumGUIController implements Initializable {
         if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
             for (RadialMenuItem item : ArpeggiatorumGUI.controllerHandlePerformance.radialMenuEnrichment.getItems()) {
                 item.setStyle("-fx-font-weight: normal;");
+                item.setMouseOn(false);
+                item.setBackgroundColorProperty(PerformanceGUIController.bgHg1Color);
                 if (item.getText().equals(ArpeggiatorumGUI.controllerHandle.comboEnrichment.getSelectionModel().getSelectedItem().toString())) {
                     item.setStyle("-fx-font-weight: BOLD;");
+                    item.setMouseOn(true);
+                    item.setBackgroundColorProperty(PerformanceGUIController.bgMoLg1Color);
                 }
             }
             for (int i = 0; i < intervals.length; i++) {
