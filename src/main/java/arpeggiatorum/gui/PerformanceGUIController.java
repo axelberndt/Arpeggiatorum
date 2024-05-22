@@ -153,7 +153,7 @@ public class PerformanceGUIController implements Initializable {
             buttonEnrichmentArray[i].setText(String.valueOf(ArpeggiatorumGUI.controllerHandle.comboEnrichment.getValue().getValue()[i]));
             buttonEnrichmentArray[i].setStyle(buttonEnrichmentStyleUnchecked);
             buttonEnrichmentArray[i].setTranslateX((i * button16));
-            buttonEnrichmentArray[i].setTranslateY(pixelHeight - (buttonSizeMedium + visualVerticalBuffer) - button16);
+            buttonEnrichmentArray[i].setTranslateY(pixelHeight - (buttonSizeML + visualVerticalBuffer) - button16);
             buttonEnrichmentArray[i].setOnAction(this::buttonEnrichmentHandle);
             buttonEnrichmentArray[i].addEventHandler(TouchEvent.ANY, this::touchEnrichmentHandle);
         }
@@ -181,7 +181,7 @@ public class PerformanceGUIController implements Initializable {
 
 
         sliderArticulation = TouchSliderBuilder.create()
-                .prefSize(pixelWidth, buttonSizeMedium)
+                .prefSize(pixelWidth, buttonSizeML)
                 .name("Articulation")
                 .orientation(Orientation.HORIZONTAL)
                 .minValue(50)
@@ -198,7 +198,7 @@ public class PerformanceGUIController implements Initializable {
                 .onTouchSliderEvent(e -> ArpeggiatorumGUI.controllerHandle.sliderArticulation.adjustValue(e.getValue()))
                 .build();
         sliderArticulation.setTranslateX(0);
-        sliderArticulation.setTranslateY(pixelHeight - buttonSizeMedium);
+        sliderArticulation.setTranslateY(pixelHeight - buttonSizeML);
 
 
         toggleSustained = new ToggleSwitch();
@@ -279,8 +279,8 @@ public class PerformanceGUIController implements Initializable {
 
 
         radialMenuEnrichment = createCenterRadialMenu("Tonal\r\nEnrichment", ArpeggiatorumGUI.controllerHandle.comboEnrichment.getItems().stream().toList(), enrichmentHandler, bgLg1Color, bgLg2Color, bgMoLg1Color, bgMoLg2Color);
-        radialMenuEnrichment.setTranslateX(pixelWidth * 0.17);
-        radialMenuEnrichment.setTranslateY(pixelHeight * 0.475 - visualVerticalBuffer);
+        radialMenuEnrichment.setTranslateX(pixelWidth * 0.165);
+        radialMenuEnrichment.setTranslateY(pixelHeight * 0.45 - visualVerticalBuffer);
         radialMenuEnrichment.showRadialMenu();
         for (RadialMenuItem item : radialMenuEnrichment.getItems()) {
             if (item.getText().equals(ArpeggiatorumGUI.controllerHandle.comboEnrichment.getSelectionModel().getSelectedItem().toString())) {
@@ -296,8 +296,8 @@ public class PerformanceGUIController implements Initializable {
         //actionPerformedLabelEnrichment.setText(ArpeggiatorumGUI.controllerHandle.comboEnrichment.getSelectionModel().getSelectedItem().toString());
 
         radialMenuPattern = createCenterRadialMenu("   Pattern", ArpeggiatorumGUI.controllerHandle.comboPattern.getItems().stream().toList(), patternHandler, bgHg1Color, bgHg2Color, bgMoLg1Color, bgMoLg2Color);
-        radialMenuPattern.setTranslateX(pixelWidth * 0.83);
-        radialMenuPattern.setTranslateY(pixelHeight * 0.475 - visualVerticalBuffer);
+        radialMenuPattern.setTranslateX(pixelWidth * 0.835);
+        radialMenuPattern.setTranslateY(pixelHeight * 0.45 - visualVerticalBuffer);
         radialMenuPattern.showRadialMenu();
         for (RadialMenuItem item : radialMenuPattern.getItems()) {
             if (item.getText().equals(ArpeggiatorumGUI.controllerHandle.comboPattern.getSelectionModel().getSelectedItem().toString())) {
@@ -314,7 +314,7 @@ public class PerformanceGUIController implements Initializable {
 
 
         regulatorTempo = RegulatorBuilder.create()
-                .prefSize(buttonSizeLarge * 2.6, buttonSizeLarge * 2.6)
+                .prefSize(pixelWidth*0.33, pixelWidth*0.33)
                 .minValue(ArpeggiatorumGUI.controllerHandle.sliderTempo.getMin())
                 .maxValue(ArpeggiatorumGUI.controllerHandle.sliderTempo.getMax())
                 .targetValue(ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue())
@@ -328,7 +328,7 @@ public class PerformanceGUIController implements Initializable {
                 .onTargetSet(e -> ArpeggiatorumGUI.controllerHandle.sliderTempo.adjustValue(regulatorTempo.getTargetValue()))
                 .build();
         regulatorTempo.setTranslateX((pixelWidth * 0.5) - (regulatorTempo.getPrefWidth() * 0.5));
-        regulatorTempo.setTranslateY((pixelHeight * 0.475) - (regulatorTempo.getPrefHeight() * 0.5) - visualVerticalBuffer);
+        regulatorTempo.setTranslateY((pixelHeight * 0.45) - (regulatorTempo.getPrefHeight() * 0.5) - visualVerticalBuffer);
 
         buttonTap = new Button("Tap Tempo");
         buttonTap.setStyle(buttonTempoStyle);
@@ -377,7 +377,7 @@ public class PerformanceGUIController implements Initializable {
         //Some magic
         centerLabel.setTranslateX(-50);
         centerLabel.setTranslateY(-30);
-        RadialMenu radialMenu = new RadialMenu(0, buttonSizeSmall * 1.0, buttonSizeLarge * 1.30, 1.0,
+        RadialMenu radialMenu = new RadialMenu(0, buttonSizeSmall * 1.0, (pixelWidth*0.33)*0.5, 1.0,
                 background, backgroundMouseOn, strokeColor, strokeMouseOnColor,
                 false, RadialMenu.CenterVisibility.ALWAYS, centerLabel);
         //radialMenu.setStrokeWidth(STROKE_WIDTH);
