@@ -1,7 +1,9 @@
 package arpeggiatorum;
 
 import arpeggiatorum.gui.ArpeggiatorumGUI;
+import arpeggiatorum.gui.ArpeggiatorumGUIController;
 import arpeggiatorum.gui.LogGUIController;
+import arpeggiatorum.gui.PerformanceGUIController;
 import arpeggiatorum.microphoneControl.*;
 import arpeggiatorum.supplementary.EventMaker;
 import arpeggiatorum.supplementary.Tools;

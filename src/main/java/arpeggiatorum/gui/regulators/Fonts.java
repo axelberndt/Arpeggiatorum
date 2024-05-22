@@ -21,7 +21,7 @@ public class Fonts {
         try {
             robotoLightName = Font.loadFont(Fonts.class.getResourceAsStream("regulators/Roboto-Light.ttf"), 10).getName();
             robotoMediumName = Font.loadFont(Fonts.class.getResourceAsStream("regulators/Roboto-Medium.ttf"), 10).getName();
-            robotoCondensedName = Font.loadFont(ArpeggiatorumGUI.class.getResourceAsStream("RobotoCondensed-Regular.ttf"), 10).getName();
+            robotoCondensedName = Font.loadFont(Fonts.class.getResourceAsStream("regulators/RobotoCondensed-Regular.ttf"), 10).getName();
 
         } catch (Exception exception) {
             System.out.println(exception.getMessage());

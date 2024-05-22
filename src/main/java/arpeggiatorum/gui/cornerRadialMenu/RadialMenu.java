@@ -426,16 +426,16 @@ public class RadialMenu extends Group implements EventHandler<Event>,
 
         centerGroup = new Group();
         centerGroup.getChildren().add(centerStrokeShape);
-        centerGroup.setOnMouseEntered(event -> {
-            mouseOn = true;
-            mouseOnProperty.set(mouseOn);
-            redraw();
-        });
-        centerGroup.setOnMouseExited(event -> {
-            mouseOn = false;
-            mouseOnProperty.set(mouseOn);
-            redraw();
-        });
+//        centerGroup.setOnMouseEntered(event -> {
+//            mouseOn = true;
+//            mouseOnProperty.set(mouseOn);
+//            redraw();
+//        });
+//        centerGroup.setOnMouseExited(event -> {
+//            mouseOn = false;
+//            mouseOnProperty.set(mouseOn);
+//            redraw();
+//        });
 
         //Modify for touch support??
 //        centerGroup.setOnTouchPressed(touchEvent -> {
@@ -448,17 +448,17 @@ public class RadialMenu extends Group implements EventHandler<Event>,
 //            touchEvent.consume();
 //        });
 
-        centerGroup.setOnMouseClicked(event -> {
-            if (!event.isControlDown()) {
-                final boolean visible = itemGroup.isVisible();
-                if (visible) {
-                   // hideRadialMenu();
-                } else {
-                    showRadialMenu();
-                }
-            }
-            event.consume();
-        });
+//        centerGroup.setOnMouseClicked(event -> {
+//            if (!event.isControlDown()) {
+//                final boolean visible = itemGroup.isVisible();
+//                if (visible) {
+//                   // hideRadialMenu();
+//                } else {
+//                    showRadialMenu();
+//                }
+//            }
+//            event.consume();
+//        });
         getChildren().add(centerGroup);
         this.centerGraphic = new SimpleObjectProperty<>(centerGraphic);
         setCenterGraphic(centerGraphic);

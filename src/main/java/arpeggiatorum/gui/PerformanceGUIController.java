@@ -7,7 +7,6 @@ package arpeggiatorum.gui;
 import arpeggiatorum.Arpeggiatorum;
 import arpeggiatorum.gui.cornerRadialMenu.RadialMenu;
 import arpeggiatorum.gui.cornerRadialMenu.RadialMenuItem;
-import arpeggiatorum.gui.regulators.Fonts;
 import arpeggiatorum.gui.regulators.Regulator;
 import arpeggiatorum.gui.regulators.RegulatorBuilder;
 import arpeggiatorum.gui.touchSlider.TouchSlider;
@@ -18,8 +17,6 @@ import arpeggiatorum.supplementary.TonalEnrichmentChooserItem;
 
 
 import javafx.animation.*;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleLongProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
@@ -68,43 +65,16 @@ public class PerformanceGUIController implements Initializable {
     @FXML
     public EnrichmentButton[] buttonEnrichmentArray;
 
-    protected boolean show;
-    protected double lastOffsetValue;
-    protected double lastInitialAngleValue;
-    //Menu Properties
-    double ITEM_SIZE = 20.0;
-    double INNER_RADIUS = 70.0;
-    double ITEM_FIT_WIDTH = 70.0;
-    double MENU_SIZE = 250.0;
-    double OFFSET = 1.0;
-    double INITIAL_ANGLE = 0.0;
-    double STROKE_WIDTH = 1.5;
-    double CORNER_ITEM_SIZE = 38.0;
-    double CORNER_INNER_RADIUS = 30;
-    double CORNER_ITEM_FIT_WIDTH = 30.0;
-    double CORNER_MENU_SIZE = 80.0;
-    double CORNER_OFFSET = 4.0;
-    double CORNER_INITIAL_ANGLE = 240.0;
-    double CORNER_STROKE_WIDTH = 0.5;
     //Colors
-    Color bgLg1Color = Color.DARKKHAKI.deriveColor(1, 1, 1, 1);
-    Color bgLg2Color = Color.DARKKHAKI.deriveColor(1, 1, 1, 1);
-    Color bgHg1Color = Color.DARKKHAKI.deriveColor(1, 1, 1, 1);
-    Color bgHg2Color = Color.DARKKHAKI.deriveColor(1, 1, 1, 1);
-    Color bgMoLg1Color = Color.LEMONCHIFFON.deriveColor(1, 1, 1, 1);
-    Color bgMoLg2Color = Color.LEMONCHIFFON.deriveColor(1, 1, 1, 1);
-    Color strokeColor = Color.BLACK;
-    Color strokeMouseOnColor = Color.BLACK;
-    Color outlineColor = Color.BLACK;
-    Color outlineMouseOnColor = Color.BLACK;
-    //Observable Properties
-    private SimpleLongProperty timeDelayProp = new SimpleLongProperty(2000);
-    private SimpleBooleanProperty centeredMenu = new SimpleBooleanProperty(true);
-    //Transitions
-    TranslateTransition tt;
-    ParallelTransition pt;
-    FadeTransition textFadeTransition;
-    Timeline animation;
+    public Color bgLg1Color = Color.DARKKHAKI.deriveColor(1, 1, 1, 1);
+    public Color bgLg2Color = Color.DARKKHAKI.deriveColor(1, 1, 1, 1);
+    public Color bgHg1Color = Color.DARKKHAKI.deriveColor(1, 1, 1, 1);
+    public Color bgHg2Color = Color.DARKKHAKI.deriveColor(1, 1, 1, 1);
+    public Color bgMoLg1Color = Color.LEMONCHIFFON.deriveColor(1, 1, 1, 1);
+    public Color bgMoLg2Color = Color.LEMONCHIFFON.deriveColor(1, 1, 1, 1);
+    public Color strokeColor = Color.BLACK;
+    public Color strokeMouseOnColor = Color.BLACK;
+
 
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
@@ -140,7 +110,7 @@ public class PerformanceGUIController implements Initializable {
      */
     @Override
     public synchronized void initialize(URL url, ResourceBundle resourceBundle) {
-        //This gets us the usable size of the window
+        //This gets us the usable size of the window/screen depends on if full screen (getVisualBounds)
         Rectangle2D screenBounds = Screen.getPrimary().getBounds();
         pixelHeight = (int) screenBounds.getHeight();
         pixelWidth = (int) screenBounds.getWidth();
@@ -310,12 +280,13 @@ public class PerformanceGUIController implements Initializable {
 
         radialMenuEnrichment = createCenterRadialMenu("Tonal\r\nEnrichment", ArpeggiatorumGUI.controllerHandle.comboEnrichment.getItems().stream().toList(), enrichmentHandler, bgLg1Color, bgLg2Color, bgMoLg1Color, bgMoLg2Color);
         radialMenuEnrichment.setTranslateX(pixelWidth * 0.17);
-        radialMenuEnrichment.setTranslateY(pixelHeight * 0.5 - visualVerticalBuffer);
-//        radialMenuEnrichment.hideRadialMenu();
+        radialMenuEnrichment.setTranslateY(pixelHeight * 0.475 - visualVerticalBuffer);
         radialMenuEnrichment.showRadialMenu();
         for (RadialMenuItem item : radialMenuEnrichment.getItems()) {
             if (item.getText().equals(ArpeggiatorumGUI.controllerHandle.comboEnrichment.getSelectionModel().getSelectedItem().toString())) {
                 item.setStyle("-fx-font-weight: BOLD;");
+                item.setMouseOn(true);
+                item.setBackgroundColorProperty(bgMoLg1Color);
             }
         }
 
@@ -326,13 +297,13 @@ public class PerformanceGUIController implements Initializable {
 
         radialMenuPattern = createCenterRadialMenu("   Pattern", ArpeggiatorumGUI.controllerHandle.comboPattern.getItems().stream().toList(), patternHandler, bgHg1Color, bgHg2Color, bgMoLg1Color, bgMoLg2Color);
         radialMenuPattern.setTranslateX(pixelWidth * 0.83);
-        radialMenuPattern.setTranslateY(pixelHeight * 0.5 - visualVerticalBuffer);
-       // radialMenuPattern.hideRadialMenu();
+        radialMenuPattern.setTranslateY(pixelHeight * 0.475 - visualVerticalBuffer);
         radialMenuPattern.showRadialMenu();
         for (RadialMenuItem item : radialMenuPattern.getItems()) {
             if (item.getText().equals(ArpeggiatorumGUI.controllerHandle.comboPattern.getSelectionModel().getSelectedItem().toString())) {
                 item.setStyle("-fx-font-weight: BOLD;");
-
+                item.setMouseOn(true);
+                item.setBackgroundColorProperty(bgMoLg1Color);
             }
         }
 
@@ -357,7 +328,7 @@ public class PerformanceGUIController implements Initializable {
                 .onTargetSet(e -> ArpeggiatorumGUI.controllerHandle.sliderTempo.adjustValue(regulatorTempo.getTargetValue()))
                 .build();
         regulatorTempo.setTranslateX((pixelWidth * 0.5) - (regulatorTempo.getPrefWidth() * 0.5));
-        regulatorTempo.setTranslateY((pixelHeight * 0.5) - (regulatorTempo.getPrefHeight() * 0.5)-visualVerticalBuffer);
+        regulatorTempo.setTranslateY((pixelHeight * 0.475) - (regulatorTempo.getPrefHeight() * 0.5) - visualVerticalBuffer);
 
         buttonTap = new Button("Tap Tempo");
         buttonTap.setStyle(buttonTempoStyle);
@@ -383,6 +354,8 @@ public class PerformanceGUIController implements Initializable {
                 labelArpeggio,
                 labelBass
         );
+
+
     }
 
 //    private void handleAudio(TouchEvent touchEvent) {
@@ -404,13 +377,13 @@ public class PerformanceGUIController implements Initializable {
         //Some magic
         centerLabel.setTranslateX(-50);
         centerLabel.setTranslateY(-30);
-        RadialMenu radialMenu = new RadialMenu(INITIAL_ANGLE, ITEM_SIZE, MENU_SIZE, OFFSET,
+        RadialMenu radialMenu = new RadialMenu(0, buttonSizeSmall * 1.0, buttonSizeLarge * 1.30, 1.0,
                 background, backgroundMouseOn, strokeColor, strokeMouseOnColor,
                 false, RadialMenu.CenterVisibility.ALWAYS, centerLabel);
-        radialMenu.setStrokeWidth(STROKE_WIDTH);
-        radialMenu.setOutlineStrokeWidth(STROKE_WIDTH);
-        radialMenu.setOutlineStrokeFill(outlineColor);
-        radialMenu.setOutlineStrokeMouseOnFill(outlineMouseOnColor);
+        //radialMenu.setStrokeWidth(STROKE_WIDTH);
+        //radialMenu.setOutlineStrokeWidth(STROKE_WIDTH);
+        //radialMenu.setOutlineStrokeFill(outlineColor);
+        //radialMenu.setOutlineStrokeMouseOnFill(outlineMouseOnColor);
         //Populate with items
         for (Object element : menuItems) {
             Label itemLabel = new Label(element.toString());
@@ -418,17 +391,18 @@ public class PerformanceGUIController implements Initializable {
             //Some magic
 //            itemLabel.setTranslateX(-50);
 //            itemLabel.setTranslateY(-15);
-            radialMenu.addMenuItem(new RadialMenuItem(ITEM_SIZE, element.toString(), itemLabel, eventHandler));
+            radialMenu.addMenuItem(new RadialMenuItem(360.0 / menuItems.size(), element.toString(), itemLabel, eventHandler));
         }
         //Settings for RadialMenu:
         radialMenu.setMenuItemSize(360.0 / menuItems.size());
-        radialMenu.setInnerRadius(buttonSizeSmall * 1.0);
-        radialMenu.setGraphicsFitWidth(0);
-        radialMenu.setRadius(buttonSizeLarge * 1.30);
-        radialMenu.setOffset(1.0);
-        radialMenu.setInitialAngle(0.0);
-        radialMenu.setStrokeWidth(1.5);
+        //radialMenu.setInnerRadius(buttonSizeSmall * 1.0);
+        //radialMenu.setGraphicsFitWidth(0);
+        //radialMenu.setRadius(buttonSizeLarge * 1.30);
+        //radialMenu.setOffset(1.0);
+        //radialMenu.setInitialAngle(0.0);
+        // radialMenu.setStrokeWidth(1.5);
 
+        radialMenu.requestDraw();
         return radialMenu;
     }
 
@@ -488,9 +462,12 @@ public class PerformanceGUIController implements Initializable {
         public synchronized void handle(final ActionEvent paramT) {
             for (RadialMenuItem item : radialMenuPattern.getItems()) {
                 item.setStyle("-fx-font-weight: normal;");
+                item.setBackgroundColorProperty(bgHg1Color);
+
             }
             final RadialMenuItem item = (RadialMenuItem) paramT.getSource();
             item.setStyle("-fx-font-weight: bold;");
+            item.setBackgroundColorProperty(bgMoLg1Color);
 
             ArpeggiatorumGUI.controllerHandle.comboPattern.setValue(NotePool.Pattern.fromString(item.getText()));
             // actionPerformedLabelPattern.setText(ArpeggiatorumGUI.controllerHandle.comboPattern.getSelectionModel().getSelectedItem().toString());
@@ -502,9 +479,11 @@ public class PerformanceGUIController implements Initializable {
         public synchronized void handle(final ActionEvent paramT) {
             for (RadialMenuItem item : radialMenuEnrichment.getItems()) {
                 item.setStyle("-fx-font-weight: normal;");
+                item.setBackgroundColorProperty(bgHg1Color);
             }
             final RadialMenuItem item = (RadialMenuItem) paramT.getSource();
             item.setStyle("-fx-font-weight: bold");
+            item.setBackgroundColorProperty(bgMoLg1Color);
             for (TonalEnrichmentChooserItem element : ArpeggiatorumGUI.controllerHandle.comboEnrichment.getItems()) {
                 if (element.toString().equals(item.getText())) {
                     ArpeggiatorumGUI.controllerHandle.comboEnrichment.setValue(element);

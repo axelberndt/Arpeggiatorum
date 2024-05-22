@@ -706,8 +706,8 @@ public class Regulator extends Region implements RegulatorControl {
 
            // text.setFont(Fonts.robotoMedium(size * 0.216));
 //            text.relocate((size - text.getLayoutBounds().getWidth()) * 0.5, size * 0.33);
-            text.setStyle("    -fx-font-size: 19pt;\n" +
-                    "    -fx-font-family: \"Roboto Light\";");
+//            text.setStyle("    -fx-font-size: 19pt;\n" +
+//                    "    -fx-font-family: \"Roboto Condensed\";");
             text.relocate(size - (text.getLayoutBounds().getWidth() * 0.5), (size - text.getLayoutBounds().getHeight()) * 0.5);
 
 

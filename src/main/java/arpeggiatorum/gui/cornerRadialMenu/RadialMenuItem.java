@@ -144,18 +144,18 @@ public class RadialMenuItem extends Group implements ChangeListener<Object> {
 
         getChildren().addAll(path, outlinePath);
 
-        setOnMouseEntered(event -> {
-            mouseOn = true;
-            mouseOnProperty.set(mouseOn);
-            redraw();
-        });
-
-
-        setOnMouseExited(event -> {
-            mouseOn = false;
-            mouseOnProperty.set(mouseOn);
-            redraw();
-        });
+//        setOnMouseEntered(event -> {
+//            mouseOn = true;
+//            mouseOnProperty.set(mouseOn);
+//            redraw();
+//        });
+//
+//
+//        setOnMouseExited(event -> {
+//            mouseOn = false;
+//            mouseOnProperty.set(mouseOn);
+//            redraw();
+//        });
     }
 
     public RadialMenuItem(final double menuSize, final Node graphic) {
@@ -218,6 +218,12 @@ public class RadialMenuItem extends Group implements ChangeListener<Object> {
 
     ObjectProperty<Paint> backgroundColorProperty() {
         return backgroundColor;
+    }
+    public void setBackgroundColorProperty(Color value) {
+        path.setFill(value);
+    }
+    public void setMouseOn(Boolean value){
+        mouseOn=value;
     }
 
     public BooleanProperty clockwiseProperty() {
