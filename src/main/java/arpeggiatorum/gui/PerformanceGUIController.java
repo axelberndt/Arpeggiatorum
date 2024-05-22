@@ -34,6 +34,7 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.transform.Scale;
+import javafx.scene.transform.Translate;
 import javafx.stage.Screen;
 import javafx.util.Duration;
 
@@ -123,7 +124,7 @@ public class PerformanceGUIController implements Initializable {
 
 
 
-System.out.println(screenBounds.toString());
+//System.out.println(screenBounds.toString());
         buttonSizeLarge = pixelWidth / 8;
         buttonSizePanic = pixelWidth / 9;
         buttonSizeML = (int) (buttonSizeLarge * 0.75);
@@ -375,10 +376,16 @@ System.out.println(screenBounds.toString());
         );
         actualPixelHeight = screenBounds.getHeight();
         actualPixelWidth = screenBounds.getWidth();
-        Scale scalingSystem= new Scale(actualPixelWidth/pixelWidth,actualPixelHeight/pixelHeight, 0,0 );
+        double scalingX = actualPixelWidth / pixelWidth;
+        double scalingY = actualPixelHeight / pixelHeight;
+        double scaling=Math.min(scalingX,scalingY);
+        Scale scalingSystem= new Scale(scaling, scaling,0,0);
+        Translate translateSystem= new Translate(100,0);
+
 //        anchorPane.setScaleX(actualPixelWidth/pixelWidth);
 //        anchorPane.setScaleY(actualPixelHeight/pixelHeight);
-        anchorPane.getTransforms().addAll(scalingSystem);
+        //Todo fix translation
+        anchorPane.getTransforms().addAll(scalingSystem,translateSystem);
 //        anchorPane.setTranslateX(actualPixelWidth-pixelWidth);
 
 
