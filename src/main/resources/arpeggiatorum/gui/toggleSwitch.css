@@ -37,18 +37,18 @@
 .toggle-switch .thumb {
     -fx-background-radius: 50 0 0 50;
     /*-fx-padding: -thumb-padding-top -thumb-padding-right -thumb-padding-bottom -thumb-padding-left;*/
-    -fx-padding: 200 135 200 135;
+    -fx-padding: 184 135 184 135;
 
     /*-fx-blend-mode: ;*/
     -fx-background-color: darkkhaki;
 
 }
 
-.label {
-    -fx-font: 28px;
-    -fx-text-fill: WHITE;
-    -fx-alignment: CENTER;
-    -fx-wrap-text: TRUE;
-}
+/*.label {*/
+/*    -fx-font: 28px;*/
+/*    -fx-text-fill: WHITE;*/
+/*    -fx-alignment: CENTER;*/
+/*    -fx-wrap-text: TRUE;*/
+/*}*/
 
 /*-thumb-move-animation-time*/

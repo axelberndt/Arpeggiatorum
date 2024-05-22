@@ -33,6 +33,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
+import javafx.scene.transform.Scale;
 import javafx.stage.Screen;
 import javafx.util.Duration;
 
@@ -99,10 +100,16 @@ public class PerformanceGUIController implements Initializable {
 
     Label labelAudio, labelSustained, labelArpeggio, labelBass;
 
-    double pixelHeight;
-    double pixelWidth;
+    double actualPixelHeight;
+    double actualPixelWidth;
+    double pixelHeight = 1067;
+    double pixelWidth = 1600;
     double visualVerticalBuffer = 10;
-    double visualHorizontalBuffer = 0;
+    double visualHorizontalBuffer = actualPixelWidth *0.05;
+    double smallToggleWidth;
+    double largeToggleWidth;
+    double largeToggleFootprint;
+    double centralControlsShift;
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
     /*
@@ -113,15 +120,20 @@ public class PerformanceGUIController implements Initializable {
     public synchronized void initialize(URL url, ResourceBundle resourceBundle) {
         //This gets us the usable size of the window/screen depends on if full screen (getVisualBounds)
         Rectangle2D screenBounds = Screen.getPrimary().getBounds();
-        pixelHeight = screenBounds.getHeight();
-        pixelWidth = screenBounds.getWidth();
 
+
+
+System.out.println(screenBounds.toString());
         buttonSizeLarge = pixelWidth / 8;
         buttonSizePanic = pixelWidth / 9;
         buttonSizeML = (int) (buttonSizeLarge * 0.75);
         buttonSizeMedium = (int) (buttonSizeLarge * 0.5);
         buttonSizeSmall = (int) (buttonSizeMedium * 0.75);
         button16 = pixelWidth / 16;
+        smallToggleWidth= pixelWidth * 0.17;
+        largeToggleWidth = pixelWidth * 0.23;
+        largeToggleFootprint=pixelWidth*0.25;
+        centralControlsShift = pixelHeight * 0.47;
 
         buttonPanicStyle = "-fx-text-fill: WHITE; -fx-background-color: dimgrey;-fx-background-radius: 20%; -fx-pref-width: " + button16 + ";-fx-pref-height: " + button16 + ";";
         buttonTempoStyle = "-fx-text-fill: BLACK;-fx-pref-width: " + buttonSizeMedium + ";-fx-pref-height: " + buttonSizeMedium + ";";
@@ -166,18 +178,19 @@ public class PerformanceGUIController implements Initializable {
         toggleAudio.selectedProperty().addListener((observable, oldValue, newValue) -> Arpeggiatorum.getInstance().Activate(newValue));
         //Check if touchevents can be handled directly
         //toggleAudio.addEventHandler(TouchEvent.ANY,this::handleAudio);
-        toggleAudio.setTranslateX(pixelWidth - (button16 + (pixelWidth * 0.15)));
+        
+        toggleAudio.setTranslateX(largeToggleFootprint*3);
         toggleAudio.setTranslateY(-buttonSizeLarge * 0.5);
         toggleAudio.setRotate(-90);
         toggleAudio.getStylesheets().addAll(Objects.requireNonNull(ArpeggiatorumGUI.class.getResource("toggleSwitchSmall.css")).toExternalForm());
-        toggleAudio.setStyle(" -preferred-actual-dims: " + pixelWidth * 0.15 + ";");
+        toggleAudio.setStyle(" -preferred-actual-dims: " + smallToggleWidth + ";");
         //TODO find a solution for padding property
 //        toggleAudio.setStyle(" -thumb-padding-top: " + pixelWidth * 0.15*0.5 + ";");
 //        toggleAudio.setStyle(" -thumb-padding-bottom: " + pixelWidth * 0.15*0.5 + ";");
         labelAudio = new Label("Audio In");
         labelAudio.setStyle(labelActionStyle);
         labelAudio.setMouseTransparent(true);
-        labelAudio.setPrefWidth(pixelWidth * 0.15);
+        labelAudio.setPrefWidth(smallToggleWidth);
         labelAudio.setTranslateX(toggleAudio.getTranslateX());
         labelAudio.setTranslateY(visualVerticalBuffer);
 
@@ -221,13 +234,14 @@ public class PerformanceGUIController implements Initializable {
         toggleSustained.setTranslateY(-buttonSizeLarge * 0.5);
         toggleSustained.getStylesheets().addAll(Objects.requireNonNull(ArpeggiatorumGUI.class.getResource("toggleSwitch.css")).toExternalForm());
         toggleSustained.setRotate(-90);
-        toggleSustained.setStyle(" -preferred-actual-dims: " + pixelWidth * 0.26 + ";");
+
+        toggleSustained.setStyle(" -preferred-actual-dims: " + largeToggleWidth + ";");
 
 
         labelSustained = new Label("Sustained");
         labelSustained.setStyle(labelActionStyle);
         labelSustained.setMouseTransparent(true);
-        labelSustained.setPrefWidth(pixelWidth * 0.26);
+        labelSustained.setPrefWidth(largeToggleWidth);
         labelSustained.setTranslateX(toggleSustained.getTranslateX());
         labelSustained.setTranslateY(visualVerticalBuffer);
 
@@ -244,17 +258,17 @@ public class PerformanceGUIController implements Initializable {
             }
         });
 //        toggleArpeggio.setTranslateX(pixelWidth - ((buttonSizeLarge * 2) + (visualHorizontalBuffer * 1)));
-        toggleArpeggio.setTranslateX(pixelWidth * 0.26 + (visualHorizontalBuffer * 1));
+        toggleArpeggio.setTranslateX(largeToggleFootprint);// + (visualHorizontalBuffer * 1));
         toggleArpeggio.setTranslateY(-buttonSizeLarge * 0.5);
         toggleArpeggio.setRotate(-90);
         toggleArpeggio.getStylesheets().addAll(Objects.requireNonNull(ArpeggiatorumGUI.class.getResource("toggleSwitch.css")).toExternalForm());
-        toggleArpeggio.setStyle(" -preferred-actual-dims: " + pixelWidth * 0.26 + ";");
+        toggleArpeggio.setStyle(" -preferred-actual-dims: " + largeToggleWidth + ";");
 
         labelArpeggio = new Label("Arpeggio");
         labelArpeggio.setStyle(labelActionStyle);
         labelArpeggio.setMouseTransparent(true);
         labelArpeggio.setTranslateX(toggleArpeggio.getTranslateX());
-        labelArpeggio.setPrefWidth(pixelWidth * 0.26);
+        labelArpeggio.setPrefWidth(largeToggleWidth);
         labelArpeggio.setTranslateY(visualVerticalBuffer);
 
         toggleBass = new ToggleSwitch();
@@ -269,23 +283,23 @@ public class PerformanceGUIController implements Initializable {
                 ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().select(0);
             }
         });
-        toggleBass.setTranslateX((pixelWidth * 0.26 * 2) + (visualHorizontalBuffer * 2));
+        toggleBass.setTranslateX((largeToggleFootprint * 2));// + (visualHorizontalBuffer * 2));
         toggleBass.setTranslateY(-buttonSizeLarge * 0.5);
         toggleBass.setRotate(-90);
         toggleBass.getStylesheets().addAll(Objects.requireNonNull(ArpeggiatorumGUI.class.getResource("toggleSwitch.css")).toExternalForm());
-        toggleBass.setStyle(" -preferred-actual-dims: " + pixelWidth * 0.26 + ";");
+        toggleBass.setStyle(" -preferred-actual-dims: " + largeToggleWidth + ";");
 
         labelBass = new Label("Bass");
         labelBass.setStyle(labelActionStyle);
         labelBass.setMouseTransparent(true);
-        labelBass.setPrefWidth(pixelWidth * 0.26);
+        labelBass.setPrefWidth(largeToggleWidth);
         labelBass.setTranslateX(toggleBass.getTranslateX());
         labelBass.setTranslateY(visualVerticalBuffer);
 
 
         radialMenuEnrichment = createCenterRadialMenu("Tonal\r\nEnrichment", ArpeggiatorumGUI.controllerHandle.comboEnrichment.getItems().stream().toList(), enrichmentHandler, bgLg1Color, bgLg2Color, bgMoLg1Color, bgMoLg2Color);
         radialMenuEnrichment.setTranslateX(pixelWidth * 0.165);
-        radialMenuEnrichment.setTranslateY(pixelHeight * 0.45 - visualVerticalBuffer);
+        radialMenuEnrichment.setTranslateY(centralControlsShift - visualVerticalBuffer);
         radialMenuEnrichment.showRadialMenu();
         for (RadialMenuItem item : radialMenuEnrichment.getItems()) {
             if (item.getText().equals(ArpeggiatorumGUI.controllerHandle.comboEnrichment.getSelectionModel().getSelectedItem().toString())) {
@@ -302,7 +316,7 @@ public class PerformanceGUIController implements Initializable {
 
         radialMenuPattern = createCenterRadialMenu("   Pattern", ArpeggiatorumGUI.controllerHandle.comboPattern.getItems().stream().toList(), patternHandler, bgHg1Color, bgHg2Color, bgMoLg1Color, bgMoLg2Color);
         radialMenuPattern.setTranslateX(pixelWidth * 0.835);
-        radialMenuPattern.setTranslateY(pixelHeight * 0.45 - visualVerticalBuffer);
+        radialMenuPattern.setTranslateY(centralControlsShift - visualVerticalBuffer);
         radialMenuPattern.showRadialMenu();
         for (RadialMenuItem item : radialMenuPattern.getItems()) {
             if (item.getText().equals(ArpeggiatorumGUI.controllerHandle.comboPattern.getSelectionModel().getSelectedItem().toString())) {
@@ -333,7 +347,7 @@ public class PerformanceGUIController implements Initializable {
                 .onTargetSet(e -> ArpeggiatorumGUI.controllerHandle.sliderTempo.adjustValue(regulatorTempo.getTargetValue()))
                 .build();
         regulatorTempo.setTranslateX((pixelWidth * 0.5) - (regulatorTempo.getPrefWidth() * 0.5));
-        regulatorTempo.setTranslateY((pixelHeight * 0.45) - (regulatorTempo.getPrefHeight() * 0.5) - visualVerticalBuffer);
+        regulatorTempo.setTranslateY(centralControlsShift - (regulatorTempo.getPrefHeight() * 0.5) - visualVerticalBuffer);
 
         buttonTap = new Button("Tap Tempo");
         buttonTap.setStyle(buttonTempoStyle);
@@ -359,6 +373,13 @@ public class PerformanceGUIController implements Initializable {
                 labelArpeggio,
                 labelBass
         );
+        actualPixelHeight = screenBounds.getHeight();
+        actualPixelWidth = screenBounds.getWidth();
+        Scale scalingSystem= new Scale(actualPixelWidth/pixelWidth,actualPixelHeight/pixelHeight, 0,0 );
+//        anchorPane.setScaleX(actualPixelWidth/pixelWidth);
+//        anchorPane.setScaleY(actualPixelHeight/pixelHeight);
+        anchorPane.getTransforms().addAll(scalingSystem);
+//        anchorPane.setTranslateX(actualPixelWidth-pixelWidth);
 
 
     }
