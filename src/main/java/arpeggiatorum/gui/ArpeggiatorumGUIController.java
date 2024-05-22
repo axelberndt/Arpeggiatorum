@@ -52,6 +52,10 @@ public class ArpeggiatorumGUIController implements Initializable {
     @FXML
     public Text textThreshold;
     @FXML
+    public Text textSharpness;
+    @FXML
+    public Text textScale;
+    @FXML
     public Text textRange;
     @FXML
     public Text textTempo;
@@ -636,10 +640,16 @@ public class ArpeggiatorumGUIController implements Initializable {
             Arpeggiatorum.getInstance().ThresholdChange(newValue);
         });
 
-        sliderScale.valueProperty().addListener((observable, oldValue, newValue) -> Arpeggiatorum.getInstance().ScaleChange(newValue));
+        sliderScale.valueProperty().addListener((observable, oldValue, newValue) -> {
+            Arpeggiatorum.getInstance().ScaleChange(newValue);
+            textScale.setText(String.format("CQT Scaling Factor: %d", newValue.intValue()));
+        });
 
-        sliderSharpness.valueProperty().addListener((observable, oldValue, newValue) -> Arpeggiatorum.getInstance().SharpnessChange(newValue));
+        sliderSharpness.valueProperty().addListener((observable, oldValue, newValue) -> {
+            Arpeggiatorum.getInstance().SharpnessChange(newValue);
+            textSharpness.setText(String.format("CQT Sharpness: %.2f", newValue.floatValue()));
 
+        });
         sliderTempo.valueProperty().addListener((observable, oldValue, newValue) -> {
             textTempo.setText(String.format("Current Tempo: %d", newValue.intValue()));
             Arpeggiatorum.getInstance().TempoChange(newValue);
