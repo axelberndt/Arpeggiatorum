@@ -12,8 +12,6 @@ import com.jsyn.Synthesizer;
 import com.jsyn.devices.AudioDeviceFactory;
 import com.jsyn.devices.AudioDeviceManager;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -344,6 +342,10 @@ public class ArpeggiatorumGUIController implements Initializable {
     public void comboArpeggioChannelChanged(ActionEvent actionEvent) {
         if (comboArpeggioChannel.getValue() != null) {
             Arpeggiatorum.getInstance().getArpeggiator().setArpeggioChannel(comboArpeggioChannel.getValue());
+
+            if (comboArpeggioChannel.getValue() != -1) {
+                ArpeggiatorumGUI.sessionArpeggioChannel =comboArpeggioChannel.getValue();
+            }
         }
     }
 
@@ -351,12 +353,20 @@ public class ArpeggiatorumGUIController implements Initializable {
     public void comboHeldChannelChanged(ActionEvent actionEvent) {
         if (comboHeldChannel.getValue() != null)
             Arpeggiatorum.getInstance().getArpeggiator().setHeldNotesChannel(comboHeldChannel.getValue());
+
+        if (comboHeldChannel.getValue() != -1) {
+            ArpeggiatorumGUI.sessionSustainedChannel =comboHeldChannel.getValue();
+        }
     }
 
     @FXML
     public void comboBassChannelChanged(ActionEvent actionEvent) {
         if (comboBassChannel.getValue() != null)
             Arpeggiatorum.getInstance().getArpeggiator().setBassChannel(comboBassChannel.getValue());
+
+        if (comboBassChannel.getValue() != -1) {
+            ArpeggiatorumGUI.sessionBassChannel =comboBassChannel.getValue();
+        }
     }
 
     @FXML

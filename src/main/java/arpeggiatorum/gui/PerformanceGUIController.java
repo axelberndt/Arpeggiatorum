@@ -219,7 +219,7 @@ public class PerformanceGUIController implements Initializable {
         }
         toggleArpeggio.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
-                ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(arpeggioValue);
+                ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(ArpeggiatorumGUI.sessionArpeggioChannel+1);
             } else {
                 ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(0);
             }
@@ -244,7 +244,7 @@ public class PerformanceGUIController implements Initializable {
         }
         toggleSustained.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
-                ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getSelectionModel().select(heldValue);
+                ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getSelectionModel().select(ArpeggiatorumGUI.sessionSustainedChannel+1);
             } else {
                 ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getSelectionModel().select(0);
             }
@@ -270,7 +270,7 @@ public class PerformanceGUIController implements Initializable {
         }
         toggleBass.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
-                ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().select(bassValue);
+                ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().select(ArpeggiatorumGUI.sessionBassChannel+1);
             } else {
                 ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().select(0);
             }

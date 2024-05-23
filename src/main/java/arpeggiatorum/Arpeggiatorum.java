@@ -268,6 +268,7 @@ public class Arpeggiatorum implements Receiver {
             if (instanceLog >= 1) {
                 stageLog.setAlwaysOnTop(true);
                 stageLog.setAlwaysOnTop(false);
+                stageLog.requestFocus();
                 return;
             }
             instanceLog++;
@@ -320,6 +321,7 @@ public class Arpeggiatorum implements Receiver {
             if (instancePerformance >= 1) {
                 stagePerformance.setAlwaysOnTop(true);
                 stagePerformance.setAlwaysOnTop(false);
+                stagePerformance.requestFocus();
                 return;
             }
             instancePerformance++;
@@ -448,7 +450,7 @@ public class Arpeggiatorum implements Receiver {
                         Platform.runLater(() -> {
                             Integer choice = (sMsg.getData2() >= 64) ? Arpeggiator.ARPEGGIO_CHANNEL_PRESET : -1;
                             boolean bChoice = sMsg.getData2() >= 64;
-                            ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(choice);
+                            ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(ArpeggiatorumGUI.sessionArpeggioChannel+1);
                             if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
                                 ArpeggiatorumGUI.controllerHandlePerformance.toggleArpeggio.setSelected(bChoice);
                             }
@@ -458,7 +460,7 @@ public class Arpeggiatorum implements Receiver {
                         Platform.runLater(() -> {
                             Integer choice = (sMsg.getData2() >= 64) ? Arpeggiator.HELD_NOTES_CHANNEL_PRESET : -1;
                             boolean bChoice = sMsg.getData2() >= 64;
-                            ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getSelectionModel().select(choice);
+                            ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getSelectionModel().select(ArpeggiatorumGUI.sessionSustainedChannel+1);
                             if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
                                 ArpeggiatorumGUI.controllerHandlePerformance.toggleSustained.setSelected(bChoice);
                             }
@@ -468,7 +470,7 @@ public class Arpeggiatorum implements Receiver {
                         Platform.runLater(() -> {
                             Integer choice = (sMsg.getData2() >= 64) ? Arpeggiator.BASS_CHANNEL_PRESET : -1;
                             boolean bChoice = sMsg.getData2() >= 64;
-                            ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().select(choice);
+                            ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().select(ArpeggiatorumGUI.sessionBassChannel+1);
                             if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
                                 ArpeggiatorumGUI.controllerHandlePerformance.toggleBass.setSelected(bChoice);
                             }
