@@ -409,10 +409,12 @@ public class Regulator extends Region implements RegulatorControl {
         mainCircle.addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
             if (isDisabled()) return;
             touchRotate(e.getSceneX(), e.getSceneY());
+            fireEvent(TARGET_SET_EVENT);
         });
         mainCircle.addEventHandler(MouseEvent.MOUSE_DRAGGED, e -> {
             if (isDisabled()) return;
             touchRotate(e.getSceneX(), e.getSceneY());
+            fireEvent(TARGET_SET_EVENT);
         });
         mainCircle.addEventHandler(MouseEvent.MOUSE_RELEASED, e -> {
             if (isDisabled()) return;
@@ -421,10 +423,12 @@ public class Regulator extends Region implements RegulatorControl {
         pane.addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
             if (isDisabled()) return;
             touchRotate(e.getSceneX(), e.getSceneY());
+            fireEvent(TARGET_SET_EVENT);
         });
         pane.addEventHandler(MouseEvent.MOUSE_DRAGGED, e -> {
             if (isDisabled()) return;
             touchRotate(e.getSceneX(), e.getSceneY());
+            fireEvent(TARGET_SET_EVENT);
         });
         pane.addEventHandler(MouseEvent.MOUSE_RELEASED, e -> {
             if (isDisabled()) return;
@@ -750,6 +754,9 @@ public class Regulator extends Region implements RegulatorControl {
     // ******************** Event Handling ************************************
     public void setOnTargetSet(final EventHandler<RegulatorEvent> HANDLER) {
         addEventHandler(RegulatorEvent.TARGET_SET, HANDLER);
+    }
+    public void setOnAdjusting(final EventHandler<RegulatorEvent> HANDLER) {
+        addEventHandler(RegulatorEvent.ADJUSTING, HANDLER);
     }
 
     public void removeOnTargetSet(final EventHandler<RegulatorEvent> HANDLER) {
