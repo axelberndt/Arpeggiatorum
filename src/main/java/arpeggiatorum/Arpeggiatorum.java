@@ -1,9 +1,7 @@
 package arpeggiatorum;
 
 import arpeggiatorum.gui.ArpeggiatorumGUI;
-import arpeggiatorum.gui.ArpeggiatorumGUIController;
 import arpeggiatorum.gui.LogGUIController;
-import arpeggiatorum.gui.PerformanceGUIController;
 import arpeggiatorum.microphoneControl.*;
 import arpeggiatorum.supplementary.EventMaker;
 import arpeggiatorum.supplementary.Tools;
@@ -25,6 +23,7 @@ import java.io.OutputStream;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -320,7 +319,7 @@ public class Arpeggiatorum implements Receiver {
 
             //fxmlLoader.setLocation(ArpeggiatorumGUI.class.getClassLoader().getResource("arpeggiatorum/gui/LogGUI.fxml"));
             scenePerformance = new Scene(fxmlLoader.load());
-            scenePerformance.getStylesheets().add(ArpeggiatorumGUI.class.getResource("application.css").toExternalForm());
+            scenePerformance.getStylesheets().add(Objects.requireNonNull(ArpeggiatorumGUI.class.getResource("application.css")).toExternalForm());
 
             stagePerformance = new Stage();
             ArpeggiatorumGUI.controllerHandlePerformance = fxmlLoader.getController();
@@ -434,7 +433,7 @@ public class Arpeggiatorum implements Receiver {
                     case EventMaker.CC_Effect_Ctrl_2_14b: // trigger arpeggio channel
                         Platform.runLater(() -> {
                             Integer choice = (sMsg.getData2() >= 64) ? Arpeggiator.ARPEGGIO_CHANNEL_PRESET : -1;
-                            boolean bChoice=(sMsg.getData2() >= 64) ? true : false;
+                            boolean bChoice= sMsg.getData2() >= 64;
                             ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(choice);
                             if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
                                 ArpeggiatorumGUI.controllerHandlePerformance.toggleArpeggio.setSelected(bChoice);
@@ -444,7 +443,7 @@ public class Arpeggiatorum implements Receiver {
                     case EventMaker.CC_Undefined_Ctrl_3_14b: // trigger held notes channel
                         Platform.runLater(() -> {
                             Integer choice = (sMsg.getData2() >= 64) ? Arpeggiator.HELD_NOTES_CHANNEL_PRESET : -1;
-                            boolean bChoice=(sMsg.getData2() >= 64) ? true : false;
+                            boolean bChoice= sMsg.getData2() >= 64;
                             ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getSelectionModel().select(choice);
                             if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
                                 ArpeggiatorumGUI.controllerHandlePerformance.toggleSustained.setSelected(bChoice);
@@ -454,7 +453,7 @@ public class Arpeggiatorum implements Receiver {
                     case EventMaker.CC_Undefined_Ctrl_4_14b: // trigger bass channel
                         Platform.runLater(() -> {
                             Integer choice = (sMsg.getData2() >= 64) ? Arpeggiator.BASS_CHANNEL_PRESET : -1;
-                            boolean bChoice=(sMsg.getData2() >= 64) ? true : false;
+                            boolean bChoice= sMsg.getData2() >= 64;
                             ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().select(choice);
                             if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
                                 ArpeggiatorumGUI.controllerHandlePerformance.toggleBass.setSelected(bChoice);
@@ -463,7 +462,7 @@ public class Arpeggiatorum implements Receiver {
                         break;
                     case EventMaker.CC_Undefined_Ctrl_5_14b: // toggle Audio In
                         Platform.runLater(() -> {
-                            Boolean choice = (sMsg.getData2() >= 64) ? true : false;
+                            boolean choice = sMsg.getData2() >= 64;
                             Arpeggiatorum.getInstance().Activate(choice);
                             if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
                                 ArpeggiatorumGUI.controllerHandlePerformance.toggleAudio.setSelected(choice);
@@ -472,7 +471,7 @@ public class Arpeggiatorum implements Receiver {
                         break;
                     case EventMaker.CC_Undefined_Ctrl_6_14b: // toggle autotune
                         Platform.runLater(() -> {
-                            Boolean choice = (sMsg.getData2() >= 64) ? true : false;
+                            boolean choice = sMsg.getData2() >= 64;
                             Arpeggiatorum.getInstance().AutoTune(choice);
                         });
                         break;

@@ -15,7 +15,6 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.*;
@@ -30,6 +29,7 @@ import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Sequencer;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -376,8 +376,8 @@ public class ArpeggiatorumGUIController implements Initializable {
 
     @FXML
     public void comboAudioInChanged(ActionEvent actionEvent) {
-        // TODO: the following lines do not work!
         //Windows appear to be the problem, works on Mac
+        //Works with modified portaudio
         if (Arpeggiatorum.synth.isRunning()) {
             Arpeggiatorum.synth.stop();
         }
@@ -512,18 +512,15 @@ public class ArpeggiatorumGUIController implements Initializable {
         createAudioInChooser();
         createAudioChannelChooser();
 
-        tabPaneControls.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("tabpane.css").toExternalForm());
+        tabPaneControls.getStylesheets().addAll(Objects.requireNonNull(ArpeggiatorumGUI.class.getResource("tabpane.css")).toExternalForm());
 
-        tabPaneControls.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
-            @Override
-            public void changed(ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) {
-                if (newTab == tabPerformance) {
-                    if (Arpeggiatorum.stagePerformance != null) {
-                        Arpeggiatorum.ClosePerformance(Arpeggiatorum.stagePerformance);
-                    }
-                    Arpeggiatorum.LoadPerformance(ArpeggiatorumGUI.getInstance());
-                    tabPaneControls.getSelectionModel().selectFirst();
+        tabPaneControls.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
+            if (newTab == tabPerformance) {
+                if (Arpeggiatorum.stagePerformance != null) {
+                    Arpeggiatorum.ClosePerformance(Arpeggiatorum.stagePerformance);
                 }
+                Arpeggiatorum.LoadPerformance(ArpeggiatorumGUI.getInstance());
+                tabPaneControls.getSelectionModel().selectFirst();
             }
         });
 
@@ -614,7 +611,7 @@ public class ArpeggiatorumGUIController implements Initializable {
         lineChart.setVerticalGridLinesVisible(false);
         lineChart.getXAxis().setVisible(false);
         lineChart.getYAxis().setVisible(false);
-        lineChart.getStylesheets().addAll(ArpeggiatorumGUI.class.getResource("chart.css").toExternalForm());
+        lineChart.getStylesheets().addAll(Objects.requireNonNull(ArpeggiatorumGUI.class.getResource("chart.css")).toExternalForm());
 
         lineChart.getData().add(middleSeries);
 
