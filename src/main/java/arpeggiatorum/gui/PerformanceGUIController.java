@@ -289,7 +289,7 @@ public class PerformanceGUIController implements Initializable {
         labelBass.setTranslateY(visualVerticalBuffer);
 
 
-        radialMenuEnrichment = createCenterRadialMenu("Tonal\r\nEnrichment", ArpeggiatorumGUI.controllerHandle.comboEnrichment.getItems().stream().toList(), enrichmentHandler, bgLg1Color, bgLg2Color, bgMoLg1Color, bgMoLg2Color);
+        radialMenuEnrichment = createCenterRadialMenu("Tonal\r\nEnrichment", ArpeggiatorumGUI.controllerHandle.comboEnrichment.getItems().stream().toList(), enrichmentHandler, bgLg1Color, bgLg2Color, bgMoLg1Color, bgMoLg2Color,-50,-30);
         radialMenuEnrichment.setTranslateX(pixelWidth * 0.165);
         radialMenuEnrichment.setTranslateY(centralControlsShift - visualVerticalBuffer);
         radialMenuEnrichment.showRadialMenu();
@@ -300,7 +300,7 @@ public class PerformanceGUIController implements Initializable {
             }
         }
 
-        radialMenuPattern = createCenterRadialMenu("   Pattern", ArpeggiatorumGUI.controllerHandle.comboPattern.getItems().stream().toList(), patternHandler, bgHg1Color, bgHg2Color, bgMoLg1Color, bgMoLg2Color);
+        radialMenuPattern = createCenterRadialMenu("Pattern", ArpeggiatorumGUI.controllerHandle.comboPattern.getItems().stream().toList(), patternHandler, bgHg1Color, bgHg2Color, bgMoLg1Color, bgMoLg2Color, -31,-13);
         radialMenuPattern.setTranslateX(pixelWidth * 0.835);
         radialMenuPattern.setTranslateY(centralControlsShift - visualVerticalBuffer);
         radialMenuPattern.showRadialMenu();
@@ -370,7 +370,7 @@ public class PerformanceGUIController implements Initializable {
 
 
     public RadialMenu createCenterRadialMenu(String menuName, List
-            menuItems, EventHandler<ActionEvent> eventHandler, Color color1, Color color2, Color color3, Color color4) {
+            menuItems, EventHandler<ActionEvent> eventHandler, Color color1, Color color2, Color color3, Color color4, int offsetX, int offsetY) {
         LinearGradient background = new LinearGradient(0, 0, 1, 1, true, CycleMethod.NO_CYCLE,
                 new Stop(0, color1), new Stop(0.8, color2));
         LinearGradient backgroundMouseOn = new LinearGradient(0, 0, 1, 1, true, CycleMethod.NO_CYCLE,
@@ -379,8 +379,8 @@ public class PerformanceGUIController implements Initializable {
         Label centerLabel = new Label(menuName);
         centerLabel.setStyle("-fx-text-fill: WHITE; -fx-text-alignment: CENTER;");
         //Some magic
-        centerLabel.setTranslateX(-50);
-        centerLabel.setTranslateY(-30);
+        centerLabel.setTranslateX(offsetX);
+        centerLabel.setTranslateY(offsetY);
         RadialMenu radialMenu = new RadialMenu(0, buttonSizeSmall, (pixelWidth * 0.33) * 0.5, 1.0,
                 background, backgroundMouseOn, strokeColor, strokeMouseOnColor,
                 false, RadialMenu.CenterVisibility.ALWAYS, centerLabel);
