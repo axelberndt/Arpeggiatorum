@@ -1,33 +1,27 @@
 package arpeggiatorum.microphoneControl;
 
 
-import arpeggiatorum.gui.GUI;
+import arpeggiatorum.gui.LogGUIController;
+import arpeggiatorum.supplementary.Tools;
 import arpeggiatorum.supplementary.UnitVariableOutputPort;
 import be.tarsos.dsp.pitch.*;
-import be.tarsos.dsp.pitch.PitchDetectionResult;
-import be.tarsos.dsp.pitch.PitchDetector;
-import be.tarsos.dsp.pitch.PitchProcessor;
-
-import be.tarsos.dsp.pitch.Yin;
-import com.jsyn.unitgen.*;
-import com.jsyn.ports.*;
+import com.jsyn.ports.UnitInputPort;
+import com.jsyn.unitgen.UnitGenerator;
 
 import java.util.Arrays;
 
 public class TarsosPitchDetector extends UnitGenerator {
+    private final int offset = 0;
+    private final double[] buffer;
+    private final PitchDetector detector;
+    private final int bufferSize;
+    private final double[] pushPitch;
+    private final double[] pushConf;
     public UnitInputPort input;
     public UnitVariableOutputPort frequency;
     public UnitVariableOutputPort confidence;
-
     private boolean running;
-    private final int offset = 0;
-    private final double[] buffer;
     private int cursor;
-    private final PitchDetector detector;
-    private final int bufferSize;
-
-    private final double[] pushPitch;
-    private final double[] pushConf;
 
     public TarsosPitchDetector() {
         this(44100, 2048, PitchProcessor.PitchEstimationAlgorithm.FFT_PITCH);
@@ -39,11 +33,11 @@ public class TarsosPitchDetector extends UnitGenerator {
         this.addPort(this.confidence = new UnitVariableOutputPort("Confidence", 1));
         pushPitch = frequency.getData();
         pushConf = confidence.getData();
-        this.bufferSize=bufferSize;
+        this.bufferSize = bufferSize;
         buffer = new double[bufferSize];
 
         String message = String.format("Tarsos Pitch Detection: Minimum Frequency (%.2fHz) Delay (%.03fs) \r\n", (sampleRate / bufferSize) * 2, (bufferSize / sampleRate) / 2);
-        GUI.updateLogGUI(message);
+        LogGUIController.logBuffer.append(message);
 
         if (algo == PitchProcessor.PitchEstimationAlgorithm.MPM) {
             detector = new McLeodPitchMethod(sampleRate, bufferSize);
@@ -82,7 +76,7 @@ public class TarsosPitchDetector extends UnitGenerator {
                 ++cursor;
                 // When it is full, do something.
                 if (cursor == buffer.length) {
-                    float[] fBuffer = Mic2MIDI_Tarsos.toFloatArray(buffer);
+                    float[] fBuffer = Tools.toFloatArray(buffer);
                     PitchDetectionResult pitchDetectionResult = detector.getPitch(fBuffer);
                     Arrays.fill(pushPitch, pitchDetectionResult.getPitch());
                     Arrays.fill(pushConf, pitchDetectionResult.getProbability());

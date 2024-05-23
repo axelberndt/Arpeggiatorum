@@ -1,14 +1,17 @@
 package arpeggiatorum;
 
-import arpeggiatorum.gui.GUI;
-import arpeggiatorum.notePool.NotePool;
+import arpeggiatorum.gui.ArpeggiatorumGUI;
+import arpeggiatorum.gui.LogGUIController;
 import arpeggiatorum.notePool.NoteItem;
+import arpeggiatorum.notePool.NotePool;
+import arpeggiatorum.supplementary.EventMaker;
 import com.jsyn.Synthesizer;
 import com.softsynth.shared.time.ScheduledCommand;
 import com.softsynth.shared.time.TimeStamp;
-import meico.midi.EventMaker;
 
 import javax.sound.midi.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This is the actual arpeggiator.
@@ -16,25 +19,24 @@ import javax.sound.midi.*;
  * @author Axel Berndt
  */
 public class Arpeggiator implements Receiver, Transmitter {
+    public static final String version = "1.0.0";
+    public static final int ARPEGGIO_CHANNEL_PRESET = 1;
+    public static final int HELD_NOTES_CHANNEL_PRESET = 2;
+    public static final int BASS_CHANNEL_PRESET = 0;
+    private final Synthesizer synth;
+    private final NotePool notePool = new NotePool();
     private MidiDevice inDevice = null;
     private int inputChannel = 0;
     private MidiDevice outDevice = null;
     private Receiver outReceiver = null;
     private Receiver monitorReceiver = null;
-
-    public static final int ARPEGGIO_CHANNEL_PRESET = 1;
-    public static final int HELD_NOTES_CHANNEL_PRESET = 2;
-    public static final int BASS_CHANNEL_PRESET = 0;
     private int arpeggioChannel = ARPEGGIO_CHANNEL_PRESET;
     private int heldNotesChannel = HELD_NOTES_CHANNEL_PRESET;
     private int bassChannel = BASS_CHANNEL_PRESET;
-
-    private final Synthesizer synth;
     private ScheduledCommand scheduledCommand = null;
     private double tempo = 500.0;
     private double beatLengthInSeconds = 60.0 / this.tempo;
     private double articulation = 0.0;  // should be in +/- 0.5 to increase/decrease the note length by its half
-    private final NotePool notePool = new NotePool();
 
     /**
      * default constructor
@@ -54,7 +56,7 @@ public class Arpeggiator implements Receiver, Transmitter {
      * @param inDevice
      * @throws MidiUnavailableException
      */
-    public void setMidiIn(MidiDevice inDevice) throws MidiUnavailableException {
+    public void setMIDIIn(MidiDevice inDevice) throws MidiUnavailableException {
         if (this.inDevice != null)
             this.inDevice.close();
 
@@ -69,11 +71,12 @@ public class Arpeggiator implements Receiver, Transmitter {
      * @param outDevice
      * @throws MidiUnavailableException
      */
-    public void setMidiOut(MidiDevice outDevice) throws MidiUnavailableException {
+    public void setMIDIOut(MidiDevice outDevice) throws MidiUnavailableException {
         if (this.outDevice != null)
             this.outDevice.close();
 
         this.outDevice = outDevice;
+        //this.outDevice.getTransmitter().setReceiver(this);
         this.outReceiver = outDevice.getReceiver();
         this.outDevice.open();
     }
@@ -88,6 +91,15 @@ public class Arpeggiator implements Receiver, Transmitter {
     }
 
     /**
+     * get the channel number where arpeggios are played
+     *
+     * @return
+     */
+    public int getArpeggioChannel() {
+        return this.arpeggioChannel;
+    }
+
+    /**
      * set the output MIDI channel for arpeggios; stop all notes on the previous channel before switching to the new one
      *
      * @param channel
@@ -96,8 +108,10 @@ public class Arpeggiator implements Receiver, Transmitter {
         if (this.arpeggioChannel >= 0) {
             try {
                 this.outReceiver.send(new ShortMessage(EventMaker.CONTROL_CHANGE, this.arpeggioChannel, EventMaker.CC_All_Notes_Off, 0), -1);
-            } catch (InvalidMidiDataException e) {
-                GUI.updateLogGUI(e.getMessage());
+            } catch (Exception e) {
+                Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+                logger.log(Level.SEVERE, "MIDI Exception.", e);
+                LogGUIController.logBuffer.append(e.getMessage());
 
             }
         }
@@ -105,12 +119,12 @@ public class Arpeggiator implements Receiver, Transmitter {
     }
 
     /**
-     * get the channel number where arpeggios are played
+     * get the channel number for playing held notes
      *
      * @return
      */
-    public int getArpeggioChannel() {
-        return this.arpeggioChannel;
+    public int getHeldNotesChannel() {
+        return this.heldNotesChannel;
     }
 
     /**
@@ -134,12 +148,12 @@ public class Arpeggiator implements Receiver, Transmitter {
     }
 
     /**
-     * get the channel number for playing held notes
+     * get the bass channel number
      *
      * @return
      */
-    public int getHeldNotesChannel() {
-        return this.heldNotesChannel;
+    public int getBassChannel() {
+        return this.bassChannel;
     }
 
     /**
@@ -164,15 +178,6 @@ public class Arpeggiator implements Receiver, Transmitter {
     }
 
     /**
-     * get the bass channel number
-     *
-     * @return
-     */
-    public int getBassChannel() {
-        return this.bassChannel;
-    }
-
-    /**
      * set arpeggiation tempo
      *
      * @param tempo
@@ -192,21 +197,21 @@ public class Arpeggiator implements Receiver, Transmitter {
     }
 
     /**
-     * switch the note provider pattern
-     *
-     * @param pattern
-     */
-    public void setPattern(NotePool.Pattern pattern) {
-        this.notePool.setPattern(pattern);
-    }
-
-    /**
      * get the current pattern
      *
      * @return
      */
     public NotePool.Pattern getPattern() {
         return this.notePool.getPattern();
+    }
+
+    /**
+     * switch the note provider pattern
+     *
+     * @param pattern
+     */
+    public void setPattern(NotePool.Pattern pattern) {
+        this.notePool.setPattern(pattern);
     }
 
     /**
@@ -249,8 +254,10 @@ public class Arpeggiator implements Receiver, Transmitter {
         for (int chan = 0; chan < 16; ++chan) {
             try {
                 this.outReceiver.send(new ShortMessage(EventMaker.CONTROL_CHANGE, chan, EventMaker.CC_All_Notes_Off, 0), -1);
-            } catch (InvalidMidiDataException e) {
-                GUI.updateLogGUI(e.getMessage());
+            } catch (Exception e) {
+                Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+                logger.log(Level.SEVERE, "MIDI Exception.", e);
+                LogGUIController.logBuffer.append(e.getMessage());
 
             }
         }
@@ -306,9 +313,10 @@ public class Arpeggiator implements Receiver, Transmitter {
                 if (sMsg.getData2() == 0) {                         // noteOn with velocity 0 is effectively a noteOff
                     try {
                         this.send(new ShortMessage(EventMaker.NOTE_OFF, sMsg.getData1(), sMsg.getData2()), -1); // make real noteOff of it and process it accordingly
-                    } catch (InvalidMidiDataException e) {
-                        GUI.updateLogGUI(e.getMessage());
-
+                    } catch (Exception e) {
+                        Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+                        logger.log(Level.SEVERE, "MIDI Exception.", e);
+                        LogGUIController.logBuffer.append(e.getMessage());
                     }
                     return;
                 }
@@ -366,6 +374,16 @@ public class Arpeggiator implements Receiver, Transmitter {
                     case EventMaker.CC_Undefined_Ctrl_4_14b:        // trigger bass channel
                         this.sendToReceiver(message, timeStamp);
                         break;
+
+                    case EventMaker.CC_Undefined_Ctrl_5_14b:        // Trigger audio in
+                        this.sendToReceiver(message, timeStamp);
+                        break;
+                    case EventMaker.CC_Undefined_Ctrl_6_14b:        // Trigger autotune
+                        this.sendToReceiver(message, timeStamp);
+                        break;
+                    case EventMaker.CC_Undefined_Ctrl_7_14b:        // Set Threshold
+                        this.sendToReceiver(message, timeStamp);
+                        break;
                     default:
                         break;
                 }
@@ -376,16 +394,6 @@ public class Arpeggiator implements Receiver, Transmitter {
     }
 
     /**
-     * set the receiver of outgoing MIDI messages
-     *
-     * @param receiver the desired receiver.
-     */
-    @Override
-    public void setReceiver(Receiver receiver) {
-        this.monitorReceiver = receiver;
-    }
-
-    /**
      * a getter for the receiver
      *
      * @return
@@ -393,6 +401,16 @@ public class Arpeggiator implements Receiver, Transmitter {
     @Override
     public Receiver getReceiver() {
         return this.monitorReceiver;
+    }
+
+    /**
+     * set the receiver of outgoing MIDI messages
+     *
+     * @param receiver the desired receiver.
+     */
+    @Override
+    public void setReceiver(Receiver receiver) {
+        this.monitorReceiver = receiver;
     }
 
     /**
@@ -408,9 +426,10 @@ public class Arpeggiator implements Receiver, Transmitter {
 
         try {
             this.monitorReceiver.send(message, timeStamp);
-        } catch (IllegalStateException e) {     // if the receiver is closed
-            //e.printStackTrace();
-            GUI.updateLogGUI(e.getMessage());
+        } catch (Exception e) {     // if the receiver is closed
+            Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+            logger.log(Level.SEVERE, "MIDI Exception.", e);
+            LogGUIController.logBuffer.append(e.getMessage());
             this.monitorReceiver = null;
             return false;
         }
@@ -449,9 +468,10 @@ public class Arpeggiator implements Receiver, Transmitter {
                 for (int chan = 0; chan < 16; ++chan) {
                     try {
                         this.sendMessage(new ShortMessage(EventMaker.CONTROL_CHANGE, chan, EventMaker.CC_All_Notes_Off, 0), timeStamp);
-                    } catch (InvalidMidiDataException e) {
-                        //e.printStackTrace();
-                        GUI.updateLogGUI(e.getMessage());
+                    } catch (Exception e) {
+                        Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
+                        logger.log(Level.SEVERE, "MIDI Exception.", e);
+                        LogGUIController.logBuffer.append(e.getMessage());
                     }
                 }
             }

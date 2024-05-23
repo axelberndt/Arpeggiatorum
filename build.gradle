@@ -1,17 +1,37 @@
 plugins {
     id 'application'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+    id 'org.beryx.jlink' version '3.0.1'
+//    id 'maven-publish'
+}
+
+//publishing {
+//    publications {
+//        maven(MavenPublication) {
+//            groupId = 'com.github.axelberndt'
+//            artifactId = 'Arpeggiatorum'
+//            version = '0.1.3-SNAPSHOT'
+//            from components.java
+//        }
+//    }
+//}
+
+javafx {
+    //First SDK available of JavaFX for Apple Silicon is 17, but Apple anyway does not support touchscreens. So use 16 for windows and 21 with mac
+    //version = "21.0.2"
+    version = "16"
+    modules = ['javafx.controls', 'javafx.fxml']
 }
 
 application {
-    mainClass = 'arpeggiatorum.Main'
+    group = 'com.github.axelberndt'
+    version = '1.0.0'
+    mainClass.set("arpeggiatorum.Launcher")
 }
-
-group = 'com.github.axelberndt'
-version = '0.1.0'
 
 repositories {
     mavenCentral()
-    maven { url  "https://jitpack.io" }
+    maven { url "https://jitpack.io" }
     maven {
         name = "TarsosDSP repository"
         url = "https://mvn.0110.be/releases"
@@ -20,28 +40,72 @@ repositories {
         dirs("externals")
     }
     // Look for artifacts here if not found at the above location
+    //maven { url "https://repo1.maven.org/maven2" }
     //artifactUrls "https://github.com/cemfi/meico/releases/latest"
 
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation platform('org.junit:junit-bom:latest.release')
     testImplementation 'org.junit.jupiter:junit-jupiter'
-    implementation "com.github.philburk:jsyn:17.1.0"
-    //implementation "com.github.cemfi:meico:latest.release"
-    implementation(":meico:0.9.0")
-    implementation 'be.tarsos.dsp:core:2.5'
-    implementation 'be.tarsos.dsp:jvm:2.5'
+    //Latest official version crashes with more ASIO drivers
+    //implementation 'com.github.philburk:jsyn:latest.release'
+    implementation(":jsyn:17.1.0")
 
+    implementation 'be.tarsos.dsp:core:latest.release'
+    implementation 'be.tarsos.dsp:jvm:latest.release'
+
+    implementation('org.controlsfx:controlsfx:latest.release')
+
+//    implementation('eu.hansolo:touchslider:17.0.0')
+    // implementation(":TouchSlider:21.0.0")
+//            {
+//                exclude group: 'org.openjfx'
+//            }
+    
+//    implementation('eu.hansolo:regulators:17.0.0')
+//            {
+//                exclude group: 'org.openjfx'
+//            }
+    //Dependencies for Regulators
+    implementation 'org.kordamp.ikonli:ikonli-core:11.5.0'
+    implementation 'org.kordamp.ikonli:ikonli-javafx:11.5.0'
+    implementation 'org.kordamp.ikonli:ikonli-material-pack:11.5.0'
+    implementation 'org.kordamp.ikonli:ikonli-materialdesign-pack:11.5.0'
+    implementation 'org.kordamp.ikonli:ikonli-fontawesome-pack:11.5.0'
+    implementation 'org.kordamp.ikonli:ikonli-weathericons-pack:11.5.0'
 }
-//jar {
-//    manifest {
-//        attributes("Implementation-Title": "Arpeggiatorum",
-//                "Implementation-Version": archiveVersion,
-//                "Manifest-Version": "1.0",
-//                "Main-Class": "arpeggiatorum.Main")
-//    }
-//}
+
 test {
     useJUnitPlatform()
+}
+
+jlink {
+    options = ['--strip-debug', '--compress', 'zip-6', '--no-header-files', '--no-man-pages']
+    launcher {
+        name = 'Arpeggiatorum'
+        //This parameter is expected, but causes problems
+        //application.mainModule='arpeggiatorum'
+    }
+    forceMerge('jsyn')
+    jpackage {
+        if (org.gradle.internal.os.OperatingSystem.current().windows) {
+            installerOptions += ['--win-per-user-install', '--win-dir-chooser', '--win-menu', '--win-shortcut']
+            imageOptions += ['--win-console']
+        }
+        if (org.gradle.internal.os.OperatingSystem.current().macOsX) {
+            installerOptions += []
+            imageOptions += []
+        }
+    }
+def JLINK_DIR = "$buildDir"
+
+tasks.jlink.doLast {
+    copy {
+        from("/externals") {
+            include "portaudio_x64.dll", "jportaudio_x64.dll"
+        }
+        into JLINK_DIR + "/image/bin"
+    }
+}
 }

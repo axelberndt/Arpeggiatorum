@@ -1,0 +1,42 @@
+* {
+    -preferred-actual-dims: 200;
+    -thumb-padding-top: 100;
+    -thumb-padding-right: 135;
+    -thumb-padding-bottom: 100;
+    -thumb-padding-left: 135;
+}
+
+.toggle-switch {
+    -fx-pref-width: -preferred-actual-dims;
+    -fx-pref-height: -preferred-actual-dims;
+    -fx-min-width: 80;
+    -fx-min-height: 80;
+    -fx-max-width: 1024;
+    -fx-max-height: 1024;
+    -fx-background-color: Transparent;
+    -thumb-move-animation-time: 50;
+    -toggle-display: left;
+}
+
+/*When Active*/
+.toggle-switch:selected .thumb-area {
+    -fx-background-color: transparent;
+}
+
+.toggle-switch:selected .thumb {
+    -fx-background-color: plum;
+}
+
+/*When Inactive*/
+.toggle-switch .thumb-area {
+    -fx-background-color: transparent;
+    -fx-background-radius: 5;
+    -fx-padding: 5 100; /* describes length: 50+50 = 100 width, 5+5=10 height */
+}
+
+.toggle-switch .thumb {
+    -fx-background-radius: 50 0 0 50;
+    /*-fx-padding: -thumb-padding-top -thumb-padding-top -thumb-padding-top -thumb-padding-top;*/
+    -fx-padding: 136 135 136 135;
+    -fx-background-color: mediumorchid;
+}

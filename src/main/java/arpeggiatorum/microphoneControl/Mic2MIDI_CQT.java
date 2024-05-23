@@ -1,9 +1,10 @@
 package arpeggiatorum.microphoneControl;
 
-import arpeggiatorum.gui.GUI;
+import arpeggiatorum.gui.ArpeggiatorumGUI;
+import arpeggiatorum.gui.LogGUIController;
 import arpeggiatorum.supplementary.UnitVariableInputPort;
-
 import com.softsynth.math.AudioMath;
+import javafx.scene.chart.XYChart;
 
 import javax.sound.midi.Receiver;
 import java.util.ArrayList;
@@ -15,56 +16,38 @@ import java.util.Arrays;
  * @author Davide Mauro
  */
 public class Mic2MIDI_CQT extends Mic2MIDI {
+    public static double minFreq;
+    public static double scalingFactor;
+    public static double sharpness;
+    public static boolean autoTune;
+    public static int clusterSize;
+    public final UnitVariableInputPort[] CQTPorts;
     //CQT
     private final int binsPerOctave = 12;
     private final int binsToCompute = 16;
     private final CQTPitchDetector[] cqtPitchDetectors;
-    private Integer newPitch;
-    public final UnitVariableInputPort[] CQTPorts;
     private final double[] CQTBins;
-    private final double[] CQTFrequencies;
+    public final double[] CQTFrequencies;
+    private final int minVelocity;
+    private final int maxVelocity;
+    private final int diffVelocity;
+    int currentAboveThresholdCount = 0;
+    private Integer newPitch;
     private int[] CQTBinsSortedIndexes;
-    public static double minFreq;
-    public static double scalingFactor;
-    //Histogram
-    public static CQTHistogram cqtHist;
     private double PITCH_THRESHOLD;
-
     private boolean[] currentPitches = new boolean[128];
     private boolean[] currentActive = new boolean[128];
     private boolean[] currentAboveThreshold = new boolean[128];
     private int[] currentVelocities = new int[128];
     private double[] currentMag = new double[128];
-    public static boolean autoTune;
-    public static int clusterSize;
-    private final int minVelocity;
-    private final int maxVelocity;
-    private final int diffVelocity;
     private int currentVelocity;
-    int currentAboveThresholdCount = 0;
 
-    @Override
-    public void stop() {
-        super.stop();
-        //Reset everything
-
-        //Mono Version
-        currentVelocity = 0;
-        currentPitch = -1;
-
-        //Poly Version
-        currentPitches = new boolean[128];
-        currentActive = new boolean[128];
-        currentAboveThreshold = new boolean[128];
-        currentVelocities = new int[128];
-        currentMag = new double[128];
-
-        //Histogram
-        cqtHist.updateBins(new double[CQTHistogram.binSize]);
-        GUI.cqtBinsPanel.revalidate();
-        GUI.cqtBinsPanel.repaint();
+    public void updateDetectorsSharpness(double value){
+        sharpness=value;
+        for (CQTPitchDetector detector : cqtPitchDetectors) {
+            detector.setSharpness(value);
+        }
     }
-
     public Mic2MIDI_CQT(Receiver receiver, double sampleRate, double minFreq, double maxFreq, float threshold, float spread, boolean isPoly, boolean autoTune, int cqtMinVel, int cqtMaxVel) {
         super(sampleRate);
         NAME = "CQT-Based Pitch Detector";
@@ -90,7 +73,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
         cqtPitchDetectors = new CQTPitchDetector[bandNum];
         CQTPorts = new UnitVariableInputPort[bandNum];
         for (int i = 0; i < bandNum; i++) {
-            cqtPitchDetectors[i] = new CQTPitchDetector((float) sampleRate, bands.get(i).floatValue(), bands.get(i + 1).floatValue(), binsPerOctave, threshold, spread);
+            cqtPitchDetectors[i] = new CQTPitchDetector((float) sampleRate, bands.get(i).floatValue(), bands.get(i + 1).floatValue(), binsPerOctave, threshold, spread, (float) sharpness);
             cqtPitchDetectors[i].input.connect(0, this.channelIn.output, 0);
             this.add(cqtPitchDetectors[i]);
             addPort(this.CQTPorts[i] = new UnitVariableInputPort("CQTBins"));
@@ -106,10 +89,54 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
             CQTFrequencies[i] = (float) (minFreq * Math.pow(2, i / (float) binsPerOctave));
 
         }
-        //CQT Histogram
-        double[] initializer = new double[CQTFrequencies.length];
-        cqtHist = new CQTHistogram(initializer, CQTFrequencies);
+
         this.setReceiver(receiver);
+    }
+
+    /**
+     * Return the indexes corresponding to the top-k largest in an array.
+     */
+    public static int[] getMaxBins(double[] array, int top_k) {
+        double[] max = new double[top_k];
+        int[] maxIndex = new int[top_k];
+        Arrays.fill(max, Double.NEGATIVE_INFINITY);
+        Arrays.fill(maxIndex, -1);
+
+        top:
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 0; j < top_k; j++) {
+                if (array[i] > max[j]) {
+                    for (int x = top_k - 1; x > j; x--) {
+                        maxIndex[x] = maxIndex[x - 1];
+                        max[x] = max[x - 1];
+                    }
+                    maxIndex[j] = i;
+                    max[j] = array[i];
+                    continue top;
+                }
+            }
+        }
+        return maxIndex;
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        //Reset everything
+
+        //Mono Version
+        currentVelocity = 0;
+        currentPitch = -1;
+
+        //Poly Version
+        currentPitches = new boolean[128];
+        currentActive = new boolean[128];
+        currentAboveThreshold = new boolean[128];
+        currentVelocities = new int[128];
+        currentMag = new double[128];
+
+        //Histogram
+        ArpeggiatorumGUI.controllerHandle.updateHist(new double[CQTFrequencies.length]);
     }
 
     @Override
@@ -151,7 +178,9 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                 currentMag[newPitch] = CQTBins[i];
                 currentAboveThresholdCount++;
             } else {
-                this.sendNoteOff(newPitch);
+                if (currentActive[newPitch]) {
+                    this.sendNoteOff(newPitch);
+                }
                 currentAboveThreshold[newPitch] = false;
                 currentActive[newPitch] = false;
                 currentMag[newPitch] = 0.0;
@@ -163,16 +192,16 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
             int i = 0;
             while (i < 128) {
                 //Process further
-                if (currentAboveThreshold[i] == true) {
+                if (currentAboveThreshold[i]) {
                     //Start a temporary cluster, a cluster is over when you retrieve the first False.
                     for (int j = i + 1; j < 128; j++) {
-                        if (currentAboveThreshold[j] == false) {
+                        if (!currentAboveThreshold[j]) {
                             //Then you can compute the length
                             int clusterLen = j - i;
-                            //If the cluster has size 1 or greater than 3 you play all the notes
+                            //If the cluster has size 1 or greater than clusterSize you play all the notes
                             if (clusterLen == 1 || clusterLen > clusterSize) {
                                 for (int k = i; k < j; k++) {
-                                    if (currentActive[k] == false) {
+                                    if (!currentActive[k]) {
                                         //We have to play a new note
                                         //Velocity
                                         double ratioVelocity = Math.clamp(currentMag[k] / PITCH_THRESHOLD, 1.0, 2.0) - 1;
@@ -210,7 +239,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                                         currentMag[k] = 0.0;
                                     }
                                 }
-                                if (currentActive[localPitch] == false) {
+                                if (!currentActive[localPitch]) {
                                     //We have to play a new note
                                     double ratioVelocity = Math.clamp(localMax / PITCH_THRESHOLD, 1.0, 2.0) - 1;
                                     int newVelocity = Math.clamp((int) (minVelocity + (ratioVelocity * diffVelocity)), minVelocity, maxVelocity);
@@ -232,7 +261,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
             }
             //Print what's playing
             if (!message.isEmpty()) {
-                GUI.updateLogGUI(message + "\r\n");
+                LogGUIController.logBuffer.append(message + "\r\n");
             }
         }
     }
@@ -243,7 +272,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
         for (int i = 0; i < CQTBins.length; i++) {
             newPitch = (int) Math.round(AudioMath.frequencyToPitch(CQTFrequencies[i]));
             if (CQTBins[i] >= PITCH_THRESHOLD) {
-                if (currentPitches[newPitch] == false) {
+                if (!currentPitches[newPitch]) {
                     //We have to play a new note
                     //Velocity
                     currentPitches[newPitch] = true;
@@ -251,7 +280,6 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                     int newVelocity = Math.clamp((int) (minVelocity + (ratioVelocity * diffVelocity)), minVelocity, maxVelocity);
                     currentVelocities[newPitch] = newVelocity;
                     this.sendNoteOn(newPitch, newVelocity);
-
                     message.append(String.format("[%d] %.0fHz: %d ", newPitch, CQTFrequencies[i], newVelocity));
                 } else {
                     //Aftertouch
@@ -263,7 +291,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
                     }
                 }
             } else {
-                if (currentPitches[newPitch] == true) {
+                if (currentPitches[newPitch]) {
                     this.sendNoteOff(newPitch);
                     currentPitches[newPitch] = false;
                     currentVelocities[newPitch] = 0;
@@ -271,7 +299,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
             }
         }
         if (!message.isEmpty()) {
-            GUI.updateLogGUI(message + "\r\n");
+            LogGUIController.logBuffer.append(message + "\r\n");
         }
     }
 
@@ -291,7 +319,7 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
 
                 currentPitch = newPitch;
                 String message = String.format("[%d] %.0fHz: %d\r\n", newPitch, CQTFrequencies[CQTBinsSortedIndexes[0]], newVelocity);
-                GUI.updateLogGUI(message);
+                LogGUIController.logBuffer.append(message);
             } else {
                 //Aftertouch
                 double ratioVelocity = Math.clamp(CQTBins[CQTBinsSortedIndexes[0]] / PITCH_THRESHOLD, 1.0, 2.0) - 1;
@@ -313,32 +341,14 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
     public void setSignalToNoiseThreshold(double value) {
         double modValue = value / scalingFactor;
         PITCH_THRESHOLD = modValue / 2;
-        cqtHist.max = modValue;
-    }
+        ArpeggiatorumGUI.controllerHandle.yAxis.setUpperBound(modValue);
+        ArpeggiatorumGUI.controllerHandle.yAxis.setTickUnit(modValue / 10);
+        ArpeggiatorumGUI.controllerHandle.middleSeries.getData().clear();
+        for (int i = 0; i < ArpeggiatorumGUI.controllerHandle.middleData.length; i++) {
+            ArpeggiatorumGUI.controllerHandle.middleData[i] = new XYChart.Data<>(ArpeggiatorumGUI.controllerHandle.middleData[i].getXValue(),
+                    PITCH_THRESHOLD);
+            ArpeggiatorumGUI.controllerHandle.middleSeries.getData().add(ArpeggiatorumGUI.controllerHandle.middleData[i]);
 
-    /**
-     * Return the indexes corresponding to the top-k largest in an array.
-     */
-    public static int[] getMaxBins(double[] array, int top_k) {
-        double[] max = new double[top_k];
-        int[] maxIndex = new int[top_k];
-        Arrays.fill(max, Double.NEGATIVE_INFINITY);
-        Arrays.fill(maxIndex, -1);
-
-        top:
-        for (int i = 0; i < array.length; i++) {
-            for (int j = 0; j < top_k; j++) {
-                if (array[i] > max[j]) {
-                    for (int x = top_k - 1; x > j; x--) {
-                        maxIndex[x] = maxIndex[x - 1];
-                        max[x] = max[x - 1];
-                    }
-                    maxIndex[j] = i;
-                    max[j] = array[i];
-                    continue top;
-                }
-            }
         }
-        return maxIndex;
     }
 }
