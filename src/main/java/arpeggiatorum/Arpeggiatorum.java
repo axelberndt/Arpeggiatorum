@@ -67,9 +67,11 @@ public class Arpeggiatorum implements Receiver {
 
     public static Scene sceneLog;
     public static Stage stageLog;
+    private static int instanceLog = 0;
 
     public static Scene scenePerformance;
     public static Stage stagePerformance;
+    private static int instancePerformance = 0;
 
     public Arpeggiatorum() {
         super();
@@ -204,7 +206,7 @@ public class Arpeggiatorum implements Receiver {
             Properties prop = new Properties();
             // Set the properties values
             prop.setProperty("Name", "ArpeggiatorumGUI");
-            prop.setProperty("Version", "0.1.3");
+            prop.setProperty("Version", Arpeggiator.version);
 
             prop.setProperty("Channel", ArpeggiatorumGUI.controllerHandle.comboMIDIChannel.getValue().toString());
             prop.setProperty("Arpeggio", ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getValue().toString());
@@ -262,12 +264,13 @@ public class Arpeggiatorum implements Receiver {
     }
 
     public static void LoadLog(ArpeggiatorumGUI arpeggiatorumGUI) {
-            try {
-//                if (sceneLog!=null){
-//                    stageLog.setAlwaysOnTop(true);
-//                    stageLog.setAlwaysOnTop(false);
-//                    return;
-//                }
+        try {
+            if (instanceLog >= 1) {
+                stageLog.setAlwaysOnTop(true);
+                stageLog.setAlwaysOnTop(false);
+                return;
+            }
+            instanceLog++;
             FXMLLoader fxmlLoader;
             fxmlLoader = new FXMLLoader(ArpeggiatorumGUI.class.getResource("LogGUI.fxml"));
             sceneLog = new Scene(fxmlLoader.load());
@@ -278,17 +281,19 @@ public class Arpeggiatorum implements Receiver {
             stageLog.setScene(sceneLog);
             stageLog.show();
             stageLog.setMaximized(true);
+            stageLog.setOnCloseRequest((event) -> CloseLog(stageLog));
+
             stageLog.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
                 switch (event.getCode()) {
                     case KeyCode.ESCAPE:
                     case KeyCode.Q: {
                         // Close current window
-                        stageLog.close();
+                       CloseLog(stageLog);
                         break;
                     }
                     case KeyCode.L: {
                         //Close and reopen
-                        stageLog.close();
+                        //CloseLog(stageLog);
                         Arpeggiatorum.LoadLog(ArpeggiatorumGUI.getInstance());
                         break;
                     }
@@ -307,13 +312,17 @@ public class Arpeggiatorum implements Receiver {
         }
     }
 
+
+
     public static void LoadPerformance(ArpeggiatorumGUI arpeggiatorumGUI) {
         try {
-//            if (scenePerformance!=null){
-//                stagePerformance.setAlwaysOnTop(true);
-//                stagePerformance.setAlwaysOnTop(false);
-//                return;
-//            }
+
+            if (instancePerformance >= 1) {
+                stagePerformance.setAlwaysOnTop(true);
+                stagePerformance.setAlwaysOnTop(false);
+                return;
+            }
+            instancePerformance++;
             FXMLLoader fxmlLoader;
             fxmlLoader = new FXMLLoader(ArpeggiatorumGUI.class.getResource("PerformanceGUI.fxml"));
 
@@ -346,7 +355,7 @@ public class Arpeggiatorum implements Receiver {
                     }
                     case KeyCode.P: {
                         // Close current window
-                         ClosePerformance(stagePerformance);
+                       // ClosePerformance(stagePerformance);
                         //and reopen
                         Arpeggiatorum.LoadPerformance(ArpeggiatorumGUI.getInstance());
                         break;
@@ -363,10 +372,15 @@ public class Arpeggiatorum implements Receiver {
     }
 
     public static void ClosePerformance(Stage stagePerformance) {
-        ArpeggiatorumGUI.controllerHandlePerformance.toggleArpeggio.setSelected(true);
-        ArpeggiatorumGUI.controllerHandlePerformance.toggleBass.setSelected(true);
-        ArpeggiatorumGUI.controllerHandlePerformance.toggleSustained.setSelected(true);
+//        ArpeggiatorumGUI.controllerHandlePerformance.toggleArpeggio.setSelected(true);
+//        ArpeggiatorumGUI.controllerHandlePerformance.toggleBass.setSelected(true);
+//        ArpeggiatorumGUI.controllerHandlePerformance.toggleSustained.setSelected(true);
+        instancePerformance--;
         stagePerformance.close();
+    }
+    private static void CloseLog(Stage stageLog) {
+        instanceLog--;
+        stageLog.close();
     }
 
     public Arpeggiator getArpeggiator() {
@@ -433,7 +447,7 @@ public class Arpeggiatorum implements Receiver {
                     case EventMaker.CC_Effect_Ctrl_2_14b: // trigger arpeggio channel
                         Platform.runLater(() -> {
                             Integer choice = (sMsg.getData2() >= 64) ? Arpeggiator.ARPEGGIO_CHANNEL_PRESET : -1;
-                            boolean bChoice= sMsg.getData2() >= 64;
+                            boolean bChoice = sMsg.getData2() >= 64;
                             ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(choice);
                             if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
                                 ArpeggiatorumGUI.controllerHandlePerformance.toggleArpeggio.setSelected(bChoice);
@@ -443,7 +457,7 @@ public class Arpeggiatorum implements Receiver {
                     case EventMaker.CC_Undefined_Ctrl_3_14b: // trigger held notes channel
                         Platform.runLater(() -> {
                             Integer choice = (sMsg.getData2() >= 64) ? Arpeggiator.HELD_NOTES_CHANNEL_PRESET : -1;
-                            boolean bChoice= sMsg.getData2() >= 64;
+                            boolean bChoice = sMsg.getData2() >= 64;
                             ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getSelectionModel().select(choice);
                             if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
                                 ArpeggiatorumGUI.controllerHandlePerformance.toggleSustained.setSelected(bChoice);
@@ -453,7 +467,7 @@ public class Arpeggiatorum implements Receiver {
                     case EventMaker.CC_Undefined_Ctrl_4_14b: // trigger bass channel
                         Platform.runLater(() -> {
                             Integer choice = (sMsg.getData2() >= 64) ? Arpeggiator.BASS_CHANNEL_PRESET : -1;
-                            boolean bChoice= sMsg.getData2() >= 64;
+                            boolean bChoice = sMsg.getData2() >= 64;
                             ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().select(choice);
                             if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
                                 ArpeggiatorumGUI.controllerHandlePerformance.toggleBass.setSelected(bChoice);

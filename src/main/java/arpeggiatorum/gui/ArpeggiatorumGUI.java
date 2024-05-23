@@ -79,7 +79,7 @@ public class ArpeggiatorumGUI extends Application {
                     break;
                 }
                 case KeyCode.P: {
-                    Arpeggiatorum.LoadPerformance(this);
+                    Arpeggiatorum.LoadPerformance(ArpeggiatorumGUI.getInstance());
                     break;
                 }
                 default: {

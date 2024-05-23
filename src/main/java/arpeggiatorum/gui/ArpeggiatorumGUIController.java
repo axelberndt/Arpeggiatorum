@@ -149,7 +149,10 @@ public class ArpeggiatorumGUIController implements Initializable {
     public TextField e15;
     @FXML
     public TextField e16;
+    @FXML
     public Tab tabPerformance;
+   // @FXML
+   // public Text textsliderEnrichment;
 
 
     /**
@@ -678,9 +681,10 @@ public class ArpeggiatorumGUIController implements Initializable {
         sliderEnrichment.valueProperty().addListener((observable, oldValue, newValue) -> {
             //textEnrichment.setText(String.format("%d %%", newValue.intValue()));
             Arpeggiatorum.getInstance().EnrichmentChange(newValue);
-            if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
-                ArpeggiatorumGUI.controllerHandlePerformance.buttonEnrichmentArray[(int) Math.ceil(15.0 * (newValue.doubleValue() / 100.0))].fire();
-            }
+            //textsliderEnrichment.setText(newValue.toString());
+//            if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
+//                ArpeggiatorumGUI.controllerHandlePerformance.buttonEnrichmentArray[(int) Math.ceil(15.0 * (newValue.doubleValue() / 100.0))].fire();
+//            }
         });
     }
 }

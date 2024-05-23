@@ -24,6 +24,7 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TouchEvent;
 import javafx.scene.input.TouchPoint;
 import javafx.scene.layout.AnchorPane;
@@ -161,15 +162,17 @@ public class PerformanceGUIController implements Initializable {
             buttonEnrichmentArray[i].setTranslateY(pixelHeight - (buttonSizeML + visualVerticalBuffer) - button16);
             buttonEnrichmentArray[i].setOnAction(this::buttonEnrichmentHandle);
             buttonEnrichmentArray[i].addEventHandler(TouchEvent.ANY, this::touchEnrichmentHandle);
+            buttonEnrichmentArray[i].addEventHandler(MouseEvent.ANY, this::mouseEnrichmentHandle);
+
         }
-        buttonEnrichmentArray[(int) Math.ceil(15.0 * (ArpeggiatorumGUI.controllerHandle.sliderEnrichment.getValue() / 100.0))].fire();
+        buttonEnrichmentArray[(int) Math.floor(15.0 * (ArpeggiatorumGUI.controllerHandle.sliderEnrichment.getValue() / 100.0))].fire();
 
         toggleAudio = new ToggleSwitch();
+        toggleAudio.selectedProperty().addListener((observable, oldValue, newValue) -> Arpeggiatorum.getInstance().Activate(newValue));
         boolean audioValue = ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.isSelected();
         if (audioValue) {
             toggleAudio.setSelected(true);
         }
-        toggleAudio.selectedProperty().addListener((observable, oldValue, newValue) -> Arpeggiatorum.getInstance().Activate(newValue));
 
         toggleAudio.setTranslateX(largeToggleFootprint * 3);
         toggleAudio.setTranslateY(-buttonSizeLarge * 0.5);
@@ -179,7 +182,7 @@ public class PerformanceGUIController implements Initializable {
         //TODO find a solution for padding property
 //        toggleAudio.setStyle(" -thumb-padding-top: " + pixelWidth * 0.15*0.5 + ";");
 //        toggleAudio.setStyle(" -thumb-padding-bottom: " + pixelWidth * 0.15*0.5 + ";");
-        
+
         labelAudio = new Label("Audio In");
         labelAudio.setStyle(labelActionStyle);
         labelAudio.setMouseTransparent(true);
@@ -203,11 +206,36 @@ public class PerformanceGUIController implements Initializable {
                 .nameTextColor(Color.WHITE)
                 .valueVisible(false)
                 .nameVisible(true)
-                .onTouchSliderEvent(e -> ArpeggiatorumGUI.controllerHandle.sliderArticulation.adjustValue(e.getValue()))
+                .onTouchSliderEvent(e -> ArpeggiatorumGUI.controllerHandle.sliderArticulation.setValue(e.getValue()))
                 .build();
         sliderArticulation.setTranslateX(0);
         sliderArticulation.setTranslateY(pixelHeight - buttonSizeML);
 
+
+        toggleArpeggio = new ToggleSwitch();
+        int arpeggioValue = ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().getSelectedIndex();
+        if (arpeggioValue != 0) {
+            toggleArpeggio.setSelected(true);
+        }
+        toggleArpeggio.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(arpeggioValue);
+            } else {
+                ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(0);
+            }
+        });
+        toggleArpeggio.setTranslateX(0);
+        toggleArpeggio.setTranslateY(-buttonSizeLarge * 0.5);
+        toggleArpeggio.setRotate(-90);
+        toggleArpeggio.getStylesheets().addAll(Objects.requireNonNull(ArpeggiatorumGUI.class.getResource("toggleSwitch.css")).toExternalForm());
+        toggleArpeggio.setStyle(" -preferred-actual-dims: " + largeToggleWidth + ";");
+
+        labelArpeggio = new Label("Arpeggio");
+        labelArpeggio.setStyle(labelActionStyle);
+        labelArpeggio.setMouseTransparent(true);
+        labelArpeggio.setTranslateX(toggleArpeggio.getTranslateX());
+        labelArpeggio.setPrefWidth(largeToggleWidth);
+        labelArpeggio.setTranslateY(visualVerticalBuffer);
 
         toggleSustained = new ToggleSwitch();
         int heldValue = ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getSelectionModel().getSelectedIndex();
@@ -222,7 +250,7 @@ public class PerformanceGUIController implements Initializable {
             }
         });
 
-        toggleSustained.setTranslateX(0);
+        toggleSustained.setTranslateX(largeToggleFootprint);
         toggleSustained.setTranslateY(-buttonSizeLarge * 0.5);
         toggleSustained.getStylesheets().addAll(Objects.requireNonNull(ArpeggiatorumGUI.class.getResource("toggleSwitch.css")).toExternalForm());
         toggleSustained.setRotate(-90);
@@ -234,31 +262,6 @@ public class PerformanceGUIController implements Initializable {
         labelSustained.setPrefWidth(largeToggleWidth);
         labelSustained.setTranslateX(toggleSustained.getTranslateX());
         labelSustained.setTranslateY(visualVerticalBuffer);
-
-        toggleArpeggio = new ToggleSwitch();
-        int arpeggioValue = ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().getSelectedIndex();
-        if (arpeggioValue != 0) {
-            toggleArpeggio.setSelected(true);
-        }
-        toggleArpeggio.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
-                ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(arpeggioValue);
-            } else {
-                ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(0);
-            }
-        });
-        toggleArpeggio.setTranslateX(largeToggleFootprint);
-        toggleArpeggio.setTranslateY(-buttonSizeLarge * 0.5);
-        toggleArpeggio.setRotate(-90);
-        toggleArpeggio.getStylesheets().addAll(Objects.requireNonNull(ArpeggiatorumGUI.class.getResource("toggleSwitch.css")).toExternalForm());
-        toggleArpeggio.setStyle(" -preferred-actual-dims: " + largeToggleWidth + ";");
-
-        labelArpeggio = new Label("Arpeggio");
-        labelArpeggio.setStyle(labelActionStyle);
-        labelArpeggio.setMouseTransparent(true);
-        labelArpeggio.setTranslateX(toggleArpeggio.getTranslateX());
-        labelArpeggio.setPrefWidth(largeToggleWidth);
-        labelArpeggio.setTranslateY(visualVerticalBuffer);
 
         toggleBass = new ToggleSwitch();
         int bassValue = ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().getSelectedIndex();
@@ -365,6 +368,7 @@ public class PerformanceGUIController implements Initializable {
         anchorPane.getTransforms().addAll(scalingSystem, translateSystem);
     }
 
+
     public RadialMenu createCenterRadialMenu(String menuName, List
             menuItems, EventHandler<ActionEvent> eventHandler, Color color1, Color color2, Color color3, Color color4) {
         LinearGradient background = new LinearGradient(0, 0, 1, 1, true, CycleMethod.NO_CYCLE,
@@ -428,6 +432,28 @@ public class PerformanceGUIController implements Initializable {
 
     }
 
+    private boolean buttonSelected = false;
+
+    private void mouseEnrichmentHandle(MouseEvent mouseEvent) {
+        EventType<? extends MouseEvent> type = mouseEvent.getEventType();
+        double x = mouseEvent.getX();
+        double y = mouseEvent.getY();
+
+        if (type == MouseEvent.MOUSE_PRESSED) {
+            buttonSelected = true;
+        }
+        if (type == MouseEvent.MOUSE_RELEASED) {
+            buttonSelected = false;
+
+        }
+
+        if (buttonSelected) {
+            if (mouseEvent.getPickResult().getIntersectedNode().getClass().equals(EnrichmentButton.class)) {
+                ((Button) mouseEvent.getPickResult().getIntersectedNode()).fire();
+            }
+        }
+    }
+
     private void buttonEnrichmentHandle(ActionEvent actionEvent) {
         boolean changeColor = true;
         for (int j = 0; j < buttonEnrichmentArray.length; j++) {
@@ -438,7 +464,7 @@ public class PerformanceGUIController implements Initializable {
             }
             if (actionEvent.getSource() == buttonEnrichmentArray[j]) {
                 changeColor = false;
-                ArpeggiatorumGUI.controllerHandle.sliderEnrichment.adjustValue((j / 15.0) * 100.0);
+                ArpeggiatorumGUI.controllerHandle.sliderEnrichment.setValue(((j + 1) / 16.0) * 100.0);
             }
         }
     }

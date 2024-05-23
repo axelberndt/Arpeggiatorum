@@ -258,7 +258,10 @@
                                 maxHeight="Infinity" maxWidth="Infinity"
                                 showTickMarks="true"
                                 majorTickUnit="10" minorTickCount="1"/>
-
+<!--                        <Text text="Test"-->
+<!--                              fx:id="textsliderEnrichment"-->
+<!--                              GridPane.columnIndex="0" GridPane.rowIndex="5"-->
+<!--                              GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>-->
 
                         <!--            //Third Column-->
                         <ComboBox fx:id="comboPattern" GridPane.columnIndex="2" GridPane.columnSpan="1"
