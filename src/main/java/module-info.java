@@ -7,9 +7,6 @@ module arpeggiatorum {
 
     requires transitive org.controlsfx.controls;
 
-    //requires transitive eu.hansolo.fx.touchslider;
-   // requires transitive eu.hansolo.regulators;
-
     // 3rd party
     requires transitive org.kordamp.iconli.core;
     requires transitive org.kordamp.ikonli.javafx;

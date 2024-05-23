@@ -38,15 +38,5 @@
     -fx-background-radius: 50 0 0 50;
     /*-fx-padding: -thumb-padding-top -thumb-padding-top -thumb-padding-top -thumb-padding-top;*/
     -fx-padding: 136 135 136 135;
-    /*-fx-blend-mode: ;*/
     -fx-background-color: mediumorchid;
 }
-
-/*.label {*/
-/*    -fx-font: 28px;*/
-/*    -fx-text-fill: WHITE;*/
-/*    -fx-alignment: CENTER;*/
-/*    -fx-wrap-text: TRUE;*/
-/*}*/
-
-/*-thumb-move-animation-time*/

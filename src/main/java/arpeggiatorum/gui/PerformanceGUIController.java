@@ -179,6 +179,7 @@ public class PerformanceGUIController implements Initializable {
         //TODO find a solution for padding property
 //        toggleAudio.setStyle(" -thumb-padding-top: " + pixelWidth * 0.15*0.5 + ";");
 //        toggleAudio.setStyle(" -thumb-padding-bottom: " + pixelWidth * 0.15*0.5 + ";");
+        
         labelAudio = new Label("Audio In");
         labelAudio.setStyle(labelActionStyle);
         labelAudio.setMouseTransparent(true);
@@ -225,9 +226,7 @@ public class PerformanceGUIController implements Initializable {
         toggleSustained.setTranslateY(-buttonSizeLarge * 0.5);
         toggleSustained.getStylesheets().addAll(Objects.requireNonNull(ArpeggiatorumGUI.class.getResource("toggleSwitch.css")).toExternalForm());
         toggleSustained.setRotate(-90);
-
         toggleSustained.setStyle(" -preferred-actual-dims: " + largeToggleWidth + ";");
-
 
         labelSustained = new Label("Sustained");
         labelSustained.setStyle(labelActionStyle);
