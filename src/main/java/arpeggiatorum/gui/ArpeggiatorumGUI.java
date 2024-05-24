@@ -15,9 +15,9 @@ public class ArpeggiatorumGUI extends Application {
     public static PerformanceGUIController controllerHandlePerformance;
     public static LogGUIController controllerHandleLog;
 
-    public static int sessionArpeggioChannel;
-    public static int sessionSustainedChannel;
-    public static int sessionBassChannel;
+    public static Integer sessionArpeggioChannel;
+    public static Integer sessionSustainedChannel;
+    public static Integer sessionBassChannel;
 
     private static FXMLLoader fxmlLoader;
     private static Scene sceneGUI;

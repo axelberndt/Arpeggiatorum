@@ -83,18 +83,18 @@ public class PerformanceGUIController implements Initializable {
     @FXML // URL location of the FXML file that was given to the FXMLLoader
     private URL location;
 
-    double buttonSizeLarge;
-    double buttonSizeML;
-    double buttonSizeMedium;
-    double buttonSizeSmall;
-    double button16;
-    double buttonSizePanic;
+    public static double buttonSizeLarge;
+    public static double buttonSizeML;
+    public static double buttonSizeMedium;
+    public static double buttonSizeSmall;
+    public static double button16;
+    public static double buttonSizePanic;
 
-    String buttonPanicStyle;
-    String buttonTempoStyle;
-    String buttonEnrichmentStyleUnchecked;
-    String buttonEnrichmentStyleChecked;
-    String labelActionStyle;
+    public static String buttonPanicStyle;
+    public static String buttonTempoStyle;
+    public static String buttonEnrichmentStyleUnchecked;
+    public static String buttonEnrichmentStyleChecked;
+    public static String labelActionStyle;
 
     Label labelAudio, labelSustained, labelArpeggio, labelBass;
 
@@ -168,11 +168,11 @@ public class PerformanceGUIController implements Initializable {
         buttonEnrichmentArray[(int) Math.floor(15.0 * (ArpeggiatorumGUI.controllerHandle.sliderEnrichment.getValue() / 100.0))].fire();
 
         toggleAudio = new ToggleSwitch();
-        toggleAudio.selectedProperty().addListener((observable, oldValue, newValue) -> Arpeggiatorum.getInstance().Activate(newValue));
         boolean audioValue = ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.isSelected();
         if (audioValue) {
             toggleAudio.setSelected(true);
         }
+        toggleAudio.selectedProperty().addListener((observable, oldValue, newValue) -> Arpeggiatorum.getInstance().Activate(newValue));
 
         toggleAudio.setTranslateX(largeToggleFootprint * 3);
         toggleAudio.setTranslateY(-buttonSizeLarge * 0.5);
@@ -219,7 +219,7 @@ public class PerformanceGUIController implements Initializable {
         }
         toggleArpeggio.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
-                ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(ArpeggiatorumGUI.sessionArpeggioChannel+1);
+                ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(ArpeggiatorumGUI.sessionArpeggioChannel);
             } else {
                 ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(0);
             }
@@ -238,15 +238,15 @@ public class PerformanceGUIController implements Initializable {
         labelArpeggio.setTranslateY(visualVerticalBuffer);
 
         toggleSustained = new ToggleSwitch();
-        int heldValue = ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getSelectionModel().getSelectedIndex();
+        int heldValue = ArpeggiatorumGUI.controllerHandle.comboSustainedChannel.getSelectionModel().getSelectedIndex();
         if (heldValue != 0) {
             toggleSustained.setSelected(true);
         }
         toggleSustained.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
-                ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getSelectionModel().select(ArpeggiatorumGUI.sessionSustainedChannel+1);
+                ArpeggiatorumGUI.controllerHandle.comboSustainedChannel.getSelectionModel().select(ArpeggiatorumGUI.sessionSustainedChannel);
             } else {
-                ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getSelectionModel().select(0);
+                ArpeggiatorumGUI.controllerHandle.comboSustainedChannel.getSelectionModel().select(0);
             }
         });
 
@@ -270,7 +270,7 @@ public class PerformanceGUIController implements Initializable {
         }
         toggleBass.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
-                ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().select(ArpeggiatorumGUI.sessionBassChannel+1);
+                ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().select(ArpeggiatorumGUI.sessionBassChannel);
             } else {
                 ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().select(0);
             }
@@ -289,7 +289,7 @@ public class PerformanceGUIController implements Initializable {
         labelBass.setTranslateY(visualVerticalBuffer);
 
 
-        radialMenuEnrichment = createCenterRadialMenu("Tonal\r\nEnrichment", ArpeggiatorumGUI.controllerHandle.comboEnrichment.getItems().stream().toList(), enrichmentHandler, bgLg1Color, bgLg2Color, bgMoLg1Color, bgMoLg2Color,-50,-30);
+        radialMenuEnrichment = createCenterRadialMenu("Tonal\r\nEnrichment", ArpeggiatorumGUI.controllerHandle.comboEnrichment.getItems().stream().toList(), enrichmentHandler, bgLg1Color, bgLg2Color, bgMoLg1Color, bgMoLg2Color, -50, -30);
         radialMenuEnrichment.setTranslateX(pixelWidth * 0.165);
         radialMenuEnrichment.setTranslateY(centralControlsShift - visualVerticalBuffer);
         radialMenuEnrichment.showRadialMenu();
@@ -300,7 +300,7 @@ public class PerformanceGUIController implements Initializable {
             }
         }
 
-        radialMenuPattern = createCenterRadialMenu("Pattern", ArpeggiatorumGUI.controllerHandle.comboPattern.getItems().stream().toList(), patternHandler, bgHg1Color, bgHg2Color, bgMoLg1Color, bgMoLg2Color, -31,-13);
+        radialMenuPattern = createCenterRadialMenu("Pattern", ArpeggiatorumGUI.controllerHandle.comboPattern.getItems().stream().toList(), patternHandler, bgHg1Color, bgHg2Color, bgMoLg1Color, bgMoLg2Color, -31, -13);
         radialMenuPattern.setTranslateX(pixelWidth * 0.835);
         radialMenuPattern.setTranslateY(centralControlsShift - visualVerticalBuffer);
         radialMenuPattern.showRadialMenu();
@@ -411,9 +411,9 @@ public class PerformanceGUIController implements Initializable {
     }
 
     private synchronized void buttonConfirmPanicHandle(ActionEvent actionEvent) {
-        if (toggleAudio.isSelected()) {
-            toggleAudio.setSelected(false);
-        }
+//        if (toggleAudio.isSelected()) {
+//            toggleAudio.setSelected(false);
+//        }
         if (ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.isSelected()) {
             ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.fire();
         }

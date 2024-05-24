@@ -94,7 +94,7 @@ public class ArpeggiatorumGUIController implements Initializable {
     @FXML
     public ComboBox<Integer> comboArpeggioChannel;
     @FXML
-    public ComboBox<Integer> comboHeldChannel;
+    public ComboBox<Integer> comboSustainedChannel;
     @FXML
     public ComboBox<Integer> comboBassChannel;
     @FXML
@@ -149,8 +149,8 @@ public class ArpeggiatorumGUIController implements Initializable {
     public TextField e16;
     @FXML
     public Tab tabPerformance;
-   // @FXML
-   // public Text textsliderEnrichment;
+    // @FXML
+    // public Text textsliderEnrichment;
 
 
     /**
@@ -269,6 +269,9 @@ public class ArpeggiatorumGUIController implements Initializable {
     @FXML
     public void toggleButtonActivateClick(ActionEvent actionEvent) {
         Arpeggiatorum.getInstance().Activate(toggleButtonActivate.isSelected());
+        if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
+            ArpeggiatorumGUI.controllerHandlePerformance.toggleAudio.setSelected(toggleButtonActivate.isSelected());
+        }
     }
 
     @FXML
@@ -342,30 +345,39 @@ public class ArpeggiatorumGUIController implements Initializable {
     public void comboArpeggioChannelChanged(ActionEvent actionEvent) {
         if (comboArpeggioChannel.getValue() != null) {
             Arpeggiatorum.getInstance().getArpeggiator().setArpeggioChannel(comboArpeggioChannel.getValue());
-
+        }
             if (comboArpeggioChannel.getValue() != -1) {
-                ArpeggiatorumGUI.sessionArpeggioChannel =comboArpeggioChannel.getValue();
+                ArpeggiatorumGUI.sessionArpeggioChannel = comboArpeggioChannel.getValue();
             }
+        if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
+            ArpeggiatorumGUI.controllerHandlePerformance.toggleArpeggio.setSelected(comboArpeggioChannel.getValue() != -1 ? true : false);
         }
     }
 
     @FXML
-    public void comboHeldChannelChanged(ActionEvent actionEvent) {
-        if (comboHeldChannel.getValue() != null)
-            Arpeggiatorum.getInstance().getArpeggiator().setHeldNotesChannel(comboHeldChannel.getValue());
+    public void comboSustainedChannelChanged(ActionEvent actionEvent) {
+        if (comboSustainedChannel.getValue() != null) {
+            Arpeggiatorum.getInstance().getArpeggiator().setHeldNotesChannel(comboSustainedChannel.getValue());
+        }
+        if (comboSustainedChannel.getValue() != -1) {
+            ArpeggiatorumGUI.sessionSustainedChannel = comboSustainedChannel.getValue();
+        }
 
-        if (comboHeldChannel.getValue() != -1) {
-            ArpeggiatorumGUI.sessionSustainedChannel =comboHeldChannel.getValue();
+        if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
+            ArpeggiatorumGUI.controllerHandlePerformance.toggleSustained.setSelected(comboSustainedChannel.getValue() != -1 ? true : false);
         }
     }
 
     @FXML
     public void comboBassChannelChanged(ActionEvent actionEvent) {
-        if (comboBassChannel.getValue() != null)
+        if (comboBassChannel.getValue() != null) {
             Arpeggiatorum.getInstance().getArpeggiator().setBassChannel(comboBassChannel.getValue());
-
+        }
         if (comboBassChannel.getValue() != -1) {
-            ArpeggiatorumGUI.sessionBassChannel =comboBassChannel.getValue();
+            ArpeggiatorumGUI.sessionBassChannel = comboBassChannel.getValue();
+        }
+        if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
+            ArpeggiatorumGUI.controllerHandlePerformance.toggleBass.setSelected(comboBassChannel.getValue() != -1 ? true : false);
         }
     }
 
@@ -525,9 +537,9 @@ public class ArpeggiatorumGUIController implements Initializable {
 
         tabPaneControls.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
             if (newTab == tabPerformance) {
-                if (Arpeggiatorum.stagePerformance != null) {
-                    Arpeggiatorum.ClosePerformance(Arpeggiatorum.stagePerformance);
-                }
+//                if (Arpeggiatorum.stagePerformance != null) {
+//                    Arpeggiatorum.ClosePerformance(Arpeggiatorum.stagePerformance);
+//                }
                 Arpeggiatorum.LoadPerformance(ArpeggiatorumGUI.getInstance());
                 tabPaneControls.getSelectionModel().selectFirst();
             }
@@ -535,7 +547,7 @@ public class ArpeggiatorumGUIController implements Initializable {
 
         comboMIDIChannel.getItems().addAll(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
         comboArpeggioChannel.getItems().addAll(-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-        comboHeldChannel.getItems().addAll(-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+        comboSustainedChannel.getItems().addAll(-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
         comboBassChannel.getItems().addAll(-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
 
         comboEnrichment.getItems().add(new TonalEnrichmentChooserItem("-",
@@ -656,7 +668,7 @@ public class ArpeggiatorumGUIController implements Initializable {
 
         sliderScale.valueProperty().addListener((observable, oldValue, newValue) -> {
             Arpeggiatorum.getInstance().ScaleChange(newValue);
-            textScale.setText(String.format("CQT Scaling Factor: %d", newValue.intValue()));
+            textScale.setText(String.format("CQT Scaling Factor:\r\n%d", newValue.intValue()));
         });
 
         sliderSharpness.valueProperty().addListener((observable, oldValue, newValue) -> {
@@ -689,12 +701,20 @@ public class ArpeggiatorumGUIController implements Initializable {
         });
 
         sliderEnrichment.valueProperty().addListener((observable, oldValue, newValue) -> {
-            //textEnrichment.setText(String.format("%d %%", newValue.intValue()));
             Arpeggiatorum.getInstance().EnrichmentChange(newValue);
-            //textsliderEnrichment.setText(newValue.toString());
-//            if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
-//                ArpeggiatorumGUI.controllerHandlePerformance.buttonEnrichmentArray[(int) Math.ceil(15.0 * (newValue.doubleValue() / 100.0))].fire();
-//            }
+            if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
+                boolean changeColor = true;
+                for (int j = 0; j < ArpeggiatorumGUI.controllerHandlePerformance.buttonEnrichmentArray.length; j++) {
+                    if (changeColor) {
+                        ArpeggiatorumGUI.controllerHandlePerformance.buttonEnrichmentArray[j].setStyle(PerformanceGUIController.buttonEnrichmentStyleChecked);
+                    } else {
+                        ArpeggiatorumGUI.controllerHandlePerformance.buttonEnrichmentArray[j].setStyle(PerformanceGUIController.buttonEnrichmentStyleUnchecked);
+                    }
+                    if (j >= (int) Math.floor(16.0 * (newValue.doubleValue() / 100.0))) {
+                        changeColor = false;
+                    }
+                }
+            }
         });
     }
 }

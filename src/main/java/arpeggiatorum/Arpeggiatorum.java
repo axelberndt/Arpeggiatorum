@@ -1,6 +1,7 @@
 package arpeggiatorum;
 
 import arpeggiatorum.gui.ArpeggiatorumGUI;
+import arpeggiatorum.gui.ArpeggiatorumGUIController;
 import arpeggiatorum.gui.LogGUIController;
 import arpeggiatorum.microphoneControl.*;
 import arpeggiatorum.supplementary.EventMaker;
@@ -182,7 +183,7 @@ public class Arpeggiatorum implements Receiver {
         ArpeggiatorumGUI.controllerHandle.comboMIDIChannel.setValue(Integer.parseInt(configProp.getProperty("Channel", "0")));
         ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.setValue(Integer.parseInt(configProp.getProperty("Arpeggio", "1")));
         ArpeggiatorumGUI.controllerHandle.comboBassChannel.setValue(Integer.parseInt(configProp.getProperty("Bass", "0")));
-        ArpeggiatorumGUI.controllerHandle.comboHeldChannel.setValue(Integer.parseInt(configProp.getProperty("Held", "2")));
+        ArpeggiatorumGUI.controllerHandle.comboSustainedChannel.setValue(Integer.parseInt(configProp.getProperty("Held", "2")));
         ArpeggiatorumGUI.controllerHandle.sliderThreshold.setValue(Double.parseDouble(configProp.getProperty("Threshold", "500")));
         ArpeggiatorumGUI.controllerHandle.sliderScale.setValue(Float.parseFloat(configProp.getProperty("CQT Scaling Factor", "1.0")));
         ArpeggiatorumGUI.controllerHandle.sliderSharpness.setValue(Float.parseFloat(configProp.getProperty("CQT Sharpness", "1.0")));
@@ -209,9 +210,12 @@ public class Arpeggiatorum implements Receiver {
             prop.setProperty("Version", Arpeggiator.version);
 
             prop.setProperty("Channel", ArpeggiatorumGUI.controllerHandle.comboMIDIChannel.getValue().toString());
-            prop.setProperty("Arpeggio", ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getValue().toString());
-            prop.setProperty("Bass", ArpeggiatorumGUI.controllerHandle.comboBassChannel.getValue().toString());
-            prop.setProperty("Held", ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getValue().toString());
+//            prop.setProperty("Arpeggio", ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getValue().toString());
+//            prop.setProperty("Bass", ArpeggiatorumGUI.controllerHandle.comboBassChannel.getValue().toString());
+//            prop.setProperty("Held", ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getValue().toString());
+            prop.setProperty("Arpeggio", ArpeggiatorumGUI.sessionArpeggioChannel.toString());
+            prop.setProperty("Bass", ArpeggiatorumGUI.sessionBassChannel.toString());
+            prop.setProperty("Held", ArpeggiatorumGUI.sessionSustainedChannel.toString());
             prop.setProperty("Threshold", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderThreshold.getValue()));
             prop.setProperty("Tempo", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue()));
             prop.setProperty("Articulation", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderArticulation.getValue()));
@@ -282,14 +286,14 @@ public class Arpeggiatorum implements Receiver {
             stageLog.setScene(sceneLog);
             stageLog.show();
             stageLog.setMaximized(true);
-            stageLog.setOnCloseRequest((event) -> CloseLog(stageLog));
+            stageLog.setOnCloseRequest((event) -> CloseLog());
 
             stageLog.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
                 switch (event.getCode()) {
                     case KeyCode.ESCAPE:
                     case KeyCode.Q: {
                         // Close current window
-                       CloseLog(stageLog);
+                        CloseLog();
                         break;
                     }
                     case KeyCode.L: {
@@ -312,7 +316,6 @@ public class Arpeggiatorum implements Receiver {
             logger.log(Level.SEVERE, "Failed to create new Window.", e);
         }
     }
-
 
 
     public static void LoadPerformance(ArpeggiatorumGUI arpeggiatorumGUI) {
@@ -341,14 +344,14 @@ public class Arpeggiatorum implements Receiver {
             stagePerformance.show();
             //stagePerformance.setMaximized(true);
             stagePerformance.setFullScreen(true);
-            stagePerformance.setOnCloseRequest((event) -> ClosePerformance(stagePerformance));
+            stagePerformance.setOnCloseRequest((event) -> ClosePerformance());
 
             stagePerformance.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
                 switch (event.getCode()) {
                     case KeyCode.ESCAPE:
                     case KeyCode.Q: {
                         // Close current window
-                        ClosePerformance(stagePerformance);
+                        ClosePerformance();
                         break;
                     }
                     case KeyCode.L: {
@@ -357,7 +360,7 @@ public class Arpeggiatorum implements Receiver {
                     }
                     case KeyCode.P: {
                         // Close current window
-                       // ClosePerformance(stagePerformance);
+                        // ClosePerformance(stagePerformance);
                         //and reopen
                         Arpeggiatorum.LoadPerformance(ArpeggiatorumGUI.getInstance());
                         break;
@@ -368,19 +371,18 @@ public class Arpeggiatorum implements Receiver {
                 }
             });
         } catch (IOException e) {
+            System.out.println(e.getMessage());
             Logger logger = Logger.getLogger(arpeggiatorumGUI.getClass().getName());
             logger.log(Level.SEVERE, "Failed to create new Window.", e);
         }
     }
 
-    public static void ClosePerformance(Stage stagePerformance) {
-//        ArpeggiatorumGUI.controllerHandlePerformance.toggleArpeggio.setSelected(true);
-//        ArpeggiatorumGUI.controllerHandlePerformance.toggleBass.setSelected(true);
-//        ArpeggiatorumGUI.controllerHandlePerformance.toggleSustained.setSelected(true);
+    public static void ClosePerformance() {
         instancePerformance--;
         stagePerformance.close();
     }
-    private static void CloseLog(Stage stageLog) {
+
+    private static void CloseLog() {
         instanceLog--;
         stageLog.close();
     }
@@ -448,9 +450,9 @@ public class Arpeggiatorum implements Receiver {
                         break;
                     case EventMaker.CC_Effect_Ctrl_2_14b: // trigger arpeggio channel
                         Platform.runLater(() -> {
-                            Integer choice = (sMsg.getData2() >= 64) ? Arpeggiator.ARPEGGIO_CHANNEL_PRESET : -1;
+                            Integer choice = (sMsg.getData2() >= 64) ? ArpeggiatorumGUI.sessionArpeggioChannel : -1;
                             boolean bChoice = sMsg.getData2() >= 64;
-                            ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(ArpeggiatorumGUI.sessionArpeggioChannel+1);
+                            ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.getSelectionModel().select(choice);
                             if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
                                 ArpeggiatorumGUI.controllerHandlePerformance.toggleArpeggio.setSelected(bChoice);
                             }
@@ -458,9 +460,9 @@ public class Arpeggiatorum implements Receiver {
                         break;
                     case EventMaker.CC_Undefined_Ctrl_3_14b: // trigger held notes channel
                         Platform.runLater(() -> {
-                            Integer choice = (sMsg.getData2() >= 64) ? Arpeggiator.HELD_NOTES_CHANNEL_PRESET : -1;
+                            Integer choice = (sMsg.getData2() >= 64) ? ArpeggiatorumGUI.sessionSustainedChannel : -1;
                             boolean bChoice = sMsg.getData2() >= 64;
-                            ArpeggiatorumGUI.controllerHandle.comboHeldChannel.getSelectionModel().select(ArpeggiatorumGUI.sessionSustainedChannel+1);
+                            ArpeggiatorumGUI.controllerHandle.comboSustainedChannel.getSelectionModel().select(choice);
                             if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
                                 ArpeggiatorumGUI.controllerHandlePerformance.toggleSustained.setSelected(bChoice);
                             }
@@ -468,9 +470,9 @@ public class Arpeggiatorum implements Receiver {
                         break;
                     case EventMaker.CC_Undefined_Ctrl_4_14b: // trigger bass channel
                         Platform.runLater(() -> {
-                            Integer choice = (sMsg.getData2() >= 64) ? Arpeggiator.BASS_CHANNEL_PRESET : -1;
+                            Integer choice = (sMsg.getData2() >= 64) ? ArpeggiatorumGUI.sessionBassChannel : -1;
                             boolean bChoice = sMsg.getData2() >= 64;
-                            ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().select(ArpeggiatorumGUI.sessionBassChannel+1);
+                            ArpeggiatorumGUI.controllerHandle.comboBassChannel.getSelectionModel().select(choice);
                             if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
                                 ArpeggiatorumGUI.controllerHandlePerformance.toggleBass.setSelected(bChoice);
                             }
@@ -571,9 +573,9 @@ public class Arpeggiatorum implements Receiver {
 
             cqtAutoTune = false;
         }
-//        if (ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.isSelected()) {
-//            ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.fire();
-//        }
+        if (ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.isSelected()) {
+            ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.fire();
+        }
         Arpeggiatorum.getInstance().Activate(false);
         Mic2MIDI_CQT.autoTune = cqtAutoTune;
     }
@@ -581,11 +583,14 @@ public class Arpeggiatorum implements Receiver {
     public void Activate(boolean selected) {
         if (selected) {
             ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setStyle("-fx-background-color: Chartreuse;");
+            ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setSelected(true);
             // ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setText("Active");
             ArpeggiatorumGUI.controllerHandle.comboMic2MIDI.getValue().start();
             ArpeggiatorumGUI.controllerHandle.comboMic2MIDI.getValue().setSignalToNoiseThreshold(ArpeggiatorumGUI.controllerHandle.sliderThreshold.getValue() / ArpeggiatorumGUI.controllerHandle.sliderThreshold.getMax());
         } else {
             ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setStyle("");
+            ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setSelected(false);
+
             // ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setText("Activate");
             for (Mic2MIDI processor : mic2Midi) {
                 processor.stop();

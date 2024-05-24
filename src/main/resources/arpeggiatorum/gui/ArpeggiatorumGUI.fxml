@@ -59,9 +59,9 @@
                         <ComboBox fx:id="comboArpeggioChannel" GridPane.columnIndex="2" GridPane.columnSpan="1"
                                   GridPane.rowIndex="1" maxHeight="Infinity" maxWidth="Infinity"
                                   onAction="#comboArpeggioChannelChanged"/>
-                        <ComboBox fx:id="comboHeldChannel" GridPane.columnIndex="2" GridPane.columnSpan="1"
+                        <ComboBox fx:id="comboSustainedChannel" GridPane.columnIndex="2" GridPane.columnSpan="1"
                                   GridPane.rowIndex="2" maxHeight="Infinity" maxWidth="Infinity"
-                                  onAction="#comboHeldChannelChanged"/>
+                                  onAction="#comboSustainedChannelChanged"/>
                         <ComboBox fx:id="comboBassChannel" GridPane.columnIndex="2" GridPane.columnSpan="1"
                                   GridPane.rowIndex="3" maxHeight="Infinity" maxWidth="Infinity"
                                   onAction="#comboBassChannelChanged"/>
