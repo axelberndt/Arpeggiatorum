@@ -18,7 +18,7 @@ plugins {
 
 javafx {
     //First SDK available of JavaFX for Apple Silicon is 17, but Apple anyway does not support touchscreens. So use 16 for windows and 21 with mac
-    //version = "21.0.2"
+    //version = "21.0.3"
     version = "16"
     modules = ['javafx.controls', 'javafx.fxml']
 }
@@ -62,7 +62,7 @@ dependencies {
 //            {
 //                exclude group: 'org.openjfx'
 //            }
-    
+
 //    implementation('eu.hansolo:regulators:17.0.0')
 //            {
 //                exclude group: 'org.openjfx'
@@ -98,14 +98,14 @@ jlink {
             imageOptions += []
         }
     }
-def JLINK_DIR = "$buildDir"
+    def JLINK_DIR = "$buildDir"
 
-tasks.jlink.doLast {
-    copy {
-        from("/externals") {
-            include "portaudio_x64.dll", "jportaudio_x64.dll"
+    tasks.jlink.doLast {
+        copy {
+            from("/externals") {
+                include "portaudio_x64.dll", "jportaudio_x64.dll"
+            }
+            into JLINK_DIR + "/image/bin"
         }
-        into JLINK_DIR + "/image/bin"
     }
-}
 }
