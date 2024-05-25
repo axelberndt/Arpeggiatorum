@@ -182,25 +182,21 @@ public class Arpeggiatorum implements Receiver {
 
         ArpeggiatorumGUI.controllerHandle.comboMIDIChannel.setValue(Integer.parseInt(configProp.getProperty("Channel", "0")));
 
-//        if (Integer.parseInt(configProp.getProperty("Toggle Arpeggio", "-1")) != -1) {
-//            ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.setValue(Integer.parseInt(configProp.getProperty("Arpeggio", "1")));
-//        } else {
-//            ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.setValue(-1);
-//        }
-//        if (Integer.parseInt(configProp.getProperty("Toggle Sustained", "-1")) != -1) {
-//            ArpeggiatorumGUI.controllerHandle.comboSustainedChannel.setValue(Integer.parseInt(configProp.getProperty("Sustained", "2")));
-//        } else {
-//            ArpeggiatorumGUI.controllerHandle.comboSustainedChannel.setValue(-1);
-//        }
-//        if (Integer.parseInt(configProp.getProperty("Toggle Bass", "-1")) != -1) {
-//            ArpeggiatorumGUI.controllerHandle.comboBassChannel.setValue(Integer.parseInt(configProp.getProperty("Bass", "0")));
-//        } else {
-//            ArpeggiatorumGUI.controllerHandle.comboBassChannel.setValue(-1);
-//        }
         ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.setValue(Integer.parseInt(configProp.getProperty("Arpeggio", "1")));
         ArpeggiatorumGUI.controllerHandle.comboSustainedChannel.setValue(Integer.parseInt(configProp.getProperty("Sustained", "2")));
         ArpeggiatorumGUI.controllerHandle.comboBassChannel.setValue(Integer.parseInt(configProp.getProperty("Bass", "0")));
 
+        if (Integer.parseInt(configProp.getProperty("Toggle Arpeggio", "-1")) == -1) {
+            ArpeggiatorumGUI.controllerHandle.comboArpeggioChannel.setValue(-1);
+        }
+
+        if (Integer.parseInt(configProp.getProperty("Toggle Sustained", "-1")) == -1) {
+            ArpeggiatorumGUI.controllerHandle.comboSustainedChannel.setValue(-1);
+        }
+
+        if (Integer.parseInt(configProp.getProperty("Toggle Bass", "-1")) == -1) {
+            ArpeggiatorumGUI.controllerHandle.comboBassChannel.setValue(-1);
+        }
 
         ArpeggiatorumGUI.controllerHandle.sliderThreshold.setValue(Double.parseDouble(configProp.getProperty("Threshold", "500")));
         ArpeggiatorumGUI.controllerHandle.sliderScale.setValue(Float.parseFloat(configProp.getProperty("CQT Scaling Factor", "1.0")));
@@ -368,7 +364,7 @@ public class Arpeggiatorum implements Receiver {
             scenePerformance.setFill(Color.BLACK);
             stagePerformance.setScene(scenePerformance);
             stagePerformance.show();
-            //stagePerformance.setMaximized(true);
+            stagePerformance.setMaximized(true);
             stagePerformance.setFullScreen(true);
             stagePerformance.setOnCloseRequest((event) -> ClosePerformance());
 
@@ -404,6 +400,8 @@ public class Arpeggiatorum implements Receiver {
     }
 
     public static void ClosePerformance() {
+        //Fix for mac closing when full screen
+        stagePerformance.setFullScreen(false);
         instancePerformance--;
         stagePerformance.close();
     }
