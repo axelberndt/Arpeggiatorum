@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 
 public class Arpeggiatorum implements Receiver {
 
-    public static final Synthesizer synth = JSyn.createSynthesizer(); // this Synthesizer instance is used for scheduling and audio processing
+    public static Synthesizer synth = JSyn.createSynthesizer(); // this Synthesizer instance is used for scheduling and audio processing
     //Sample Rate
     public static int sampleRate;
     private static volatile Arpeggiatorum instance;

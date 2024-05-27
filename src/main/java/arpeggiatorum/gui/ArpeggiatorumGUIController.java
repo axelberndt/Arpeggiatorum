@@ -8,6 +8,7 @@ import arpeggiatorum.notePool.NotePool;
 import arpeggiatorum.supplementary.MidiDeviceChooserItem;
 import arpeggiatorum.supplementary.TonalEnrichmentChooserItem;
 import arpeggiatorum.supplementary.Tools;
+import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
 import com.jsyn.devices.AudioDeviceFactory;
 import com.jsyn.devices.AudioDeviceManager;
@@ -70,7 +71,7 @@ public class ArpeggiatorumGUIController implements Initializable {
     public ComboBox<String> comboAudioIn;
     @FXML
     public ComboBox<Integer> comboAudioChannel;
-//    @FXML
+    //    @FXML
 //    public Slider sliderThreshold;
     @FXML
     public Slider sliderSharpness;
@@ -158,6 +159,7 @@ public class ArpeggiatorumGUIController implements Initializable {
      */
     @FXML
     public void createMidiInChooser() {
+        comboMIDIIn.getItems().clear();
         for (MidiDevice.Info info : MidiSystem.getMidiDeviceInfo()) { // iterate the info of each device
             // Get the corresponding device
             MidiDevice device;
@@ -188,6 +190,8 @@ public class ArpeggiatorumGUIController implements Initializable {
      */
     @FXML
     public void createMidiOutChooser() {
+        comboMIDIOut.getItems().clear();
+
         for (MidiDevice.Info info : MidiSystem.getMidiDeviceInfo()) { // iterate the info of each device
             // Get the corresponding device
             MidiDevice device;
@@ -218,6 +222,8 @@ public class ArpeggiatorumGUIController implements Initializable {
      */
     @FXML
     public void createAudioInChooser() {
+        comboAudioIn.getItems().clear();
+
         AudioDeviceManager audioManager = AudioDeviceFactory.createAudioDeviceManager(false);
         int numDevices = audioManager.getDeviceCount();
 
@@ -233,6 +239,7 @@ public class ArpeggiatorumGUIController implements Initializable {
      */
     @FXML
     public void createAudioOutChooser() {
+
         AudioDeviceManager audioManager = AudioDeviceFactory.createAudioDeviceManager(false);
         int numDevices = audioManager.getDeviceCount();
 
@@ -245,6 +252,7 @@ public class ArpeggiatorumGUIController implements Initializable {
 
     @FXML
     public void createAudioChannelChooser() {
+        comboAudioChannel.getItems().clear();
         AudioDeviceManager audioManager = AudioDeviceFactory.createAudioDeviceManager(false);
         int numDevices = audioManager.getMaxInputChannels(audioManager.getDefaultInputDeviceID());
         for (int i = 1; i <= numDevices; ++i) {
@@ -298,6 +306,23 @@ public class ArpeggiatorumGUIController implements Initializable {
         Arpeggiatorum.getInstance().getArpeggiator().panic();
     }
 
+    @FXML
+    public void buttonRestartClick(ActionEvent actionEvent) {
+        //Initialize GUI Elements
+        createMidiInChooser();
+        comboMIDIIn.getSelectionModel().selectFirst();
+        createMidiOutChooser();
+        comboMIDIOut.getSelectionModel().selectFirst();
+        createAudioInChooser();
+        comboAudioIn.getSelectionModel().selectFirst();
+        createAudioChannelChooser();
+        comboAudioChannel.getSelectionModel().selectFirst();
+        
+        Arpeggiatorum.synth= JSyn.createSynthesizer();
+        //Arpeggiatorum.synth.start(44100,AudioDeviceManager.USE_DEFAULT_DEVICE,0,AudioDeviceManager.USE_DEFAULT_DEVICE,0);
+    }
+
+
     //Combo Boxes
     @FXML
     public void comboMIDIInChanged(ActionEvent actionEvent) {
@@ -346,9 +371,9 @@ public class ArpeggiatorumGUIController implements Initializable {
         if (comboArpeggioChannel.getValue() != null) {
             Arpeggiatorum.getInstance().getArpeggiator().setArpeggioChannel(comboArpeggioChannel.getValue());
         }
-            if (comboArpeggioChannel.getValue() != -1) {
-                ArpeggiatorumGUI.sessionArpeggioChannel = comboArpeggioChannel.getValue();
-            }
+        if (comboArpeggioChannel.getValue() != -1) {
+            ArpeggiatorumGUI.sessionArpeggioChannel = comboArpeggioChannel.getValue();
+        }
         if (ArpeggiatorumGUI.controllerHandlePerformance != null) {
             ArpeggiatorumGUI.controllerHandlePerformance.toggleArpeggio.setSelected(comboArpeggioChannel.getValue() != -1 ? true : false);
         }
@@ -407,6 +432,9 @@ public class ArpeggiatorumGUIController implements Initializable {
             Arpeggiatorum.synth.stop();
         }
         int deviceInputID = Tools.getDeviceID(comboAudioIn.getValue());
+//        if (deviceInputID==-1) {
+//        return;
+//        }
         int deviceInputChannels = Arpeggiatorum.synth.getAudioDeviceManager().getMaxInputChannels(deviceInputID);
         updateAudioChannelChooser(deviceInputID);
 
