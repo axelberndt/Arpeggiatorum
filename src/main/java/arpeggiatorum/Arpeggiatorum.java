@@ -198,7 +198,8 @@ public class Arpeggiatorum implements Receiver {
             ArpeggiatorumGUI.controllerHandle.comboBassChannel.setValue(-1);
         }
 
-        ArpeggiatorumGUI.controllerHandle.sliderThreshold.setValue(Double.parseDouble(configProp.getProperty("Threshold", "500")));
+        //ArpeggiatorumGUI.controllerHandle.sliderThreshold.setValue(Double.parseDouble(configProp.getProperty("Threshold", "500")));
+
         ArpeggiatorumGUI.controllerHandle.sliderScale.setValue(Float.parseFloat(configProp.getProperty("CQT Scaling Factor", "1.0")));
         ArpeggiatorumGUI.controllerHandle.sliderSharpness.setValue(Float.parseFloat(configProp.getProperty("CQT Sharpness", "1.0")));
         ArpeggiatorumGUI.controllerHandle.sliderTempo.setValue(Double.parseDouble(configProp.getProperty("Tempo", "500")));
@@ -234,7 +235,7 @@ public class Arpeggiatorum implements Receiver {
             prop.setProperty("Bass", ArpeggiatorumGUI.sessionBassChannel.toString());
             prop.setProperty("Sustained", ArpeggiatorumGUI.sessionSustainedChannel.toString());
 
-            prop.setProperty("Threshold", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderThreshold.getValue()));
+           // prop.setProperty("Threshold", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderThreshold.getValue()));
 
             prop.setProperty("Tempo", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue()));
             prop.setProperty("Articulation", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderArticulation.getValue()));
@@ -502,7 +503,7 @@ public class Arpeggiatorum implements Receiver {
                             }
                         });
                         break;
-                    case EventMaker.CC_Undefined_Ctrl_5_14b: // toggle Audio In
+                    case EventMaker.CC_Undefined_Ctrl_5_14b: // Toggle Audio In
                         Platform.runLater(() -> {
                             boolean choice = sMsg.getData2() >= 64;
                             Arpeggiatorum.getInstance().Activate(choice);
@@ -511,16 +512,22 @@ public class Arpeggiatorum implements Receiver {
                             }
                         });
                         break;
-                    case EventMaker.CC_Undefined_Ctrl_6_14b: // toggle autotune
+                    case EventMaker.CC_Undefined_Ctrl_6_14b: // Toggle AutoTune
                         Platform.runLater(() -> {
                             boolean choice = sMsg.getData2() >= 64;
                             Arpeggiatorum.getInstance().AutoTune(choice);
                         });
                         break;
-                    case EventMaker.CC_Undefined_Ctrl_7_14b: // set threshold
+                    case EventMaker.CC_Undefined_Ctrl_7_14b: // Set Scaling Factor
                         Platform.runLater(() -> {
                             double sliderValue = sMsg.getData2() / 127.00;
-                            ArpeggiatorumGUI.controllerHandle.sliderThreshold.setValue(sliderValue * ArpeggiatorumGUI.controllerHandle.sliderThreshold.getMax());
+                            ArpeggiatorumGUI.controllerHandle.sliderScale.setValue(sliderValue * ArpeggiatorumGUI.controllerHandle.sliderScale.getMax());
+                        });
+                        break;
+                    case EventMaker.CC_Undefined_Ctrl_8_14b: // Set Sharpness
+                        Platform.runLater(() -> {
+                            double sliderValue = sMsg.getData2() / 127.00;
+                            ArpeggiatorumGUI.controllerHandle.sliderSharpness.setValue(sliderValue * ArpeggiatorumGUI.controllerHandle.sliderSharpness.getMax());
                         });
                         break;
                     default:
@@ -611,7 +618,8 @@ public class Arpeggiatorum implements Receiver {
             ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setSelected(true);
             // ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setText("Active");
             ArpeggiatorumGUI.controllerHandle.comboMic2MIDI.getValue().start();
-            ArpeggiatorumGUI.controllerHandle.comboMic2MIDI.getValue().setSignalToNoiseThreshold(ArpeggiatorumGUI.controllerHandle.sliderThreshold.getValue() / ArpeggiatorumGUI.controllerHandle.sliderThreshold.getMax());
+            ArpeggiatorumGUI.controllerHandle.comboMic2MIDI.getValue().setSignalToNoiseThreshold(1.0); //The value does not matter
+            //ArpeggiatorumGUI.controllerHandle.comboMic2MIDI.getValue().setSignalToNoiseThreshold(ArpeggiatorumGUI.controllerHandle.sliderThreshold.getValue() / ArpeggiatorumGUI.controllerHandle.sliderThreshold.getMax());
         } else {
             ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setStyle("");
             ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.setSelected(false);
@@ -647,12 +655,12 @@ public class Arpeggiatorum implements Receiver {
         this.arpeggiator.setTonalEnrichment(intervals);
     }
 
-    public void ThresholdChange(Number value) {
-        double scaledValue = value.doubleValue() / ArpeggiatorumGUI.controllerHandle.sliderThreshold.getMax();
-        for (Mic2MIDI processor : mic2Midi) {
-            processor.setSignalToNoiseThreshold(scaledValue);
-        }
-    }
+//    public void ThresholdChange(Number value) {
+//        double scaledValue = value.doubleValue() / ArpeggiatorumGUI.controllerHandle.sliderThreshold.getMax();
+//        for (Mic2MIDI processor : mic2Midi) {
+//            processor.setSignalToNoiseThreshold(scaledValue);
+//        }
+//    }
 
     public void TempoChange(Number value) {
         this.arpeggiator.setTempo(value.doubleValue());
@@ -680,7 +688,7 @@ public class Arpeggiatorum implements Receiver {
         for (Mic2MIDI processor : mic2Midi) {
             if (processor instanceof Mic2MIDI_CQT) {
                 Mic2MIDI_CQT.scalingFactor = value.floatValue();
-                processor.setSignalToNoiseThreshold(ArpeggiatorumGUI.controllerHandle.sliderThreshold.getValue() / ArpeggiatorumGUI.controllerHandle.sliderThreshold.getMax());
+                //processor.setSignalToNoiseThreshold(ArpeggiatorumGUI.controllerHandle.sliderThreshold.getValue() / ArpeggiatorumGUI.controllerHandle.sliderThreshold.getMax());
             }
         }
     }

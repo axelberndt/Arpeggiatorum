@@ -74,6 +74,7 @@ public class CQTPitchDetector extends UnitGenerator {
                     float[] CQTBins = CQT.getMagnitudes();
                     for (int x=0; x<CQTBins.length; x++) {
                         CQTBins[x] = (float) Math.pow(CQTBins[x], sharpness);
+                        CQTBins[x]*=arpeggiatorum.microphoneControl.Mic2MIDI_CQT.scalingFactor;
                     }
                     //Visualize CQT Bins
                     ArpeggiatorumGUI.controllerHandle.updateHist(Tools.toDoubleArray(CQTBins), lowIndex);

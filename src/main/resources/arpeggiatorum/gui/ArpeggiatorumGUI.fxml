@@ -112,10 +112,10 @@
                         <Text text="Pitch Extraction Algorithm"
                               GridPane.columnIndex="0" GridPane.rowIndex="1"
                               GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
-                        <Text text="Current Threshold"
-                              fx:id="textThreshold"
-                              GridPane.columnIndex="0" GridPane.rowIndex="2"
-                              GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
+<!--                        <Text text="Current Threshold"-->
+<!--                              fx:id="textThreshold"-->
+<!--                              GridPane.columnIndex="0" GridPane.rowIndex="2"-->
+<!--                              GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>-->
                         <Text text="CQT Sharpness"
                               fx:id="textSharpness"
                               GridPane.columnIndex="0" GridPane.rowIndex="3"
@@ -133,11 +133,11 @@
                         <ComboBox fx:id="comboMic2MIDI" GridPane.columnIndex="1" GridPane.columnSpan="2"
                                   GridPane.rowIndex="1" maxHeight="Infinity" maxWidth="Infinity"
                                   onAction="#comboMic2MIDIChanged"/>
-                        <Slider fx:id="sliderThreshold" GridPane.columnIndex="1" GridPane.columnSpan="3"
-                                GridPane.rowIndex="2"
-                                maxHeight="Infinity" maxWidth="Infinity" SplitPane.resizableWithParent="true"
-                                GridPane.fillWidth="true" min="1" max="1000" value="500" showTickMarks="true"
-                                showTickLabels="true" majorTickUnit="100" minorTickCount="5"/>
+<!--                        <Slider fx:id="sliderThreshold" GridPane.columnIndex="1" GridPane.columnSpan="3"-->
+<!--                                GridPane.rowIndex="2"-->
+<!--                                maxHeight="Infinity" maxWidth="Infinity" SplitPane.resizableWithParent="true"-->
+<!--                                GridPane.fillWidth="true" min="1" max="1000" value="500" showTickMarks="true"-->
+<!--                                showTickLabels="true" majorTickUnit="100" minorTickCount="5"/>-->
                         <Slider fx:id="sliderSharpness" GridPane.columnIndex="1" GridPane.columnSpan="3"
                                 GridPane.rowIndex="3"
                                 maxHeight="Infinity" maxWidth="Infinity" SplitPane.resizableWithParent="true"

@@ -70,8 +70,8 @@ public class ArpeggiatorumGUIController implements Initializable {
     public ComboBox<String> comboAudioIn;
     @FXML
     public ComboBox<Integer> comboAudioChannel;
-    @FXML
-    public Slider sliderThreshold;
+//    @FXML
+//    public Slider sliderThreshold;
     @FXML
     public Slider sliderSharpness;
     @FXML
@@ -661,10 +661,10 @@ public class ArpeggiatorumGUIController implements Initializable {
         //Event Handlers
         //For whatever reason Sliders don’t have ActionEvents...
         //Instead, they have a Number called valueProperty that contains the current value of the slider.
-        sliderThreshold.valueProperty().addListener((observable, oldValue, newValue) -> {
-            textThreshold.setText(String.format("Current Threshold: %d", newValue.intValue()));
-            Arpeggiatorum.getInstance().ThresholdChange(newValue);
-        });
+//        sliderThreshold.valueProperty().addListener((observable, oldValue, newValue) -> {
+//            textThreshold.setText(String.format("Current Threshold: %d", newValue.intValue()));
+//            Arpeggiatorum.getInstance().ThresholdChange(newValue);
+//        });
 
         sliderScale.valueProperty().addListener((observable, oldValue, newValue) -> {
             Arpeggiatorum.getInstance().ScaleChange(newValue);
