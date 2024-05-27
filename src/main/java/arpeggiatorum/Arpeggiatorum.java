@@ -591,10 +591,11 @@ public class Arpeggiatorum implements Receiver {
     public void AutoTune(boolean selected) {
         if (selected) {
             ArpeggiatorumGUI.controllerHandle.toggleButtonAutoTune.setStyle("-fx-background-color: Chartreuse;");
+            ArpeggiatorumGUI.controllerHandle.toggleButtonAutoTune.setSelected(true);
             cqtAutoTune = true;
         } else {
             ArpeggiatorumGUI.controllerHandle.toggleButtonAutoTune.setStyle("");
-
+            ArpeggiatorumGUI.controllerHandle.toggleButtonAutoTune.setSelected(false);
             cqtAutoTune = false;
         }
         if (ArpeggiatorumGUI.controllerHandle.toggleButtonActivate.isSelected()) {
