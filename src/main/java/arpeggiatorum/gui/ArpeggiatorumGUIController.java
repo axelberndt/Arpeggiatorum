@@ -309,17 +309,17 @@ public class ArpeggiatorumGUIController implements Initializable {
     @FXML
     public void buttonRestartClick(ActionEvent actionEvent) {
         //Initialize GUI Elements
-        createMidiInChooser();
-        comboMIDIIn.getSelectionModel().selectFirst();
-        createMidiOutChooser();
-        comboMIDIOut.getSelectionModel().selectFirst();
-        createAudioInChooser();
-        comboAudioIn.getSelectionModel().selectFirst();
-        createAudioChannelChooser();
-        comboAudioChannel.getSelectionModel().selectFirst();
-        
-        Arpeggiatorum.synth= JSyn.createSynthesizer();
-        //Arpeggiatorum.synth.start(44100,AudioDeviceManager.USE_DEFAULT_DEVICE,0,AudioDeviceManager.USE_DEFAULT_DEVICE,0);
+//        createMidiInChooser();
+//        comboMIDIIn.getSelectionModel().selectFirst();
+//        createMidiOutChooser();
+//        comboMIDIOut.getSelectionModel().selectFirst();
+//        createAudioInChooser();
+//        comboAudioIn.getSelectionModel().selectFirst();
+//        createAudioChannelChooser();
+//        comboAudioChannel.getSelectionModel().selectFirst();
+//
+//        Arpeggiatorum.synth = JSyn.createSynthesizer();
+//        Arpeggiatorum.synth.start(44100,AudioDeviceManager.USE_DEFAULT_DEVICE,0,AudioDeviceManager.USE_DEFAULT_DEVICE,0);
     }
 
 
@@ -426,15 +426,18 @@ public class ArpeggiatorumGUIController implements Initializable {
 
     @FXML
     public void comboAudioInChanged(ActionEvent actionEvent) {
+
+        int deviceInputID = Tools.getDeviceID(comboAudioIn.getValue());
+//        if (deviceInputID == -1) {
+//            return;
+//        }
+
         //Windows appear to be the problem, works on Mac
         //Works with modified portaudio
         if (Arpeggiatorum.synth.isRunning()) {
             Arpeggiatorum.synth.stop();
         }
-        int deviceInputID = Tools.getDeviceID(comboAudioIn.getValue());
-//        if (deviceInputID==-1) {
-//        return;
-//        }
+
         int deviceInputChannels = Arpeggiatorum.synth.getAudioDeviceManager().getMaxInputChannels(deviceInputID);
         updateAudioChannelChooser(deviceInputID);
 
@@ -642,7 +645,7 @@ public class ArpeggiatorumGUIController implements Initializable {
             chartSeries.getData().add(chartData[i]);
 
             middleData[i] = new XYChart.Data<>(String.format("%.2f", cqtFreqs[i]),
-                    0.1);
+                    0.5);
             middleSeries.getData().add(middleData[i]);
 
         }

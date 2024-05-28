@@ -138,10 +138,10 @@
                 <!--                                maxHeight="Infinity" maxWidth="Infinity" SplitPane.resizableWithParent="true"-->
                 <!--                                GridPane.fillWidth="true" min="1" max="1000" value="500" showTickMarks="true"-->
                 <!--                                showTickLabels="true" majorTickUnit="100" minorTickCount="5"/>-->
-                <Button fx:id="buttonRestart" text="Restart JSyn Engine"
-                        GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2"
-                        maxHeight="Infinity" maxWidth="Infinity" SplitPane.resizableWithParent="true"
-                        GridPane.fillWidth="true" onAction="#buttonRestartClick"></Button>
+<!--                <Button fx:id="buttonRestart" text="Restart JSyn Engine"-->
+<!--                        GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2"-->
+<!--                        maxHeight="Infinity" maxWidth="Infinity" SplitPane.resizableWithParent="true"-->
+<!--                        GridPane.fillWidth="true" onAction="#buttonRestartClick"></Button>-->
                 <Slider fx:id="sliderSharpness" GridPane.columnIndex="1" GridPane.columnSpan="3"
                         GridPane.rowIndex="3"
                         maxHeight="Infinity" maxWidth="Infinity" SplitPane.resizableWithParent="true"
