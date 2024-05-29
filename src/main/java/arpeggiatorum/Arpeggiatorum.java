@@ -116,7 +116,7 @@ public class Arpeggiatorum implements Receiver {
         Mic2MIDI_CQT.clusterSize = Integer.parseInt(configProp.getProperty("CQT Auto-Tune Cluster Size", "3"));
         cqtMinVel = Integer.parseInt(configProp.getProperty("CQT Min Velocity", "30"));
         cqtMaxVel = Integer.parseInt(configProp.getProperty("CQT Max Velocity", "127"));
-        Mic2MIDI_CQT.scalingFactor = Double.parseDouble(configProp.getProperty("CQT Scaling Factor", "1.0"));
+        Mic2MIDI_CQT.scalingFactor = Double.parseDouble(configProp.getProperty("CQT Scaling Factor", "0.0"));
         Mic2MIDI_CQT.sharpness = Float.parseFloat(configProp.getProperty("CQT Sharpness", "1.0"));
         tarsosBuffer = Integer.parseInt(configProp.getProperty("Tarsos Buffer Size", "1024"));
         tarsosConfidence = Double.parseDouble(configProp.getProperty("Tarsos Confidence", "0.98"));
@@ -200,7 +200,7 @@ public class Arpeggiatorum implements Receiver {
 
         //ArpeggiatorumGUI.controllerHandle.sliderThreshold.setValue(Double.parseDouble(configProp.getProperty("Threshold", "500")));
 
-        ArpeggiatorumGUI.controllerHandle.sliderScale.setValue(Float.parseFloat(configProp.getProperty("CQT Scaling Factor", "1.0")));
+        ArpeggiatorumGUI.controllerHandle.sliderScale.setValue(Float.parseFloat(configProp.getProperty("CQT Scaling Factor", "0.0")));
         ArpeggiatorumGUI.controllerHandle.sliderSharpness.setValue(Float.parseFloat(configProp.getProperty("CQT Sharpness", "1.0")));
         ArpeggiatorumGUI.controllerHandle.sliderTempo.setValue(Double.parseDouble(configProp.getProperty("Tempo", "500")));
         ArpeggiatorumGUI.controllerHandle.sliderArticulation.setValue(Double.parseDouble(configProp.getProperty("Articulation", "100")));

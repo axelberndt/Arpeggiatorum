@@ -109,7 +109,7 @@
                 <Text text="Audio Input"
                       GridPane.columnIndex="0" GridPane.rowIndex="0"
                       GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
-                <Text text="Pitch Extraction Algorithm"
+                <Text text="Pitch Detector"
                       GridPane.columnIndex="0" GridPane.rowIndex="1"
                       GridPane.columnSpan="1" GridPane.halignment="RIGHT"/>
                 <!--                        <Text text="Current Threshold"-->

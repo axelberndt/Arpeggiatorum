@@ -699,7 +699,7 @@ public class ArpeggiatorumGUIController implements Initializable {
 
         sliderScale.valueProperty().addListener((observable, oldValue, newValue) -> {
             Arpeggiatorum.getInstance().ScaleChange(newValue);
-            textScale.setText(String.format("CQT Scaling Factor:\r\n%.2f", newValue.doubleValue()));
+            //textScale.setText(String.format("CQT Scaling Factor:\r\n%.2f", newValue.doubleValue()));
         });
 
         sliderSharpness.valueProperty().addListener((observable, oldValue, newValue) -> {
