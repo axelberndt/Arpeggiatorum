@@ -108,7 +108,7 @@ public class Arpeggiatorum implements Receiver {
         times = new Instant[maxCount];
         sampleRate = Integer.parseInt(configProp.getProperty("Sample Rate", "44100"));
         cqtMin = Double.parseDouble(configProp.getProperty("CQT Min Freq", "41.205"));
-        cqtMax = Double.parseDouble(configProp.getProperty("CQT Max Freq", "2637.02"));
+        cqtMax = Double.parseDouble(configProp.getProperty("CQT Max Freq", "2637.22"));
         cqtThreshold = Float.parseFloat(configProp.getProperty("CQT Threshold", "0.01"));
         cqtSpread = Float.parseFloat(configProp.getProperty("CQT Spread", "0.55"));
         cqtIsPoly = Boolean.parseBoolean(configProp.getProperty("CQT Poly", "true"));
