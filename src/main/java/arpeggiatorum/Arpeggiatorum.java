@@ -688,7 +688,7 @@ public class Arpeggiatorum implements Receiver {
         for (Mic2MIDI processor : mic2Midi) {
             if (processor instanceof Mic2MIDI_CQT) {
                 Mic2MIDI_CQT.scalingFactor = (Math.pow(value.floatValue(),4.0f)*9999999.0f)+1;
-                System.out.println(Mic2MIDI_CQT.scalingFactor);
+               // System.out.println(Mic2MIDI_CQT.scalingFactor);
                 //processor.setSignalToNoiseThreshold(ArpeggiatorumGUI.controllerHandle.sliderThreshold.getValue() / ArpeggiatorumGUI.controllerHandle.sliderThreshold.getMax());
             }
         }
