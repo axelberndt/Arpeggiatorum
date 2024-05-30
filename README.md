@@ -8,6 +8,7 @@ A software arpeggiator to drive any MIDI instrument. It can be controlled with a
 
 **Work in Progress!**
 
+Use Gradle to compile and run the project. E.g. if using IntelliJ: gradle run.
 Use Gradle script "jlink" to produce a usable, self-contained, output.
 
 **Interface**:
@@ -22,10 +23,8 @@ Keyboard shortcuts:
 
 **Windows**:
 
-Compile with JavaFX version 16 if you want to have TouchScreen support. Touch support has been bugged since JavaFX 17 and has not been resolved as of 21.0.2 .
-
-For ASIO support copy the provided dlls in the binary folder.
+Compile with JavaFX version 16 if you want to have TouchScreen support. Touch support has been bugged since JavaFX 17 and has not been resolved as of 21.0.3 .
 
 **Mac**:
 
-Compile with JavaFX version 21.0.2
+Compile with JavaFX version 21.0.3
