@@ -263,7 +263,7 @@ public class Arpeggiatorum implements Receiver {
             prop.setProperty("CQT Poly", String.valueOf(cqtIsPoly));
             prop.setProperty("CQT Min Velocity", String.valueOf(cqtMinVel));
             prop.setProperty("CQT Max Velocity", String.valueOf(cqtMaxVel));
-            prop.setProperty("CQT Scaling Factor", String.valueOf(Mic2MIDI_CQT.scalingFactor));
+            prop.setProperty("CQT Scaling Factor", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderScale.getValue()));
             prop.setProperty("CQT Sharpness", String.valueOf(Mic2MIDI_CQT.sharpness));
 
             prop.setProperty("Tarsos Buffer Size", String.valueOf(tarsosBuffer));
