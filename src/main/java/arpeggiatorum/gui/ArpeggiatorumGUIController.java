@@ -362,8 +362,10 @@ public class ArpeggiatorumGUIController implements Initializable {
 
     @FXML
     public void comboMIDIChannelChanged(ActionEvent actionEvent) {
-        if (comboMIDIChannel.getValue() != null)
+        if (comboMIDIChannel.getValue() != null) {
             Arpeggiatorum.getInstance().getArpeggiator().setInputChannel(comboMIDIChannel.getValue());
+            Mic2MIDI.MIDIChannelIn=comboMIDIChannel.getValue();
+        }
     }
 
     @FXML

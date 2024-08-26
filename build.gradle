@@ -25,7 +25,7 @@ javafx {
 
 application {
     group = 'com.github.axelberndt'
-    version = '1.0.0'
+    version = '1.0.1'
     mainClass.set("arpeggiatorum.Launcher")
 }
 

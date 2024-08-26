@@ -22,6 +22,7 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
     public static final double FREQUENCY_RAMP_TIME = 0.01;
     public static final double PEAK_FOLLOWER_RAMP_TIME = 0.25;
     public final ChannelIn channelIn = new ChannelIn();// microphone input
+    public static int MIDIChannelIn=0;
     public final double sampleRate;
     protected final SchmidtTrigger schmidtTrigger = new SchmidtTrigger();
     public String NAME = "Abstract";
@@ -104,7 +105,7 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
     public void sendNoteOn(int pitch, int velocity) {
         ShortMessage noteOn;
         try {
-            noteOn = new ShortMessage(EventMaker.NOTE_ON, pitch, velocity);
+            noteOn = new ShortMessage(EventMaker.NOTE_ON, MIDIChannelIn, pitch, velocity);
         } catch (InvalidMidiDataException e) {
             Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
             logger.log(Level.SEVERE, "MIDI Exception.", e);
@@ -137,7 +138,7 @@ public abstract class Mic2MIDI extends Circuit implements Transmitter, IMic2MIDI
     public void sendNoteOff(int pitch) {
         ShortMessage noteOff;
         try {
-            noteOff = new ShortMessage(EventMaker.NOTE_OFF, pitch, 0);
+            noteOff = new ShortMessage(EventMaker.NOTE_OFF,MIDIChannelIn, pitch, 0);
         } catch (InvalidMidiDataException e) {
             Logger logger = Logger.getLogger(ArpeggiatorumGUI.getInstance().getClass().getName());
             logger.log(Level.SEVERE, "MIDI Exception.", e);
