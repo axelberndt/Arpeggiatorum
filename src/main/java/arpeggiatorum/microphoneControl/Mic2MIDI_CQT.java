@@ -339,8 +339,10 @@ public class Mic2MIDI_CQT extends Mic2MIDI {
 
     @Override
     public void setSignalToNoiseThreshold(double value) {
-        double modValue = value / scalingFactor;
-        PITCH_THRESHOLD = modValue / 2;
+//        double modValue = value / scalingFactor;
+//        PITCH_THRESHOLD = modValue / 2;
+        double modValue = 1.0;
+        PITCH_THRESHOLD = 0.5;
         ArpeggiatorumGUI.controllerHandle.yAxis.setUpperBound(modValue);
         ArpeggiatorumGUI.controllerHandle.yAxis.setTickUnit(modValue / 10);
         ArpeggiatorumGUI.controllerHandle.middleSeries.getData().clear();

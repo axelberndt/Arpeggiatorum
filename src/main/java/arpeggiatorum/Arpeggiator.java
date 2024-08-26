@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * @author Axel Berndt
  */
 public class Arpeggiator implements Receiver, Transmitter {
-    public static final String version = "1.0.0";
+    public static final String version = "1.0.1";
     public static final int ARPEGGIO_CHANNEL_PRESET = 1;
     public static final int HELD_NOTES_CHANNEL_PRESET = 2;
     public static final int BASS_CHANNEL_PRESET = 0;
@@ -375,13 +375,16 @@ public class Arpeggiator implements Receiver, Transmitter {
                         this.sendToReceiver(message, timeStamp);
                         break;
 
-                    case EventMaker.CC_Undefined_Ctrl_5_14b:        // Trigger audio in
+                    case EventMaker.CC_Undefined_Ctrl_5_14b:        // Trigger Audio In
                         this.sendToReceiver(message, timeStamp);
                         break;
                     case EventMaker.CC_Undefined_Ctrl_6_14b:        // Trigger autotune
                         this.sendToReceiver(message, timeStamp);
                         break;
-                    case EventMaker.CC_Undefined_Ctrl_7_14b:        // Set Threshold
+                    case EventMaker.CC_Undefined_Ctrl_7_14b:        // Set Scaling Factor
+                        this.sendToReceiver(message, timeStamp);
+                        break;
+                    case EventMaker.CC_Undefined_Ctrl_8_14b:        // Set Sharpness
                         this.sendToReceiver(message, timeStamp);
                         break;
                     default:
