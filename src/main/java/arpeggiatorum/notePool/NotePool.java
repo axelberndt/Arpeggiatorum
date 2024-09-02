@@ -262,10 +262,12 @@ public class NotePool {
         // get next note from note pool
         switch (this.pattern) {
             case up:
-                index = ++index % this.notePool.size();
+                if (this.notePool.size() > 0)
+                    index = ++index % this.notePool.size();
                 break;
             case down:
-                index = Math.floorMod(--index, this.notePool.size());
+                if (this.notePool.size() > 0)
+                    index = Math.floorMod(--index, this.notePool.size());
                 break;
             case up_down:
                 if (++index >= this.notePool.size()) {
