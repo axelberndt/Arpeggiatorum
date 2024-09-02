@@ -5,6 +5,7 @@ import arpeggiatorum.gui.ArpeggiatorumGUIController;
 import arpeggiatorum.gui.LogGUIController;
 import arpeggiatorum.microphoneControl.*;
 import arpeggiatorum.supplementary.EventMaker;
+import arpeggiatorum.supplementary.TonalEnrichmentChooserItem;
 import arpeggiatorum.supplementary.Tools;
 import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
@@ -24,6 +25,7 @@ import java.io.OutputStream;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -73,6 +75,7 @@ public class Arpeggiatorum implements Receiver {
     public static Scene scenePerformance;
     public static Stage stagePerformance;
     private static int instancePerformance = 0;
+
 
     public Arpeggiatorum() {
         super();
@@ -652,6 +655,8 @@ public class Arpeggiatorum implements Receiver {
                 Integer.parseInt(ArpeggiatorumGUI.controllerHandle.e15.getText()),
                 Integer.parseInt(ArpeggiatorumGUI.controllerHandle.e16.getText()),
         };
+
+        ArpeggiatorumGUI.controllerHandle.comboEnrichment.getItems().getLast().setValue(intervals);
         this.arpeggiator.setTonalEnrichment(intervals);
     }
 
