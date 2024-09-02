@@ -278,7 +278,7 @@ public class Arpeggiatorum implements Receiver {
             prop.setProperty("MIDI Input", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getValue().toString()));
             prop.setProperty("MIDI Output", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboMIDIOut.getValue().toString()));
             prop.setProperty("Audio Input", ArpeggiatorumGUI.controllerHandle.comboAudioIn.getValue());
-            
+
             // Save properties to project root folder
             prop.store(output, null);
 
