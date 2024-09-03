@@ -217,6 +217,17 @@ public class Arpeggiatorum implements Receiver {
             ArpeggiatorumGUI.controllerHandle.toggleButtonAutoTune.fire();
 
         }
+        String[] stringIntervals = configProp.getProperty("User Enrichment", "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0").split(",", 16);
+        int[] intervals = new int[16];
+        for (int i = 0; i < intervals.length; i++) {
+            intervals[i] = Integer.parseInt(stringIntervals[i]);
+        }
+        ArpeggiatorumGUI.controllerHandle.comboEnrichment.getItems().getLast().setValue(intervals);
+        int correctSelection = ArpeggiatorumGUI.controllerHandle.comboEnrichment.getSelectionModel().getSelectedIndex();
+        ArpeggiatorumGUI.controllerHandle.comboEnrichment.getSelectionModel().selectFirst();
+        ArpeggiatorumGUI.controllerHandle.comboEnrichment.getSelectionModel().select(correctSelection);
+
+
     }
 
     public static void SaveNClose(ArpeggiatorumGUI arpeggiatorumGUI) {
@@ -238,7 +249,7 @@ public class Arpeggiatorum implements Receiver {
             prop.setProperty("Bass", ArpeggiatorumGUI.sessionBassChannel.toString());
             prop.setProperty("Sustained", ArpeggiatorumGUI.sessionSustainedChannel.toString());
 
-           // prop.setProperty("Threshold", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderThreshold.getValue()));
+            // prop.setProperty("Threshold", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderThreshold.getValue()));
 
             prop.setProperty("Tempo", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderTempo.getValue()));
             prop.setProperty("Articulation", String.valueOf(ArpeggiatorumGUI.controllerHandle.sliderArticulation.getValue()));
@@ -278,6 +289,12 @@ public class Arpeggiatorum implements Receiver {
             prop.setProperty("MIDI Input", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboMIDIIn.getValue().toString()));
             prop.setProperty("MIDI Output", String.valueOf(ArpeggiatorumGUI.controllerHandle.comboMIDIOut.getValue().toString()));
             prop.setProperty("Audio Input", ArpeggiatorumGUI.controllerHandle.comboAudioIn.getValue());
+
+            String arrayEnrichment = "";
+            for (int value : ArpeggiatorumGUI.controllerHandle.comboEnrichment.getItems().getLast().getValue()) {
+                arrayEnrichment += String.valueOf(value) + ",";
+            }
+            prop.setProperty("User Enrichment", arrayEnrichment.substring(0, arrayEnrichment.length() - 1));
 
             // Save properties to project root folder
             prop.store(output, null);
@@ -692,8 +709,8 @@ public class Arpeggiatorum implements Receiver {
     public void ScaleChange(Number value) {
         for (Mic2MIDI processor : mic2Midi) {
             if (processor instanceof Mic2MIDI_CQT) {
-                Mic2MIDI_CQT.scalingFactor = (Math.pow(value.floatValue(),4.0f)*9999999.0f)+1;
-               // System.out.println(Mic2MIDI_CQT.scalingFactor);
+                Mic2MIDI_CQT.scalingFactor = (Math.pow(value.floatValue(), 4.0f) * 9999999.0f) + 1;
+                // System.out.println(Mic2MIDI_CQT.scalingFactor);
                 //processor.setSignalToNoiseThreshold(ArpeggiatorumGUI.controllerHandle.sliderThreshold.getValue() / ArpeggiatorumGUI.controllerHandle.sliderThreshold.getMax());
             }
         }
